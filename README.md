@@ -103,6 +103,8 @@ For UI/frontend review:
 - `grid.md` — grid attributes, spans, order, responsive layout
 - `tokens.md` — spacing, type, color, theme, motion tokens
 - `motion.md` — why/when motion, reduced motion, implementation
+- `accessibility.md` — a11y entry point for semantics, focus, labels, structure, contrast, motion
+- `copy.md` — UX copy jobs, states, forms, nav labels, brand voice boundaries
 - `naming.md` — names for components, props, state, primitives
 - `navigation.md` — header, nav, menus, active states
 - `forms.md` — labels, errors, helper text, submit states

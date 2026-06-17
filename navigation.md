@@ -61,7 +61,7 @@ Override: Brand/product uses established branded section names.
 Tiny example:
 Good: Work, Services, Pricing, About, Contact.
 Avoid: vague clever labels users cannot predict.
-Related: sections.copy-from-icp
+Related: copy.nav-orientation, copy.brand-owns-voice, sections.copy-from-icp
 
 ## Active state follows current location
 

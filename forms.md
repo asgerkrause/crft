@@ -30,7 +30,7 @@ Good:
 <input id="email" name="email" type="email" autocomplete="email" />
 ```
 Avoid: `<input placeholder="Email" />` as only label.
-Related: platform.semantic-html
+Related: copy.form-guidance, platform.semantic-html
 
 ## Helper and error text are connected
 
@@ -49,7 +49,7 @@ Good:
 <p id="email-error">Enter a valid email.</p>
 ```
 Avoid: visual-only error text disconnected from field.
-Related: platform.semantic-html
+Related: copy.form-guidance, copy.state-feedback, platform.semantic-html
 
 ## Submit states name progress
 
@@ -64,7 +64,7 @@ Override: Native form postback with full page response.
 Tiny example:
 Good: `Send message` → `Sending…` → success message near form.
 Avoid: spinner-only button with no accessible label.
-Related: sections.copy-from-icp, components.css-owns-visual-state
+Related: copy.state-feedback, copy.cta-job, sections.copy-from-icp, components.css-owns-visual-state
 
 ## Group fields by user task
 

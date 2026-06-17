@@ -42,7 +42,7 @@ Override: If no `BRAND.md`, ask or use neutral professional copy.
 Tiny example:
 Good: ICP state = knows problem, doubts effort. Heading job = reduce risk. CTA job = name low-friction next step.
 Avoid: starting from internal feature list or borrowing SNZ/studio voice.
-Related: frontend.brand-led-ui, navigation.direct-labels, forms.submit-states
+Related: copy.brand-owns-voice, copy.cta-job, frontend.brand-led-ui, navigation.direct-labels, forms.submit-states
 
 ## One strong move beats many effects
 
