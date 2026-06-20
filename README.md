@@ -20,6 +20,12 @@ Craft docs teach how to think through frontend implementation: structure, semant
 
 Canonical path: `~/craft`. Tool-specific paths like `~/.pi/agent/craft` and `~/.codex/craft` should symlink here.
 
+## Sanitize inheritance
+
+Sanitize may remove implementation ceremony: unnecessary dependencies, wrappers, abstractions, custom JS, and premature component extraction. It must not remove craft quality: semantic HTML, accessibility, brand fit, motion comfort, validation, visual hierarchy, responsive rhythm, or client-visible polish.
+
+`craft-check` guards this inheritance by requiring the core platform, extraction, component, styling, form, accessibility, and motion rules that Sanitize relies on.
+
 ## Precedence
 
 1. Project `AGENTS.md` — scope, stack, commands, engagement

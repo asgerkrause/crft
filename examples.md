@@ -9,7 +9,7 @@ triggers:
   - header
   - responsive nav
   - section pattern
-updated: 2026-05-28
+updated: 2026-06-19
 ---
 
 # Craft examples
@@ -136,7 +136,7 @@ Tiny example:
 Good:
 ```html
 <section id="features" data-theme="tone">
-  <div class="c">
+  <div class="c w">
     <header>
       <p class="eb">Features</p>
       <h2>What changes for user</h2>

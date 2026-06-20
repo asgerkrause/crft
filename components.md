@@ -34,11 +34,11 @@ ID: components.primitives
 Status: Default
 Triggers: section, grid, container, card, button, link, media wrapper, primitive classes
 Use when: Creating or recognizing reusable UI pieces.
-Rule: Good primitives are focused: `Section`, `Grid`, `Container`, `Card`, `Button`, `Link`, media wrappers. Avoid god components.
+Rule: Good primitives are focused: `Section`, `Grid`, `.c`, `.w`, `.crd`/`Card`, `.btn`/`Button`, `.lnk`/`Link`, media wrappers. Avoid god components.
 Tradeoff: Primitives compose well; too many tiny primitives can obscure markup.
 Override: Project uses plain markup or a different coherent primitive set.
 Tiny example:
-Good: `Card` owns surface/padding/radius; content remains slots/children.
+Good: `.crd`/`Card` owns surface/padding/radius; content remains slots/children.
 Avoid: `UniversalSection` with dozens of visual and content props.
 Related: styling.primitive-classes, frontend.deliberate-primitives
 
@@ -66,7 +66,7 @@ Rule: Prefer explicit concise props like `title`, `text`, `items`, `href`, `labe
 Tradeoff: Props stay readable; CMS-driven content may need object shapes.
 Override: Existing data model or content collections already provide structured objects.
 Tiny example:
-Good: `<Card title={item.title} text={item.text} href={item.href} />`.
+Good: `<Card title={item.title} text={item.text} href={item.href} />` or `<article class="crd">…</article>` for plain markup.
 Avoid: `<Card content={everything} variant="largeBlueThing" />`.
 Related: naming.props-state
 

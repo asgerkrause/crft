@@ -9,7 +9,7 @@ triggers:
   - semantic html
   - native css
   - platform
-updated: 2026-05-28
+updated: 2026-06-19
 ---
 
 # Platform craft
@@ -42,7 +42,7 @@ Override: Legacy browser target or project toolchain forbids feature.
 Tiny example:
 Good:
 ```css
-.card {
+.crd {
   container-type: inline-size;
 
   &:has(a:hover) {
@@ -78,7 +78,7 @@ Tradeoff: Requires system thinking; prevents specificity wars.
 Override: Third-party CSS or emergency hotfix may need isolated override with comment.
 Tiny example:
 Good: reset → base → layout → components → utilities; `:where()` for broad low-specificity selectors.
-Avoid: `#app main .section .card .title { ... !important; }`
+Avoid: `#app main .section .crd .title { ... !important; }`
 Related: styling.nesting-depth, styling.theme-cascade
 
 ## JavaScript stays small and cancellable

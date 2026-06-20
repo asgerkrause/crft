@@ -49,11 +49,11 @@ ID: frontend.deliberate-primitives
 Status: Default
 Triggers: wrappers, primitives, container, section, grid, card, layout, component structure
 Use when: Building layout scaffolding.
-Rule: Prefer deliberate primitives like `Section`, `Grid`, `Container`, `Card`, `Button`, media wrappers over ad hoc nested wrappers.
+Rule: Prefer deliberate primitives like `Section`, `.c`, `.w`, `Grid`/`[g]`, `.crd`/`Card`, `.btn`/`Button`, media wrappers over ad hoc nested wrappers.
 Tradeoff: Stable primitives speed future work; primitives should not become ceremony.
 Override: Small static page can use plain semantic markup directly.
 Tiny example:
-Good: `<section><div class="c"><div g="3-1">...</div></div></section>`.
+Good: `<section><div class="c w"><div g="3-1">...</div></div></section>`.
 Avoid: `<div class="outer"><div class="inner"><div class="content-wrap">...`.
 Related: components.primitives, grid.attribute-system, styling.primitive-classes
 

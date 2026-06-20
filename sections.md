@@ -9,7 +9,7 @@ triggers:
   - feature section
   - page rhythm
   - copy
-updated: 2026-05-28
+updated: 2026-06-19
 ---
 
 # Sections craft
@@ -81,7 +81,7 @@ Status: Default
 Triggers: section theme, data-theme, tone section, invert, accent section, cta theme
 Use when: Choosing section theme or background.
 Thinking: Theme change should mark a shift in job: proof, contrast, CTA, or brand moment.
-Rule: Apply `data-theme` on outer section/container when section needs a distinct role. Let tokens cascade.
+Rule: Apply `data-theme` on outer section/container when section needs a distinct role. Let tokens cascade. Default names are `tone`, `invert`, and `accent`.
 Tradeoff: Clear page landmarks; too many theme shifts fragment page.
 Override: Brand direction uses frequent color blocking.
 Tiny example:

@@ -9,7 +9,7 @@ triggers:
   - aria
   - classes
   - tokens
-updated: 2026-05-28
+updated: 2026-06-19
 ---
 
 # Styling craft
@@ -84,9 +84,9 @@ ID: styling.primitive-classes
 Status: Default
 Triggers: classes, utility classes, primitive classes, c, w, crd, btn, lnk
 Use when: Naming repeated styling hooks or deciding whether class is needed.
-Rule: Use classes for durable primitives and repeated component patterns; avoid classes for one-off state or structure when semantic selectors work.
+Rule: Use classes for durable primitives and repeated component patterns; avoid classes for one-off state or structure when semantic selectors work. SNZ primitive set: `.c`, `.w`, `.crd`, `.btn`, `.btns`, `.lnk`, `.lnks`.
 Tradeoff: Short primitives speed markup; too many one-off classes create naming debt.
-Override: Follow existing project naming, including longer equivalents like `.card`, if coherent.
+Override: Existing project naming is coherent and migration would add churn.
 Tiny example:
 Good: `.c`, `.w`, `.crd`, `.btn`, `.btns`, `.lnk`, `.lnks` for repeated primitives.
 Avoid: `.section-inner-wrapper`, `.menu-open`, `.blue-card-2` for local one-off needs.
@@ -98,13 +98,13 @@ ID: styling.tokens-first
 Status: Default
 Triggers: tokens, spacing, color, radius, hardcoded values, css variables, custom properties
 Use when: Adding spacing, color, radius, type, or motion values.
-Rule: Use project tokens first. Extend existing token system before hardcoding values. Prefer CSS custom properties for theme-aware values.
+Rule: Use project tokens first. Extend existing token system before hardcoding values. Prefer CSS custom properties for theme-aware values. If project has no coherent system, use the SNZ short token contract.
 Tradeoff: Consistency and theming improve; tiny one-off values may take more thought.
 Override: Prototype spike, isolated third-party embed, or project has no token system and user did not ask to create one.
 Tiny example:
 Good: `padding: var(--pd); color: var(--g); border-radius: var(--br);`
 Avoid: `padding: 27px; color: #777; border-radius: 13px;`
-Related: tokens.spacing-scale, tokens.semantic-colors
+Related: tokens.spacing-scale, tokens.semantic-colors, tokens.snz-contract
 
 ## Theme scopes should cascade
 
@@ -119,3 +119,17 @@ Tiny example:
 Good: `<section data-theme="tone">` with descendants using `var(--s)`, `var(--i)`, `var(--g)`.
 Avoid: setting custom text/background colors on every child inside themed scope.
 Related: tokens.theme-attributes, sections.section-theme
+
+## CSS ownership stays split by job
+
+ID: styling.css-ownership
+Status: Default
+Triggers: global css, system css, reset css, component css, style ownership, css split
+Use when: Organizing CSS or deciding where a rule belongs.
+Rule: Split global CSS by owner: `system.css` for token config/engine/themes, `reset.css` for element defaults, `type.css` for type utilities, `grid.css` for `[g] [c] [r] [o]`, `wrappers.css` for `.c .w .btns .lnks` and tiny primitives, `motion.css` for motion/view-transition hooks. Component-specific selectors live with the component.
+Tradeoff: More files, but lower scan cost and clearer ownership.
+Override: Tiny one-file project can keep one stylesheet if ownership remains obvious.
+Tiny example:
+Good: `.crd` primitive in wrappers/global; `.testimonial-card` visual in component CSS.
+Avoid: dumping header/card/private component selectors into global CSS.
+Related: tokens.snz-contract, components.primitives

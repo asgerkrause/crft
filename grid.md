@@ -40,7 +40,7 @@ ID: grid.breakpoints
 Status: Default
 Triggers: responsive, breakpoints, large medium small, mobile, columns
 Use when: Choosing responsive grid behavior.
-Rule: Always reason in large / medium / small. Large `>60rem` uses 12 columns by default. Medium `>30rem` uses 6. Small `≤30rem` stacks unless custom mobile grid is truly needed.
+Rule: Always reason in large / medium / small. Large `>60rem` uses `--gc` columns (12 by default). Medium `>30rem` uses 6. Small `≤30rem` stacks unless custom mobile grid is truly needed.
 Tradeoff: Predictable responsive thinking; unusual designs may need local exceptions.
 Override: Project breakpoint system differs.
 Tiny example:
@@ -54,12 +54,12 @@ ID: grid.large-medium-values
 Status: Default
 Triggers: g values, c values, responsive attributes, large-medium, selector grid
 Use when: Setting `g`, `c`, or `r` attributes.
-Rule: Values use large-medium order. One value applies to both large and medium. Use explicit pairs for double digits; `g="12"` is ambiguous in selector-based systems.
+Rule: Values use large-medium order. One value applies to both large and medium. Use explicit pairs for double digits; `g="12-6"` is clearer than `g="12"` in selector-based systems.
 Tradeoff: More characters, fewer selector bugs.
 Override: Project implementation safely parses single double-digit values.
 Tiny example:
 Good: `g="12-6"`, `g="4-2"`, `c="6-3"`.
-Avoid: `g="12"` when selectors might read digits separately.
+Avoid: `g="12"` when `g="12-6"` states responsive intent.
 Related: grid.attribute-system
 
 ## Span only when default is wrong
