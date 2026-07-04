@@ -1,92 +1,80 @@
 ---
-scope: snz-craft
+scope: craft
 layer: copy
 triggers:
   - copy
-  - content
-  - ux copy
-  - cta
-  - empty state
-  - error state
-  - success state
-  - form copy
-  - nav labels
-updated: 2026-06-17
+  - ux writing
+  - buttons
+  - forms
+  - errors
+updated: 2026-07-01
 ---
 
 # Copy craft
 
-## Voice belongs to brand
+Related: `forms`, `accessibility`, `sections`.
 
-ID: copy.brand-owns-voice
+## Brand voice beats craft defaults
+
+ID: copy.brand-first
 Status: Must
-Triggers: brand voice, tone, user-facing copy, ux copy, product copy, client copy
-Use when: Writing or reviewing copy users will see.
-Thinking: Craft gives structure and defaults. `BRAND.md` owns final voice, vocabulary, audience nuance, and positioning.
-Rule: Use craft to decide copy job, clarity, and state coverage; use `BRAND.md` for final phrasing and tone.
-Tradeoff: Keeps process reusable without leaking SNZ/studio voice.
-Override: Internal tooling or prototypes with no client-facing surface may use neutral professional copy.
+Triggers: copy, UX strings, brand voice, client-facing text
+Use when: Writing user-facing copy.
+Rule: Use project brand source for client/product voice. `craft` gives structure, not brand personality.
+Tradeoff: Less generic consistency; better fit.
+Override: No brand file exists.
 Tiny example:
-Good: Define job = reduce risk; final words come from `BRAND.md`.
-Avoid: Reusing craft examples as client brand voice.
-Related: sections.copy-from-icp
+Good: match client vocabulary.
+Avoid: importing SANITIZE studio tone into client UI.
 
-## CTAs name next step
+## Buttons name the action
 
-ID: copy.cta-job
+ID: copy.cta-specificity
 Status: Default
-Triggers: cta, button copy, link copy, hero action, conversion, call to action
-Use when: Writing primary or secondary actions.
-Thinking: CTA should answer what happens next and why user can trust taking that step now.
-Rule: Name the user action or outcome, not internal business desire. Primary CTA should be specific; secondary CTA should reduce uncertainty.
-Tradeoff: Clearer conversion path; less room for clever brand language.
-Override: Product has established action vocabulary users already know.
+Triggers: button copy, CTA, link label, action label
+Use when: Writing CTAs or action labels.
+Rule: Button/link labels should name the action or destination. Avoid vague labels when context is not enough.
+Tradeoff: Longer labels; clearer intent.
+Override: Repeated card links where visible title supplies context.
 Tiny example:
-Good: Book consult, View pricing, See work, Start free trial.
-Avoid: Submit, Learn more, Get started everywhere with no context.
-Related: sections.copy-from-icp, navigation.direct-labels
+Good: `Book a Call`, `View Components`, `Download Guide`.
+Avoid: `Learn More` everywhere.
 
-## State copy reduces uncertainty
-
-ID: copy.state-feedback
-Status: Default
-Triggers: empty state, error state, success state, loading state, confirmation, toast, alert
-Use when: Writing UI states after something is missing, pending, failed, or complete.
-Thinking: State copy should explain what happened, what it means, and what user can do next.
-Rule: Empty states suggest first useful action. Errors name fix or next support path. Success states confirm outcome and next step.
-Tradeoff: More copy than terse labels; fewer dead ends.
-Override: Security or privacy requirements limit detail.
-Tiny example:
-Good: No projects yet. Create one to start tracking work.
-Avoid: Empty. Error. Done.
-Related: forms.submit-states, forms.connected-help-error
-
-## Form copy helps completion
+## Form guidance is concrete
 
 ID: copy.form-guidance
 Status: Default
-Triggers: form labels, helper text, error copy, validation copy, placeholder, field copy
-Use when: Writing labels, helper text, placeholders, validation, or form errors.
-Thinking: Form copy should help users complete task accurately with minimal doubt.
-Rule: Labels name requested information. Helper text clarifies format, use, or privacy. Error copy says what to fix. Placeholder never carries required meaning.
-Tradeoff: Clear forms can feel less minimal; completion and accessibility improve.
-Override: Existing design system field component sets copy pattern that meets accessibility rules.
+Triggers: form label, placeholder, helper text, input copy
+Use when: Writing form labels/help/errors.
+Rule: Labels state the field. Helper text explains constraints. Placeholders show examples only when helpful.
+Tradeoff: More copy; fewer failed submissions.
+Override: Ultra-simple field with obvious expected input.
 Tiny example:
-Good: Label `Work email`; helper `Used for project updates only.`; error `Enter a valid work email.`
-Avoid: Placeholder-only `Email` plus vague `Invalid` error.
-Related: forms.labels-first, forms.connected-help-error
+Good: label `Work Email`; helper `Use your company email.`
+Avoid: placeholder as the only label.
 
-## Navigation copy orients
+## Error messages include fix
 
-ID: copy.nav-orientation
+ID: copy.error-fix
 Status: Default
-Triggers: nav labels, menu labels, information architecture, header copy, footer links
-Use when: Naming navigation items or persistent wayfinding.
-Thinking: Navigation copy is map language. Recognition beats persuasion.
-Rule: Use short labels that predict destination. Save campaign or brand phrasing for page headings and CTAs.
-Tradeoff: Less expressive navigation; faster scanning.
-Override: Branded destination names are already learned by audience.
+Triggers: error message, validation, empty state, failure
+Use when: Writing errors.
+Rule: State what happened and how to fix it. Keep direct.
+Tradeoff: Slightly longer errors; more useful recovery.
+Override: Native validation message is acceptable and accurate.
 Tiny example:
-Good: Services, Work, Pricing, Contact.
-Avoid: Clever labels that hide destination.
-Related: navigation.direct-labels
+Good: `Enter a valid email address.`
+Avoid: `Invalid input.`
+
+## State feedback is announced
+
+ID: copy.state-feedback
+Status: Default
+Triggers: loading, saving, sending, success, failure, aria-live
+Use when: Writing async UI states.
+Rule: Use short status text and connect it to `aria-live` when status changes without navigation.
+Tradeoff: More state copy; clearer feedback.
+Override: Full page navigation handles feedback.
+Tiny example:
+Good: `Sending…`, `Message sent.`, `Could not send. Try again.`
+Avoid: spinner with no text.

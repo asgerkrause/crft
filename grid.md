@@ -1,131 +1,104 @@
 ---
-scope: snz-craft
+scope: craft
 layer: grid
 triggers:
   - grid
-  - layout
   - columns
-  - cards
-  - responsive
-  - subgrid
+  - layout
+  - spans
   - order
-updated: 2026-05-28
+updated: 2026-07-01
 ---
 
 # Grid craft
 
-## Grid attributes over layout utility soup
+Related: `tokens`, `styling`, `sections`, `accessibility`.
 
-ID: grid.attribute-system
+## Attribute grid stays default
+
+ID: grid.attribute-grid
 Status: Default
-Triggers: grid, layout, columns, g attribute, c attribute, r attribute, o attribute, utility classes
-Use when: Building deliberate responsive layout.
-Rule: Use attributes for grid behavior: `g` grid container, `c` column span, `r` row span, `o` responsive visual order.
-Tradeoff: Markup stays compact and layout intent is visible; team must know attribute system.
-Override: Project has coherent class/grid system already.
+Triggers: grid, columns, spans, responsive grid, g attribute, c attribute
+Use when: Creating simple responsive layout in `craft`-style markup.
+Rule: Keep durable grid attributes: `[g]` for grid columns, `[c]` for span, `[r]` for row span, `[o]` for visual order. Token internals use `--l-*` and spacing uses `--s-*`.
+Tradeoff: Markup stays short; attribute syntax needs documentation.
+Override: Existing project uses another coherent layout system.
 Tiny example:
 Good:
 ```html
 <div g="4-2">
-  <article c="2-1">Featured</article>
-  <article>Default</article>
+  <article c="2-1">Feature</article>
+  <article>Small item</article>
 </div>
 ```
-Avoid: long chains of layout utility classes for the same local grid.
-Related: frontend.deliberate-primitives, styling.primitive-classes
+Avoid: rebuilding grid with many utility classes.
 
-## Reason large medium small
+## Grid internals use layout tokens
 
-ID: grid.breakpoints
+ID: grid.layout-tokens
 Status: Default
-Triggers: responsive, breakpoints, large medium small, mobile, columns
-Use when: Choosing responsive grid behavior.
-Rule: Always reason in large / medium / small. Large `>60rem` uses 12 columns by default. Medium `>30rem` uses 6. Small `≤30rem` stacks unless custom mobile grid is truly needed.
-Tradeoff: Predictable responsive thinking; unusual designs may need local exceptions.
-Override: Project breakpoint system differs.
+Triggers: --l-gc, --l-cs, --l-rs, --l-or, grid internals
+Use when: Implementing or maintaining grid CSS.
+Rule: Use `--l-gc` for columns, `--l-cs` for column span, `--l-rs` for row span, and `--l-or` for visual order. Use `--s-gp` for grid gaps.
+Tradeoff: Slightly more verbose than old short vars; safer to grep and reason about.
+Override: None for craft code.
 Tiny example:
-Good: `g="4-2"` = 4 columns large, 2 columns medium, stacked small.
-Avoid: inventing breakpoint names per component.
-Related: grid.large-medium-values, sections.card-groups
+Good: `grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr)); gap: var(--s-gp);`
+Avoid: old unprefixed grid internals in craft code.
 
-## Use explicit large-medium values
+## Mobile stacks before breakpoint choreography
 
-ID: grid.large-medium-values
+ID: grid.mobile-stack
 Status: Default
-Triggers: g values, c values, responsive attributes, large-medium, selector grid
-Use when: Setting `g`, `c`, or `r` attributes.
-Rule: Values use large-medium order. One value applies to both large and medium. Use explicit pairs for double digits; `g="12"` is ambiguous in selector-based systems.
-Tradeoff: More characters, fewer selector bugs.
-Override: Project implementation safely parses single double-digit values.
+Triggers: mobile grid, responsive layout, breakpoints, columns
+Use when: Making sections responsive.
+Rule: Default small screens to stack. Use split attribute values like `g="4-2"`, `c="6-3"` for medium/large differences.
+Tradeoff: Predictable responsive behavior; art-directed layouts may need local CSS.
+Override: Component has a strong visual reason to preserve columns on small screens.
 Tiny example:
-Good: `g="12-6"`, `g="4-2"`, `c="6-3"`.
-Avoid: `g="12"` when selectors might read digits separately.
-Related: grid.attribute-system
+Good: `[g] { display: grid; } @media (width < <stack-threshold>) { [g] { display: flex; flex-direction: column; } }`
+Avoid: many breakpoint classes for simple card grids.
 
-## Span only when default is wrong
-
-ID: grid.column-span
-Status: Default
-Triggers: column span, c attribute, full width, card grid, layout
-Use when: Assigning child spans.
-Rule: Children span 1 column by default. Add `[c]` only to override. Use `c="0"` for full row.
-Tradeoff: Cleaner markup; featured items still get explicit spans.
-Override: Project grid needs every child explicit for clarity.
-Tiny example:
-Good:
-```html
-<div g="12-6">
-  <header c="0">Full row</header>
-  <article c="6-3">Large</article>
-  <article>Default</article>
-</div>
-```
-Avoid: adding `c="1"` to every default child.
-Related: sections.card-groups
-
-## Row spans are rare
-
-ID: grid.row-span
-Status: Avoid
-Triggers: row span, r attribute, masonry, tall card, unpredictable content
-Use when: Considering row-spanning cards or panels.
-Rule: Use `[r]` rarely and only when layout truly needs a card/panel to span rows. Avoid row spans when content height is unpredictable.
-Tradeoff: Strong composition vs fragile content overflow.
-Override: Editorial/art-directed layout with controlled content.
-Tiny example:
-Good: `<article r="2">Tall feature</article>` for fixed-content feature card.
-Avoid: row spans on CMS content with unknown text length.
-Related: sections.card-groups
-
-## Visual order is last resort
+## Visual order stays exceptional
 
 ID: grid.visual-order
-Status: Avoid
-Triggers: order, responsive order, o attribute, source order, mobile order
-Use when: Reordering layout across breakpoints.
-Rule: Prefer source order that works everywhere. Use `[o]` sparingly for deliberate visual order changes.
-Tradeoff: Visual flexibility can harm reading/focus order if abused.
-Override: Art direction needs visual swap and DOM order remains accessible.
-Tiny example:
-Good: `o="-f"` only for first-on-small visual adjustment.
-Avoid: reordering whole page sections through CSS.
-Related: platform.semantic-html
-
-## Subgrid aligns nested tracks
-
-ID: grid.subgrid
 Status: Default
-Triggers: subgrid, nested grid, align tracks, g sg, cards
-Use when: Nested children should align to parent grid tracks.
-Rule: Use `g="sg"` when nested children need parent track alignment.
-Tradeoff: Precise alignment; support/project grid implementation must allow it.
-Override: Browser support or project grid system lacks subgrid.
+Triggers: order, visual order, accessibility, grid order
+Use when: Reordering grid children.
+Rule: Use `[o]` only for visual refinement that does not break reading or focus order.
+Tradeoff: Layout flexibility; misuse harms accessibility.
+Override: None when keyboard or reading order becomes confusing.
 Tiny example:
+Good: moving decorative media after copy on small screens.
+Avoid: visually moving the primary CTA before its heading while DOM order says otherwise.
+
+## Applied patterns
+
+### Basic grid
+
 ```html
-<div g="12-6">
-  <div g="sg" c="6-3">
-    <article>Aligned child</article>
-  </div>
+<div g="3-1">
+  <article class="crd">...</article>
+  <article class="crd">...</article>
+  <article class="crd">...</article>
 </div>
 ```
-Related: grid.attribute-system, sections.card-groups
+
+Decision: grid attributes handle common responsive columns without utility sprawl.
+
+### Span only when meaning changes
+
+```html
+<article c="2-1">...</article>
+```
+
+Decision: span supports content hierarchy, not decoration noise.
+
+### Visual order caution
+
+```html
+<img o="2" alt="">
+<div o="1">...</div>
+```
+
+Decision: only safe when DOM reading/focus order still makes sense.

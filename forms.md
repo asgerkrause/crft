@@ -1,82 +1,113 @@
 ---
-scope: snz-craft
+scope: craft
 layer: forms
 triggers:
   - forms
+  - inputs
+  - validation
   - labels
   - errors
-  - helper text
-  - validation
-  - field groups
-  - submit
-updated: 2026-05-28
+updated: 2026-07-01
 ---
 
 # Forms craft
 
-## Labels first
+Related: `accessibility`, `copy`, `tokens`, `components`.
+
+## Native form semantics first
 
 ID: forms.labels-first
 Status: Must
-Triggers: form, input, label, placeholder, accessibility, field
-Use when: Building form fields.
-Rule: Every input needs a real label. Placeholder is hint, not label.
-Tradeoff: More visible structure; far better accessibility and comprehension.
-Override: Visually hidden label is acceptable when UI pattern requires compact field.
+Triggers: form, input, textarea, select, checkbox, radio, submit, label, validation
+Use when: Building forms.
+Rule: Use real `<form>`, `<label>`, `<input>`, `<textarea>`, `<select>`, `<fieldset>`, `<legend>`, and `<button type="submit">`. Keep validation readable, connected, and native-first. Add ARIA only when native semantics cannot express state.
+Tradeoff: Less custom UI freedom; better accessibility and validation.
+Override: None for standard forms.
 Tiny example:
-Good:
+Good: wrapping label around input for one shared hit target.
+Avoid: div-based fake fields.
+
+## Field skins use input element tokens
+
+ID: forms.input-tokens
+Status: Default
+Triggers: input tokens, field tokens, e-inp, form styling
+Use when: Styling text inputs, selects, textareas, checkboxes, radios, or field wrappers.
+Rule: Use `--e-inp-sur`, `--e-inp-ink`, and `--e-inp-bor` for official field skin. Use `--s-pd`, `--s-br`, `--s-bw`, and `--s-gp` for spacing/shape.
+Tradeoff: Consistent field theming; specialty controls may need local vars.
+Override: A component has a unique field-like visual role and documents local tokens.
+Tiny example:
+Good: `background: var(--e-inp-sur); color: var(--e-inp-ink); border-color: var(--e-inp-bor);`
+Avoid: raw background/border colors in field components.
+
+## Validation colors use state roles
+
+ID: forms.validation-colors
+Status: Default
+Triggers: error, invalid, success, warning, validation color
+Use when: Styling form feedback.
+Rule: Use `--c-bad-*` for invalid/error, `--c-good-*` for success, and `--c-warn-*` for warning/help states. Do not hardcode red/green/orange.
+Tradeoff: State colors theme consistently; more roles in token engine.
+Override: Brand-specific state palette maps into these tokens first.
+Tiny example:
+Good: `border-color: var(--c-bad-bor); background: var(--c-bad-sur); color: var(--c-bad-ink);`
+Avoid: `border-color: <raw-error-color>;`
+
+## Errors include text and connection
+
+ID: forms.connected-errors
+Status: Must
+Triggers: form errors, aria-describedby, aria-invalid, validation message
+Use when: Rendering field errors.
+Rule: Error state needs readable text, `aria-invalid` when applicable, and a connected description via `aria-describedby` or native validation.
+Tradeoff: More markup; usable and screen-reader friendly.
+Override: Native browser validation owns the message and submit flow.
+Tiny example:
+Good: input with visible error text and `aria-describedby="email-error"`.
+Avoid: red border only.
+
+## Submit state stays truthful
+
+ID: forms.submit-state
+Status: Default
+Triggers: submit button, loading, disabled, pending, form status
+Use when: Handling async submit.
+Rule: Keep submit enabled until request starts. During request, set truthful disabled/busy state and announce status with `aria-live="polite"`.
+Tradeoff: Slightly more state handling; avoids dead-feeling forms.
+Override: Static HTML form with no async handler.
+Tiny example:
+Good: `<p aria-live="polite">Sending…</p>`.
+Avoid: disabling submit on first keystroke or relying on spinner only.
+
+## Applied patterns
+
+### Connected error
+
 ```html
 <label for="email">Email</label>
-<input id="email" name="email" type="email" autocomplete="email" />
+<input id="email" name="email" type="email" aria-invalid="true" aria-describedby="email-error">
+<p id="email-error">Enter a valid email address.</p>
 ```
-Avoid: `<input placeholder="Email" />` as only label.
-Related: copy.form-guidance, platform.semantic-html
 
-## Helper and error text are connected
+Decision: visual state plus text plus connection.
 
-ID: forms.connected-help-error
-Status: Must
-Triggers: helper text, error text, aria-describedby, validation, form errors
-Use when: Adding helper text, requirements, or validation errors.
-Rule: Connect helper/error text with `aria-describedby`. Use `aria-invalid` when field has error.
-Tradeoff: More IDs; screen readers get correct context.
-Override: Framework form component handles this correctly.
-Tiny example:
-Good:
+### Input skin through element tokens
+
+```css
+input {
+  background: var(--e-inp-sur);
+  color: var(--e-inp-ink);
+  border: var(--s-bw) solid var(--e-inp-bor);
+}
+```
+
+Decision: official field skin uses `--e-inp-*`.
+
+### Async submit feedback
+
 ```html
-<input id="email" aria-describedby="email-help email-error" aria-invalid="true" />
-<p id="email-help">Use work email.</p>
-<p id="email-error">Enter a valid email.</p>
+<button type="submit" aria-busy="true">Sending</button>
+<p aria-live="polite">Sending…</p>
 ```
-Avoid: visual-only error text disconnected from field.
-Related: copy.form-guidance, copy.state-feedback, platform.semantic-html
 
-## Submit states name progress
-
-ID: forms.submit-states
-Status: Default
-Triggers: submit, loading, pending, success, error, button copy, form state
-Use when: Handling form submission UI.
-Thinking: User needs to know whether action is available, in progress, succeeded, or failed.
-Rule: Reflect pending/success/error states in accessible UI. Disable only when preventing duplicate action; keep label meaningful.
-Tradeoff: More state handling; less uncertainty for user.
-Override: Native form postback with full page response.
-Tiny example:
-Good: `Send message` → `Sending…` → success message near form.
-Avoid: spinner-only button with no accessible label.
-Related: copy.state-feedback, copy.cta-job, sections.copy-from-icp, components.css-owns-visual-state
-
-## Group fields by user task
-
-ID: forms.task-groups
-Status: Default
-Triggers: fieldset, legend, field groups, form layout, multi-step form
-Use when: Organizing multiple fields.
-Thinking: Form structure should follow user task, not database schema.
-Rule: Group related fields with clear headings/`fieldset` + `legend` where appropriate.
-Tradeoff: Slightly more markup; easier completion and scanning.
-Override: Very short form with one or two fields.
-Tiny example:
-Good: Contact details, Project details, Preferences.
-Avoid: ordering fields only by backend model columns.
-Related: sections.page-rhythm
+Decision: state is truthful and announced.

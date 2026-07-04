@@ -1,155 +1,264 @@
 ---
-scope: snz-craft
+scope: craft
 layer: examples
 triggers:
   - examples
-  - pattern
-  - disclosure
-  - accordion
-  - header
-  - responsive nav
-  - section pattern
-updated: 2026-05-28
+  - snippets
+  - patterns
+  - tokens
+updated: 2026-07-03
 ---
 
-# Craft examples
+# Examples craft
 
-Full patterns compose multiple craft rules. Copy structure, not exact visual. CSS is partial by design.
+Related: `tokens`, `token-contract`, `styling`, `components`, `accessibility`.
 
-## Disclosure / accordion
+Examples show relationships, not prescribed visual values. Token names are exact; arbitrary values are omitted unless formula or relationship is the point.
 
-ID: examples.disclosure
-Status: Default
-Triggers: disclosure, accordion, details, summary, faq, open state
-Use when: Building FAQ/disclosure behavior.
-Rule: Prefer native `<details>` before custom accordion JS. Use CSS and native state first.
-Tradeoff: Native behavior is robust; custom animation needs progressive enhancement care.
-Override: Design requires interaction native details cannot provide accessibly.
-Tiny example:
-Good:
-```html
-<details name="faq">
-  <summary>
-    <span>Question</span>
-    <span class="icn" aria-hidden="true"></span>
-  </summary>
-  <p>Answer.</p>
-</details>
-```
+Use this file after topic rules when application pattern is unclear. Do not load it by default for every task.
+
+## Token examples
+
+### Stable consumed token
+
 ```css
-@supports selector(details::details-content) {
-  details {
-    overflow: hidden;
+:root {
+  --t-h1-fs: /* project value */;
+  --t-h1-lh: /* project value */;
+  --s-gp: /* project value */;
+}
 
-    &::details-content {
-      block-size: 0;
-      opacity: 0;
-      transition:
-        block-size var(--td) var(--tf-o),
-        opacity var(--td) var(--tf-o);
-      transition-behavior: allow-discrete;
-    }
+h1 { font-size: var(--t-h1-fs); line-height: var(--t-h1-lh); }
+.stack { gap: var(--s-gp); }
+```
 
-    &:open {
-      &::details-content {
-        block-size: auto;
-        opacity: 1;
-      }
-    }
-  }
+Use when project sets values directly.
+
+### Fluid derivation
+
+```css
+:root {
+  --s-gp-min: /* project value */;
+  --s-gp-max: /* project value */;
+  --s-gp: clamp(var(--s-gp-min) * 1rem, var(--s-gp-min) * 1rem + (var(--s-gp-max) - var(--s-gp-min)) * var(--l-fluid), var(--s-gp-max) * 1rem);
 }
 ```
-Avoid: custom JS accordion before trying native behavior.
-Related: platform.semantic-html, motion.css-first, tokens.motion-tokens
 
-## Responsive header menu
+Use when project wants fluid spacing. Consumers still use `--s-gp`.
 
-ID: examples.responsive-header
-Status: Default
-Triggers: header, responsive nav, menu, burger, aria-expanded, navigation example
-Use when: Building full header/nav pattern.
-Rule: Header uses semantic structure. Button toggles `aria-expanded`. CSS reads state with `:has()`.
-Tradeoff: Strong semantic baseline; project may need framework-specific route handling.
-Override: Existing nav component already handles a11y/state correctly.
-Tiny example:
-Good:
-```html
-<header>
-  <div class="c">
-    <a href="/">Site</a>
-    <button type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"></button>
-    <nav id="nav" aria-label="Primary">
-      <menu>
-        <li><a href="/">Home</a></li>
-        <li><a href="/work/">Work</a></li>
-        <li><a href="/contact/">Contact</a></li>
-      </menu>
-    </nav>
-  </div>
-</header>
-```
+### Theme color relationship
+
 ```css
-body > header {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1000;
-  background: var(--s);
-  border-block-end: var(--bw) solid var(--b);
+[data-theme] {
+  background: var(--c-bg);
+  color: var(--c-fg);
+}
 
-  menu {
-    display: flex;
-    gap: var(--gp);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  @media (max-width: 48rem) {
-    menu {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--td) var(--tf-o);
-    }
-
-    &:has([aria-expanded="true"]) {
-      menu {
-        opacity: 1;
-        pointer-events: auto;
-      }
-    }
-  }
+[data-theme*="tone"] {
+  --c-bg: var(--c-neu-05);
+  --c-sur: var(--c-neu-00);
 }
 ```
-Avoid: `.nav.is-open` as sole source of truth.
-Related: navigation.header-menu, styling.semantic-selectors, motion.css-first
 
-## Section with card grid
+Use when section theme should cascade to descendants.
 
-ID: examples.section-card-grid
-Status: Default
-Triggers: section, card grid, cards, features, cta, layout example
-Use when: Building common feature/card section.
-Rule: Use section job, container, grid, and tokenized cards. Spans signal hierarchy only when content needs it.
-Tradeoff: Predictable structure; highly art-directed pages may need custom layout.
-Override: Project has established section/card primitives.
-Tiny example:
-Good:
+## Typography examples
+
+### Heading token assembly
+
+```css
+:root {
+  --t-h2-fs: /* project value */;
+  --t-h2-fw: /* project value */;
+  --t-h2-lh: /* project value */;
+  --t-h2-ff: /* project value */;
+  --t-h2: var(--t-h2-fw) var(--t-h2-fs) / var(--t-h2-lh) var(--t-h2-ff);
+}
+
+h2 { font: var(--t-h2); }
+```
+
+Use when shorthand helps keep type application consistent.
+
+### Measure stays tokenized
+
+```css
+.prose {
+  max-inline-size: var(--t-md-mw);
+}
+```
+
+Use when readable line length matters.
+
+## Component examples
+
+### Tokenized card primitive
+
+```css
+.crd {
+  background: var(--e-crd-sur);
+  color: var(--e-crd-ink);
+  border: var(--s-bw) solid var(--e-crd-bor);
+  border-radius: var(--s-br);
+  padding: var(--s-pd);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-gp);
+}
+```
+
+Use when repeated surface behavior earns a primitive.
+
+### Button variant
+
+```css
+.btn {
+  background: var(--e-btn-sur);
+  color: var(--e-btn-ink);
+  border: var(--s-bw) solid var(--e-btn-bor);
+  border-radius: var(--s-br);
+  padding: calc(var(--s-pd) * .5) var(--s-pd);
+  transition: background var(--m-td) var(--m-tf-o), color var(--m-td) var(--m-tf-o), transform var(--m-td-f) var(--m-tf-o);
+  transform: scale(calc(1 - .02 * var(--i-prs-t)));
+}
+
+.btn.accent {
+  --e-btn-sur: var(--c-acc-sur);
+  --e-btn-ink: var(--c-acc-ink);
+  --e-btn-bor: transparent;
+}
+```
+
+Use when variant should remap element tokens, not duplicate full button CSS.
+
+## Grid examples
+
+### Grid section
+
 ```html
-<section id="features" data-theme="tone">
+<section data-theme="tone">
   <div class="c">
-    <header>
-      <p class="eb">Features</p>
-      <h2>What changes for user</h2>
-      <p>Short lead that frames decision.</p>
+    <header class="w">
+      <p class="t-sm">...</p>
+      <h2>...</h2>
     </header>
-    <div g="3-2">
-      <article class="crd">
-        <h3>Outcome</h3>
-        <p>Why it matters.</p>
-      </article>
+    <div g="3-1">
+      <article class="crd">...</article>
+      <article class="crd">...</article>
+      <article class="crd">...</article>
     </div>
   </div>
 </section>
 ```
-Avoid: generic card grid with no hierarchy or section job.
-Related: sections.card-groups, grid.attribute-system, tokens.spacing-scale
+
+```css
+[g] {
+  display: grid;
+  grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr));
+  gap: var(--s-gp);
+}
+```
+
+Use when content is a repeated set with shared rhythm.
+
+### Span hierarchy
+
+```html
+<div g="4-1">
+  <article c="2-1">...</article>
+  <article>...</article>
+  <article>...</article>
+</div>
+```
+
+Use span when one item has stronger content weight.
+
+## Form examples
+
+### Form field state
+
+```css
+label:has(> input:user-invalid) {
+  --e-inp-sur: var(--c-bad-sur);
+  --e-inp-ink: var(--c-bad-ink);
+  --e-inp-bor: var(--c-bad-bor);
+}
+
+input {
+  background: var(--e-inp-sur);
+  color: var(--e-inp-ink);
+  border: var(--s-bw) solid var(--e-inp-bor);
+  border-radius: var(--s-br-sm);
+  padding: var(--s-pd-sm) var(--s-pd);
+}
+```
+
+Use when visual validation should follow token roles.
+
+### Connected error markup
+
+```html
+<label for="email">Email</label>
+<input id="email" name="email" type="email" aria-invalid="true" aria-describedby="email-error">
+<p id="email-error">Enter a valid email address.</p>
+```
+
+Use when custom error text is rendered.
+
+## Navigation examples
+
+### Header disclosure
+
+```html
+<header>
+  <nav id="primary-nav" aria-label="Primary">...</nav>
+  <button type="button" aria-controls="primary-nav" aria-expanded="false" aria-label="Menu"></button>
+</header>
+```
+
+```css
+body > header {
+  background: var(--e-head-sur);
+  color: var(--e-head-ink);
+  border-block-end: var(--s-bw) solid var(--e-head-bor);
+  z-index: var(--z-head);
+}
+
+body > header:has([aria-expanded="true"]) nav {
+  opacity: 1;
+  pointer-events: auto;
+}
+```
+
+Use when JS only toggles state and CSS handles presentation.
+
+## Motion examples
+
+### Pressed state math
+
+```css
+button {
+  transform: scale(calc(1 - .02 * var(--i-prs-t)));
+}
+
+button:active {
+  --i-prs-t: <active>;
+  --i-prs-f: <inactive>;
+}
+```
+
+Use when interaction state should be shared across variants.
+
+### Reduced motion token collapse
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --m-td: <near-zero>;
+    --m-td-f: <near-zero>;
+    --m-td-s: <near-zero>;
+  }
+}
+```
+
+Use when motion is non-trivial and must respect comfort.

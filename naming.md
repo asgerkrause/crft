@@ -1,70 +1,80 @@
 ---
-scope: snz-craft
+scope: craft
 layer: naming
 triggers:
   - naming
-  - component names
+  - tokens
+  - classes
   - props
-  - state
-  - handlers
-  - abbreviations
-updated: 2026-05-28
+  - variants
+updated: 2026-07-01
 ---
 
 # Naming craft
 
-## Short clear domain names
+Related: `glossary`, `tokens`, `token-contract`, `styling`.
+
+## Token prefixes name category
+
+ID: naming.token-prefixes
+Status: Must
+Triggers: token name, css variable, prefix, design system
+Use when: Naming custom properties.
+Rule: Use official prefixes by job: `l` layout, `s` space/shape, `t` type, `c` color, `e` element, `m` motion, `i` interaction, `z` z-index.
+Tradeoff: More verbose; clear category ownership.
+Override: Project has not adopted craft tokens.
+Tiny example:
+Good: `--s-gp`, `--c-bg`, `--e-btn-sur`.
+Avoid: `--gap`, `--surface`, `--buttonColor`.
+
+## Color role abbreviations stay fixed
+
+ID: naming.color-roles
+Status: Default
+Triggers: color names, semantic colors, accent, complement, neutral
+Use when: Naming color tokens.
+Rule: Use `neu`, `acc`, `sec`, `bg`, `fg`, `sur`, `ink`, `mut`, `bor`, `good`, `warn`, `bad`. Use `sec` for paired secondary color roles.
+Tradeoff: Short names require legend; consistent once learned.
+Override: Client-facing copy can use plain words.
+Tiny example:
+Good: `--c-sec-sur`, `--c-bad-bor`.
+Avoid: `--c-secondaryColor`, `--c-errorBorder`, `--c-mutedText`.
+
+## Classes stay short and rare
 
 ID: naming.short-clear
 Status: Default
-Triggers: naming, components, variables, domain names, abbreviations, clever names
-Use when: Naming components, props, state, utilities, or CSS primitives.
-Rule: Use short, clear, domain-led names. Avoid clever abbreviations except established primitives.
-Tradeoff: Names stay readable in markup; some domain ambiguity may need longer names.
-Override: Project naming convention differs.
+Triggers: class names, primitive classes, private hooks
+Use when: Naming classes.
+Rule: Use short durable primitives and concise private hooks. Avoid BEM and verbose wrapper names in `craft`-style code.
+Tradeoff: Requires shared legend; markup stays clean.
+Override: Existing project class convention differs.
 Tiny example:
-Good: `Hero`, `Section`, `Grid`, `Card`, `Header`, `Footer`, `Testimonials`.
-Avoid: `Block`, `Thing`, `ContentSection`, `Wrapper` unless truly generic.
-Related: components.primitives
+Good: `.c`, `.w`, `.crd`, `.btn`, `.lnk`, `.brg`.
+Avoid: `.section-inner-wrapper`, `.button__text-wrapper--animated`.
 
-## Names should read well in markup
+## Variants name purpose
 
-ID: naming.markup-readable
+ID: naming.variants
 Status: Default
-Triggers: markup names, component api, primitives, html readability
-Use when: Naming UI primitives and components.
-Rule: Prefer names that make markup scan like page structure, not implementation machinery.
-Tradeoff: Human-readable markup sometimes hides lower-level detail.
-Override: Library/framework naming constraints.
+Triggers: variant names, props, class variants
+Use when: Naming component variants.
+Rule: Use purpose or role names: `tone`, `accent`, `secondary`, `ghost`, `outlined`, `sm`, `lg`. Avoid visual trivia.
+Tradeoff: Less pixel-specific naming; easier theme changes.
+Override: Client design system has approved visual variant names.
 Tiny example:
-Good: `<Section><Grid><Card /></Grid></Section>`.
-Avoid: `<ContentWrapper><ItemRenderer /></ContentWrapper>`.
-Related: frontend.page-anatomy, components.primitives
+Good: `color="accent"`.
+Avoid: `color="greenRounded"`.
 
-## Props and state stay concise
+## Props are literal
 
 ID: naming.props-state
 Status: Default
-Triggers: props, state, handlers, names, boolean, active id, selected
-Use when: Naming props, state, and handlers.
-Rule: Prefer concise explicit names: `title`, `eyebrow`, `text`, `items`, `href`, `label`, `theme`, `size`, `isOpen`, `activeId`, `selected`, `openMenu`, `closeMenu`, `submitForm`.
-Tradeoff: Short names need local context; add specificity when ambiguity exists.
-Override: Domain has two similar concepts requiring explicit names.
+Triggers: props, attributes, component api, state names
+Use when: Naming component attrs/props.
+Rule: Prefer literal concise props: `title`, `label`, `href`, `theme`, `size`, `variant`, `items`, `name`, `required`.
+Tradeoff: Fewer abstractions; CMS data may need structured names.
+Override: Existing data source requires field names.
 Tiny example:
-Good: `statusLabel` unless another status label exists nearby.
-Avoid: `customerStatusLabel` when no ambiguity exists.
-Related: components.explicit-props
-
-## Established primitive abbreviations are allowed
-
-ID: naming.primitive-abbreviations
-Status: Default
-Triggers: abbreviations, c, w, btn, crd, lnk, primitive classes
-Use when: Naming global CSS primitives.
-Rule: Short primitive abbreviations are acceptable when established and repeated: `.c`, `.w`, `.btn`, `.btns`, `.crd`, `.lnk`, `.lnks`.
-Tradeoff: Compact markup; newcomers need file map/context.
-Override: Existing project uses longer coherent names like `.container`, `.card`, `.button`.
-Tiny example:
-Good: `.btn` for button/link button primitive.
-Avoid: inventing new unexplained abbreviations for one-off styling.
-Related: styling.primitive-classes
+Good: `<Button href="/contact/" label="Contact" />`.
+Avoid: `<Button config={buttonData} visualIntent="primaryBig" />`.

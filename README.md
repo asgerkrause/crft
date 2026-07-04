@@ -1,112 +1,102 @@
 ---
-scope: snz-craft
-layer: router
+scope: craft
+layer: index
 triggers:
   - craft
   - frontend
-  - ui
-  - implementation taste
-  - retrieval
-updated: 2026-05-28
+  - tokens
+  - performance
+  - design system
+updated: 2026-07-03
 ---
 
 # Craft
 
-SNZ implementation defaults. Retrieval docs, not prompt doctrine. Use them to make decisions when project context is silent.
+Frontend backbone for strategy-first, aesthetic-high, performance-native websites and interfaces.
 
-## Purpose
+Craft defines how frontend work should feel, scale, and stay maintainable across stacks. Project code, brand context, and local conventions decide final implementation details.
 
-Craft docs teach how to think through frontend implementation: structure, semantic HTML, CSS shape, tokens, motion, components, naming, and UI copy process. They are not client brand voice and not project memory.
+## Publish boundary
 
-Canonical path: `~/craft`. Tool-specific paths like `~/.pi/agent/craft` and `~/.codex/craft` should symlink here.
+Craft is standalone source truth. It may reference files and topics inside this folder. It must not depend on external folders, local repo docs, private project names, implementation package docs, or generated build artifacts.
+
+Implementation-specific docs belong with implementation packages. Craft names principles, token contracts, ownership boundaries, and browser-native defaults.
+
+## Agent retrieval protocol
+
+Agents should also follow `AGENTS.md` as machine-first operating contract for this folder.
+
+1. Read this README.
+2. Match task words to topic triggers.
+3. Read matched topic file.
+4. Read `Related:` topics only when rule depends on them.
+5. Apply project context and existing safe local patterns before craft fallback.
+6. Load full folder only for architecture review, migration, or source-truth work.
 
 ## Precedence
 
-1. Project `AGENTS.md` — scope, stack, commands, engagement
-2. Repo `BRAND.md` — client-facing voice, visual direction, audience
-3. `~/.claude/CLAUDE.md` — hard technical, accessibility, and performance rules
-4. Existing local pattern — for small changes, unless it violates higher rules
-5. `craft/*` — SNZ fallback defaults
+1. Project goal, scope, stack, and commands.
+2. Project brand voice, audience, and visual direction.
+3. Hard accessibility, security, performance, and data-loss rules.
+4. Existing local pattern, unless weak, unsafe, or superseded by project contract.
+5. Craft fallback doctrine.
 
-For new sections/components, craft carries more weight. For tiny edits inside existing code, preserve local pattern unless it is clearly weaker.
+## North star
 
-## Retrieval flow
+1. Strategy never bends to decoration.
+2. Aesthetics never get flattened for convenience.
+3. Performance stays native by default.
+4. Performance can bend only when client outcome earns cost.
+5. Complexity must justify itself.
 
-For frontend/UI work, search before reading full files:
+## Non-negotiables
 
-```sh
-rg -i "hero|cards|grid|aria-expanded|tokens|motion|form|nav" ~/craft
-```
+- Strategy owns section order, hierarchy, and conversion path.
+- Aesthetic ambition stays protected through type, rhythm, color, composition, media, and motion.
+- CSS owns layout, theme, visual state, and motion whenever possible.
+- JavaScript earns every byte.
+- Components exist when boundaries earn themselves.
+- Tokens carry system intent, not arbitrary values.
+- Accessibility belongs to craft, not audit cleanup.
+- Native platform comes before runtime ceremony or dependency weight.
 
-Then:
+## Example contract
 
-1. Read matching rule blocks or files.
-2. Follow `Related` only when it can change implementation.
-3. Read max 3 related rules/files per decision.
-4. Skip craft for backend-only, config-only, docs-only, or pure Q&A unless exact craft rule matters.
+Examples teach relationships and behavior, not prescribed visual values. Copy exact token names. Do not copy arbitrary values unless formula, `color-mix()`, `clamp()`, or browser relationship is the lesson.
 
-## Rule block format
+## Core token contract
 
-```md
-## Rule title
+Default token names are stable. Values can change by project. Responsive implementation can use fluid `min/max` config or direct media-query overrides.
 
-ID: file.rule-slug
-Status: Must | Default | Avoid | Ban
-Triggers: keyword, phrase, selector, task language
-Use when: Situation where rule changes choice.
-Thinking: Decision frame. Required for design/copy rules; optional for technical rules.
-Rule: Concrete default.
-Tradeoff: What this optimizes and what it costs.
-Override: When project context wins.
-Tiny example:
-Good:
-...
-Avoid:
-...
-Related: styling.semantic-selectors, tokens.spacing-scale
-```
+- `--l-*` layout
+- `--s-*` space and shape
+- `--t-*` typography
+- `--c-*` color
+- `--e-*` element and component skin
+- `--m-*` motion
+- `--i-*` interaction state
+- `--z-*` stack order
 
-Status meanings:
+`--e-*` tokens are intentionally more flexible than core layout/type/color tokens. They connect primitives and components to the backbone, but exact element sets can change by project.
 
-- `Must` — accessibility, correctness, or performance. Rare.
-- `Default` — preferred SNZ fallback. Most rules.
-- `Avoid` — smell; acceptable with reason.
-- `Ban` — hard no without explicit instruction. Very rare.
+## Topics
 
-## Promotion rule
-
-Add or upgrade craft only when:
-
-- Same correction happens 2+ times.
-- Rule affects accessibility, correctness, or performance.
-- Rule defines signature SNZ implementation style.
-- User explicitly says “make this craft”.
-
-Every rule must change a decision. If it cannot state `Use when`, `Rule`, and `Override`, it is not ready.
-
-## Review checklist
-
-For UI/frontend review:
-
-- Did worker search craft before meaningful UI implementation?
-- Did chosen craft rules affect markup, CSS, tokens, component shape, motion, or copy thinking?
-- Did `BRAND.md`, project `AGENTS.md`, or `CLAUDE.md` override craft?
-- Did implementation over-apply craft where local project pattern should win?
-- Are examples abstracted and free of client/private details?
-
-## File map
-
-- `platform.md` — platform-first HTML/CSS/JS syntax baseline
-- `frontend.md` — page anatomy, extraction, implementation posture
-- `components.md` — primitives, props, folders, refactor boundaries
-- `styling.md` — selectors, state, classes, CSS shape
-- `grid.md` — grid attributes, spans, order, responsive layout
-- `tokens.md` — spacing, type, color, theme, motion tokens
-- `motion.md` — why/when motion, reduced motion, implementation
-- `accessibility.md` — a11y entry point for semantics, focus, labels, structure, contrast, motion
-- `copy.md` — UX copy jobs, states, forms, nav labels, brand voice boundaries
-- `naming.md` — names for components, props, state, primitives
-- `navigation.md` — header, nav, menus, active states
-- `forms.md` — labels, errors, helper text, submit states
-- `sections.md` — hero, feature groups, CTAs, page rhythm, copy thinking
-- `examples.md` — larger patterns composing multiple rules
+- `frontend.md` — strategy, page anatomy, aesthetic posture, extraction posture
+- `performance.md` — runtime budget, JS/TS simplicity, media, motion, dependencies
+- `tokens.md` — token naming, fluid/direct responsive systems, color, theme, elements
+- `styling.md` — selectors, layers, ownership, modern CSS, specificity
+- `components.md` — primitive/component boundaries and `--e-*`
+- `grid.md` — grid attributes and layout tokens
+- `motion.md` — motion tokens and interaction state
+- `forms.md` — field tokens, validation colors, native forms
+- `navigation.md` — header/menu/footer patterns
+- `sections.md` — themed sections and page rhythm
+- `accessibility.md` — semantic baseline, focus, contrast, forms
+- `platform.md` — browser-native HTML/CSS/JS posture
+- `naming.md` — names for tokens, props, classes, variants
+- `examples.md` — composed platform-neutral patterns
+- `copy.md` — UX copy boundaries
+- `migration.md` — token migration and safe grep rules
+- `glossary.md` — canonical vocabulary
+- `token-contract.md` — canonical token and CSS ownership contract
+- `implementation-bridge.md` — generic bridge from craft backbone to project implementation

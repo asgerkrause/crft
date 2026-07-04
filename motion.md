@@ -1,94 +1,98 @@
 ---
-scope: snz-craft
+scope: craft
 layer: motion
 triggers:
   - motion
   - animation
   - transition
-  - hover
-  - scroll
+  - interaction state
   - reduced motion
-  - microinteraction
-updated: 2026-05-28
+updated: 2026-07-01
 ---
 
 # Motion craft
 
-## Motion needs a job
+Related: `performance`, `accessibility`, `tokens`, `styling`.
 
-ID: motion.motion-has-purpose
+## One choreographed idea
+
+ID: motion.one-system
 Status: Default
-Triggers: motion, animation, interaction, transition, scroll, reveal, hover, polish
-Use when: Adding or reviewing motion.
-Thinking: Motion should clarify state, guide attention, express brand, reveal hierarchy, or make interaction feel responsive.
-Rule: If motion does none of those jobs, skip it.
-Tradeoff: Interface stays calm; expressive brands may need stronger motion moments.
-Override: Brand/concept explicitly calls for expressive motion.
+Triggers: motion system, page motion, animation direction, polish
+Use when: Designing motion across a page or component set.
+Rule: One choreographed motion idea beats scattered effects. Motion should make hierarchy, affordance, navigation, or atmosphere clearer.
+Tradeoff: Less novelty per component; stronger total feel.
+Override: Campaign pages with deliberately maximal motion language.
 Tiny example:
-Good: menu fades/slides to clarify open state.
-Avoid: looping decorative movement that competes with content.
-Related: sections.one-strong-move, tokens.motion-tokens
+Good: page reveal + consistent button interaction.
+Avoid: every card, image, heading, and badge moving differently.
 
-## Brand sets motion intensity
+## Motion tokens own timing
 
-ID: motion.brand-intensity
-Status: Must
-Triggers: brand motion, expressive motion, subtle motion, interaction feel, ui polish
-Use when: Choosing motion feel for client-facing UI.
-Thinking: Craft defines motion discipline; `BRAND.md` defines emotional range.
-Rule: Minimal by default. Expressive only when brand/concept supports it. If no brand context, use calm hi-fi wireframe feel.
-Tradeoff: Prevents generic wow effects; may feel restrained unless brand asks for more.
-Override: Prototype explicitly explores motion direction.
-Tiny example:
-Good: one signature transition matching brand energy.
-Avoid: generic scroll reveals everywhere.
-Related: frontend.brand-led-ui, sections.one-strong-move
-
-## CSS first for simple state
-
-ID: motion.css-first
+ID: motion.tokenized-motion
 Status: Default
-Triggers: css transition, animation, state transition, js animation, hover, aria-expanded
-Use when: Animating simple UI state.
-Rule: Use CSS transitions/animations for simple state. Use JS only for sequencing, scroll, physics, or measurement.
-Tradeoff: Simpler code; JS gives more control for complex choreography.
-Override: Animation library already owns sequence or accessibility behavior.
+Triggers: duration, easing, transition tokens, animation timing
+Use when: Adding transitions or animations.
+Rule: Use `--m-td-*` for durations and `--m-tf-*` for easing. List transition properties explicitly.
+Tradeoff: Cohesive feel; bespoke moments may need component-local vars.
+Override: Existing project token names differ and migration is not in scope.
 Tiny example:
-Good: `[aria-expanded]` changes opacity/transform through CSS.
-Avoid: JS setting inline styles for basic hover/open states.
-Related: components.css-owns-visual-state, styling.semantic-selectors
+Good: `transition: opacity var(--m-td) var(--m-tf-o), transform var(--m-td) var(--m-tf-o);`
+Avoid: `transition: all <duration> ease;`
 
-## Respect reduced motion
+## Interaction tokens expose state math
+
+ID: motion.interaction-tokens
+Status: Default
+Triggers: hover, focus, active, expanded, interaction state, i tokens
+Use when: Styling interactive states.
+Rule: Use `--i-hov-t/f`, `--i-foc-t/f`, `--i-prs-t/f`, and `--i-exp-t/f` to drive transforms, opacity, and visual state when it keeps CSS simpler.
+Tradeoff: Requires setup in reset/base layer; components get consistent state math.
+Override: Simple pseudo-class rule is clearer.
+Tiny example:
+Good: `transform: scale(calc(1 - .02 * var(--i-prs-t)));`
+Avoid: duplicating active transform logic in every button variant.
+
+## Motion must have purpose
+
+ID: motion.has-purpose
+Status: Default
+Triggers: animation, polish, hover effect, scroll effect, decorative motion
+Use when: Adding motion to UI.
+Rule: Motion should clarify state, orient navigation, reveal hierarchy, or add intentional brand feel. Do not animate because a component exists.
+Tradeoff: Quieter UI; fewer performance risks.
+Override: Campaign/brand moment where motion is explicit art direction.
+Tiny example:
+Good: a disclosure icon rotates when expanded.
+Avoid: every card floating on hover without information value.
+
+## Reduced motion is mandatory
 
 ID: motion.reduced-motion
 Status: Must
-Triggers: prefers-reduced-motion, reduced motion, accessibility, animation, parallax, scroll
-Use when: Adding non-trivial motion, scroll effects, or parallax.
-Rule: Respect `prefers-reduced-motion`; reduce or remove motion that can distract or cause discomfort.
-Tradeoff: More branches; accessibility improves.
-Override: None for motion that affects comfort.
+Triggers: prefers-reduced-motion, animation, transition, scroll effect
+Use when: Adding any non-trivial motion.
+Rule: Honor `prefers-reduced-motion: reduce`. Reduce duration to near-zero or remove transform/scroll effects.
+Tradeoff: Slightly more CSS; required for comfort.
+Override: None.
 Tiny example:
 Good:
 ```css
 @media (prefers-reduced-motion: reduce) {
-  * {
-    scroll-behavior: auto;
-  }
+  :root { --m-td: <near-zero>; }
 }
 ```
-Avoid: mandatory parallax/looping motion with no reduced path.
-Related: platform.semantic-html
+Avoid: scroll/parallax effects with no reduced-motion path.
 
-## Tokenize timing and easing
+## Animate cheap properties
 
-ID: motion.tokenized-motion
+ID: motion.cheap-properties
 Status: Default
-Triggers: duration, easing, transition tokens, td, tf, hover, animation timing
-Use when: Defining transition feel.
-Rule: Use motion tokens for duration/easing. Prefer `--td-sf`, `--td-f`, `--td`, `--td-s`, `--td-sl` and `--tf-i`, `--tf-o`, `--tf-io` or project equivalents.
-Tradeoff: Cohesive feel; bespoke moments may define local token.
-Override: Project token names differ.
+Triggers: transform, opacity, layout animation, performance
+Use when: Animating UI.
+Rule: Prefer `transform` and `opacity`. Avoid animating layout-heavy properties unless the UI specifically needs intrinsic-size animation and browser support is considered.
+Tradeoff: Better performance; less layout expressiveness.
+Override: Native details/content-size animation that degrades safely.
 Tiny example:
-Good: `transition: transform var(--td) var(--tf-o);`
-Avoid: `transition: all .3s ease;`
-Related: tokens.motion-tokens
+Good: `transform: translateY(...)`.
+Avoid: animating `top`, `left`, `width`, or `height` for routine effects.

@@ -1,90 +1,106 @@
 ---
-scope: snz-craft
+scope: craft
 layer: sections
 triggers:
   - sections
   - hero
   - cta
-  - cards
-  - feature section
+  - theme
   - page rhythm
-  - copy
-updated: 2026-05-28
+updated: 2026-07-01
 ---
 
 # Sections craft
 
-## Page rhythm carries hierarchy
+Related: `frontend`, `grid`, `tokens`, `copy`, `accessibility`.
+
+## Section order is strategy
+
+ID: sections.order-strategy
+Status: Must
+Triggers: section order, landing page, narrative, conversion
+Use when: Arranging page regions.
+Rule: Section order should move the visitor through a strategic sequence: context, desire, proof, mechanism, trust, action. Change order only when content logic improves.
+Tradeoff: Less template-driven composition; stronger persuasion.
+Override: Editorial or portfolio pages may prioritize exploration over conversion.
+Tiny example:
+Good: problem → distinctive answer → proof → process → CTA.
+Avoid: feature grid before visitor knows why it matters.
+
+## Sections need a job
+
+ID: sections.job
+Status: Default
+Triggers: section, hero, features, cta, landing page
+Use when: Creating page regions.
+Rule: Each `<section>` should have a clear content job and usually a heading. Use plain `<div>` when markup is only layout inside a larger section.
+Tradeoff: Cleaner outline; not every visual box becomes a landmark.
+Override: Decorative full-bleed art region with no standalone meaning.
+Tiny example:
+Good: `<section id="features"><div class="c"><h2>...</h2></div></section>`.
+Avoid: nested sections for every row/card.
+
+## Page rhythm uses space tokens
 
 ID: sections.page-rhythm
 Status: Default
-Triggers: section rhythm, page spacing, hero, landing page, hierarchy, layout
-Use when: Building or polishing page sections.
-Thinking: Hierarchy should come from section order, spacing, type, and content weight before decoration.
-Rule: Use clear section rhythm and purposeful spacing. Hero, proof, feature groups, and CTA should each have distinct job.
-Tradeoff: Restrained pages can feel plain without strong content or one visual move.
-Override: Brand direction calls for dense editorial or maximal structure.
+Triggers: page rhythm, section padding, spacing, container gap
+Use when: Spacing major regions.
+Rule: Use `--s-py` for section block padding, `--s-px` for inline page padding, `--s-ss` for container/section rhythm, and `--s-gp` for inner gaps.
+Tradeoff: Consistent rhythm; one-off art direction needs local token-backed exception.
+Override: Special hero or campaign moment with documented local vars.
 Tiny example:
-Good: large hero, tighter proof strip, generous feature section, focused CTA.
-Avoid: every section same padding, same heading size, same card treatment.
-Related: tokens.spacing-scale, frontend.page-anatomy
+Good: `section { padding: var(--s-py) var(--s-px); }`
+Avoid: per-section arbitrary pixel padding.
 
-## Copy starts from ICP state
-
-ID: sections.copy-from-icp
-Status: Must
-Triggers: cta, headline, button copy, landing page copy, ux copy, empty state, form copy
-Use when: Writing user-facing copy.
-Thinking: Before writing, identify what ICP believes, needs, fears, and wants next. Use `BRAND.md` for tone and vocabulary. Craft supplies thinking process, not final voice.
-Rule: Write copy from user state and desired next step, not from what company wants to say.
-Tradeoff: Slower than clever phrasing; more likely to convert and feel relevant.
-Override: If no `BRAND.md`, ask or use neutral professional copy.
-Tiny example:
-Good: ICP state = knows problem, doubts effort. Heading job = reduce risk. CTA job = name low-friction next step.
-Avoid: starting from internal feature list or borrowing SNZ/studio voice.
-Related: copy.brand-owns-voice, copy.cta-job, frontend.brand-led-ui, navigation.direct-labels, forms.submit-states
-
-## One strong move beats many effects
-
-ID: sections.one-strong-move
-Status: Default
-Triggers: visual polish, hero, landing page, cards, effects, gradients, shadows, blobs
-Use when: Interface feels flat or generic.
-Thinking: Elevation comes from deliberate contrast and hierarchy, not stacked decoration.
-Rule: Add one deliberate visual move before stacking gradients, shadows, icons, animation, and blobs.
-Tradeoff: Cleaner, more premium feel; may need stronger brand asset/content to carry energy.
-Override: `BRAND.md` explicitly calls for expressive/maximal visual language.
-Tiny example:
-Good: stronger heading rhythm + one accent border or media treatment.
-Avoid: gradient background + floating blobs + hover shadows + icon confetti.
-Related: motion.motion-has-purpose, tokens.semantic-colors
-
-## Card groups need content logic
-
-ID: sections.card-groups
-Status: Default
-Triggers: cards, feature cards, grid cards, pricing cards, testimonials, content groups
-Use when: Designing repeated card sections.
-Thinking: Cards should represent comparable things or deliberate contrast. Grid is not substitute for information architecture.
-Rule: Group cards by user decision, not arbitrary content length. Use grid spans only to signal real hierarchy.
-Tradeoff: Better scanning; may require copy/content edits.
-Override: CMS feed or chronological content determines order.
-Tiny example:
-Good: one featured card spans wider because it is primary path.
-Avoid: random masonry purely to fill space.
-Related: grid.column-span, grid.row-span, components.primitives
-
-## Theme belongs to section job
+## Theme scopes own section color
 
 ID: sections.section-theme
 Status: Default
-Triggers: section theme, data-theme, tone section, invert, accent section, cta theme
-Use when: Choosing section theme or background.
-Thinking: Theme change should mark a shift in job: proof, contrast, CTA, or brand moment.
-Rule: Apply `data-theme` on outer section/container when section needs a distinct role. Let tokens cascade.
-Tradeoff: Clear page landmarks; too many theme shifts fragment page.
-Override: Brand direction uses frequent color blocking.
+Triggers: data-theme, themed section, accent section, invert section, tone section
+Use when: A section needs a different surface/color role.
+Rule: Put `data-theme` on the section or nearest meaningful container. Descendants consume `--c-*` and `--e-*` roles.
+Tradeoff: Strong cascade; local exceptions require care.
+Override: Component must be portable and carry its own theme boundary.
 Tiny example:
-Good: CTA uses `data-theme="accent"` to signal action zone.
-Avoid: alternating themes every section without content reason.
-Related: tokens.theme-attributes, styling.theme-cascade
+Good: `<section data-theme="accent">` with `.btn` using `--e-btn-*`.
+Avoid: manually recoloring every card inside the section.
+
+## Section aesthetics serve the job
+
+ID: sections.aesthetic-job
+Status: Default
+Triggers: section design, visual system, art direction, layout
+Use when: Choosing a section’s visual treatment.
+Rule: Visual treatment must amplify the section job. Use scale, contrast, density, media, or motion to make meaning easier to feel and scan.
+Tradeoff: Less decoration; stronger hierarchy.
+Override: Atmospheric brand interlude where emotion is the job.
+Tiny example:
+Good: dense proof section feels archival and credible.
+Avoid: identical card rhythm for proof, features, process, and CTA.
+
+## Hero has one strong move
+
+ID: sections.hero-focus
+Status: Default
+Triggers: hero, landing page, above fold, motion, layout
+Use when: Designing hero sections.
+Rule: Give hero one dominant visual/content move. Support it with clean hierarchy, one primary CTA group, and restrained motion.
+Tradeoff: Less decorative clutter; stronger first impression.
+Override: Campaign page intentionally uses editorial density.
+Tiny example:
+Good: headline + proof line + CTA + one visual system move.
+Avoid: five competing animations, badges, stats, and CTAs above the fold.
+
+## CTA sections use accent roles
+
+ID: sections.cta-accent
+Status: Default
+Triggers: cta, accent section, conversion, button group
+Use when: Building call-to-action zones.
+Rule: CTA sections should usually use `data-theme="accent"` or local `--c-acc-*` mapping, with concise copy and clear primary action.
+Tradeoff: Conversion zone becomes visually distinct; overuse weakens accent meaning.
+Override: Brand direction avoids accent zones.
+Tiny example:
+Good: one accent CTA near page close.
+Avoid: every section themed accent.

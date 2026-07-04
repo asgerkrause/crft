@@ -1,110 +1,132 @@
 ---
-scope: snz-craft
+scope: craft
 layer: platform
 triggers:
+  - platform
   - html
   - css
   - javascript
   - browser api
-  - semantic html
-  - native css
-  - platform
-updated: 2026-05-28
+updated: 2026-07-01
 ---
 
 # Platform craft
 
-Modern frontend defaults. If platform already does it, let it.
+Related: `performance`, `accessibility`, `styling`, `forms`.
 
-## Platform before library
+## Browser does more than JavaScript
+
+ID: platform.browser-capabilities
+Status: Must
+Triggers: javascript, html, css, browser api, interaction
+Use when: Adding behavior or frontend infrastructure.
+Rule: Use native HTML/CSS capabilities before custom JS: forms, disclosure, focus, scroll behavior, media loading, responsive images, CSS state, and CSS animation.
+Tradeoff: Less custom control; better performance and reliability.
+Override: Product UI behavior that native platform cannot express cleanly.
+Tiny example:
+Good: native form validation plus accessible error text.
+Avoid: custom validation system for simple required fields.
+
+## JavaScript earns runtime cost
+
+ID: platform.js-earns-cost
+Status: Must
+Triggers: javascript, typescript, runtime, hydration, client state
+Use when: Deciding whether to add JS/TS.
+Rule: JS/TS exists for behavior, data, lifecycle, analytics, or interaction that HTML/CSS cannot own cleanly.
+Tradeoff: More restraint; faster pages.
+Override: Real app state, async UI, or complex interaction.
+Tiny example:
+Good: tiny `initImagePreview(root)` enhancement.
+Avoid: app shell for static landing page sections.
+
+## Browser platform first
 
 ID: platform.platform-first
 Status: Default
-Triggers: library, framework, dependency, browser api, vanilla js, platform, native
-Use when: Choosing between platform feature and dependency/abstraction.
-Rule: Try semantic HTML, CSS, and browser APIs before adding library or framework ceremony.
-Tradeoff: Less code and less dependency surface; some complex interactions still deserve a library.
-Override: Project already depends on suitable library, accessibility would be weaker, or deadline favors proven abstraction.
+Triggers: javascript, css, dependency, browser api
+Use when: Choosing implementation approach.
+Rule: Try semantic HTML, CSS, and browser APIs before adding dependency or runtime ceremony.
+Tradeoff: Less abstraction; more direct knowledge required.
+Override: Complex state, data sync, or animation sequencing earns a library.
 Tiny example:
-Good: `<dialog>`, `popover`, `<details>`, `AbortController`, `URLPattern` when supported.
-Avoid: adding modal/dropdown/fetch utility packages for trivial platform behavior.
-Related: components.extraction-threshold, navigation.header-menu
+Good: `<details>` for disclosure when it fits.
+Avoid: installing accordion dependency for static FAQ.
 
-## Syntax baseline
-
-ID: platform.syntax-baseline
-Status: Default
-Triggers: native css nesting, css, has, container queries, oklch, hsl, color-mix, logical properties
-Use when: Writing modern frontend code.
-Rule: Use modern platform syntax: native CSS nesting, `:has()`, container queries, logical properties, `color-mix()`, and authored `hsl()`/`oklch()` where project support allows.
-Tradeoff: Cleaner code and fewer JS hooks; browser support must match project target.
-Override: Legacy browser target or project toolchain forbids feature.
-Tiny example:
-Good:
-```css
-.card {
-  container-type: inline-size;
-
-  &:has(a:hover) {
-    border-color: color-mix(in hsl, var(--a), var(--b));
-  }
-}
-```
-Avoid: JS class toggles and breakpoint-only layout when CSS can derive state/space.
-Related: styling.semantic-selectors, styling.nesting-depth
-
-## Use right element before ARIA
+## Semantic HTML before ARIA
 
 ID: platform.semantic-html
 Status: Must
-Triggers: html, aria, semantic html, accessibility, button, link, dialog, details, search
-Use when: Markup choice affects behavior or accessibility.
-Rule: Use correct HTML element before adding ARIA. Accessibility starts with labels, DOM order, focus, motion preferences, and semantics.
-Tradeoff: Native constraints shape design; custom UI has higher implementation burden.
-Override: Native element cannot meet required interaction and custom pattern is fully accessible.
+Triggers: html, aria, semantic html, accessibility, button, link, form
+Use when: Marking up UI.
+Rule: Use correct HTML element before adding ARIA. Accessibility starts with DOM order, labels, focus, and semantics.
+Tradeoff: Less arbitrary markup; better baseline.
+Override: None when native element exists.
 Tiny example:
-Good: `<button>` for actions, `<a>` for navigation, `<search>` around search forms, `<details><summary>` for disclosure.
-Avoid: clickable `<div>` with ARIA trying to imitate native controls.
-Related: forms.labels-first, navigation.header-menu
+Good: `<a href="/work/">Work</a>` for navigation.
+Avoid: `<button onclick="location.href='/work/'">Work</button>`.
 
-## Cascade over override
+## CSS owns presentation
 
-ID: platform.cascade-over-override
+ID: platform.css-first
 Status: Default
-Triggers: cascade, specificity, !important, css layers, reset, utilities, override
-Use when: Organizing CSS or fixing style conflicts.
-Rule: Use cascade layers and low-specificity selectors before stronger overrides. Keep specificity flat; avoid IDs, `!important`, and long descendant chains.
-Tradeoff: Requires system thinking; prevents specificity wars.
-Override: Third-party CSS or emergency hotfix may need isolated override with comment.
+Triggers: css, js, visual state, animation, styling
+Use when: Styling state or behavior.
+Rule: Let CSS handle visual state when HTML/ARIA attributes expose truth. JS should toggle state, not paint styles.
+Tradeoff: CSS selectors need care; JS stays smaller.
+Override: Complex animation timeline or canvas/WebGL work.
 Tiny example:
-Good: reset → base → layout → components → utilities; `:where()` for broad low-specificity selectors.
-Avoid: `#app main .section .card .title { ... !important; }`
-Related: styling.nesting-depth, styling.theme-cascade
+Good: `[aria-expanded="true"]` drives menu icon transform.
+Avoid: JS setting inline styles for open/closed state.
 
-## JavaScript stays small and cancellable
+## No inline styles except token escape hatches
+
+ID: platform.no-inline-styles
+Status: Default
+Triggers: inline style, style attr, component props, css variables
+Use when: Passing per-instance visual values.
+Rule: Avoid inline styles. If local component patterns require per-instance sizing or art direction, limit inline style to custom property assignment and keep property documented.
+Tradeoff: Better CSP/cache/style ownership; fewer arbitrary overrides.
+Override: Existing `craft` component API uses a small token escape hatch like logo size.
+Tiny example:
+Good: `style="--logo-size: <value>"` when component owns `--logo-size`.
+Avoid: `style="color:<raw-color>;padding:<one-off>"`.
+
+## Small modules over systems
+
+ID: platform.small-modules
+Status: Default
+Triggers: app.ts, browser module, site js, typescript
+Use when: Writing site JS.
+Rule: Site JS should be small named functions with explicit init points. No app shell, registry, store, or state system unless product UI earns it.
+Tradeoff: Less architecture; easier performance and debugging.
+Override: Stateful app surfaces with repeated interactions across routes.
+Tiny example:
+Good: `initMenu(root)` and `initImagePreview(root)`.
+Avoid: plugin manager for two interactions.
+
+## Performance default is no runtime
+
+ID: platform.no-runtime-default
+Status: Default
+Triggers: hydration, dependency, runtime, static ui
+Use when: Choosing runtime model.
+Rule: Default to no hydration, no client runtime, no animation library, and no dependency for one interaction.
+Tradeoff: Custom small code may be needed; output stays fast.
+Override: Framework project with real stateful UI needs runtime.
+Tiny example:
+Good: CSS hover/focus animation.
+Avoid: animation package for button polish.
+
+## Small JS has cleanup
 
 ID: platform.small-js
 Status: Default
-Triggers: javascript, event listeners, fetch, async, abortcontroller, custom elements, state
-Use when: Adding browser behavior.
-Rule: Use browser APIs, ES modules, `async`/`await`, `AbortController`, optional chaining, nullish coalescing, and readable loops. Keep toolchain small.
-Tradeoff: Less abstraction; larger stateful flows may need framework patterns.
-Override: Project framework already owns state/effects, or library improves accessibility/reliability.
+Triggers: event listener, timer, animation frame, component script
+Use when: Adding component scripts.
+Rule: Add event listeners carefully and return cleanup when component lifecycle supports it. Guard loops/media with activity/visibility when available.
+Tradeoff: More boilerplate; fewer leaks after navigation.
+Override: One-shot static enhancement with no persistent listener.
 Tiny example:
-Good: JS toggles `aria-expanded`; CSS reads state.
-Avoid: JS calculating visual state that CSS can derive.
-Related: styling.semantic-selectors, navigation.header-menu
-
-## Drop legacy defaults
-
-ID: platform.drop-legacy
-Status: Avoid
-Triggers: var, jquery, lodash, webpack, polyfill, iife, bind, arguments, json clone
-Use when: Reviewing or adding foundational code.
-Rule: Avoid `var`, `arguments`, IIFEs, old `apply`/`bind`, jQuery/Lodash for trivial platform features, CSS preprocessors as default, Webpack by default, evergreen polyfill bloat, JSON clone tricks.
-Tradeoff: Modern platform code is simpler; older codebases may still require compatibility.
-Override: Existing legacy project constraint or browser support requirement.
-Tiny example:
-Good: `structuredClone(value)`, `toSorted()`, `AbortController`.
-Avoid: `JSON.parse(JSON.stringify(value))` for deep clone.
-Related: platform.small-js
+Good: `return () => button.removeEventListener('click', onClick)`.
+Avoid: repeated listeners after every route swap.

@@ -1,104 +1,93 @@
 ---
-scope: snz-craft
+scope: craft
 layer: accessibility
 triggers:
   - accessibility
   - a11y
   - focus
-  - keyboard
-  - headings
-  - landmarks
   - labels
-  - descriptions
   - contrast
-  - reduced motion
-updated: 2026-06-17
+updated: 2026-07-01
 ---
 
 # Accessibility craft
 
-Accessibility is not a separate polish pass. Use this as the entry point, then follow linked rule owners for implementation details.
+Related: `platform`, `forms`, `navigation`, `motion`, `tokens`.
 
 ## Start from native semantics
 
 ID: accessibility.semantic-baseline
 Status: Must
-Triggers: accessibility, a11y, semantic html, aria, role, button, link, form, dialog, disclosure
-Use when: Choosing markup or reviewing interactive UI.
-Rule: Choose the correct native element first; add ARIA only when native semantics cannot express the behavior.
-Tradeoff: Native constraints may shape visual design; accessibility and maintainability improve.
-Override: Custom interaction is required and fully implements keyboard, focus, name, state, and announcement behavior.
+Triggers: accessibility, semantic html, aria, button, link, form, dialog, disclosure
+Use when: Creating interactive or structural UI.
+Rule: Choose correct native element first. Add ARIA only when native semantics cannot express behavior.
+Tradeoff: Less custom markup freedom; more reliable UI.
+Override: None.
 Tiny example:
-Good: `<button>` for actions, `<a>` for navigation, `<details><summary>` for disclosure.
-Avoid: clickable `<div role="button">` when a real button works.
-Related: platform.semantic-html, examples.disclosure, navigation.header-menu
+Good: `<button type="button" aria-expanded="false">Menu</button>`.
+Avoid: `<div role="button" onclick="...">`.
 
-## Keyboard and focus prove interaction
+## Focus stays visible
 
-ID: accessibility.keyboard-focus
+ID: accessibility.focus-visible
 Status: Must
-Triggers: keyboard, focus, tab, focus-visible, menu, modal, disclosure, interactive state
-Use when: Adding or reviewing any interactive element.
-Rule: Every interactive path must work with keyboard, show visible focus, and keep DOM order aligned with reading/task order.
-Tradeoff: Interaction design may need simpler structure; users can navigate predictably.
-Override: None for user-facing interactive UI.
+Triggers: focus, outline, keyboard, focus-visible
+Use when: Styling focus states.
+Rule: Never remove focus outline without a visible replacement. Use `:focus-visible`, `--s-bw`, and `--c-acc` or equivalent token-backed focus color.
+Tradeoff: Visible focus may affect visual polish; keyboard access wins.
+Override: None.
 Tiny example:
-Good: tab reaches menu button, Enter/Space toggles it, focus ring remains visible, DOM order matches visual flow.
-Avoid: hover-only menus, hidden focus outlines, visual reordering that changes meaning.
-Related: platform.semantic-html, navigation.header-menu, grid.visual-order
+Good: `outline: var(--s-bw) solid var(--c-acc); outline-offset: calc(var(--s-bw) * 2);`
+Avoid: `outline: none;`.
 
-## Names and descriptions stay connected
+## Structure order remains meaningful
 
-ID: accessibility.names-descriptions
+ID: accessibility.structure-order
 Status: Must
-Triggers: label, aria-label, aria-labelledby, aria-describedby, helper text, error text, icon button, form
-Use when: UI needs an accessible name, hint, requirement, or error message.
-Rule: Controls need clear accessible names; helper and error text must be programmatically connected when it changes task success.
-Tradeoff: More explicit IDs/labels; screen reader context matches visual context.
-Override: Framework component proves equivalent accessible name and description output.
+Triggers: DOM order, grid order, visual order, headings, sections
+Use when: Reordering layout or composing sections.
+Rule: DOM order, reading order, heading order, and focus order should remain understandable without CSS.
+Tradeoff: Some art-directed layouts need compromise; clarity wins.
+Override: Decorative media can move visually if content order remains clear.
 Tiny example:
-Good: visible `<label>` plus `aria-describedby="email-help email-error"` for field support text.
-Avoid: icon-only button without a name, or visual error text not connected to the field.
-Related: forms.labels-first, forms.connected-help-error, navigation.direct-labels
+Good: heading before cards before CTA.
+Avoid: visually first CTA whose DOM position comes after unrelated content.
 
-## Page structure is navigation
+## Contrast uses semantic color roles
 
-ID: accessibility.structure-navigation
-Status: Default
-Triggers: headings, heading order, landmarks, section, nav, main, aria-current, page structure
-Use when: Building page shells, sections, navigation, or content hierarchy.
-Rule: Use one clear page structure: meaningful landmarks, ordered headings, current-page state, and sections only when they have a real heading/job.
-Tradeoff: Less decorative markup freedom; scanning and assistive navigation improve.
-Override: Existing framework/layout component outputs correct structure.
-Tiny example:
-Good: `<main>` contains headed sections; primary nav uses `aria-label`; current link uses `aria-current="page"`.
-Avoid: heading levels chosen only for size, or unlabelled duplicate nav regions.
-Related: navigation.active-state, sections.page-rhythm, platform.semantic-html
-
-## Contrast and state cannot rely on color alone
-
-ID: accessibility.contrast-state
+ID: accessibility.color-contrast
 Status: Must
-Triggers: contrast, color, state, error, success, disabled, selected, active, focus
-Use when: Styling text, controls, status, or state changes.
-Rule: Keep text/control contrast readable and pair color changes with shape, text, icon, attribute, or position when state matters.
-Tradeoff: Visual system needs more than palette; meaning survives different displays and perception.
-Override: Decorative non-informational color may be low contrast if it carries no meaning.
+Triggers: contrast, colors, theme, muted text, buttons
+Use when: Defining or applying colors.
+Rule: Ensure text and interactive controls meet WCAG AA contrast. Test themed states, hover/focus, disabled/muted, and accent surfaces.
+Tradeoff: Some subtle palettes need adjustment.
+Override: Large decorative non-text only.
 Tiny example:
-Good: error state uses message text, `aria-invalid`, border/token change, and connected description.
-Avoid: red-only error or active state with no text/semantic/state change.
-Related: tokens.semantic-colors, forms.connected-help-error, styling.semantic-selectors
+Good: `--e-btn-sur` and `--e-btn-ink` tested as a pair.
+Avoid: `--c-mut` on `--c-sur` without contrast check.
 
-## Motion respects comfort
+## Form errors need more than color
+
+ID: accessibility.state-feedback
+Status: Must
+Triggers: error, invalid, validation, status, aria-live
+Use when: Showing errors or async status.
+Rule: Pair token-backed visual state with text. Use `aria-invalid`, connected descriptions, or `aria-live` where appropriate.
+Tradeoff: More markup; accessible feedback.
+Override: Native validation bubble owns message.
+Tiny example:
+Good: `border-color: var(--c-bad-bor)` plus text “Enter a valid email.”
+Avoid: red border only.
+
+## Motion comfort is accessibility
 
 ID: accessibility.motion-comfort
 Status: Must
-Triggers: reduced motion, prefers-reduced-motion, animation, parallax, scroll, transition, vestibular
-Use when: Adding non-trivial movement, scroll behavior, reveal effects, or looping animation.
-Rule: Respect `prefers-reduced-motion`; reduce or remove motion that can distract, block task flow, or cause discomfort.
-Tradeoff: More branches; motion remains purposeful and safe.
-Override: None for motion that affects comfort.
+Triggers: reduced motion, parallax, scroll animation, transition
+Use when: Adding motion.
+Rule: Honor `prefers-reduced-motion`; avoid unavoidable parallax, large zooms, or long autoplaying movement.
+Tradeoff: Fewer flashy effects; better comfort.
+Override: None for essential UI.
 Tiny example:
-Good: parallax/reveal effects disable or simplify under `prefers-reduced-motion: reduce`.
-Avoid: mandatory parallax, smooth scroll, or looping motion without reduced path.
-Related: motion.reduced-motion, motion.motion-has-purpose, tokens.motion-tokens
+Good: reduced duration tokens under media query.
+Avoid: scroll-jacked motion with no opt-out.
