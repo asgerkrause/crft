@@ -35,11 +35,13 @@ utilities:
   type: [.t-lg, .t-md, .t-sm, .fw-l, .fw-r, .fw-b]
   color: [.c-ink, .c-mut, .c-acc, .c-sec, .c-bg]
 layout_attrs:
-  [g, c, r, o, in]
+  [g, c, r, o]
 motion_attrs:
   [data-scrub, data-scroll]
 button_variants:
   [base, tone, accent, accent-tone, secondary, secondary-tone, ghost, outlined, sm, lg]
+card_variants:
+  [default, outlined, ghost, accent, invert]
 private_hooks:
   [.brg, .icn, .tabs]
 updated: 2026-07-06
@@ -96,6 +98,7 @@ updated: 2026-07-06
 - Scaffolded CSS may include neutral starter values so output is valid; those values are installer defaults, not Craft canon.
 - Components consume final names: `--t-h1-fs`, `--s-gp`, `--l-mw`.
 - Components must not depend on `-min/-max` config or inline `clamp()`.
+- Line-height tokens are fixed values. Never use `lh-min`, `lh-max`, or `clamp()` for line-height.
 - Fluid token engines are optional, not required Craft infrastructure.
 - Projects may use final static tokens without min/max config.
 - Missing `-min/-max` variables are acceptable when project scale does not need a fluid system.
@@ -146,7 +149,7 @@ updated: 2026-07-06
 | `--l-cs` | column span | `[c]` |
 | `--l-rs` | row span | `[r]` |
 | `--l-or` | visual order | `[o]` |
-| `--l-st` | start/indent position | `[in]`, special grid placement |
+| `--l-st` | start/placement position | special grid placement |
 | `--z-base` | normal document stacking | base layers |
 | `--z-head` | sticky/fixed header | header/nav |
 | `--z-pop` | popovers/menus/tooltips | floating UI |
@@ -191,7 +194,7 @@ updated: 2026-07-06
 | `--t-h*-fs` | heading font size | heading assembly |
 | `--t-h*-ff` | heading font family | heading assembly |
 | `--t-h*-fw` | heading weight | heading assembly |
-| `--t-h*-lh` | heading line height | heading assembly |
+| `--t-h*-lh` | heading line height | heading assembly; fixed value only, never min/max or clamp |
 | `--t-h*-ls` | heading letter spacing | heading assembly |
 | `--t-h*-mw` | heading measure | heading wrappers |
 | `--t-h*-tt` | heading transform | heading assembly |
@@ -226,7 +229,7 @@ updated: 2026-07-06
 | Token family | Owns | Default consumer |
 | --- | --- | --- |
 | `--e-btn-sur/ink/bor` | button surface/text/border | `.btn`; remap same vars in hover/active/disabled selectors |
-| `--e-crd-sur/ink/bor` | card surface/text/border | `.crd`; variants/themes remap same vars |
+| `--e-crd-sur/ink/bor` | card surface/text/border | `.crd`; variants and themed ancestor scopes remap same vars |
 | `--e-inp-sur/ink/bor` | input surface/text/border | inputs, selects, textareas |
 | `--e-inp-plh` | placeholder text | inputs/textareas |
 | `--e-bdg-sur/ink/bor` | badge/eyebrow surface/text/border | `.eb`, badges |
@@ -352,14 +355,14 @@ Image scrub pattern:
 
 | Attr | Job | Values | Example |
 | --- | --- | --- | --- |
-| `g` | grid columns | `L` or `L-M`, `sg` subgrid | `g="3-2"` |
+| `g` | grid columns | `L` or `L-M`, `sg` subgrid, `a` auto, `a-sm` compact auto, `a-lg` wide auto | `g="3-2"`, `g="a"` |
 | `c` | column span | `L` or `L-M`, `0` full row | `c="2-1"` |
 | `r` | row span | `L` or `L-M` | `r="2"` |
 | `o` | visual order | `f` first, `a` auto, `l` last | `o="f-f-a"` |
-| `in` | text/grid indent | `0–6`, `L` or `L-M` | `in="2-1"` |
 
 - Values read large → medium/small.
 - Small screens stack by default.
+- `g="a"`, `g="a-sm"`, and `g="a-lg"` use CSS auto-fit with minimum tracks of `20rem`, `10rem`, and `30rem`.
 - Use `[o]` only when reading/focus order remains understandable.
 - Use `[c]` for column span; `.c` for container; `.c-ink` for color utility.
 
@@ -382,6 +385,12 @@ Image scrub pattern:
 | `.lnks` | link group | related text links |
 | `.img-w` | media wrapper | aspect/crop/overflow ownership |
 | `.eb` | eyebrow/badge label | use badge/type tokens |
+
+## Component variants
+
+- Use `variant` for component visual treatment and class mapping.
+- Use `theme` only for scoped `data-theme` token remaps.
+- Do not name a component visual attr `color`; color is CSS property/token language, not component API language.
 
 ## Button variants
 
@@ -406,6 +415,20 @@ Image scrub pattern:
 - States remap existing `--e-btn-sur/ink/bor` in the selector; do not add `--e-btn-hov-*`, `--e-btn-act-*`, or `--e-btn-dis-*`.
 - Links that navigate may look like buttons; they remain `<a href>`.
 - Actions that mutate state use `<button>`.
+
+## Card variants
+
+| Variant | Meaning | Token behavior |
+| --- | --- | --- |
+| `.crd` | default surface | consumes `--e-crd-*` defaults |
+| `.crd.outlined` | bordered neutral surface | transparent/subtle surface with visible border |
+| `.crd.ghost` | lowest-emphasis grouping | transparent surface, minimal chrome |
+| `.crd.accent` | high-emphasis card | maps `--e-crd-*` to accent pair |
+| `.crd.invert` | contrast card | maps `--e-crd-*` to inverted pair |
+
+- Card uses `variant`, not `theme`, for component visuals.
+- Linked cards may use the same `.crd` variants; keep accessible link text in card content.
+- Use outer `data-theme` when a whole section changes semantic color roles.
 
 ## Button interactive slots
 
@@ -466,7 +489,7 @@ Canonical interactive button motion:
 - Use `.c` once per section. Never nest `.c`.
 - Use `.c` only as container, not rhythm wrapper.
 - Use `.w` for typographic or related vertical groups.
-- Use `[g]`, `[c]`, `[r]`, `[o]`, `[in]` for responsive structure.
+- Use `[g]`, `[c]`, `[r]`, `[o]` for responsive structure.
 - Use classes for containers, wrappers, primitives, and modifiers.
 - Use attributes for layout grammar.
 - Use one content job per `<section>` and usually a heading.
@@ -515,8 +538,9 @@ Canonical section:
 - Button variants remap element tokens; they do not duplicate full CSS.
 - Use slots/children for layout content.
 - Keep props literal and concise: `title`, `label`, `href`, `items`, `theme`, `size`, `variant`.
+- Use `variant` for component visual treatments; reserve `theme` for `data-theme` scope components like Section.
 - Avoid object-shaped config unless data source requires it.
-- Name variants by purpose: `tone`, `accent`, `secondary`, `ghost`, `outlined`, `sm`, `lg`.
+- Name variants by purpose: `tone`, `accent`, `secondary`, `ghost`, `outlined`, `invert`, `sm`, `lg`.
 - Avoid visual variants like `blueShadowRounded`.
 
 ## Interaction rules
