@@ -93,8 +93,9 @@ const feedback = [
 ---
 
 <Section {...sections.colors}>
-  <p class="c-mu" slot="summary">Use semantic roles and paired foregrounds in content. <code>data-accent</code> routes
-    the accent family through semantic roles; palette swatches remain source colors.</p>
+  <p class="c-mu" slot="summary">Use semantic roles and paired foregrounds in content. Supported explicit routes are
+    <code>secondary</code>, <code>tertiary</code>, <code>success</code>, <code>warning</code>, and <code>danger</code>;
+    omit <code>data-accent</code> for the default accent. Palette swatches remain source colors.</p>
 
   <Specimen id="palette" title="Palette">
     <Swatches label="Fixed light and dark colors" items={palette} />

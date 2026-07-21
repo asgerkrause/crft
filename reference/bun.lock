@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "snz-css-system-reference",
+      "name": "seess-css-system-reference",
       "devDependencies": {
         "astro": "^7.1.1",
       },

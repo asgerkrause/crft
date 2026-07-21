@@ -33,7 +33,7 @@ const fixtureFiles = [
 ];
 
 function makeFixture(t) {
-  const root = mkdtempSync(join(tmpdir(), "snz-check-system-"));
+  const root = mkdtempSync(join(tmpdir(), "seess-check-system-"));
   t.after(() => rmSync(root, { force: true, recursive: true }));
   for (const relativePath of fixtureFiles) {
     const target = join(root, relativePath);
@@ -98,7 +98,39 @@ test("a fully cataloged new token needs no hard-coded count update", (t) => {
     "| `--h-h` | Header sizing token |\n",
     "| `--h-h` | Header sizing token |\n| `--fixture-token` | Fixture-only token |\n",
   );
+  const expectedCount = new Set(
+    [...readFileSync(join(root, "styles/tokens.css"), "utf8").matchAll(/(--[a-z0-9-]+)\s*:/g)]
+      .map((match) => match[1]),
+  ).size;
   const result = runCheck(root);
   assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /PASS: static contract — \d+ public tokens/);
+  assert.match(result.stdout, new RegExp(`PASS: static contract — ${expectedCount} public tokens`));
+});
+
+test("data-accent selector checks accept either quote style", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "[data-accent='danger']", '[data-accent="danger"]');
+  const result = runCheck(root);
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+});
+
+test("an unsupported data-accent route fails the contract", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "[data-accent='danger']", "[data-accent='accent']");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /explicit data-accent routes differ from the contract/);
+});
+
+test("data-accent documentation must retain the canonical routes", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "AGENTS.md",
+    "and `danger`; omit `data-accent` for the default accent.",
+    "and `accent`; omit `data-accent` for the default accent.",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /AGENTS\.md does not state the supported explicit data-accent routes/);
 });

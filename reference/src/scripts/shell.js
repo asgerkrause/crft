@@ -1,4 +1,4 @@
-const STORAGE_KEY = "snz-styleguide-preferences:v1";
+const STORAGE_KEY = "seess-styleguide-preferences:v1";
 
 function values(form, name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]`), (input) => input.value);

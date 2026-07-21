@@ -1,4 +1,4 @@
-# SNZ CSS system
+# seess CSS system
 
 A dependency-free CSS foundation for tokens, type, layout, responsive grid, semantic skins, native behavior, progressive features, and a deliberately small utility surface.
 
@@ -26,19 +26,19 @@ A dependency-free CSS foundation for tokens, type, layout, responsive grid, sema
 From this repository, copy the complete system into a new isolated directory:
 
 ```sh
-node scripts/copy-system.mjs /path/to/project/styles/snz
+node scripts/copy-system.mjs /path/to/project/styles/seess
 ```
 
 Preview the operation without writing:
 
 ```sh
-node scripts/copy-system.mjs --dry-run /path/to/project/styles/snz
+node scripts/copy-system.mjs --dry-run /path/to/project/styles/seess
 ```
 
 The target must not exist, and its parent directory must already exist and be writable. The command copies the canonical files byte-for-byte and preserves the required structure:
 
 ```text
-snz/
+seess/
 ├── global.css
 ├── sans.ttf
 ├── mono.ttf
@@ -52,10 +52,10 @@ snz/
     └── project.css
 ```
 
-Import the copied entrypoint exactly once from the project's actual CSS entrypoint. For example, when that entrypoint and `snz/` share a parent directory:
+Import the copied entrypoint exactly once from the project's actual CSS entrypoint. For example, when that entrypoint and `seess/` share a parent directory:
 
 ```css
-@import "./snz/global.css";
+@import "./seess/global.css";
 
 @layer project {
   /* Product and component rules belong here. */
@@ -209,7 +209,7 @@ Values, formulas, breakpoints, skin mappings, and reduced-motion policy belong t
 | `layout` | `styles/layout.css` | Structural spacing, named query containers, stacks, and grid grammar |
 | `features` | `styles/features.css` | Progressive disclosure, corner-shape, and scroll-motion enhancements |
 | `utility` | `styles/utility.css` | Finite screen-reader, color, weight, and text-transform utilities |
-| `project` | `styles/project.css` | Product or site rules that intentionally extend the system |
+| `project` | `styles/project.css` | Canonical-repository product or site rules that intentionally extend the system |
 
 The order is:
 
@@ -493,6 +493,8 @@ Use `data-accent` when a boundary should change which semantic family supplies `
 </section>
 ```
 
+Supported explicit routes: `secondary`, `tertiary`, `success`, `warning`, and `danger`; omit `data-accent` for the default accent.
+
 `data-accent` routes tokens only; it does not paint the boundary. Product rules decide where to apply the routed roles:
 
 ```css
@@ -675,7 +677,7 @@ Inventory the existing reset, tokens, type roles, layout, utilities, component r
 | Classification | Action |
 | --- | --- |
 | Native behavior | Remove the custom rule only after the native result is verified |
-| Existing SNZ API | Replace it with the matching public role, selector, or attribute |
+| Existing seess API | Replace it with the matching public role, selector, or attribute |
 | Product or component detail | Keep one direct rule in the consumer-owned `project` layer |
 | Possible shared-system gap | Preserve the local rule until repeated use passes the admission criteria |
 
@@ -683,7 +685,7 @@ Map by semantic role rather than similar names or literal values. Preserve sourc
 
 ## Extension
 
-Project rules belong in `styles/project.css` or a later consumer-owned `project` layer.
+In this canonical repository, `styles/project.css` owns product or site extensions and may be edited. An adopted tree is a byte-identical snapshot: consumers must leave its copied `styles/project.css` unchanged and put product or component rules outside that tree in a consumer-owned `@layer project`.
 
 Use this order:
 

@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository is the complete SNZ CSS system. It provides tokens, type roles, layout primitives, responsive grid attributes, semantic skins, native defaults, progressive features, and a finite utility surface. It is not a component library.
+This repository is the complete seess CSS system. It provides tokens, type roles, layout primitives, responsive grid attributes, semantic skins, native defaults, progressive features, and a finite utility surface. It is not a component library.
 
 `README.md` is the canonical system handbook. CSS is the sole source of values, formulas, breakpoints, selectors, skin mappings, and reduced-motion behavior. Documentation explains that source without replacing it.
 
@@ -22,7 +22,7 @@ Ownership is one-to-one:
 - `styles/layout.css`: structural spacing, the named `section > .c` query boundary, stacks, and `g/c/r/o` grid behavior.
 - `styles/features.css`: optional disclosure, corner-shape, and scroll-motion behavior.
 - `styles/utility.css`: finite public utilities.
-- `styles/project.css`: product or site extensions.
+- `styles/project.css`: product or site extensions in this canonical repository only; adopted copies remain unchanged.
 
 Put a rule in the first file whose job fully explains it. Do not bypass `global.css`, create a second owner, or move a product component into the shared system.
 
@@ -101,7 +101,7 @@ A public token must represent a reusable system role, preserve semantic indirect
 
 A utility is admitted only when unrelated markup needs the same stable operation, existing API cannot express it, `styles/utility.css` clearly owns it, and accessibility can be verified.
 
-Use `data-accent` to route accent roles through `accent`, `secondary`, `tertiary`, `success`, `warning`, or `danger`. It changes tokens only; it does not paint a boundary or supply component styling. Palette swatches are not supported values because they lack verified contrast pairs.
+Use `data-accent` to route accent roles without painting a boundary or supplying component styling. Supported explicit routes: `secondary`, `tertiary`, `success`, `warning`, and `danger`; omit `data-accent` for the default accent. Palette swatches are not supported values because they lack verified contrast pairs.
 
 One-off values, component details, arbitrary responsive variants, and aliases remain project-owned. The public font-family utilities are `.f-sa`, `.f-se`, `.f-mo`, `.f-bd`, and `.f-dp`; weights use `.w-lt`, `.w-rg`, and `.w-bd`.
 
@@ -124,13 +124,13 @@ Do not communicate meaning through color or motion alone.
 
 Use `node scripts/copy-system.mjs [--dry-run] <target>` to adopt the complete system into a new isolated directory. The explicit target must not exist, and its parent must already exist and be writable. The script copies `global.css`, both fonts, and all seven `styles/*.css` owners byte-for-byte. It must resolve source files from this repository, claim the target exclusively, clean up partial output, and never merge, overwrite, upgrade, or edit an application entrypoint.
 
-After copying, import the adopted `global.css` exactly once from the consumer's actual CSS entrypoint. Keep the adopted system files unchanged and put product or component rules in a separate consumer-owned `project` layer. The copy command is a one-time adoption tool, not a project dependency or build step.
+After copying, import the adopted `global.css` exactly once from the consumer's actual CSS entrypoint. Keep the adopted system files unchanged, including copied `styles/project.css`; put product or component rules outside the copied tree in a consumer-owned `@layer project`. The copy command is a one-time adoption tool, not a project dependency or build step.
 
 When existing CSS must migrate:
 
 1. Adopt without deleting or disabling existing CSS.
 2. Inventory reset, token, type, layout, utility, component, responsive, and state ownership.
-3. Classify each rule as native behavior, existing public SNZ API, project-owned residual, or unproven shared-system candidate.
+3. Classify each rule as native behavior, existing public seess API, project-owned residual, or unproven shared-system candidate.
 4. Migrate one complete user-visible slice, including applicable states and responsive behavior.
 5. Verify semantics, source order, keyboard behavior, contrast, reduced motion, and large/medium/small rendering.
 6. Search every consumer before deleting replaced selectors, variables, files, or generated CSS.

@@ -10,6 +10,9 @@ if (!existsSync(htmlPath)) throw new Error("Run the Astro build before checking 
 
 const html = readFileSync(htmlPath, "utf8");
 const referenceCss = readFileSync(new URL("src/styles/reference.css", root), "utf8");
+const unique = (values) => [...new Set(values)];
+const sameValues = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
+const accentRoutes = (value) => unique([...value.matchAll(/\bdata-accent\s*=\s*(["'])([^"']+)\1/g)].map((match) => match[2])).sort();
 const requiredSections = [
   "overview", "colors", "typography", "sizes", "layout", "grid", "skins", "native", "forms",
   "features", "utilities", "architecture", "tokens",
@@ -21,8 +24,6 @@ const requiredMarkup = [
   'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',
   'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="secondary"',
   'data-skin="tertiary"', 'data-skin="invert"',
-  'data-accent="secondary"', 'data-accent="tertiary"', 'data-accent="success"',
-  'data-accent="warning"', 'data-accent="danger"',
   'class="img-w" data-scrub', 'data-scrub="reverse"',
   'id="native-invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
@@ -52,6 +53,16 @@ for (const property of internalProperties) {
 
 const tokensCss = readFileSync(new URL("styles/tokens.css", systemRoot), "utf8");
 const publicTokens = [...new Set([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]))];
+if (!sameValues(accentRoutes(html), accentRoutes(tokensCss))) {
+  throw new Error(`Built reference data-accent routes differ from styles/tokens.css: ${accentRoutes(html).join(", ") || "none"}`);
+}
+for (const route of accentRoutes(tokensCss)) {
+  if (!html.includes(`<code>${route}</code>`)) throw new Error(`Built reference guidance omits data-accent route ${route}.`);
+}
+if (!html.includes("omit <code>data-accent</code> for the default accent")) {
+  throw new Error("Built reference does not explain the default accent route.");
+}
+if (/\b\d+ public (?:names|tokens)\b/i.test(html)) throw new Error("Built reference hard-codes a public-token count.");
 for (const token of publicTokens) {
   if (!html.includes(token)) throw new Error(`Built reference is missing public token ${token}.`);
 }

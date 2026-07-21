@@ -17,7 +17,7 @@ export const sections = {
   features: { id: "features", title: "Features", api: "progressive enhancement" },
   utilities: { id: "utilities", title: "Utilities", api: "documented selectors only" },
   architecture: { id: "architecture", title: "Architecture", api: "@layer" },
-  tokens: { id: "tokens", title: "Tokens", api: "156 public names" },
+  tokens: { id: "tokens", title: "Tokens", api: "public names" },
 } as const satisfies Record<string, Section>;
 
 export const navigation = Object.values(sections).filter((section) => section.nav);

@@ -7,6 +7,8 @@ const fail = (message) => {
   process.exitCode = 1;
 };
 const unique = (values) => [...new Set(values)];
+const sameValues = (left, right) => left.length === right.length && left.every((value, index) => value === right[index]);
+const accentRoutes = (value) => unique([...value.matchAll(/\[data-accent\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 const stripCssComments = (value) => value.replace(/\/\*[\s\S]*?\*\//g, "");
 const normalizeCss = (value) => value.replace(/\s+/g, "");
 const hasCssSignal = (css, signal) => normalizeCss(css).includes(normalizeCss(signal));
@@ -17,6 +19,8 @@ const copiedFiles = ["global.css", "sans.ttf", "mono.ttf", ...files];
 const retiredTokens = ["--c-br", "--c-sw-org", "--c-sw-grn", "--c-sw-prp", "--c-sw-pnk", "--m-tf-in", "--m-tf-ot"];
 const internalTokens = ["--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx"];
 const typeMeasureRoles = ["hd", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
+const supportedAccentRoutes = ["secondary", "tertiary", "success", "warning", "danger"].sort();
+const accentRouteGuidance = "Supported explicit routes: `secondary`, `tertiary`, `success`, `warning`, and `danger`; omit `data-accent` for the default accent.";
 
 const globalCss = stripCssComments(read("global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
@@ -138,13 +142,18 @@ for (const signal of [
   "--c-ac-co: var(--c-sw-li)",
   "--c-ac-bg: color-mix(in srgb, var(--c-ac) 15%, var(--c-bg))",
   "--c-ac-fg: color-mix(in srgb, var(--c-ac) 25%, var(--c-fg))",
-  "--c-ac-bc: color-mix(in srgb, var(--c-ac) 25%, transparent)",
-  "[data-accent='secondary']", "[data-accent='tertiary']",
-  "[data-accent='success']", "[data-accent='warning']", "[data-accent='danger']"
+  "--c-ac-bc: color-mix(in srgb, var(--c-ac) 25%, transparent)"
 ]) {
   if (!tokensCss.includes(signal)) fail(`tokens.css is missing accent-routing invariant: ${signal}`);
 }
-for (const retired of ["--c-fb", "--c-ac-base", "--c-ac-co-base", "[data-accent='accent']", ".fb {", "&.su", "&.wn", "&.dn"]) {
+if (!sameValues(accentRoutes(tokensCss), supportedAccentRoutes)) {
+  fail(`styles/tokens.css explicit data-accent routes differ from the contract: ${accentRoutes(tokensCss).join(", ") || "none"}`);
+}
+for (const [document, name] of [[readme, "README.md"], [agents, "AGENTS.md"], [skill, "local skill"]]) {
+  if (!document.includes(accentRouteGuidance)) fail(`${name} does not state the supported explicit data-accent routes`);
+}
+if (/data-accent\s*=\s*(["'])accent\1/.test(activeSources)) fail("retired data-accent=accent route remains");
+for (const retired of ["--c-fb", "--c-ac-base", "--c-ac-co-base", ".fb {", "&.su", "&.wn", "&.dn"]) {
   if (activeSources.includes(retired)) fail(`retired feedback API remains: ${retired}`);
 }
 internalTokens.forEach((name) => {
