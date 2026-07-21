@@ -47,8 +47,9 @@ function parseArguments(arguments_) {
 }
 
 /**
- * Validate and copy the canonical tree through a private sibling staging directory.
- * Staging is the only recursively removed path; the final target is never removed.
+ * Validate and copy through private staging, then atomically claim the empty target.
+ * Under the documented stable-filesystem precondition, cleanup verifies the
+ * recorded inode before recursively removing a process-created directory.
  * @param {{ sourceRoot: string, target: string, dryRun?: boolean, beforePublish?: (paths: { staging: string, target: string }) => Promise<void> | void }} input
  */
 async function adoptSystem(input) {
@@ -58,16 +59,20 @@ async function adoptSystem(input) {
   await validateManifest(source);
   if (dryRun) return { sourceRoot: source, target: destination.target, dryRun: true };
 
-  let staging = await createStaging(destination.parent);
+  let staging = await createOwnedDirectory(join(destination.parent, `.seess-stage-${randomUUID()}`), "staging");
+  let claimed;
   try {
     await copyManifest(source, staging.path);
     if (beforePublish) await beforePublish({ staging: staging.path, target: destination.target });
-    await requireAbsent(destination.target);
-    await rename(staging.path, destination.target);
+    claimed = await createOwnedDirectory(destination.target, "target");
+    await publishManifest(staging.path, claimed.path);
+    await removeOwnedDirectory(staging);
     staging = undefined;
+    claimed = undefined;
     return { sourceRoot: source, target: destination.target, dryRun: false };
   } finally {
-    if (staging) await removeStaging(staging);
+    if (claimed) await removeOwnedDirectory(claimed);
+    if (staging) await removeOwnedDirectory(staging);
   }
 }
 
@@ -131,27 +136,29 @@ async function validateManifest(source) {
   }
 }
 
-/** @param {string} parent */
-async function createStaging(parent) {
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    const staging = join(parent, `.seess-stage-${randomUUID()}`);
-    try {
-      await mkdir(staging, { mode: 0o700 });
-      const entry = await lstat(staging);
-      return { path: staging, dev: entry.dev, ino: entry.ino };
-    } catch (error) {
-      if (error.code !== "EEXIST") throw error;
-    }
+/** @param {string} path @param {"staging" | "target"} kind */
+async function createOwnedDirectory(path, kind) {
+  try {
+    await mkdir(path, { mode: 0o700 });
+  } catch (error) {
+    if (error.code === "EEXIST" && kind === "target") throw new Error(`Target already exists: ${path}`);
+    throw error;
   }
-  throw new Error("Unable to create private staging directory");
+  try {
+    const entry = await lstat(path);
+    return { path, dev: entry.dev, ino: entry.ino };
+  } catch (error) {
+    await rm(path, { force: true, recursive: true }).catch(() => {});
+    throw error;
+  }
 }
 
-/** @param {{ path: string, dev: number, ino: number }} staging */
-async function removeStaging(staging) {
+/** @param {{ path: string, dev: number, ino: number }} owned */
+async function removeOwnedDirectory(owned) {
   try {
-    const entry = await lstat(staging.path);
-    if (entry.dev === staging.dev && entry.ino === staging.ino) {
-      await rm(staging.path, { force: true, recursive: true });
+    const entry = await lstat(owned.path);
+    if (entry.isDirectory() && entry.dev === owned.dev && entry.ino === owned.ino) {
+      await rm(owned.path, { force: true, recursive: true });
     }
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
@@ -163,6 +170,13 @@ async function copyManifest(source, staging) {
   await mkdir(join(staging, "styles"));
   for (const file of files) {
     await copyFile(join(source, file), join(staging, file));
+  }
+}
+
+/** @param {string} staging @param {string} target */
+async function publishManifest(staging, target) {
+  for (const name of ["global.css", "sans.ttf", "mono.ttf", "styles"]) {
+    await rename(join(staging, name), join(target, name));
   }
 }
 

@@ -77,7 +77,7 @@ node tooling/seess.mjs verify --root /absolute/path/to/project --entrypoint src/
 node tooling/seess.mjs migrate --root /absolute/path/to/project --entrypoint src/entry.css --adoption styles/seess
 ```
 
-Each command emits JSON. `audit`, `verify`, and `migrate` emit a versioned report; `migrate` also emits a plan containing only `inspect`, `verify`, `preserve`, or `escalate` actions. Finding evidence states are `observed`, `inferred`, `unknown`, and `blocked`; classifications are `deterministic`, `heuristic`, `judgment`, and `rendered`.
+Each command emits JSON. `audit`, `verify`, and `migrate` emit a versioned report; `migrate` also emits a plan containing only `inspect`, `verify`, `preserve`, or `escalate` actions. `verify` checks the adoption tree and reachable CSS import graph; `audit` and `migrate` additionally inspect eligible consumer source. Finding evidence states are `observed`, `inferred`, `unknown`, and `blocked`; classifications are `deterministic`, `heuristic`, `judgment`, and `rendered`.
 
 `audit`, `verify`, and `migrate` are read-only: they do not execute consumer code, rewrite source, delete files, or modify an entrypoint. `adopt` is this interface's sole writing command and copies the system only to its explicit target. Traversal excludes known secret-path sources where possible (`.env*`, `.pem`, `.key`, and SSH paths); report paths additionally replace secret-like components with `[redacted-path]` before output.
 
