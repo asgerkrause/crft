@@ -4,6 +4,7 @@ import {
   FINDING_SCHEMA_VERSION,
   createFinding,
   redactEvidence,
+  redactFindingPath,
   validateFinding,
   validateFindingPath,
 } from "./finding.mjs";
@@ -95,6 +96,20 @@ test("rejects unsafe paths, all control characters, and inverted ranges", () => 
       end: { line: 7, column: 3 },
     },
   })), ["range end must not precede range start"]);
+});
+
+test("redacts secret-like path components without changing valid path structure", () => {
+  const sourcePath = "src/secrets/api_key=not-for-report/theme.css";
+  const redactedPath = "src/[redacted-path]/[redacted-path]/theme.css";
+  const source = finding({ path: sourcePath });
+  const result = createFinding(source);
+
+  assert.equal(redactFindingPath(sourcePath), redactedPath);
+  assert.equal(redactFindingPath(sourcePath), redactedPath);
+  assert.equal(redactFindingPath("src/components/theme.css"), "src/components/theme.css");
+  assert.equal(validateFindingPath(redactedPath), undefined);
+  assert.equal(result.path, redactedPath);
+  assert.equal(source.path, sourcePath);
 });
 
 test("redacts all transferable free-text fields without mutating caller input", () => {

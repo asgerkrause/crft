@@ -3,6 +3,8 @@ const RULE_ID = /^[a-z][a-z0-9-]*(?:\/[a-z][a-z0-9-]*)*$/;
 const SECRET = /\b([A-Za-z_][A-Za-z0-9_]*(?:token|secret|password|key|credential)[A-Za-z0-9_]*|token|secret|password|key|credential)\s*[:=]\s*(['"]?)[^\s,'"}\]]+/gi;
 const PRIVATE_KEY = /-----BEGIN [^-]*PRIVATE KEY-----[\s\S]*?-----END [^-]*PRIVATE KEY-----/g;
 const BEARER_TOKEN = /\bBearer\s+[A-Za-z0-9._~+\/-]+=*/gi;
+const SECRET_PATH_COMPONENT = /(?:^|[._=-])(?:api[-_]?key|access[-_]?token|auth[-_]?token|secret|password|credential|private[-_]?key|key)(?:$|[._=-])/i;
+const SECRET_PATH_NAMES = new Set(["auth", "credential", "credentials", "key", "keys", "password", "passwords", "private", "secret", "secrets", "token", "tokens"]);
 
 export const FINDING_SCHEMA_VERSION = "1.0";
 export const FINDING_CLASSIFICATIONS = Object.freeze([
@@ -50,6 +52,15 @@ export function validateFindingPath(path) {
   if (path.split("/").some((segment) => !segment || segment === "." || segment === "..")) {
     return "path must not contain empty, '.' or '..' segments";
   }
+}
+
+/**
+ * Preserve relative path structure while replacing secret-like components.
+ * @param {string} path
+ * @returns {string}
+ */
+export function redactFindingPath(path) {
+  return path.split("/").map((component) => isSecretPathComponent(component) ? "[redacted-path]" : component).join("/");
 }
 
 /**
@@ -133,7 +144,7 @@ export function createFinding(value) {
     analyzerVersion: finding.analyzerVersion,
     seessVersion: finding.seessVersion,
     ruleId: finding.ruleId,
-    path: finding.path,
+    path: redactFindingPath(finding.path),
     range: {
       start: { line: finding.range.start.line, column: finding.range.start.column },
       end: { line: finding.range.end.line, column: finding.range.end.column },
@@ -213,6 +224,16 @@ function validateNextAction(action, errors) {
   if (typeof value.summary !== "string" || !value.summary.trim()) {
     errors.push("safeNextAction.summary must be a non-empty string");
   }
+}
+
+/** @param {string} component */
+function isSecretPathComponent(component) {
+  const lower = component.toLowerCase();
+  return SECRET_PATH_NAMES.has(lower)
+    || lower.startsWith(".env")
+    || lower.endsWith(".pem")
+    || lower.endsWith(".key")
+    || SECRET_PATH_COMPONENT.test(component);
 }
 
 /** @param {unknown} evidence @param {unknown} status @param {unknown} action @param {string[]} errors */

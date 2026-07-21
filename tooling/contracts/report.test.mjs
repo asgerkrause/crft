@@ -42,6 +42,23 @@ test("creates a versioned, sorted, summarized report without an absolute root", 
   assert.equal(JSON.stringify(report).includes("root"), false);
 });
 
+test("redacts secret-like scope components before report output", () => {
+  const report = createReport({
+    command: "verify",
+    scope: {
+      entrypoint: "src/secrets/api_key=not-for-report/entry.css",
+      adoption: "vendor/.env-production/seess",
+    },
+    findings: [],
+  });
+
+  assert.deepEqual(report.scope, {
+    entrypoint: "src/[redacted-path]/[redacted-path]/entry.css",
+    adoption: "vendor/[redacted-path]/seess",
+  });
+  assert.equal(JSON.stringify(report).includes("not-for-report"), false);
+});
+
 test("reconstructs and redacts findings before they enter the report", () => {
   const report = createReport({
     command: "verify",

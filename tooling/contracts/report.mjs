@@ -1,4 +1,4 @@
-import { createFinding, FINDING_SCHEMA_VERSION, validateFindingPath } from "./finding.mjs";
+import { createFinding, FINDING_SCHEMA_VERSION, redactFindingPath, validateFindingPath } from "./finding.mjs";
 import { ANALYZER_VERSION, SEESS_VERSION } from "./version.mjs";
 
 export const REPORT_SCHEMA_VERSION = FINDING_SCHEMA_VERSION;
@@ -61,7 +61,7 @@ function createScope(value) {
     if (typeof path !== "string" || validateFindingPath(path)) {
       throw new TypeError(`scope.${key} must be a relative POSIX path`);
     }
-    result[key] = path;
+    result[key] = redactFindingPath(path);
   }
   return result;
 }
