@@ -11,7 +11,7 @@ CSS is behavioral source; `README.md` is public handbook. Route to handbook sect
 
 - **Adopt:** `README.md#adopt`, then `#use`.
 - **Build, translate, or extend:** `#system-decisions`, `#files-and-layers`, and the relevant API section.
-- **Migrate:** `#migration`, `#extension`, and affected public API sections.
+- **Migrate:** `#migration`, `#extension`, affected public API sections, then `references/frontend-quality.md` for evidence and stop conditions.
 - **Review:** `#verification` and relevant owner; do not edit.
 - **Color:** `#skins` and `#accent-routing`.
 - **Type, layout, grid, features, or utilities:** matching handbook section.

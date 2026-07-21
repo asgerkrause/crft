@@ -44,7 +44,7 @@ export const SAFE_NEXT_ACTIONS = Object.freeze(["inspect", "verify", "preserve",
  */
 export function validateFindingPath(path) {
   if (typeof path !== "string" || !path) return "path must be a non-empty string";
-  if (path.includes("\\") || path.startsWith("/") || path.includes("\0") || /[:\r\n]/.test(path)) {
+  if (path.includes("\\") || path.startsWith("/") || path.includes(":") || /\p{Cc}/u.test(path)) {
     return "path must be a relative POSIX path";
   }
   if (path.split("/").some((segment) => !segment || segment === "." || segment === "..")) {
@@ -71,11 +71,14 @@ export function redactEvidence(text) {
 export function validateFinding(value) {
   /** @type {string[]} */
   const errors = [];
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return ["finding must be an object"];
-  }
+  if (!isObject(value)) return ["finding must be an object"];
 
   const finding = /** @type {Record<string, unknown>} */ (value);
+  rejectUnknownFields(finding, [
+    "schemaVersion", "analyzerVersion", "seessVersion", "ruleId", "path", "range",
+    "classification", "evidence", "confidence", "status", "safeNextAction",
+  ], "finding", errors);
+
   if (finding.schemaVersion !== FINDING_SCHEMA_VERSION) {
     errors.push(`schemaVersion must be ${FINDING_SCHEMA_VERSION}`);
   }
@@ -103,6 +106,7 @@ export function validateFinding(value) {
   }
   validateEvidence(finding.evidence, errors);
   validateNextAction(finding.safeNextAction, errors);
+  validateAuthority(finding.evidence, finding.status, finding.safeNextAction, errors);
   return errors;
 }
 
@@ -116,52 +120,74 @@ export function createFinding(value) {
   if (errors.length) throw new TypeError(`Invalid finding: ${errors.join("; ")}`);
 
   const finding = /** @type {Finding} */ (value);
+  const evidence = finding.evidence;
+  /** @type {Finding["evidence"]} */
+  const redactedEvidence = {
+    state: evidence.state,
+    summary: redactEvidence(evidence.summary),
+  };
+  if (evidence.excerpts !== undefined) redactedEvidence.excerpts = evidence.excerpts.map(redactEvidence);
+
   return {
-    ...finding,
-    range: { start: { ...finding.range.start }, end: { ...finding.range.end } },
-    evidence: {
-      ...finding.evidence,
-      summary: redactEvidence(finding.evidence.summary),
-      ...(finding.evidence.excerpts && { excerpts: finding.evidence.excerpts.map(redactEvidence) }),
+    schemaVersion: FINDING_SCHEMA_VERSION,
+    analyzerVersion: finding.analyzerVersion,
+    seessVersion: finding.seessVersion,
+    ruleId: finding.ruleId,
+    path: finding.path,
+    range: {
+      start: { line: finding.range.start.line, column: finding.range.start.column },
+      end: { line: finding.range.end.line, column: finding.range.end.column },
     },
-    safeNextAction: { ...finding.safeNextAction },
+    classification: finding.classification,
+    evidence: redactedEvidence,
+    confidence: finding.confidence,
+    status: finding.status,
+    safeNextAction: {
+      type: finding.safeNextAction.type,
+      summary: redactEvidence(finding.safeNextAction.summary),
+    },
   };
 }
 
 /** @param {unknown} range @param {string[]} errors */
 function validateRange(range, errors) {
-  if (!range || typeof range !== "object" || Array.isArray(range)) {
+  if (!isObject(range)) {
     errors.push("range must contain start and end positions");
     return;
   }
-  const location = /** @type {{ start?: unknown, end?: unknown }} */ (range);
-  const start = validatePosition(location.start);
-  const end = validatePosition(location.end);
-  if (!start || !end) {
-    errors.push("range positions must use positive integer line and column values");
-    return;
-  }
+  const location = /** @type {Record<string, unknown>} */ (range);
+  rejectUnknownFields(location, ["start", "end"], "range", errors);
+  const start = validatePosition(location.start, "range.start", errors);
+  const end = validatePosition(location.end, "range.end", errors);
+  if (!start || !end) return;
   if (end.line < start.line || (end.line === start.line && end.column < start.column)) {
     errors.push("range end must not precede range start");
   }
 }
 
-/** @param {unknown} position */
-function validatePosition(position) {
-  if (!position || typeof position !== "object" || Array.isArray(position)) return;
-  const { line, column } = /** @type {{ line?: unknown, column?: unknown }} */ (position);
-  return Number.isInteger(line) && line > 0 && Number.isInteger(column) && column > 0
-    ? { line, column }
-    : undefined;
+/** @param {unknown} position @param {string} label @param {string[]} errors */
+function validatePosition(position, label, errors) {
+  if (!isObject(position)) {
+    errors.push("range positions must use positive integer line and column values");
+    return;
+  }
+  const value = /** @type {Record<string, unknown>} */ (position);
+  rejectUnknownFields(value, ["line", "column"], label, errors);
+  const { line, column } = value;
+  if (Number.isInteger(line) && line > 0 && Number.isInteger(column) && column > 0) {
+    return /** @type {{ line: number, column: number }} */ ({ line, column });
+  }
+  errors.push("range positions must use positive integer line and column values");
 }
 
 /** @param {unknown} evidence @param {string[]} errors */
 function validateEvidence(evidence, errors) {
-  if (!evidence || typeof evidence !== "object" || Array.isArray(evidence)) {
+  if (!isObject(evidence)) {
     errors.push("evidence must be an object");
     return;
   }
-  const value = /** @type {{ state?: unknown, summary?: unknown, excerpts?: unknown }} */ (evidence);
+  const value = /** @type {Record<string, unknown>} */ (evidence);
+  rejectUnknownFields(value, ["state", "summary", "excerpts"], "evidence", errors);
   if (!EVIDENCE_STATES.includes(/** @type {never} */ (value.state))) {
     errors.push(`evidence.state must be one of: ${EVIDENCE_STATES.join(", ")}`);
   }
@@ -175,15 +201,44 @@ function validateEvidence(evidence, errors) {
 
 /** @param {unknown} action @param {string[]} errors */
 function validateNextAction(action, errors) {
-  if (!action || typeof action !== "object" || Array.isArray(action)) {
+  if (!isObject(action)) {
     errors.push("safeNextAction must be an object");
     return;
   }
-  const value = /** @type {{ type?: unknown, summary?: unknown }} */ (action);
+  const value = /** @type {Record<string, unknown>} */ (action);
+  rejectUnknownFields(value, ["type", "summary"], "safeNextAction", errors);
   if (!SAFE_NEXT_ACTIONS.includes(/** @type {never} */ (value.type))) {
     errors.push(`safeNextAction.type must be one of: ${SAFE_NEXT_ACTIONS.join(", ")}`);
   }
   if (typeof value.summary !== "string" || !value.summary.trim()) {
     errors.push("safeNextAction.summary must be a non-empty string");
+  }
+}
+
+/** @param {unknown} evidence @param {unknown} status @param {unknown} action @param {string[]} errors */
+function validateAuthority(evidence, status, action, errors) {
+  if (!isObject(evidence) || !isObject(action)) return;
+  const state = /** @type {Record<string, unknown>} */ (evidence).state;
+  const type = /** @type {Record<string, unknown>} */ (action).type;
+  if ((status === "pass" || status === "fail") && state !== "observed") {
+    errors.push(`status ${status} requires observed evidence`);
+  }
+  if (state === "blocked") {
+    if (status !== "blocked") errors.push("blocked evidence requires blocked status");
+    if (type !== "escalate") errors.push("blocked evidence requires an escalate safeNextAction");
+  }
+}
+
+/** @param {unknown} value */
+function isObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+/** @param {Record<string, unknown>} value @param {string[]} allowed @param {string} label @param {string[]} errors */
+function rejectUnknownFields(value, allowed, label, errors) {
+  for (const key of [...Object.getOwnPropertyNames(value), ...Object.getOwnPropertySymbols(value)]) {
+    if (!allowed.includes(/** @type {never} */ (key))) {
+      errors.push(`${label} contains unknown field ${String(key)}`);
+    }
   }
 }
