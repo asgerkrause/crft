@@ -9,6 +9,7 @@
     "test": "astro build && node scripts/check-reference.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "astro": "^7.1.1"
   }
 }
