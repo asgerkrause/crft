@@ -5,9 +5,11 @@ import {
   lstat,
   mkdir,
   realpath,
+  rename,
   rm,
 } from "node:fs/promises";
-import { basename, dirname, join, resolve } from "node:path";
+import { randomUUID } from "node:crypto";
+import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const files = [
@@ -44,21 +46,51 @@ function parseArguments(arguments_) {
   return { dryRun, target: targets[0] };
 }
 
-async function exists(path) {
+/**
+ * Validate and copy the canonical tree through a private sibling staging directory.
+ * Staging is the only recursively removed path; the final target is never removed.
+ * @param {{ sourceRoot: string, target: string, dryRun?: boolean, beforePublish?: (paths: { staging: string, target: string }) => Promise<void> | void }} input
+ */
+async function adoptSystem(input) {
+  const { sourceRoot, target: targetArgument, dryRun = false, beforePublish } = input ?? {};
+  const source = await resolveSource(sourceRoot);
+  const destination = await resolveDestination(targetArgument, source);
+  await validateManifest(source);
+  if (dryRun) return { sourceRoot: source, target: destination.target, dryRun: true };
+
+  let staging = await createStaging(destination.parent);
   try {
-    await lstat(path);
-    return true;
-  } catch (error) {
-    if (error.code === "ENOENT") return false;
-    throw error;
+    await copyManifest(source, staging.path);
+    if (beforePublish) await beforePublish({ staging: staging.path, target: destination.target });
+    await requireAbsent(destination.target);
+    await rename(staging.path, destination.target);
+    staging = undefined;
+    return { sourceRoot: source, target: destination.target, dryRun: false };
+  } finally {
+    if (staging) await removeStaging(staging);
   }
 }
 
-async function resolveTarget(targetArgument, sourceRoot) {
+/** @param {unknown} sourceRoot */
+async function resolveSource(sourceRoot) {
+  if (typeof sourceRoot !== "string") throw new TypeError("Source root must be a path");
+  let source;
+  try {
+    if ((await lstat(sourceRoot)).isSymbolicLink()) throw new Error("source root is a symbolic link");
+    source = await realpath(sourceRoot);
+    if (!(await lstat(source)).isDirectory()) throw new Error("source root is not a directory");
+  } catch (error) {
+    throw new Error(`Source root cannot be safely addressed: ${error.message}`);
+  }
+  return source;
+}
+
+/** @param {unknown} targetArgument @param {string} source */
+async function resolveDestination(targetArgument, source) {
+  if (typeof targetArgument !== "string") throw new TypeError("Target must be a path");
   const requestedTarget = resolve(targetArgument);
   const requestedParent = dirname(requestedTarget);
   let parent;
-
   try {
     parent = await realpath(requestedParent);
     const parentStats = await lstat(parent);
@@ -69,49 +101,83 @@ async function resolveTarget(targetArgument, sourceRoot) {
   }
 
   const target = join(parent, basename(requestedTarget));
-  if (target === sourceRoot) throw new Error(`Target must not be the source root: ${target}`);
-
-  try {
-    if (await exists(target)) throw new Error(`Target already exists: ${target}`);
-  } catch (error) {
-    if (error.message.startsWith("Target already exists:")) throw error;
-    throw new Error(`Target cannot be safely addressed: ${target} (${error.message})`);
+  const sourceRelative = relative(source, target);
+  if (target === source || (sourceRelative && !sourceRelative.startsWith("..") && !isAbsolute(sourceRelative))) {
+    throw new Error(`Target must not be the source root or its descendant: ${target}`);
   }
-
-  return target;
+  await requireAbsent(target);
+  return { parent, target };
 }
 
-async function copySystem(sourceRoot, target) {
-  let ownsTarget = false;
-
+/** @param {string} path */
+async function requireAbsent(path) {
   try {
-    await mkdir(target);
-    ownsTarget = true;
-    await mkdir(join(target, "styles"));
+    await lstat(path);
+  } catch (error) {
+    if (error.code === "ENOENT") return;
+    throw new Error(`Target cannot be safely addressed: ${path} (${error.message})`);
+  }
+  throw new Error(`Target already exists: ${path}`);
+}
 
-    for (const file of files) {
-      await copyFile(join(sourceRoot, file), join(target, file));
+/** @param {string} source */
+async function validateManifest(source) {
+  for (const file of files) {
+    const path = join(source, file);
+    const entry = await lstat(path);
+    if (entry.isSymbolicLink() || !entry.isFile()) {
+      throw new Error(`Canonical source file is not a regular file: ${file}`);
+    }
+  }
+}
+
+/** @param {string} parent */
+async function createStaging(parent) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    const staging = join(parent, `.seess-stage-${randomUUID()}`);
+    try {
+      await mkdir(staging, { mode: 0o700 });
+      const entry = await lstat(staging);
+      return { path: staging, dev: entry.dev, ino: entry.ino };
+    } catch (error) {
+      if (error.code !== "EEXIST") throw error;
+    }
+  }
+  throw new Error("Unable to create private staging directory");
+}
+
+/** @param {{ path: string, dev: number, ino: number }} staging */
+async function removeStaging(staging) {
+  try {
+    const entry = await lstat(staging.path);
+    if (entry.dev === staging.dev && entry.ino === staging.ino) {
+      await rm(staging.path, { force: true, recursive: true });
     }
   } catch (error) {
-    if (ownsTarget) await rm(target, { force: true, recursive: true });
-    if (error.code === "EEXIST") throw new Error(`Target already exists: ${target}`);
-    throw error;
+    if (error.code !== "ENOENT") throw error;
+  }
+}
+
+/** @param {string} source @param {string} staging */
+async function copyManifest(source, staging) {
+  await mkdir(join(staging, "styles"));
+  for (const file of files) {
+    await copyFile(join(source, file), join(staging, file));
   }
 }
 
 async function main() {
   try {
-    const { dryRun, target: targetArgument } = parseArguments(process.argv.slice(2));
-    const sourceRoot = await realpath(fileURLToPath(new URL("../", import.meta.url)));
-    const target = await resolveTarget(targetArgument, sourceRoot);
+    const { dryRun, target } = parseArguments(process.argv.slice(2));
+    const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
+    const result = await adoptSystem({ sourceRoot, target, dryRun });
 
     if (dryRun) {
-      console.log(`PLAN: copy ${files.length} files to ${target}`);
-      for (const file of files) console.log(`  ${join(target, file)}`);
+      console.log(`PLAN: copy ${files.length} files to ${result.target}`);
+      for (const file of files) console.log(`  ${join(result.target, file)}`);
       console.log("PLAN: no files created");
     } else {
-      await copySystem(sourceRoot, target);
-      console.log(`COPIED: ${files.length} files to ${target}`);
+      console.log(`COPIED: ${files.length} files to ${result.target}`);
     }
   } catch (error) {
     console.error(`ERROR: ${error.message}`);
@@ -119,6 +185,6 @@ async function main() {
   }
 }
 
-export { copySystem, files };
+export { adoptSystem, files };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main();
