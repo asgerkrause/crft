@@ -63,6 +63,15 @@ const weights = [
     </div>
   </Specimen>
 
+  <Specimen id="long-content" title="Long content">
+    <article class="s" data-fixture="type-long-content">
+      <h4 data-fixture="type-semantic-heading">Semantic headings retain a readable measure when a long sentence needs more than one line to communicate its complete meaning.</h4>
+      <p class="t-lg" data-fixture="type-large-text">Large text retains its own readable measure across enough content to wrap naturally without clipping or a project-owned width.</p>
+      <p class="t-bd" data-fixture="type-body-text">Body text stays semantic and readable when the content is long enough to reveal the role’s measure, line height, and ordinary wrapping behavior.</p>
+      <p class="t-sm" data-fixture="type-small-text">Small text also wraps at its role-owned measure instead of inheriting a component-specific maximum width.</p>
+    </article>
+  </Specimen>
+
   <Specimen id="families" title="Families">
     <div class="sg-type-list">
       {families.map((family) => (

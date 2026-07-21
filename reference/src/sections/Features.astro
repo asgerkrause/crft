@@ -9,18 +9,18 @@ import placeholder from "../assets/placehold.svg";
   <p class="c-mu" slot="summary">Optional features retain useful fallback behavior and respect reduced-motion preferences.</p>
 
   <Specimen id="disclosure" title="Disclosure">
-    <details open>
+    <details open data-fixture="progressive-disclosure">
       <summary>Disclosure animation</summary>
       <p>When supported, native details content animates with motion roles.</p>
     </details>
   </Specimen>
 
   <Specimen id="corner-shape" title="Corner shape" class="card">
-    <p><code>.card</code> and <code>.btn</code> are enhancement targets, not component APIs.</p><button class="btn" type="button">Target button</button>
+    <p><code>.card</code> and <code>.btn</code> are enhancement targets, not component APIs.</p><button class="btn" data-fixture="progressive-corner" type="button">Target button</button>
   </Specimen>
 
   <Specimen id="motion-roles" title="Motion roles">
-    <div class="sg-motion-groups s">
+    <div class="sg-motion-groups s" data-fixture="reduced-motion">
       <fieldset class="sg-motion-speed">
         <legend>Preview duration</legend>
         <div>
@@ -54,10 +54,10 @@ import placeholder from "../assets/placehold.svg";
 
   <Specimen id="scroll-linked-motion" title="Scroll-linked motion">
     <div g="2">
-      <figure class="img-w" data-scrub><img alt="" width="1005" height="1005" src={placeholder.src}>
+      <figure class="img-w" data-scrub data-fixture="progressive-scroll-default"><img alt="" width="1005" height="1005" src={placeholder.src}>
         <figcaption>Default <code>.img-w[data-scrub]</code></figcaption>
       </figure>
-      <figure class="img-w" data-scrub="reverse"><img alt="" width="1005" height="1005" src={placeholder.src}>
+      <figure class="img-w" data-scrub="reverse" data-fixture="progressive-scroll-reverse"><img alt="" width="1005" height="1005" src={placeholder.src}>
         <figcaption>Reverse <code>data-scrub="reverse"</code></figcaption>
       </figure>
     </div>

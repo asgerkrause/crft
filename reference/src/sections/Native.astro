@@ -30,13 +30,13 @@ import { sections } from "../data";
   </Specimen>
 
   <Specimen id="native-state" title="Disclosure, focus, and hidden state">
-    <details>
+    <details data-fixture="native-details">
       <summary>Native details</summary>
       <p>Details remains operable without enhancement support.</p>
     </details>
-    <p><a href="#native-dialog">Visible focus follows keyboard navigation.</a> The <code>hidden</code> attribute removes content from layout and assistive technology.<span hidden>Hidden state specimen.</span></p>
-    <button type="button" command="show-modal" commandfor="native-dialog">Open dialog</button>
-    <dialog id="native-dialog">
+    <p><a href="#native-dialog" data-fixture="native-focus">Visible focus follows keyboard navigation.</a> The <code>hidden</code> attribute removes content from layout and assistive technology.<span data-fixture="native-hidden" hidden>Hidden state specimen.</span></p>
+    <button type="button" data-fixture="native-dialog-trigger" command="show-modal" commandfor="native-dialog">Open dialog</button>
+    <dialog id="native-dialog" data-fixture="native-dialog">
       <p>A native dialog uses the browser’s modal behavior.</p><button type="button" command="close" commandfor="native-dialog">Close dialog</button>
     </dialog>
   </Specimen>
