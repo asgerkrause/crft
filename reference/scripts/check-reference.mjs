@@ -28,6 +28,15 @@ const requiredMarkup = [
   'id="native-invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
 const internalProperties = ["--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx"];
+const requiredFixtures = [
+  "grid-boundary-sm", "grid-boundary-default", "grid-boundary-lg", "grid-boundary-nested", "grid-boundary-nested-inner", "grid-no-container",
+  "grid-sm", "grid-default", "grid-lg", "grid-nested-outer", "grid-nested-inner", "grid-no-container-grid",
+  "visual-order-focus", "visual-order-first", "visual-order-second", "visual-order-third",
+  "type-long-content", "type-semantic-heading", "type-large-text", "type-body-text", "type-small-text",
+  "skin-nested-outer", "skin-nested-inner",
+  "native-details", "native-focus", "native-hidden", "native-dialog-trigger", "native-dialog",
+  "progressive-disclosure", "progressive-corner", "reduced-motion", "progressive-scroll-default", "progressive-scroll-reverse",
+];
 
 let previousSection = -1;
 for (const id of requiredSections) {
@@ -46,6 +55,15 @@ if (/https?:\/\//i.test(html)) throw new Error("Built reference contains a remot
 if (/role=["']presentation["']/i.test(html)) throw new Error("Built reference suppresses semantic presentation.");
 for (const signal of requiredMarkup) {
   if (!html.includes(signal)) throw new Error(`Built reference is missing specimen markup: ${signal}.`);
+}
+for (const fixture of requiredFixtures) {
+  if (!html.includes(`data-fixture="${fixture}"`)) throw new Error(`Built reference is missing fixture: ${fixture}.`);
+}
+let previousFixture = -1;
+for (const fixture of ["visual-order-first", "visual-order-second", "visual-order-third"]) {
+  const position = html.indexOf(`data-fixture="${fixture}"`);
+  if (position <= previousFixture) throw new Error(`Built reference visual-order fixture source order is invalid at ${fixture}.`);
+  previousFixture = position;
 }
 for (const property of internalProperties) {
   if (html.includes(property)) throw new Error(`Built reference markup exposes private property ${property}.`);
@@ -103,4 +121,4 @@ for (const layer of ["base", "tokens", "type", "layout", "features", "utility", 
   previousLayer = position;
 }
 
-console.log(`PASS: Astro reference — ${requiredSections.length} sections, ${publicTokens.length} public tokens, ${assetPaths.length} emitted asset references, no hydrated islands`);
+console.log(`PASS: static Astro reference — ${requiredSections.length} sections, ${requiredFixtures.length} fixtures, ${publicTokens.length} public tokens, ${assetPaths.length} emitted asset references, no hydrated islands; rendered behavior remains unverified`);
