@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "astro build && node scripts/check-reference.mjs"
+    "test": "astro build && node scripts/check-reference.mjs",
+    "test:rendered": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

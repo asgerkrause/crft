@@ -81,6 +81,8 @@ Each command emits JSON. `audit`, `verify`, and `migrate` emit a versioned repor
 
 `audit`, `verify`, and `migrate` are read-only: they do not execute consumer code, rewrite source, delete files, or modify an entrypoint. `adopt` is this interface's sole writing command and copies the system only to its explicit target. Traversal excludes known secret-path sources where possible (`.env*`, `.pem`, `.key`, and SSH paths); report paths additionally replace secret-like components with `[redacted-path]` before output.
 
+The local CLI assumes a stable, developer-controlled filesystem for the duration of a command. Do not run it against a tree or target parent that an untrusted concurrent process can mutate: Node's portable filesystem API cannot provide descriptor-relative traversal or an atomic no-replace directory publish. A hosted service must analyze an immutable private snapshot and satisfy the stronger isolation gates in `docs/decisions/hosted-audit-boundary.md`.
+
 Exit `0` means no failing or blocked findings, `1` means one or more failing findings, `2` means invalid input or usage, and `3` means one or more blocked findings. The live analyzer is `0.1.0`. Canonical comparison is the current checkout, not a version-pinned historical source; older adopted snapshots may therefore report drift.
 
 ## Use
@@ -739,7 +741,13 @@ Verify the isolated Astro reference separately:
 cd reference && bun run test
 ```
 
-This confirms that the reference builds and contains the required public specimens without exposing private implementation state. Neither check proves rendered browser behavior.
+This confirms that the reference builds and contains the required public specimens without exposing private implementation state. Run Chromium-backed behavioral acceptance separately:
+
+```sh
+cd reference && bun run test:rendered
+```
+
+The rendered suite checks selected container-grid, source-order/focus, native-control, reduced-motion, and nested-skin behavior. Chromium-only coverage does not replace the complete rendered matrix below.
 
 ### Judgment
 
