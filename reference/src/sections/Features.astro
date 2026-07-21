@@ -1,0 +1,65 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+import placeholder from "../assets/placehold.svg";
+---
+
+<Section {...sections.features}>
+  <p class="c-mu" slot="summary">Optional features retain useful fallback behavior and respect reduced-motion preferences.</p>
+
+  <Specimen id="disclosure" title="Disclosure">
+    <details open>
+      <summary>Disclosure animation</summary>
+      <p>When supported, native details content animates with motion roles.</p>
+    </details>
+  </Specimen>
+
+  <Specimen id="corner-shape" title="Corner shape" class="card">
+    <p><code>.card</code> and <code>.btn</code> are enhancement targets, not component APIs.</p><button class="btn" type="button">Target button</button>
+  </Specimen>
+
+  <Specimen id="motion-roles" title="Motion roles">
+    <div class="sg-motion-groups s">
+      <fieldset class="sg-motion-speed">
+        <legend>Preview duration</legend>
+        <div>
+          <label><input class="sr" type="radio" name="motion-speed" value="shortest">Shortest <code>--m-td-sf</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="fast">Fast <code>--m-td-f</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="default">Default <code>--m-td</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="slow">Slow <code>--m-td-s</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="slowest" checked>Slowest <code>--m-td-ss</code></label>
+        </div>
+      </fieldset>
+      <div class="sg-motion-list">
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-i)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In</span><code>--m-tf-i</code>
+        </div>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-io)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In-out</span><code>--m-tf-io</code>
+        </div>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-o)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Out</span><code>--m-tf-o</code>
+        </div>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-g)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Glide</span><code>--m-tf-g</code>
+        </div>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-s)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Spring</span><code>--m-tf-s</code>
+        </div>
+      </div>
+    </div>
+    <p class="t-sm">Reduced motion resolves these roles to a near-instant linear path.</p>
+  </Specimen>
+
+  <Specimen id="scroll-linked-motion" title="Scroll-linked motion">
+    <div g="2">
+      <figure class="img-w" data-scrub><img alt="" width="1005" height="1005" src={placeholder.src}>
+        <figcaption>Default <code>.img-w[data-scrub]</code></figcaption>
+      </figure>
+      <figure class="img-w" data-scrub="reverse"><img alt="" width="1005" height="1005" src={placeholder.src}>
+        <figcaption>Reverse <code>data-scrub="reverse"</code></figcaption>
+      </figure>
+    </div>
+  </Specimen>
+</Section>

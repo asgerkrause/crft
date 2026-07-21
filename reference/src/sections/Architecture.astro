@@ -1,0 +1,32 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+
+const layers = [
+  { order: "01", label: "Base", file: "styles/base.css" },
+  { order: "02", label: "Tokens", file: "styles/tokens.css" },
+  { order: "03", label: "Type", file: "styles/type.css" },
+  { order: "04", label: "Layout", file: "styles/layout.css" },
+  { order: "05", label: "Features", file: "styles/features.css" },
+  { order: "06", label: "Utility", file: "styles/utility.css" },
+  { order: "07", label: "Project", file: "styles/project.css" },
+] as const;
+---
+
+<Section {...sections.architecture}>
+  <p slot="summary" class="c-mu">Import <code>global.css</code> once. Each layer owns one category of behavior.</p>
+
+  <Specimen id="layer-order" title="Layer order">
+    <ol class="sg-architecture-list">
+      {layers.map((layer) => (
+        <li><span>{layer.order}</span><strong>{layer.label}</strong><code>{layer.file}</code></li>
+      ))}
+    </ol>
+  </Specimen>
+
+  <Specimen id="public-boundary" title="Public boundary">
+    <p class="sg-a11y-note">Public use is limited to documented tokens, selectors, attributes, and native
+      guarantees. Runtime implementation state is not consumer API.</p>
+  </Specimen>
+</Section>

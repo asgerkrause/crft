@@ -1,0 +1,43 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+---
+
+<Section {...sections.native}>
+  <p class="c-mu" slot="summary">Use the native element that already carries meaning and behavior before adding an abstraction.</p>
+
+  <Specimen id="tables" title="Tables">
+    <table>
+      <caption>Compact native table</caption>
+      <thead>
+        <tr>
+          <th scope="col">Role</th>
+          <th scope="col">State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Focus</th>
+          <td>Visible</td>
+        </tr>
+        <tr>
+          <th scope="row">Hidden</th>
+          <td>Native</td>
+        </tr>
+      </tbody>
+    </table>
+  </Specimen>
+
+  <Specimen id="native-state" title="Disclosure, focus, and hidden state">
+    <details>
+      <summary>Native details</summary>
+      <p>Details remains operable without enhancement support.</p>
+    </details>
+    <p><a href="#native-dialog">Visible focus follows keyboard navigation.</a> The <code>hidden</code> attribute removes content from layout and assistive technology.<span hidden>Hidden state specimen.</span></p>
+    <button type="button" command="show-modal" commandfor="native-dialog">Open dialog</button>
+    <dialog id="native-dialog">
+      <p>A native dialog uses the browser’s modal behavior.</p><button type="button" command="close" commandfor="native-dialog">Close dialog</button>
+    </dialog>
+  </Specimen>
+</Section>

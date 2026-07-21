@@ -1,0 +1,44 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+---
+
+<Section {...sections.layout}>
+  <p class="c-mu" slot="summary">Containers establish reading boundaries. Stacks state direction, wrapping, alignment,
+    and distribution.</p>
+
+  <Specimen id="containers" title="Containers">
+    <div class="sg-width-specimens">
+      <div class="c sm"><span>Narrow container</span><code>.c.sm</code></div>
+      <div class="c"><span>Default container</span><code>.c</code></div>
+      <div class="c lg"><span>Wide container</span><code>.c.lg</code></div>
+    </div>
+  </Specimen>
+
+  <Specimen id="stacks" title="Stacks">
+    <div class="sg-layout-grid">
+      <div>
+        <div class="sg-specimen-label"><code>.s</code><span>vertical</span></div>
+        <div class="s sg-stack-sample"><span>One</span><span>Two</span><span>Three</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>.s.h</code><span>horizontal</span></div>
+        <div class="s h sg-row-sample"><span>One</span><span>Two</span><span>Three</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>.s.h.w</code><span>wrapping row</span></div>
+        <div class="s h w sg-row-sample"><span>One</span><span>Two</span><span>Three</span><span>Four</span>
+        </div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>.s.center</code><span>cross-axis center</span></div>
+        <div class="s center sg-stack-sample"><span>One</span><span>Two</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>.s.sb</code><span>space between</span></div>
+        <div class="s h sb sg-row-sample"><span>Start</span><span>End</span></div>
+      </div>
+    </div>
+  </Specimen>
+</Section>

@@ -1,0 +1,66 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+---
+
+<Section {...sections.grid}>
+  <p class="c-mu" slot="summary">Grid attributes apply to a grid and its direct children. On small screens every grid
+    becomes a flex column; source order must remain meaningful.</p>
+
+  <Specimen id="columns-and-spans" title="Columns and spans">
+    <div class="sg-grid-list">
+      <div>
+        <div class="sg-specimen-label"><code>g</code><span>default grid</span></div>
+        <div g><span>One</span><span>Two</span><span>Three</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>g="8-4" + c="4-2"</code><span>responsive span</span></div>
+        <div g="8-4"><span c="4-2">Featured</span><span>Default</span><span>Default</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>c="0"</code><span>full row</span></div>
+        <div g="4-2"><span c="0">Full row</span><span>Two</span><span>Three</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>r="2-1"</code><span>controlled row span</span></div>
+        <div g="3"><span r="2-1">Row span</span><span>Two</span><span>Three</span><span>Four</span></div>
+      </div>
+    </div>
+  </Specimen>
+
+  <Specimen id="visual-order" title="Visual order">
+    <div class="sg-grid-list">
+      <div>
+        <div class="sg-specimen-label"><code>o="f-a-l"</code><span>visual order only</span></div>
+        <div g="3"><span o="f-a-l">Ordered first / auto / last</span><span>Two</span><span>Three</span></div>
+      </div>
+    </div>
+  </Specimen>
+
+  <Specimen id="auto-fit" title="Auto-fit">
+    <div class="sg-grid-list">
+      <div>
+        <div class="sg-specimen-label"><code>g="a-sm"</code><span>compact auto-fit</span></div>
+        <div g="a-sm"><span>One</span><span>Two</span><span>Three</span><span>Four</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>g="a"</code><span>general auto-fit</span></div>
+        <div g="a"><span>One</span><span>Two</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>g="a-lg"</code><span>spacious auto-fit</span></div>
+        <div g="a-lg"><span>One</span><span>Two</span></div>
+      </div>
+    </div>
+  </Specimen>
+
+  <Specimen id="subgrid" title="Subgrid">
+    <div class="sg-grid-list">
+      <div>
+        <div class="sg-specimen-label"><code>g="sg"</code><span>nested subgrid</span></div>
+        <div g="3"><span>One</span><span g="sg" c="2"><i>Nested one</i><i>Nested two</i></span></div>
+      </div>
+    </div>
+  </Specimen>
+</Section>

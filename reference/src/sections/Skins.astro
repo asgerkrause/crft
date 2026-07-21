@@ -1,0 +1,53 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+
+const canvasSkins = [
+  { skin: "", label: "Base reset" },
+  { skin: "tone", label: "Tone boundary" },
+  { skin: "invert", label: "Inverted boundary" },
+] as const;
+
+const accentSkins = [
+  { skin: "accent", label: "Accent boundary" },
+  { skin: "secondary", label: "Secondary boundary" },
+  { skin: "tertiary", label: "Tertiary boundary" },
+] as const;
+---
+
+<Section {...sections.skins}>
+  <p class="c-mu" slot="summary">Apply a skin at the outer semantic boundary. The header’s Skin study is
+    styleguide-only; it is not a <code>data-skin</code> value.</p>
+
+  <Specimen id="canvas-skins" title="Canvas skins">
+    <div class="sg-skin-grid">
+      {canvasSkins.map(({ skin, label }) => (
+        <article class="sg-skin-card" data-skin={skin}>
+          <p>{label}</p><code>{`data-skin="${skin}"`}</code>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="accent-skins" title="Accent skins">
+    <div class="sg-skin-grid">
+      {accentSkins.map(({ skin, label }) => (
+        <article class="sg-skin-card" data-skin={skin}>
+          <p>{label}</p><code>{`data-skin="${skin}"`}</code>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="nested-boundaries" title="Nested boundaries">
+    <div class="sg-skin-grid">
+      <article class="sg-skin-card" data-skin="accent">
+        <p>Outer accent boundary</p>
+        <div class="sg-skin-card" data-skin="">
+          <p>Nested reset</p><code>data-skin=""</code>
+        </div>
+      </article>
+    </div>
+  </Specimen>
+</Section>

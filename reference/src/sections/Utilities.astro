@@ -1,0 +1,78 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+
+const colors = [
+  { label: "Foreground", className: "c-fg" },
+  { label: "Muted", className: "c-mu" },
+  { label: "Accent", className: "c-ac" },
+  { label: "Secondary", className: "c-sc" },
+] as const;
+
+const fonts = [
+  { label: "Sans", className: "f-sa" },
+  { label: "Serif", className: "f-se" },
+  { label: "Mono", className: "f-mo" },
+  { label: "Body", className: "f-bd" },
+  { label: "Display", className: "f-dp" },
+] as const;
+
+const weights = [
+  { label: "Light", className: "w-lt" },
+  { label: "Regular", className: "w-rg" },
+  { label: "Bold", className: "w-bd" },
+] as const;
+
+const transforms = [
+  { label: "upper text", className: "tt-uc" },
+  { label: "LOWER TEXT", className: "tt-lc" },
+  { label: "No Transform", className: "tt-no" },
+  { label: "capitalized words", className: "tt-cp" },
+] as const;
+---
+
+<Section {...sections.utilities}>
+  <p slot="summary" class="c-mu">Each utility below is applied directly. Use one only when it states a stable,
+    reusable operation.</p>
+
+  <Specimen id="color-utilities" title="Color">
+    <div class="sg-inline-specimens">
+      {colors.map((item) => (
+        <span>{item.label} <i class:list={["utility", item.className]} aria-hidden="true"></i> <code>.{item.className}</code></span>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="font-family-utilities" title="Font family">
+    <div class="sg-inline-specimens">
+      {fonts.map((item) => (
+        <span class={item.className}>{item.label} <code>.{item.className}</code></span>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="weight-utilities" title="Weight">
+    <div class="sg-inline-specimens">
+      {weights.map((item) => (
+        <span class={item.className}>{item.label} <code>.{item.className}</code></span>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="text-transform-utilities" title="Text transform">
+    <div class="sg-inline-specimens">
+      {transforms.map((item) => (
+        <span class={item.className}>{item.label} <code>.{item.className}</code></span>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="accessible-content" title="Accessible content">
+    <p><span class="sr">Screen-reader-only context: </span><a class="sr focusable" href="#utilities">Skip to
+        utility
+        specimens</a><code>.sr</code> remains available to assistive technology; <code>.sr.focusable</code>
+      returns
+      on keyboard focus.</p>
+  </Specimen>
+</Section>
