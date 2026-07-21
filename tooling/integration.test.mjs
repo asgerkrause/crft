@@ -45,10 +45,11 @@ test("spawned commands preserve consumer files and never execute package scripts
   const migrate = command("migrate", ...args);
 
   assert.equal(verify.exitCode, 0);
-  assert.equal(audit.exitCode, 0);
-  assert.equal(migrate.exitCode, 0);
+  assert.equal(audit.exitCode, 3);
+  assert.equal(migrate.exitCode, 3);
   assert.equal(verify.output.summary.pass, 3);
-  assert.deepEqual(migrate.output.plan.map((step) => step.action), ["preserve", "preserve", "preserve"]);
+  assert.ok(migrate.output.plan.some((step) => step.action === "escalate"));
+  assert.ok(migrate.output.plan.some((step) => step.action === "preserve"));
   assert.deepEqual(hashes(root), before);
   assert.equal(existsSync(join(root, "package-script-ran")), false);
 });

@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { adoptSystem, files } from "../scripts/copy-system.mjs";
 import { createReport } from "./contracts/report.mjs";
 import { analyze } from "./core/analyze.mjs";
-import { CANONICAL_ROOT, collectConsumerRecords, collectIntegrityInput, normalizeAdoptionTarget } from "./core/run.mjs";
+import { CANONICAL_ROOT, collectConsumerRecords, collectIntegrityInput, consumerSkippedFindings, normalizeAdoptionTarget } from "./core/run.mjs";
 import { resolveScope } from "./core/scope.mjs";
 import { createMigrationPlan } from "./migrate/plan.mjs";
 import { ADOPTION_MANIFEST, assessAdoptionIntegrity } from "./rules/adoption-integrity.mjs";
@@ -25,7 +25,8 @@ export async function run(argv) {
     const integrity = collectIntegrityInput({ scope, manifest: ADOPTION_MANIFEST });
     const rules = [() => assessAdoptionIntegrity(integrity)];
     if (input.command === "audit" || input.command === "migrate") {
-      rules.push(() => analyzeConsumerApi(collectConsumerRecords(scope)));
+      const consumer = collectConsumerRecords(scope);
+      rules.push(() => [...analyzeConsumerApi(consumer.records), ...consumerSkippedFindings(consumer.skipped)]);
     }
     const findings = analyze({ scope, rules });
     const report = createReport({

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
 import { createFixture } from "./test-support/fixture.mjs";
@@ -61,10 +61,47 @@ test("audit adds consumer API findings and migrate returns its read-only plan", 
   const audit = await run(["audit", ...args]);
   const migrate = await run(["migrate", ...args]);
 
-  assert.equal(audit.exitCode, 1);
+  assert.equal(audit.exitCode, 3);
   assert.equal(audit.output.findings.some((finding) => finding.ruleId === "consumer-api/private-property"), true);
-  assert.equal(migrate.exitCode, 1);
+  assert.equal(migrate.exitCode, 3);
   assert.deepEqual(migrate.output.plan.map((step) => Object.keys(step).sort()), migrate.output.plan.map(() => ["action", "path", "range", "ruleId"]));
+});
+
+test("verify fails for extra symbolic links and excluded directories in adoption", async (t) => {
+  const root = await adoptedFixture(t);
+  const adoption = join(root, "vendor/seess");
+  symlinkSync(join(adoption, "global.css"), join(adoption, "linked.css"));
+  mkdirSync(join(adoption, "node_modules"));
+  writeFileSync(join(adoption, "node_modules/extra.css"), "body {}");
+
+  const result = await run(["verify", "--root", root, "--entrypoint", "src/entry.css", "--adoption", "vendor/seess"]);
+  assert.equal(result.exitCode, 1);
+  assert.deepEqual(result.output.findings
+    .filter((finding) => finding.ruleId === "adoption/manifest" && finding.status === "fail")
+    .map((finding) => finding.path)
+    .sort(), ["vendor/seess/linked.css", "vendor/seess/node_modules", "vendor/seess/node_modules/extra.css"]);
+});
+
+test("verify exits blocked for remote or outside static imports", async (t) => {
+  for (const extra of ['@import "https://example.com/base.css";\n', '@import "../../outside.css";\n']) {
+    const root = await adoptedFixture(t, `@import "../vendor/seess/global.css";\n${extra}`);
+    const result = await run(["verify", "--root", root, "--entrypoint", "src/entry.css", "--adoption", "vendor/seess"]);
+    assert.equal(result.exitCode, 3);
+    assert.equal(result.output.findings.find((finding) => finding.ruleId === "adoption/import-graph")?.status, "blocked");
+  }
+});
+
+test("audit exits blocked for oversized and symbolic-link consumer sources", async (t) => {
+  const root = await adoptedFixture(t);
+  writeFileSync(join(root, "src/oversized.css"), "x".repeat(1024 * 1024 + 1));
+  symlinkSync(join(root, "src/entry.css"), join(root, "src/linked.css"));
+
+  const result = await run(["audit", "--root", root, "--entrypoint", "src/entry.css", "--adoption", "vendor/seess"]);
+  assert.equal(result.exitCode, 3);
+  assert.deepEqual(result.output.findings
+    .filter((finding) => finding.ruleId === "consumer-api/source-skipped")
+    .map((finding) => finding.path)
+    .filter((path) => path.startsWith("src/")), ["src/linked.css", "src/oversized.css"]);
 });
 
 test("requires command-specific flags and emits JSON usage errors", async () => {

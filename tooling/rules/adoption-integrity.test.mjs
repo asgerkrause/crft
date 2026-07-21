@@ -12,7 +12,7 @@ const record = (path, value = `canonical ${path}`, kind = "file") => ({
 });
 
 function fixture(overrides = {}) {
-  const canonicalEntries = ADOPTION_MANIFEST.map((path) => record(path));
+  const canonicalEntries = [{ path: "styles", kind: "directory" }, ...ADOPTION_MANIFEST.map((path) => record(path))];
   const adoptedEntries = canonicalEntries.map((entry) => ({ ...entry }));
   return {
     adoptionPath: "vendor/seess",
@@ -58,13 +58,13 @@ test("reports missing, extra, symbolic-link, and non-regular copied entries", ()
 
   const result = failures(assessAdoptionIntegrity(input));
   assert.deepEqual(result.map((finding) => [finding.ruleId, finding.path]), [
-    ["adoption/manifest", "vendor/seess/mono.ttf"],
     ["adoption/manifest", "vendor/seess/sans.ttf"],
+    ["adoption/manifest", "vendor/seess/mono.ttf"],
     ["adoption/manifest", "vendor/seess/styles/extra.css"],
     ["adoption/manifest", "vendor/seess/styles/cache"],
   ]);
-  assert.match(result[1].evidence.summary, /symbolic link/);
-  assert.match(result[3].evidence.summary, /non-regular/);
+  assert.match(result.find((finding) => finding.path === "vendor/seess/sans.ttf")?.evidence.summary ?? "", /symbolic link/);
+  assert.match(result.find((finding) => finding.path === "vendor/seess/styles/cache")?.evidence.summary ?? "", /directory/);
 });
 
 test("requires byte length and hash equality, including copied project.css", () => {
@@ -113,6 +113,27 @@ test("reports a missing resolved entrypoint edge", () => {
     ["adoption/entrypoint-import", "src/styles.css"],
   ]);
   assert.match(result[0].evidence.summary, /0 resolved entrypoint edges/);
+});
+
+test("blocks integrity when static import resolution is incomplete", () => {
+  const findings = assessAdoptionIntegrity(fixture({
+    importGraph: {
+      entrypoint: "src/styles.css",
+      edges: [{ from: "src/styles.css", to: "vendor/seess/global.css" }],
+      blocked: [{
+        path: "src/styles.css",
+        range: { start: { line: 2, column: 1 }, end: { line: 2, column: 25 } },
+        blocked: "uri",
+      }],
+    },
+  }));
+  const finding = findings.find((item) => item.ruleId === "adoption/import-graph");
+  assert.deepEqual(finding && [finding.status, finding.evidence.state, finding.safeNextAction.type, finding.range], [
+    "blocked",
+    "blocked",
+    "escalate",
+    { start: { line: 2, column: 1 }, end: { line: 2, column: 25 } },
+  ]);
 });
 
 test("rejects malformed pure-rule inputs rather than resolving paths or traversing disk", () => {
