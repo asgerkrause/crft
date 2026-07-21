@@ -10,6 +10,7 @@ CSS is behavioral source; `README.md` is public handbook. Route to handbook sect
 ## Route
 
 - **Adopt:** `README.md#adopt`, then `#use`.
+- **Analyzer:** `README.md#analyzer-tooling` for commands, JSON evidence, exit semantics, and read-only limits.
 - **Build, translate, or extend:** `#system-decisions`, `#files-and-layers`, and the relevant API section.
 - **Migrate:** `#migration`, `#extension`, affected public API sections, then `references/frontend-quality.md` for evidence and stop conditions.
 - **Review:** `#verification` and relevant owner; do not edit.

@@ -124,7 +124,7 @@ Do not communicate meaning through color or motion alone.
 
 Use `node scripts/copy-system.mjs [--dry-run] <target>` to adopt the complete system into a new isolated directory. The explicit target must not exist, and its parent must already exist and be writable. The script copies `global.css`, both fonts, and all seven `styles/*.css` owners byte-for-byte. It must resolve source files from this repository, claim the target exclusively, clean up partial output, and never merge, overwrite, upgrade, or edit an application entrypoint.
 
-After copying, import the adopted `global.css` exactly once from the consumer's actual CSS entrypoint. Keep the adopted system files unchanged, including copied `styles/project.css`; put product or component rules outside the copied tree in a consumer-owned `@layer project`. The copy command is a one-time adoption tool, not a project dependency or build step.
+After copying, import the adopted `global.css` exactly once from the consumer's actual CSS entrypoint. Keep the adopted system files unchanged, including copied `styles/project.css`; put product or component rules outside the copied tree in a consumer-owned `@layer project`. The copy command is a one-time adoption tool, not a project dependency or build step. For analyzer invocation, JSON evidence, exit semantics, read-only limits, and current-checkout comparison, use `README.md#analyzer-tooling`.
 
 When existing CSS must migrate:
 

@@ -5,6 +5,7 @@ A dependency-free CSS foundation for tokens, type, layout, responsive grid, sema
 ## Find the rule
 
 - [Adopt](#adopt)
+- [Analyzer tooling](#analyzer-tooling)
 - [Use](#use)
 - [System decisions](#system-decisions)
 - [Files and layers](#files-and-layers)
@@ -63,6 +64,24 @@ Import the copied entrypoint exactly once from the project's actual CSS entrypoi
 ```
 
 Keep adopted system files unchanged. Put product rules in a consumer-owned `project` layer so the copied tree remains a recognizable system snapshot. Version one installs only: it does not merge, overwrite, upgrade, or edit an application entrypoint.
+
+## Analyzer tooling
+
+Run the local Node interface from this checkout. `adopt` requires an explicit absolute target; `audit`, `verify`, and `migrate` require an explicit absolute project root plus root-relative POSIX entrypoint and adoption paths.
+
+```sh
+node tooling/seess.mjs adopt --target /absolute/path/to/project/styles/seess --dry-run
+node tooling/seess.mjs adopt --target /absolute/path/to/project/styles/seess
+node tooling/seess.mjs audit --root /absolute/path/to/project --entrypoint src/entry.css --adoption styles/seess
+node tooling/seess.mjs verify --root /absolute/path/to/project --entrypoint src/entry.css --adoption styles/seess
+node tooling/seess.mjs migrate --root /absolute/path/to/project --entrypoint src/entry.css --adoption styles/seess
+```
+
+Each command emits JSON. `audit`, `verify`, and `migrate` emit a versioned report; `migrate` also emits a plan containing only `inspect`, `verify`, `preserve`, or `escalate` actions. Finding evidence states are `observed`, `inferred`, `unknown`, and `blocked`; classifications are `deterministic`, `heuristic`, `judgment`, and `rendered`.
+
+`audit`, `verify`, and `migrate` are read-only: they do not execute consumer code, rewrite source, delete files, or modify an entrypoint. `adopt` is this interface's sole writing command and copies the system only to its explicit target. Traversal excludes known secret-path sources where possible (`.env*`, `.pem`, `.key`, and SSH paths); report paths additionally replace secret-like components with `[redacted-path]` before output.
+
+Exit `0` means no failing or blocked findings, `1` means one or more failing findings, `2` means invalid input or usage, and `3` means one or more blocked findings. The live analyzer is `0.1.0`. Canonical comparison is the current checkout, not a version-pinned historical source; older adopted snapshots may therefore report drift.
 
 ## Use
 
