@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { copySystem, files } from "../scripts/copy-system.mjs";
+import { adoptSystem, files } from "../scripts/copy-system.mjs";
 import { createReport } from "./contracts/report.mjs";
 import { analyze } from "./core/analyze.mjs";
 import { CANONICAL_ROOT, collectConsumerRecords, collectIntegrityInput, normalizeAdoptionTarget } from "./core/run.mjs";
@@ -48,7 +48,7 @@ export async function run(argv) {
 /** @param {{ target: string, dryRun: boolean }} input */
 async function runAdopt(input) {
   const target = normalizeAdoptionTarget(input.target);
-  if (!input.dryRun) await copySystem(CANONICAL_ROOT, target.absolute);
+  await adoptSystem({ sourceRoot: CANONICAL_ROOT, target: target.absolute, dryRun: input.dryRun });
   const report = createReport({
     command: "adopt",
     scope: { adoption: target.label },
