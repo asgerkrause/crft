@@ -1,0 +1,102 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import {
+  FINDING_SCHEMA_VERSION,
+  createFinding,
+  redactEvidence,
+  validateFinding,
+  validateFindingPath,
+} from "./finding.mjs";
+
+function finding(overrides = {}) {
+  return {
+    schemaVersion: FINDING_SCHEMA_VERSION,
+    analyzerVersion: "0.1.0",
+    seessVersion: "1.0.0",
+    ruleId: "adoption/copied-tree-drift",
+    path: "styles/tokens.css",
+    range: {
+      start: { line: 12, column: 3 },
+      end: { line: 12, column: 18 },
+    },
+    classification: "deterministic",
+    evidence: {
+      state: "observed",
+      summary: "Copied token differs from canonical source.",
+    },
+    confidence: 1,
+    status: "fail",
+    safeNextAction: {
+      type: "inspect",
+      summary: "Compare this file with the pinned canonical source.",
+    },
+    ...overrides,
+  };
+}
+
+test("accepts a complete version 1.0 finding", () => {
+  assert.deepEqual(validateFinding(finding()), []);
+  assert.deepEqual(createFinding(finding()), finding());
+});
+
+test("requires schema, analyzer, and seess versions", () => {
+  const errors = validateFinding(finding({ schemaVersion: "2.0", analyzerVersion: "latest", seessVersion: "1" }));
+  assert.deepEqual(errors, [
+    "schemaVersion must be 1.0",
+    "analyzerVersion must be a semantic version",
+    "seessVersion must be a semantic version",
+  ]);
+});
+
+test("requires contract classifications, evidence states, status, confidence, and safe actions", () => {
+  const errors = validateFinding(finding({
+    classification: "guess",
+    confidence: 1.1,
+    status: "delete",
+    evidence: { state: "claimed", summary: "Evidence" },
+    safeNextAction: { type: "delete", summary: "Delete the file" },
+  }));
+  assert.deepEqual(errors, [
+    "classification must be one of: deterministic, heuristic, judgment, rendered",
+    "confidence must be a finite number from 0 through 1",
+    "status must be one of: pass, fail, review, blocked",
+    "evidence.state must be one of: observed, inferred, unknown, blocked",
+    "safeNextAction.type must be one of: inspect, verify, preserve, escalate",
+  ]);
+});
+
+test("rejects unsafe paths and inverted ranges", () => {
+  assert.equal(validateFindingPath("/private/key.css"), "path must be a relative POSIX path");
+  assert.equal(validateFindingPath("styles/../tokens.css"), "path must not contain empty, '.' or '..' segments");
+  assert.equal(validateFindingPath("styles\\tokens.css"), "path must be a relative POSIX path");
+  assert.equal(validateFindingPath("C:/private/key.css"), "path must be a relative POSIX path");
+  assert.deepEqual(validateFinding(finding({
+    range: {
+      start: { line: 7, column: 4 },
+      end: { line: 7, column: 3 },
+    },
+  })), ["range end must not precede range start"]);
+});
+
+test("redacts credentials in evidence without mutating caller input", () => {
+  const source = finding({
+    evidence: {
+      state: "observed",
+      summary: "Authorization: Bearer top-secret-token API_KEY=not-for-report",
+      excerpts: ["-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----"],
+    },
+  });
+  const result = createFinding(source);
+
+  assert.equal(result.evidence.summary, "Authorization: Bearer [REDACTED] API_KEY=[REDACTED]");
+  assert.deepEqual(result.evidence.excerpts, ["[REDACTED PRIVATE KEY]"]);
+  assert.match(source.evidence.summary, /top-secret-token/);
+  assert.equal(redactEvidence("token=secret"), "token=[REDACTED]");
+});
+
+test("throws a concise error for invalid findings", () => {
+  assert.throws(
+    () => createFinding(finding({ path: "../outside.css" })),
+    /Invalid finding: path must not contain empty, '.' or '..' segments/,
+  );
+});
