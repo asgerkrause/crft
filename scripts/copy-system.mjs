@@ -99,20 +99,26 @@ async function copySystem(sourceRoot, target) {
   }
 }
 
-try {
-  const { dryRun, target: targetArgument } = parseArguments(process.argv.slice(2));
-  const sourceRoot = await realpath(fileURLToPath(new URL("../", import.meta.url)));
-  const target = await resolveTarget(targetArgument, sourceRoot);
+async function main() {
+  try {
+    const { dryRun, target: targetArgument } = parseArguments(process.argv.slice(2));
+    const sourceRoot = await realpath(fileURLToPath(new URL("../", import.meta.url)));
+    const target = await resolveTarget(targetArgument, sourceRoot);
 
-  if (dryRun) {
-    console.log(`PLAN: copy ${files.length} files to ${target}`);
-    for (const file of files) console.log(`  ${join(target, file)}`);
-    console.log("PLAN: no files created");
-  } else {
-    await copySystem(sourceRoot, target);
-    console.log(`COPIED: ${files.length} files to ${target}`);
+    if (dryRun) {
+      console.log(`PLAN: copy ${files.length} files to ${target}`);
+      for (const file of files) console.log(`  ${join(target, file)}`);
+      console.log("PLAN: no files created");
+    } else {
+      await copySystem(sourceRoot, target);
+      console.log(`COPIED: ${files.length} files to ${target}`);
+    }
+  } catch (error) {
+    console.error(`ERROR: ${error.message}`);
+    process.exitCode = 1;
   }
-} catch (error) {
-  console.error(`ERROR: ${error.message}`);
-  process.exitCode = 1;
 }
+
+export { copySystem, files };
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main();
