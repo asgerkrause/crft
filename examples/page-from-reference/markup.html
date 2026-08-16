@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: page from reference (non-canonical)</title>
+    <!--
+      Consumer app after copy:
+        - one import of adopted global.css (establishes layers)
+        - project rules in the project's normal CSS owner (see example.css)
+      Paths below are placeholders for a host app, not this repo’s tree.
+    -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main>
+      <!--
+        section + .c establishes the named container. data-scrub is deliberate
+        because project CSS gives the image wrapper a stable crop and height.
+      -->
+      <section data-skin="tone">
+        <div class="c lg">
+          <div g="12-6">
+            <header class="s" c="5-3">
+              <p class="t-sm c-mu">Field notes</p>
+              <h1>Editorial systems for complex ideas.</h1>
+              <p class="t-lg">
+                A clear structure gives strong work room to speak without
+                inventing a component library for every band.
+              </p>
+              <p>
+                <a class="action" href="/systems">Read the system handbook</a>
+              </p>
+            </header>
+
+            <figure class="img-w" data-scrub c="7-3">
+              <img
+                src="/media/hero.webp"
+                alt="Layered editorial spreads on a desk"
+                width="1600"
+                height="1000"
+                loading="eager"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

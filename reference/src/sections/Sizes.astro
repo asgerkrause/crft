@@ -1,0 +1,42 @@
+---
+import Section from "../components/Section.astro";
+import { sections } from "../data";
+
+const scaleFamilies = [
+  { id: "spacing", title: "Spacing", prefix: "s", boxClass: "sg-measure", property: "--sg-size", ratio: "--s-rt", anchor: "--s" },
+  { id: "gap", title: "Gap", prefix: "g", boxClass: "sg-gap-box", property: "gap", ratio: "--g-rt", anchor: "--g" },
+  { id: "padding", title: "Padding", prefix: "p", boxClass: "sg-padding-box", property: "padding", ratio: "--p-rt", anchor: "--p" },
+  { id: "radius", title: "Radius", prefix: "r", boxClass: "sg-radius-box", property: "border-radius", ratio: "--r-rt", anchor: "--r" },
+] as const;
+
+const variants = ["xs", "sm", "", "lg", "xl"] as const;
+---
+
+<Section {...sections.sizes}>
+  <p slot="summary" class="c-mu">These rows show the public scale families. Their values and responsive formulas remain in the token source.</p>
+
+  {scaleFamilies.map((family) => (
+    <article id={family.id} class="sg-scale-family s">
+      <header>
+        <div class="sg-heading-wrap">
+          <h3 class="t-lg">{family.title}</h3>
+        </div>
+        <p><code>{family.ratio}</code> ratio · <code>{family.anchor}</code> anchor</p>
+      </header>
+      <div class="sg-measure-ramp">
+        {variants.map((variant) => {
+          const token = `--${family.prefix}${variant ? `-${variant}` : ""}`;
+          const style = `${family.property}:var(${token})`;
+
+          return (
+            <div class={family.boxClass} style={style}>
+              <i></i>
+              {family.id === "gap" && <i></i>}
+              <code>{token}</code>
+            </div>
+          );
+        })}
+      </div>
+    </article>
+  ))}
+</Section>

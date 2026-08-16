@@ -1,0 +1,39 @@
+---
+import { modes, navigation, presets } from "../data";
+---
+
+<header class="sg-header">
+  <div class="c">
+    <a class="sg-logo" href="#overview">CRFT</a>
+  </div>
+
+  <div class="c">
+    <nav class="sg-rail-nav" aria-label="Reference sections">
+      {navigation.map((item) => <a href={`#${item.id}`}>{item.nav}</a>)}
+    </nav>
+  </div>
+
+  <div class="c">
+    <button class="sg-controls-trigger" type="button" popovertarget="styleguide-preferences"
+      aria-controls="styleguide-preferences" aria-expanded="false">Controls</button>
+  </div>
+
+  <form id="styleguide-preferences" class="sg-preferences" popover aria-label="Styleguide controls">
+    <fieldset class="sg-config-group">
+      <legend>Theme</legend>
+      <div class="sg-config-options">
+        {modes.map((mode) => (
+          <label><input class="sr" type="radio" name="mode" value={mode.value} checked={mode.value === "system"}> {mode.label}</label>
+        ))}
+      </div>
+    </fieldset>
+    <fieldset class="sg-config-group">
+      <legend>Skin</legend>
+      <div class="sg-config-options">
+        {presets.map((preset) => (
+          <label><input class="sr" type="radio" name="preset" value={preset.value} checked={preset.value === "core"}> {preset.label}</label>
+        ))}
+      </div>
+    </fieldset>
+  </form>
+</header>

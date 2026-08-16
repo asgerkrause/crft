@@ -1,0 +1,130 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import Swatches from "../components/Swatches.astro";
+import { sections } from "../data";
+
+const palette = [
+  { label: "Light", token: "--c-sw-li", featured: true },
+  { label: "Dark", token: "--c-sw-da", featured: true },
+  { label: "Red", token: "--c-sw-red" },
+  { label: "Orange", token: "--c-sw-ora" },
+  { label: "Yellow", token: "--c-sw-yel" },
+  { label: "Lime", token: "--c-sw-lim" },
+  { label: "Green", token: "--c-sw-gre" },
+  { label: "Cyan", token: "--c-sw-cya" },
+  { label: "Sky", token: "--c-sw-sky" },
+  { label: "Blue", token: "--c-sw-blu" },
+  { label: "Purple", token: "--c-sw-pur" },
+  { label: "Pink", token: "--c-sw-pin" },
+  { label: "Magenta", token: "--c-sw-mag" },
+] as const;
+
+const theme = [
+  { label: "Background", token: "--c-bg" },
+  { label: "Surface", token: "--c-sf" },
+  { label: "Border", token: "--c-bc" },
+  { label: "Foreground", token: "--c-fg" },
+  { label: "Muted", token: "--c-mu" },
+  { label: "Accent", token: "--c-ac", ink: "--c-ac-co" },
+  { label: "Secondary", token: "--c-sc", ink: "--c-sc-co" },
+  { label: "Tertiary", token: "--c-tr", ink: "--c-tr-co" },
+  { label: "Success", token: "--c-fb-su", ink: "--c-fb-su-co" },
+  { label: "Warning", token: "--c-fb-wn", ink: "--c-fb-wn-co" },
+  { label: "Danger", token: "--c-fb-dn", ink: "--c-fb-dn-co" },
+] as const;
+
+const accent = [
+  { label: "Solid", token: "--c-ac", ink: "--c-ac-co", grouped: true },
+  { label: "Contrast", token: "--c-ac-co", ink: "--c-ac", grouped: true },
+  { label: "Text", token: "--c-ac-fg" },
+  { label: "Background", token: "--c-ac-bg" },
+  { label: "Border", token: "--c-ac-bc" },
+] as const;
+
+const secondary = [
+  { label: "Solid", token: "--c-sc", ink: "--c-sc-co", grouped: true },
+  { label: "Contrast", token: "--c-sc-co", ink: "--c-sc", grouped: true },
+  { label: "Text", token: "--c-sc-fg" },
+  { label: "Background", token: "--c-sc-bg" },
+  { label: "Border", token: "--c-sc-bc" },
+] as const;
+
+const tertiary = [
+  { label: "Solid", token: "--c-tr", ink: "--c-tr-co", grouped: true },
+  { label: "Contrast", token: "--c-tr-co", ink: "--c-tr", grouped: true },
+  { label: "Text", token: "--c-tr-fg" },
+  { label: "Background", token: "--c-tr-bg" },
+  { label: "Border", token: "--c-tr-bc" },
+] as const;
+
+const feedback = [
+  {
+    title: "Success",
+    items: [
+      { label: "Solid", token: "--c-fb-su", ink: "--c-fb-su-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-su-co", ink: "--c-fb-su", grouped: true },
+      { label: "Text", token: "--c-ac-fg", accent: "success" },
+      { label: "Background", token: "--c-ac-bg", accent: "success" },
+      { label: "Border", token: "--c-ac-bc", accent: "success" },
+    ],
+  },
+  {
+    title: "Warning",
+    items: [
+      { label: "Solid", token: "--c-fb-wn", ink: "--c-fb-wn-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-wn-co", ink: "--c-fb-wn", grouped: true },
+      { label: "Text", token: "--c-ac-fg", accent: "warning" },
+      { label: "Background", token: "--c-ac-bg", accent: "warning" },
+      { label: "Border", token: "--c-ac-bc", accent: "warning" },
+    ],
+  },
+  {
+    title: "Danger",
+    items: [
+      { label: "Solid", token: "--c-fb-dn", ink: "--c-fb-dn-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-dn-co", ink: "--c-fb-dn", grouped: true },
+      { label: "Text", token: "--c-ac-fg", accent: "danger" },
+      { label: "Background", token: "--c-ac-bg", accent: "danger" },
+      { label: "Border", token: "--c-ac-bc", accent: "danger" },
+    ],
+  },
+] as const;
+---
+
+<Section {...sections.colors}>
+  <p class="c-mu" slot="summary">Use semantic roles and paired contrast colors in content. Supported explicit routes are
+    <code>secondary</code>, <code>tertiary</code>, <code>success</code>, <code>warning</code>, and <code>danger</code>;
+    omit <code>data-accent</code> for the default accent. Palette swatches remain source colors.</p>
+
+  <Specimen id="palette" title="Palette">
+    <Swatches label="Fixed light and dark colors" items={palette} />
+  </Specimen>
+
+  <Specimen id="theme" title="Theme">
+    <Swatches label="Theme colors" items={theme} />
+  </Specimen>
+
+  <Specimen id="accent" title="Accent">
+    <Swatches label="Accent color family" items={accent} />
+  </Specimen>
+
+  <Specimen id="secondary" title="Secondary">
+    <Swatches label="Secondary color family" items={secondary} accent="secondary" />
+  </Specimen>
+
+  <Specimen id="tertiary" title="Tertiary">
+    <Swatches label="Tertiary color family" items={tertiary} accent="tertiary" />
+  </Specimen>
+
+  <Specimen id="feedback" title="Feedback">
+    <div class="sg-feedback-families">
+      {feedback.map((family) => (
+        <section>
+          <h4>{family.title}</h4>
+          <Swatches items={family.items} />
+        </section>
+      ))}
+    </div>
+  </Specimen>
+</Section>

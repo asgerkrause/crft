@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: product interface (non-canonical)</title>
+    <!--
+      After copy:
+        @import "./styles/global.css";
+        @import "./example.css"; /* project-owned CSS */
+      Paths are host placeholders, not this repo’s tree.
+    -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body class="invites">
+    <a class="sr focusable" href="#invites-main">Skip to invitations</a>
+
+    <header>
+      <div class="c">
+        <div class="s h sb center">
+          <p class="t-sm c-mu">Northline Workspace</p>
+          <nav aria-label="Account">
+            <ul class="s h">
+              <li><a href="/settings">Settings</a></li>
+              <li><a href="/support">Support</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="invites-main">
+      <!-- The section ID is the Compose fragment target used by the empty state. -->
+      <section id="invite-compose" data-skin="tone">
+        <div class="c">
+          <header class="s">
+            <h1>Workspace invitations</h1>
+            <p class="t-lg">
+              Invite teammates with native controls, truthful states, and
+              project-owned chrome—without a CRFT component kit.
+            </p>
+          </header>
+
+          <div g="12-6">
+            <aside class="panel" c="4-2">
+              <form class="s" method="get" action="/invitations">
+                <h2 class="t-sm">Filters</h2>
+
+                <p>
+                  <label for="filter-query">Search</label>
+                  <input
+                    id="filter-query"
+                    name="q"
+                    type="search"
+                    value=""
+                    autocomplete="off"
+                    placeholder="Name or email"
+                  />
+                </p>
+
+                <fieldset>
+                  <legend>Status</legend>
+                  <div class="s">
+                    <label><input type="radio" name="status" value="all" checked /> All</label>
+                    <label><input type="radio" name="status" value="pending" /> Pending</label>
+                    <label><input type="radio" name="status" value="accepted" /> Accepted</label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Role</legend>
+                  <div class="s">
+                    <label><input type="checkbox" name="role" value="admin" /> Admin</label>
+                    <label><input type="checkbox" name="role" value="editor" checked /> Editor</label>
+                    <label><input type="checkbox" name="role" value="viewer" checked /> Viewer</label>
+                  </div>
+                </fieldset>
+
+                <p><button type="submit" class="action action-secondary">Apply filters</button></p>
+              </form>
+            </aside>
+
+            <!-- Error specimen: invalid email with a connected explanation. -->
+            <form class="panel s" c="8-4" method="post" action="/invitations">
+              <h2>Invite a teammate</h2>
+
+              <p>
+                <label for="invite-email">Work email</label>
+                <input
+                  id="invite-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  value="not-an-email"
+                  aria-invalid="true"
+                  aria-describedby="invite-email-error"
+                />
+                <span id="invite-email-error" role="alert">
+                  Enter a valid work email, for example name@company.com.
+                </span>
+              </p>
+
+              <p>
+                <label for="invite-role">Role</label>
+                <select id="invite-role" name="role" required>
+                  <option value="viewer">Viewer</option>
+                  <option value="editor" selected>Editor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </p>
+
+              <p>
+                <label for="invite-note">Note (optional)</label>
+                <textarea id="invite-note" name="note" rows="3" maxlength="280"></textarea>
+              </p>
+
+              <label>
+                <input type="checkbox" name="notify" value="1" checked />
+                Send email notification
+              </label>
+
+              <div class="s h w">
+                <button type="submit" class="action">Send invite</button>
+                <button type="button" class="action action-secondary" disabled>
+                  Invite quota reached
+                </button>
+                <button type="reset" class="action action-secondary">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- In production one results region swaps content; all states remain visible here as evidence. -->
+      <section>
+        <div class="c">
+          <div class="panel s" aria-busy="true">
+            <h2>Results — loading</h2>
+            <p class="t-sm c-mu" role="status">Loading invitations…</p>
+            <p class="skeleton" aria-hidden="true">Placeholder rows</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="c">
+          <div class="panel s">
+            <h2>Results — empty</h2>
+            <p role="status">
+              No invitations match these filters. Adjust filters or invite someone new.
+            </p>
+            <p>
+              <a class="action action-secondary" href="#invite-compose">Compose an invite</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="c">
+          <div class="panel s" data-accent="danger">
+            <h2>Results — error</h2>
+            <p class="banner" role="alert">
+              Invitations could not be loaded. Check your connection, then try again.
+            </p>
+            <p><button type="button" class="action">Retry</button></p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="c">
+          <div class="panel s" data-accent="success">
+            <h2>Results — success</h2>
+            <p class="banner" role="status">
+              Invite sent to jordan@northline.example as Editor.
+            </p>
+
+            <table>
+              <caption class="sr">Pending and accepted invitations</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Person</th>
+                  <th scope="col">Role</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>jordan@northline.example</td>
+                  <td>Editor</td>
+                  <td><span class="pill" data-accent="success">Sent</span></td>
+                </tr>
+                <tr>
+                  <td>amira@northline.example</td>
+                  <td>Viewer</td>
+                  <td><span class="pill" data-accent="warning">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>lee@northline.example</td>
+                  <td>Admin</td>
+                  <td><span class="pill">Accepted</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

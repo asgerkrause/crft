@@ -1,0 +1,21 @@
+---
+import Header from "../components/Header.astro";
+import "../styles/entry.css";
+---
+
+<!doctype html>
+<html lang="en" data-mode="system" data-preset="core">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A visual reference for the CRFT CSS system public API.">
+    <title>CRFT CSS system reference</title>
+    <link rel="icon" href="data:,">
+  </head>
+  <body>
+    <a class="sg-skip-link" href="#main-content">Skip to reference</a>
+    <Header />
+    <main id="main-content"><slot /></main>
+    <script src="../scripts/shell.js"></script>
+  </body>
+</html>

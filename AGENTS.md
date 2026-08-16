@@ -1,47 +1,105 @@
----
-scope: craft
-layer: agent-contract
-updated: 2026-07-06
----
+# CRFT agent contract
 
-# Craft agent contract
+## Scope
 
-## Goal
+CRFT is the complete SNZ frontend design and CSS system. Read `CRAFT.md`, then only the owners required by its route.
 
-Apply `CRAFT.md` as universal frontend source truth: strategy-first, aesthetic-high, performance-native, accessible, tokenized UI guidance.
+CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation owns decisions and use. Examples are evidence, not API.
 
-## Source boundary
+CRFT is not a component library. `.btn`, `.crd`, and `.lnk` are project conventions. CRFT may document their project use, but must not add canonical styling, variants, tokens, markup contracts, or behavior.
 
-- This folder is self-contained.
-- `CRAFT.md` is canonical and complete.
-- Project context may override Craft only when project goal, brand, accessibility, security, performance, or existing safe local pattern demands it.
-- Craft skill source lives in `skills/`; deterministic helpers live in `scripts/`; installed Pi copies may mirror them under `~/.pi/agent/skills/` and `~/.pi/agent/scripts/`.
-- Do not require external folders, local paths, private project names, implementation package docs, generated build artifacts, or legacy migration maps.
+## CSS ownership
 
-## Retrieval order
+Import `styles/global.css` once. It declares:
 
-1. Read `CRAFT.md`.
-2. Use project `AGENTS.md`, brand, stack, and local implementation docs before forcing sample syntax.
-
-No topic-file hopping. No appendix routing. No full-folder load unless auditing this folder itself.
-
-## Apply rules
-
-- `CRAFT.md` hard rules block unless project constraints make them impossible.
-- Project brand owns voice and visual direction.
-- Project implementation owns files, framework syntax, commands, tests, and deployment.
-- Craft examples teach structure and token names, not values.
-- Prefer semantic HTML, tokens, CSS, native platform, existing helpers, then small custom code.
-- Verify visible behavior for UI/token/style changes.
-
-## Publish guard
-
-Before claiming docs publish-ready:
-
-```sh
-find . -maxdepth 2 -type f ! -path './.git/*' ! -path './.pi/scratch/*' | sort
-rg -n 'patterns\.md|migration\.md|examples\.md|grid\.md|implementation-bridge\.md|naming\.md|platform\.md|token-contract\.md' *.md
-rg -n '^(Relat(e)d:|Rule(s):)' *.md
+```css
+@layer base, tokens, type, layout, features, utility;
 ```
 
-Expected source set: `CRAFT.md`, `AGENTS.md`, `README.md`, `skills/*/SKILL.md`, `scripts/*`, optional repo adapter files.
+- `base.css`: reset, native defaults, focus, and active colors.
+- `tokens.css`: all public tokens, semantic colors, skins, scales, and reduced motion.
+- `type.css`: fonts and type roles.
+- `layout.css`: page spacing, `section > .c`, stacks, and grid.
+- `features.css`: progressive disclosure, native corners, and scroll motion.
+- `utility.css`: finite public utilities.
+
+Put a shared rule in the first owner that fully explains it. Consumers own their copy. Brand in `tokens.css`. Keep product CSS in the project’s normal owner.
+
+Public API consists of token names declared in `tokens.css`, documented selectors and attributes, the named `container` context, and native guarantees in `base.css`. `craft/tokens.md` documents every exact public token name and job without copying live values.
+
+These properties are private:
+
+- `--l-gc`
+- `--l-cs`
+- `--l-rs`
+- `--or`
+- `--m-src-to`
+- `--m-src-fr`
+- `--m-plx`
+
+Never use them in product CSS or public examples. The isolated reference may consume `--m-src-to` for its section indicator.
+
+## Implementation
+
+Use the first complete option:
+
+1. Existing project owner.
+2. Semantic HTML and native behavior.
+3. Existing public CRFT API.
+4. Public token in project CSS.
+5. Scoped token override.
+6. One direct project rule.
+7. Small JavaScript behavior.
+8. Shared API after unrelated consumers prove the role.
+
+Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, state styling, and dependencies.
+
+## HTML and CSS
+
+- Use `body > header` with navigation, `body > main > section`, and `body > footer` unless project truth requires another coherent structure.
+- Add an `id` only for a fragment, native or ARIA relationship, behavior, integration, or stable external identity. Keep every ID unique and non-empty.
+- Give a section a useful heading when its content has one. Add `aria-labelledby` only when the section should become a useful named region.
+- Place `.c` only inside page landmarks. `section > .c` establishes the named query context.
+- Keep DOM, reading, heading, and keyboard order meaningful without CSS.
+- Prefer semantic elements, native attributes, ARIA state, `:has()`, and bounded local structure before classes. Add a class only for a stable component, page scope, behavior, or visual role that structure cannot safely own.
+- Keep nesting shallow and specificity flat.
+- Use tokens by semantic job. Keep local literals and formulas local.
+- Reserve logical `*-block` and `*-inline` properties for padding and margin.
+- Use normal `font-weight`, not `font-variation-settings`.
+- Override a type role’s `--t-*-mw` token instead of setting heading or text-role `max-width`.
+
+## Grid and color
+
+A responsive `[g]` is a descendant of `section > .c`, not the boundary itself. Without that ancestor it stays stacked.
+
+- `g`: empty, `N`, `L-M`, or a documented special mode.
+- `c`: `N` or `L-M`; `0` means full row and `1`–`12` are spans.
+- `r`: `N` or `L-M`; spans are `1`–`4`.
+- `o`: always full `L-M-S` using `f`, `a`, or `l`.
+
+Visual order does not change source order.
+
+Use `data-skin` for canvas context. Use `data-accent` to route `secondary`, `tertiary`, `success`, `warning`, or `danger`. Color and motion never carry meaning alone.
+
+## Adoption and quality
+
+```sh
+node scripts/copy-system.mjs --dry-run <absolute-target>
+node scripts/copy-system.mjs <absolute-target>
+```
+
+The copier adds nine CSS-system files and refuses conflicts. It never merges or upgrades owned files.
+
+Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks.
+
+For every change:
+
+1. Read the affected owners and live CSS.
+2. Trace selectors, tokens, consumers, states, and fallbacks.
+3. Make the smallest coherent owner-local change.
+4. Update affected canonical guidance and specimens.
+5. Search consumers before deletion.
+6. Run applicable static, unit, copy, reference, and rendered checks.
+7. Report evidence, limits, and remaining uncertainty.
+
+Never commit, push, publish, deploy, rename a repository, or change production configuration without explicit current-user authority.

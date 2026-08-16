@@ -1,8 +1,0 @@
-{
-  "name": "@sanitizestudio/craft",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "test:css-scaffold": "bun scripts/craft-css-scaffold.test.ts"
-  }
-}

@@ -1,0 +1,57 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+
+const canvasSkins = [
+  { skin: "", label: "Base reset" },
+  { skin: "tone", label: "Tone boundary" },
+  { skin: "invert", label: "Inverted boundary" },
+] as const;
+
+const accentSkins = [
+  { accent: undefined, label: "Primary accent boundary", fixture: "skin-accent-primary" },
+  { accent: "secondary", label: "Secondary accent boundary", fixture: "skin-accent-secondary" },
+  { accent: "tertiary", label: "Tertiary accent boundary", fixture: "skin-accent-tertiary" },
+  { accent: "success", label: "Success feedback boundary", fixture: "skin-accent-success" },
+  { accent: "warning", label: "Warning feedback boundary", fixture: "skin-accent-warning" },
+  { accent: "danger", label: "Danger feedback boundary", fixture: "skin-accent-danger" },
+] as const;
+---
+
+<Section {...sections.skins}>
+  <p class="c-mu" slot="summary">Apply a skin at the outer semantic boundary. The header’s Skin study is
+    styleguide-only; it is not a <code>data-skin</code> value.</p>
+
+  <Specimen id="canvas-skins" title="Canvas skins">
+    <div class="sg-skin-grid">
+      {canvasSkins.map(({ skin, label }) => (
+        <article class="sg-skin-card" data-skin={skin}>
+          <p>{label}</p><code>{`data-skin="${skin}"`}</code>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="accent-skins" title="Accent skins">
+    <div class="sg-skin-grid">
+      {accentSkins.map(({ accent, label, fixture }) => (
+        <article class="sg-skin-card" data-skin="accent" data-accent={accent} data-fixture={fixture}>
+          <p>{label}</p>
+          <code>{accent ? `data-skin="accent" data-accent="${accent}"` : `data-skin="accent"`}</code>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="nested-boundaries" title="Nested boundaries">
+    <div class="sg-skin-grid">
+      <article class="sg-skin-card" data-fixture="skin-nested-outer" data-skin="accent">
+        <p>Outer accent boundary</p>
+        <div class="sg-skin-card" data-fixture="skin-nested-inner" data-skin="">
+          <p>Nested reset</p><code>data-skin=""</code>
+        </div>
+      </article>
+    </div>
+  </Specimen>
+</Section>

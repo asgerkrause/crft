@@ -1,2 +1,8 @@
-.pi/scratch/
 .DS_Store
+.pi/scratch/
+.playwright-cli/
+reference/node_modules/
+reference/dist/
+reference/.astro/
+reference/test-results/
+reference/playwright-report/

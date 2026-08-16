@@ -1,35 +1,53 @@
----
-scope: craft
-layer: index
-updated: 2026-07-06
----
+# CRFT
 
-# Craft
+CRFT is the SNZ frontend design and CSS system. It combines product strategy, visual judgment, semantic structure, CSS, accessibility, performance, and verification.
 
-Frontend contract for strategy-first, aesthetic-high, performance-native websites and interfaces.
+Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical owner.
 
-## Canonical file
+## Documentation
 
-Read `CRAFT.md`. It is the source truth for tokens, themes, variants, primitives, composition, components, widgets, accessibility, performance, copy, and verification.
+[`CRAFT.md`](CRAFT.md) is the only complete task router. It routes to 16 focused topic owners under `craft/`.
 
-## Skills
+`styles/**` owns live values, formulas, breakpoints, selectors, skins, and motion. [`examples/`](examples/) contains runnable evidence, not API. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint.
 
-Canonical skill sources live in `skills/`. Deterministic helpers live in `scripts/`. Installed Pi copies may mirror them under `~/.pi/agent/skills/` and `~/.pi/agent/scripts/`.
+CRFT has no dependency on another frontend doctrine. It is not a component library.
 
-- `craft-init` — create project-local `CRAFT.md` / `DESIGN.md`.
-- `craft-audit` — review UI/code against Craft.
-- `craft-sync` — sync project Craft with global Craft.
-- `craft-tokenize` — map local CSS variables/classes/themes into Craft registries.
-- `craft-css-scaffold` — inject valid Craft CSS file structure without LLM-written boilerplate.
+## Copy the CSS
 
-## Boundary
+```sh
+node scripts/copy-system.mjs --dry-run /absolute/path/to/project/styles
+node scripts/copy-system.mjs /absolute/path/to/project/styles
+```
 
-Craft is implementation-agnostic. Project code, brand context, accessibility/security/performance constraints, and local conventions decide final syntax and values.
+The copier adds `global.css`, both fonts, and six `layers/*.css` owners. It refuses conflicts and never merges or upgrades project-owned files.
 
-## Verification
+Load `styles/global.css` once. Brand in `styles/layers/tokens.css`. Keep product presentation in the project’s normal CSS owner.
 
-- `bun scripts/craft-css-scaffold.test.ts` — scaffold regression fixtures.
+## Use
 
-## Principle
+```html
+<section data-skin="tone">
+  <div class="c">
+    <div class="s">
+      <h2>Meaning before presentation</h2>
+      <div g="3-2">
+        <article c="2-1">...</article>
+        <aside data-accent="secondary">...</aside>
+      </div>
+    </div>
+  </div>
+</section>
+```
 
-One frontend task should need one Craft read: `CRAFT.md`.
+`.btn`, `.crd`, and `.lnk` are project component naming conventions. CRFT does not style or implement them.
+
+## Verify
+
+```sh
+node scripts/check-system.mjs
+node --test
+cd reference && bun run test
+cd reference && bun run test:rendered
+```
+
+Static checks do not prove strategy, accessibility, visual quality, or browser behavior. Use the three gates in [`craft/verify.md`](craft/verify.md).

@@ -1,0 +1,18 @@
+---
+import Section from "../components/Section.astro";
+import Specimen from "../components/Specimen.astro";
+import { sections } from "../data";
+---
+
+<Section {...sections.forms}>
+  <p class="c-mu" slot="summary">Use native form controls, visible labels, and explicit validation relationships.</p>
+
+  <Specimen id="form-controls" title="Controls">
+    <form>
+      <label for="native-input">Labelled input</label><input id="native-input" name="text" placeholder="Placeholder text"><label for="native-select">Select</label><select id="native-select" name="selection">
+        <option>Choose one</option>
+      </select><label for="native-textarea">Textarea</label><textarea id="native-textarea" name="message" placeholder="Write here"></textarea><label for="native-invalid">Invalid field</label><input id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error" value="Needs attention">
+      <p id="native-invalid-error">Use a valid value, then review the field before continuing.</p><label for="native-disabled">Disabled field</label><input id="native-disabled" name="disabled" disabled value="Unavailable">
+    </form>
+  </Specimen>
+</Section>
