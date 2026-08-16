@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "seess-css-system-reference",
+      "name": "crft-reference",
       "devDependencies": {
         "@playwright/test": "^1.61.1",
         "astro": "^7.1.1",

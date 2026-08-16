@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: foundations (non-canonical)</title>
+    <!--
+      Consumer app after copy:
+        - one import of adopted global.css (establishes layers)
+        - project rules in the project's normal CSS owner (see example.css)
+      Paths below are placeholders for a host app, not this repo’s tree.
+    -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <a class="sr focusable" href="#main">Skip to content</a>
+
+    <!-- Header .c remains intrinsic because it is not a section query boundary. -->
+    <header>
+      <div class="c">
+        <div class="s h sb center">
+          <strong><a href="/">CRFT foundations</a></strong>
+          <nav aria-label="Primary">
+            <ul class="s h">
+              <li><a href="#orientation">Overview</a></li>
+              <li><a href="#proof">Proof</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- This section ID is the Overview navigation target. -->
+      <section id="orientation">
+        <div class="c">
+          <div class="s">
+            <p class="t-sm c-mu">Primer</p>
+            <h1>Compose with ownership, not a kit.</h1>
+            <p class="t-lg">
+              Semantic HTML first, public CRFT API second, distinctive chrome
+              in project-owned CSS. This specimen uses <code>@layer project</code>,
+              but CRFT does not require that owner. This page is teaching
+              material—not public API.
+            </p>
+            <p>
+              <a class="action" href="/docs">Open the system handbook</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!--
+        This section ID is the Proof navigation target. The grid remains below
+        section > .c. data-accent routes tokens; project CSS paints the tile.
+      -->
+      <section id="proof" data-skin="tone">
+        <div class="c">
+          <div g="3-2">
+            <header class="s" c="0">
+              <h2>What stays public</h2>
+              <p class="t-lg">
+                Three durable seams. Color alone never carries the meaning.
+              </p>
+            </header>
+
+            <article class="proof-tile s">
+              <h3>Structure</h3>
+              <p>
+                Landmarks, one clear outline, and
+                <code>section &gt; .c</code> as the layout query boundary.
+              </p>
+            </article>
+
+            <article class="proof-tile s">
+              <h3>Grammar</h3>
+              <p>
+                Type roles, stacks, and
+                <code>g</code>/<code>c</code>/<code>r</code>/<code>o</code>
+                resolved as large, medium, then small.
+              </p>
+            </article>
+
+            <article class="proof-tile s" data-accent="success">
+              <h3>Verified path</h3>
+              <p>
+                Skins and accent routes stay semantic; product paint stays
+                layered. Label the claim in copy, not only in hue.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- This section ID is the FAQ navigation target. -->
+      <section id="faq">
+        <div class="c sm">
+          <div class="s">
+            <h2>FAQ</h2>
+            <details>
+              <summary>Is this example canonical?</summary>
+              <p>
+                No. <code>CRAFT.md</code>, <code>craft/**</code>, and
+                <code>styles/**</code> win every conflict. Fix or retire the
+                example when it drifts.
+              </p>
+            </details>
+            <details>
+              <summary>Where do product rules go?</summary>
+              <p>
+                Outside the adopted CRFT tree, in the project’s normal CSS
+                owner. This specimen uses <code>@layer project</code>. An accidental
+                unlayered rule outranks every named layer.
+              </p>
+            </details>
+            <details>
+              <summary>May I use <code>data-theme</code>?</summary>
+              <p>
+                Not in CRFT. Use <code>data-skin</code> for canvas context and
+                document color-scheme strategy per product guidance.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="c">
+        <div class="s">
+          <p class="t-sm c-mu">
+            Non-canonical specimen. Private properties and invented tokens are
+            out of scope.
+          </p>
+          <p class="t-sm">
+            <a href="/docs/verification">Verification baseline</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

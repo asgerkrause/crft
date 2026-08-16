@@ -5,7 +5,6 @@ import {
   lstat,
   mkdir,
   realpath,
-  rename,
   rm,
 } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
@@ -16,13 +15,12 @@ const files = [
   "global.css",
   "sans.ttf",
   "mono.ttf",
-  "styles/base.css",
-  "styles/tokens.css",
-  "styles/type.css",
-  "styles/layout.css",
-  "styles/features.css",
-  "styles/utility.css",
-  "styles/project.css",
+  "layers/base.css",
+  "layers/tokens.css",
+  "layers/type.css",
+  "layers/layout.css",
+  "layers/features.css",
+  "layers/utility.css",
 ];
 
 const usage = "Usage: node scripts/copy-system.mjs [--dry-run] <target>";
@@ -54,24 +52,46 @@ function parseArguments(arguments_) {
  */
 async function adoptSystem(input) {
   const { sourceRoot, target: targetArgument, dryRun = false, beforePublish } = input ?? {};
-  const source = await resolveSource(sourceRoot);
-  const destination = await resolveDestination(targetArgument, source);
-  await validateManifest(source);
-  if (dryRun) return { sourceRoot: source, target: destination.target, dryRun: true };
+  const repoRoot = await resolveSource(sourceRoot);
+  const source = await hasSystemManifest(join(repoRoot, "styles")) ? join(repoRoot, "styles") : repoRoot;
+  const destination = await resolveDestination(targetArgument, repoRoot, true);
+  await validateManifest(source, files);
+  await validateDestinationManifest(destination.target, files);
+  if (dryRun) return { sourceRoot: repoRoot, target: destination.target, dryRun: true };
 
-  let staging = await createOwnedDirectory(join(destination.parent, `.seess-stage-${randomUUID()}`), "staging");
-  let claimed;
+  await copyIntoTarget({ source, destination, manifest: files, beforePublish });
+  return { sourceRoot: repoRoot, target: destination.target, dryRun: false };
+}
+
+/** Copy the system into an existing or new styles directory after a complete conflict preflight. */
+async function copyIntoTarget({ source, destination, manifest, beforePublish }) {
+  let staging = await createOwnedDirectory(join(destination.parent, `.crft-stage-${randomUUID()}`), "staging");
+  let targetCreated;
+  const copied = [];
   try {
-    await copyManifest(source, staging.path);
+    await copyManifest(source, staging.path, manifest);
+    for (const file of manifest) await requireAbsent(join(destination.target, file));
     if (beforePublish) await beforePublish({ staging: staging.path, target: destination.target });
-    claimed = await createOwnedDirectory(destination.target, "target");
-    await publishManifest(staging.path, claimed.path);
+    try {
+      const entry = await lstat(destination.target);
+      if (entry.isSymbolicLink() || !entry.isDirectory()) throw new Error(`Target must be a directory: ${destination.target}`);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+      targetCreated = await createOwnedDirectory(destination.target, "target");
+    }
+    for (const file of manifest) {
+      const output = join(destination.target, file);
+      await mkdir(dirname(output), { recursive: true });
+      await copyFile(join(staging.path, file), output, constants.COPYFILE_EXCL);
+      copied.push(output);
+    }
     await removeOwnedDirectory(staging);
     staging = undefined;
-    claimed = undefined;
-    return { sourceRoot: source, target: destination.target, dryRun: false };
+  } catch (error) {
+    await Promise.allSettled(copied.reverse().map((path) => rm(path, { force: true })));
+    if (targetCreated) await removeOwnedDirectory(targetCreated);
+    throw error;
   } finally {
-    if (claimed) await removeOwnedDirectory(claimed);
     if (staging) await removeOwnedDirectory(staging);
   }
 }
@@ -91,7 +111,7 @@ async function resolveSource(sourceRoot) {
 }
 
 /** @param {unknown} targetArgument @param {string} source */
-async function resolveDestination(targetArgument, source) {
+async function resolveDestination(targetArgument, source, allowExistingDirectory = false) {
   if (typeof targetArgument !== "string") throw new TypeError("Target must be a path");
   const requestedTarget = resolve(targetArgument);
   const requestedParent = dirname(requestedTarget);
@@ -110,7 +130,16 @@ async function resolveDestination(targetArgument, source) {
   if (target === source || (sourceRelative && !sourceRelative.startsWith("..") && !isAbsolute(sourceRelative))) {
     throw new Error(`Target must not be the source root or its descendant: ${target}`);
   }
-  await requireAbsent(target);
+  if (allowExistingDirectory) {
+    try {
+      const entry = await lstat(target);
+      if (entry.isSymbolicLink() || !entry.isDirectory()) throw new Error(`Target must be a directory: ${target}`);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+  } else {
+    await requireAbsent(target);
+  }
   return { parent, target };
 }
 
@@ -125,9 +154,22 @@ async function requireAbsent(path) {
   throw new Error(`Target already exists: ${path}`);
 }
 
-/** @param {string} source */
-async function validateManifest(source) {
-  for (const file of files) {
+async function validateDestinationManifest(target, manifest) {
+  for (const file of manifest) await requireAbsent(join(target, file));
+}
+
+async function hasSystemManifest(path) {
+  try {
+    return (await lstat(join(path, "global.css"))).isFile();
+  } catch (error) {
+    if (error.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
+/** @param {string} source @param {string[]} manifest */
+async function validateManifest(source, manifest) {
+  for (const file of manifest) {
     const path = join(source, file);
     const entry = await lstat(path);
     if (entry.isSymbolicLink() || !entry.isFile()) {
@@ -165,18 +207,18 @@ async function removeOwnedDirectory(owned) {
   }
 }
 
-/** @param {string} source @param {string} staging */
-async function copyManifest(source, staging) {
-  await mkdir(join(staging, "styles"));
-  for (const file of files) {
-    await copyFile(join(source, file), join(staging, file));
+/** @param {string} source @param {string} staging @param {string[]} manifest */
+async function copyManifest(source, staging, manifest) {
+  const directories = new Set(
+    manifest
+      .map((file) => dirname(file))
+      .filter((dir) => dir && dir !== "."),
+  );
+  for (const dir of [...directories].sort()) {
+    await mkdir(join(staging, dir), { recursive: true });
   }
-}
-
-/** @param {string} staging @param {string} target */
-async function publishManifest(staging, target) {
-  for (const name of ["global.css", "sans.ttf", "mono.ttf", "styles"]) {
-    await rename(join(staging, name), join(target, name));
+  for (const file of manifest) {
+    await copyFile(join(source, file), join(staging, file));
   }
 }
 

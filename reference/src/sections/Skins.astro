@@ -10,9 +10,12 @@ const canvasSkins = [
 ] as const;
 
 const accentSkins = [
-  { skin: "accent", label: "Accent boundary" },
-  { skin: "secondary", label: "Secondary boundary" },
-  { skin: "tertiary", label: "Tertiary boundary" },
+  { accent: undefined, label: "Primary accent boundary", fixture: "skin-accent-primary" },
+  { accent: "secondary", label: "Secondary accent boundary", fixture: "skin-accent-secondary" },
+  { accent: "tertiary", label: "Tertiary accent boundary", fixture: "skin-accent-tertiary" },
+  { accent: "success", label: "Success feedback boundary", fixture: "skin-accent-success" },
+  { accent: "warning", label: "Warning feedback boundary", fixture: "skin-accent-warning" },
+  { accent: "danger", label: "Danger feedback boundary", fixture: "skin-accent-danger" },
 ] as const;
 ---
 
@@ -32,9 +35,10 @@ const accentSkins = [
 
   <Specimen id="accent-skins" title="Accent skins">
     <div class="sg-skin-grid">
-      {accentSkins.map(({ skin, label }) => (
-        <article class="sg-skin-card" data-skin={skin}>
-          <p>{label}</p><code>{`data-skin="${skin}"`}</code>
+      {accentSkins.map(({ accent, label, fixture }) => (
+        <article class="sg-skin-card" data-skin="accent" data-accent={accent} data-fixture={fixture}>
+          <p>{label}</p>
+          <code>{accent ? `data-skin="accent" data-accent="${accent}"` : `data-skin="accent"`}</code>
         </article>
       ))}
     </div>

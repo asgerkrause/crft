@@ -1,0 +1,187 @@
+@layer project {
+  /*
+    Non-canonical composition example. Base brand values belong in the copied
+    token owner. Campaign variation and motion remain scoped to .northline.
+  */
+
+  .northline {
+    --c-ac: var(--c-sw-red);
+    --c-ac-co: var(--c-sw-da);
+    --r: .25rem;
+    --northline-frame: color-mix(in oklab, var(--c-fg) 88%, var(--c-ac));
+
+    color: var(--c-fg);
+    background-color: var(--c-bg);
+    font-family: var(--t-ff-bd);
+
+    > header,
+    > footer {
+      padding-block: var(--p);
+      border-color: var(--northline-frame);
+      background-color: var(--c-bg);
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: var(--g-lg);
+      }
+
+      a {
+        color: var(--c-fg);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+
+        &:hover {
+          color: var(--c-ac);
+        }
+
+        &:focus-visible {
+          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline-offset: 3px;
+        }
+      }
+    }
+
+    > header {
+      border-bottom: var(--b-wd) solid var(--northline-frame);
+
+      p {
+        letter-spacing: 0.14em;
+        color: var(--c-fg);
+      }
+    }
+
+    > footer {
+      border-top: var(--b-wd) solid var(--northline-frame);
+    }
+
+    .board-frame {
+      padding-block: var(--p-xl);
+      padding-inline: var(--p-lg);
+      color: var(--c-fg);
+      background-color: var(--c-sf);
+      border: var(--b-wd) solid var(--northline-frame);
+
+      > header {
+        --t-h1-mw: 12ch;
+
+        align-self: end;
+
+        h1 {
+          font-family: var(--t-ff-se);
+          font-weight: var(--t-fw-bd);
+        }
+      }
+
+      > aside {
+        min-height: 100%;
+        padding-block: var(--p-lg);
+        padding-inline: var(--p-lg);
+        border: var(--b-wd) solid var(--c-bc);
+      }
+
+      blockquote {
+        --t-lg-mw: 28ch;
+
+        margin: 0;
+        padding: 0;
+        border: 0;
+
+        p {
+          margin: 0;
+        }
+      }
+    }
+
+    .signal {
+      display: inline-block;
+      padding-block: var(--p-sm);
+      padding-inline: var(--p-lg);
+      color: var(--c-ac-co);
+      background-color: var(--c-ac);
+      border: var(--b-wd) solid var(--c-ac);
+      border-radius: var(--r);
+      font-family: var(--t-ff-bd);
+      font-weight: var(--t-fw-bd);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      text-transform: uppercase;
+
+      &:hover {
+        color: var(--c-fg);
+        background-color: transparent;
+      }
+
+      &:focus-visible {
+        outline: max(2px, var(--b-wd)) solid var(--c-ac);
+        outline-offset: 3px;
+      }
+    }
+
+    .chip {
+      display: inline-block;
+      padding-block: var(--p-xs);
+      padding-inline: var(--p-sm);
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+      border: var(--b-wd) solid var(--c-ac-bc);
+      border-radius: var(--r-xl);
+      font-size: var(--t-sm-fs);
+      line-height: var(--t-sm-lh);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .issue-summary {
+      margin-block-end: var(--s-lg);
+
+      h2 {
+        font-family: var(--t-ff-se);
+      }
+    }
+
+    .issue {
+      height: 100%;
+      padding-block: var(--p-lg);
+      padding-inline: var(--p);
+      color: var(--c-fg);
+      background-color: var(--c-sf);
+      border-top: calc(var(--b-wd) * 2) solid var(--c-ac);
+
+      a {
+        color: var(--c-ac);
+        font-weight: var(--t-fw-bd);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
+
+        &:focus-visible {
+          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    .index {
+      margin: 0;
+      color: var(--c-ac);
+      letter-spacing: 0.12em;
+    }
+  }
+
+  @supports (animation-delay: calc(1ms * sibling-index())) {
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes northline-issue-in {
+        from {
+          opacity: 0;
+          translate: 0 var(--s-sm);
+        }
+      }
+
+      .northline .issue {
+        animation: northline-issue-in var(--m-td-s) var(--m-tf-o) both;
+        animation-delay: calc((sibling-index() - 1) * var(--m-td-f));
+      }
+    }
+  }
+}

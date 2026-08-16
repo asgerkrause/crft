@@ -1,44 +1,36 @@
 import assert from "node:assert/strict";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import {
-  copyFileSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
-const fixtureFiles = [
-  "AGENTS.md",
+const fixturePaths = [
   "README.md",
-  "global.css",
-  "sans.ttf",
-  "mono.ttf",
-  ".agents/skills/snz-css-system/SKILL.md",
+  "AGENTS.md",
+  "CRAFT.md",
+  "craft",
+  "examples",
+  "skills",
+  "reference/package.json",
+  "reference/src/components/Header.astro",
+  "reference/src/layouts/Shell.astro",
+  "reference/src/scripts/shell.js",
   "scripts/check-system.mjs",
   "scripts/copy-system.mjs",
-  "styles/base.css",
-  "styles/tokens.css",
-  "styles/type.css",
-  "styles/layout.css",
-  "styles/features.css",
-  "styles/utility.css",
-  "styles/project.css",
+  "styles",
 ];
 
 function makeFixture(t) {
-  const root = mkdtempSync(join(tmpdir(), "seess-check-system-"));
+  const root = mkdtempSync(join(tmpdir(), "crft-check-system-"));
   t.after(() => rmSync(root, { force: true, recursive: true }));
-  for (const relativePath of fixtureFiles) {
+  for (const relativePath of fixturePaths) {
+    const source = join(sourceRoot, relativePath);
     const target = join(root, relativePath);
     mkdirSync(dirname(target), { recursive: true });
-    copyFileSync(join(sourceRoot, relativePath), target);
+    cpSync(source, target, { recursive: true });
   }
   return root;
 }
@@ -57,80 +49,332 @@ function runCheck(root) {
   });
 }
 
-test("current repository contract passes", (t) => {
-  const result = runCheck(makeFixture(t));
+test("current repository contract passes", () => {
+  const result = runCheck(sourceRoot);
   assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /PASS: static contract — \d+ public tokens/);
+  assert.match(result.stdout, /PASS: CRFT contract — \d+ public tokens/);
 });
 
-test("a CSS token missing from the README catalog fails", (t) => {
+test("a new public token requires a documented job", (t) => {
   const root = makeFixture(t);
-  replace(root, "README.md", "| `--h-h` | Header sizing token |\n", "");
+  replace(root, "styles/layers/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /--h-h is missing from README\.md public-token catalog/);
+  assert.match(result.stderr, /missing public tokens: --fixture-token/);
 });
 
-test("a stale README catalog token fails", (t) => {
+test("a removed public token cannot remain documented", (t) => {
   const root = makeFixture(t);
-  replace(
-    root,
-    "README.md",
-    "| `--h-h` | Header sizing token |\n",
-    "| `--h-h` | Header sizing token |\n| `--fixture-stale` | Fixture-only stale token |\n",
-  );
+  replace(root, "styles/layers/tokens.css", "    --l-hh: 4rem;\n", "");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /--fixture-stale is cataloged in README\.md but not declared in styles\/tokens\.css/);
+  assert.match(result.stderr, /stale public tokens: --l-hh/);
 });
 
-test("a fully cataloged new token needs no hard-coded count update", (t) => {
+test("a public token value change needs no duplicate documentation value", (t) => {
   const root = makeFixture(t);
-  replace(
-    root,
-    "styles/tokens.css",
-    "    /* Header */\n",
-    "    /* Header */\n    --fixture-token: 0;\n",
-  );
-  replace(
-    root,
-    "README.md",
-    "| `--h-h` | Header sizing token |\n",
-    "| `--h-h` | Header sizing token |\n| `--fixture-token` | Fixture-only token |\n",
-  );
-  const expectedCount = new Set(
-    [...readFileSync(join(root, "styles/tokens.css"), "utf8").matchAll(/(--[a-z0-9-]+)\s*:/g)]
-      .map((match) => match[1]),
-  ).size;
-  const result = runCheck(root);
-  assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, new RegExp(`PASS: static contract — ${expectedCount} public tokens`));
-});
-
-test("data-accent selector checks accept either quote style", (t) => {
-  const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "[data-accent='danger']", '[data-accent="danger"]');
+  replace(root, "styles/layers/tokens.css", "    --l-hh: 4rem;", "    --l-hh: 5rem;");
   const result = runCheck(root);
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
-test("an unsupported data-accent route fails the contract", (t) => {
+test("the token owner routes live authority to CSS", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "[data-accent='danger']", "[data-accent='accent']");
+  replace(root, "craft/tokens.md", "sole catalog and authority", "secondary reference");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /explicit data-accent routes differ from the contract/);
+  assert.match(result.stderr, /must route live token values and formulas/);
 });
 
-test("data-accent documentation must retain the canonical routes", (t) => {
+test("the public token index rejects duplicate names", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/tokens.md", "| `--l-hh` |", "| `--l-hh`, `--l-hh` |");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /documents a public token more than once/);
+});
+
+test("the public token index rejects copied live values", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/tokens.md", "| `--l-hh` | Shared header-height role for project composition |", "| `--l-hh` | Shared header-height role set to `4rem` |");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /duplicates a live value or formula/);
+});
+
+test("every indexed public token requires a non-empty job", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/tokens.md", "| `--l-hh` | Shared header-height role for project composition |", "| `--l-hh` | |");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /has an empty job for: --l-hh/);
+});
+
+test("the HTML owner states the purpose-based identifier contract", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/html.md", "A section needs no ID by default.", "Every section needs identity.");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing identifier doctrine/);
+});
+
+test("canonical examples reject names on generic wrappers", (t) => {
+  const root = makeFixture(t);
+  replace(root, "README.md", "  <div class=\"c\">", "  <div class=\"c\" aria-label=\"Content\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /names a generic div wrapper/);
+});
+
+test("canonical examples reject dangling ARIA id references", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/forms.md", "invite-email-help invite-email-error", "invite-email-help missing-error");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /references missing id missing-error/);
+});
+
+test("the canonical topic map rejects extra files", (t) => {
+  const root = makeFixture(t);
+  writeFileSync(join(root, "craft/extra.md"), "# Extra\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /differs from the 16-topic documentation map/);
+});
+
+test("CRAFT routes every topic", (t) => {
+  const root = makeFixture(t);
+  replace(root, "CRAFT.md", "](craft/brief.md)", "](craft/missing.md)");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /does not route to craft\/brief\.md/);
+});
+
+test("topic owners require canonical frontmatter", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/brief.md", "read_when:", "usage:");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing canonical topic frontmatter/);
+});
+
+test("documented color routes must match source", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/color.md", "| `danger` | Danger feedback |", "| `critical` | Danger feedback |");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /accent routes differ from source/);
+});
+
+test("a project component selector in canonical CSS fails", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "AGENTS.md",
-    "and `danger`; omit `data-accent` for the default accent.",
-    "and `accent`; omit `data-accent` for the default accent.",
+    "styles/layers/features.css",
+    ":where(dialog, input, textarea, select)",
+    ":where(.btn, dialog, input, textarea, select)",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /AGENTS\.md does not state the supported explicit data-accent routes/);
+  assert.match(result.stderr, /styles a project component naming convention/);
+});
+
+test("project examples may style project component conventions", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/example.css", "@layer project {\n", "@layer project {\n.btn { display: inline-flex; }\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+});
+
+test("documented type hooks remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/type.css", "  .h0 {\n", "  .display-zero {\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /type\.css is missing documented hook \.h0/);
+});
+
+test("documented layout hooks remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/layout.css", "    &.sm {\n", "    &.narrow {\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /layout\.css is missing documented hook \.c\.sm/);
+});
+
+test("documented grid modes remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/layout.css", "&[g=\"a-sm\"]", "&[g=\"fixture\"]");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /layout\.css is missing documented grid hook a-sm/);
+});
+
+test("every documented numeric grid position remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/layout.css", "[g]>[r$=\"4\"]", "[g]>[r$=\"5\"]");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing row-span grid rule/);
+});
+
+test("the finite utility surface remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/utility.css", "  .c-fg {\n", "  .foreground {\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /utility\.css selectors differ/);
+});
+
+test("documented color boundaries remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", ":root,\n  [data-skin] {", ":root,\n  [data-context] {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing a documented skin or accent boundary/);
+});
+
+test("documented feature hooks remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/features.css", ".img-w[data-scrub]", ".media[data-scrub]");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /features\.css is missing documented feature hook/);
+});
+
+test("the generic scrub progress rule remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/features.css", "      [data-scrub] {\n", "      [data-progress] {\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing the generic scrub progress rule/);
+});
+
+test("image scrub remains inside its feature gate", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/features.css", "@supports (animation-timeline: view())", "@supports (display: grid)");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
+});
+
+test("image scrub remains inside its reduced-motion gate", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/features.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
+});
+
+test("an unsupported accent route fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "[data-accent='danger']", "[data-accent='accent']");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /explicit data-accent routes differ/);
+});
+
+test("removed color-specific skin routes fail", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "  [data-skin='tone'] {", "  [data-skin='secondary'] {\n    --c-bg: var(--c-bg-base);\n  }\n\n  [data-skin='tone'] {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /explicit data-skin routes differ/);
+});
+
+test("confirmed example styles must declare their chosen project layer", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/example.css", "@layer project {\n", "");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /must declare its chosen project layer/);
+});
+
+test("example markup rejects duplicate ids", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "id=\"proof\"", "id=\"orientation\"");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /repeats id orientation/);
+});
+
+test("example markup rejects dangling fragments", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "href=\"#proof\"", "href=\"#missing\"");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /references missing id missing/);
+});
+
+test("retired one-off example hooks fail", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "    <header>\n", "    <header class=\"site-header\">\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /retains unnecessary example hook \.site-header/);
+});
+
+test("every example README keeps a layout intent diagram", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/README.md", "## Layout intent", "## Composition note");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing its ASCII layout intent/);
+});
+
+test("project stagger remains inside feature and reduced-motion gates", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/branded-extension/example.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /stagger must keep sibling-index/);
+});
+
+test("page-from-reference keeps a deliberate image crop", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/page-from-reference/example.css", "aspect-ratio: 3 / 2", "aspect-ratio: 8 / 5");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing deliberate crop behavior/);
+});
+
+test("the router records the retired tooling boundary", (t) => {
+  const root = makeFixture(t);
+  replace(root, "CRAFT.md", "consumer analyzer", "consumer inspector");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /does not record the retired tooling boundary/);
+});
+
+test("adoption keeps the breaking migration record", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/adopt.md", ".h0` and `--t-h0-*", ".display` and `--t-display-*");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing breaking migration guidance/);
+});
+
+test("retired doctrine references fail", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/brief.md", "# Brief", "# Brief\n\nSee seess for values.");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /references a retired frontend source/);
+});
+
+test("retired topic references fail in examples", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/README.md", "# Foundations", "# Foundations\n\nSee craft/css.md.");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /references a retired topic owner/);
+});
+
+test("the skill must stay a thin router", (t) => {
+  const root = makeFixture(t);
+  const path = join(root, "skills/crft/SKILL.md");
+  writeFileSync(path, `${readFileSync(path, "utf8")}\n${"detail ".repeat(1000)}`);
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /no longer a thin router/);
 });

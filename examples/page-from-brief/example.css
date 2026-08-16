@@ -1,0 +1,145 @@
+@layer project {
+  /*
+    Non-canonical example — brief-specific product chrome only.
+    Public token names only. No private properties.
+  */
+
+  body {
+    > header {
+      padding-block: var(--p);
+      border-block-end: var(--b-wd) solid var(--c-bc);
+
+      strong > a {
+        color: var(--c-fg);
+        text-decoration: none;
+      }
+
+      nav {
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          column-gap: var(--s);
+        }
+
+        a {
+          color: var(--c-fg);
+          text-decoration: none;
+
+          &:hover {
+            color: var(--c-ac);
+          }
+
+          &:focus-visible {
+            outline: max(2px, var(--b-wd)) solid var(--c-ac);
+            outline-offset: 2px;
+          }
+        }
+      }
+    }
+
+    > footer {
+      padding-block: var(--p-lg);
+      border-block-start: var(--b-wd) solid var(--c-bc);
+
+      a {
+        color: var(--c-ac-fg);
+
+        &:focus-visible {
+          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+
+  .action {
+    display: inline-block;
+    padding-block: var(--p-sm);
+    padding-inline: var(--p);
+    color: var(--c-ac-co);
+    background-color: var(--c-ac);
+    border: var(--b-wd) solid var(--c-ac-bc);
+    border-radius: var(--r);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+    }
+
+    &:focus-visible {
+      outline: max(2px, var(--b-wd)) solid var(--c-ac);
+      outline-offset: 2px;
+    }
+  }
+
+  main aside {
+    padding-block: var(--p);
+    padding-inline: var(--p);
+    background-color: var(--c-sf);
+    border: var(--b-wd) solid var(--c-bc);
+    border-radius: var(--r);
+
+    ol {
+      margin: 0;
+      padding-inline-start: 1.25rem;
+
+      li + li {
+        margin-block-start: var(--s);
+      }
+    }
+  }
+
+  .proof-tile {
+    height: 100%;
+    padding-block: var(--p);
+    padding-inline: var(--p);
+    color: var(--c-fg);
+    background-color: var(--c-sf);
+    border: var(--b-wd) solid var(--c-bc);
+    border-radius: var(--r);
+
+    &[data-accent] {
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+      border-color: var(--c-ac-bc);
+    }
+  }
+
+  section[data-skin="invert"] {
+    p[data-accent] {
+      margin: 0;
+      padding-block: var(--p-sm);
+      padding-inline: var(--p);
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+      border: var(--b-wd) solid var(--c-ac-bc);
+      border-radius: var(--r);
+    }
+
+    ul {
+      margin: 0;
+      padding-inline-start: 1.25rem;
+
+      li + li {
+        margin-block-start: var(--s-sm);
+      }
+    }
+  }
+
+  details {
+    padding-block: var(--p-sm);
+    border-block-end: var(--b-wd) solid var(--c-bc);
+
+    summary {
+      cursor: pointer;
+      font-weight: var(--t-fw-bd);
+
+      &:focus-visible {
+        outline: max(2px, var(--b-wd)) solid var(--c-ac);
+        outline-offset: 2px;
+      }
+    }
+  }
+}

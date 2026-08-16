@@ -18,14 +18,14 @@ const requiredSections = [
   "features", "utilities", "architecture", "tokens",
 ];
 const requiredMarkup = [
-  'class="hd"', 'class="h1"', 'class="h2"', 'class="h3"', 'class="h4"', 'class="h5"', 'class="h6"',
+  'class="h0"', 'class="h1"', 'class="h2"', 'class="h3"', 'class="h4"', 'class="h5"', 'class="h6"',
   'class="t-lg"', 'class="t-bd"', 'class="t-sm"', 'class="sr focusable"',
   'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
   'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',
-  'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="secondary"',
-  'data-skin="tertiary"', 'data-skin="invert"',
-  'class="img-w" data-scrub', 'data-scrub="reverse"',
-  'id="native-invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
+  'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="invert"',
+  'data-skin="accent" data-accent="secondary"', 'data-skin="accent" data-accent="tertiary"',
+  'class="img-w" data-scrub', 'data-scrub="reverse"', 'id="grid-no-container"',
+  'id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
 const internalProperties = ["--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx"];
 const requiredFixtures = [
@@ -33,7 +33,7 @@ const requiredFixtures = [
   "grid-sm", "grid-default", "grid-lg", "grid-nested-outer", "grid-nested-inner", "grid-no-container-grid",
   "visual-order-focus", "visual-order-first", "visual-order-second", "visual-order-third",
   "type-long-content", "type-semantic-heading", "type-large-text", "type-body-text", "type-small-text",
-  "skin-nested-outer", "skin-nested-inner",
+  "skin-accent-primary", "skin-accent-secondary", "skin-accent-tertiary", "skin-accent-success", "skin-accent-warning", "skin-accent-danger", "skin-nested-outer", "skin-nested-inner",
   "native-details", "native-focus", "native-hidden", "native-dialog-trigger", "native-dialog",
   "progressive-disclosure", "progressive-corner", "reduced-motion", "progressive-scroll-default", "progressive-scroll-reverse",
 ];
@@ -52,6 +52,7 @@ if ((html.match(/<h1(?:\s|>)/gi) || []).length !== 1) {
   throw new Error("Built reference must contain exactly one h1.");
 }
 if (/https?:\/\//i.test(html)) throw new Error("Built reference contains a remote runtime dependency.");
+if (html.includes("--h-*")) throw new Error("Built reference exposes the retired header token namespace.");
 if (/role=["']presentation["']/i.test(html)) throw new Error("Built reference suppresses semantic presentation.");
 for (const signal of requiredMarkup) {
   if (!html.includes(signal)) throw new Error(`Built reference is missing specimen markup: ${signal}.`);
@@ -69,10 +70,10 @@ for (const property of internalProperties) {
   if (html.includes(property)) throw new Error(`Built reference markup exposes private property ${property}.`);
 }
 
-const tokensCss = readFileSync(new URL("styles/tokens.css", systemRoot), "utf8");
+const tokensCss = readFileSync(new URL("styles/layers/tokens.css", systemRoot), "utf8");
 const publicTokens = [...new Set([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]))];
 if (!sameValues(accentRoutes(html), accentRoutes(tokensCss))) {
-  throw new Error(`Built reference data-accent routes differ from styles/tokens.css: ${accentRoutes(html).join(", ") || "none"}`);
+  throw new Error(`Built reference data-accent routes differ from styles/layers/tokens.css: ${accentRoutes(html).join(", ") || "none"}`);
 }
 for (const route of accentRoutes(tokensCss)) {
   if (!html.includes(`<code>${route}</code>`)) throw new Error(`Built reference guidance omits data-accent route ${route}.`);

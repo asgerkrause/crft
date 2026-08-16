@@ -1,0 +1,209 @@
+@layer project {
+  /*
+    Non-canonical product chrome for an invitations screen.
+    Native elements own form structure; stable product roles own classes.
+  */
+
+  .invites {
+    --invites-control-min-size: 2.75rem;
+
+    > header {
+      padding-block: var(--p-sm);
+      color: var(--c-fg);
+      background-color: var(--c-sf);
+      border-bottom: var(--b-wd) solid var(--c-bc);
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: var(--g);
+      }
+
+      a {
+        color: var(--c-fg);
+        text-decoration: none;
+
+        &:hover {
+          color: var(--c-ac);
+        }
+
+        &:focus-visible {
+          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    .panel {
+      padding-block: var(--p-lg);
+      padding-inline: var(--p-lg);
+      color: var(--c-fg);
+      background-color: var(--c-sf);
+      border: var(--b-wd) solid var(--c-bc);
+      border-radius: var(--r);
+    }
+
+    form {
+      > p:has(> :is(input, select, textarea)),
+      fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: var(--g-xs);
+        margin: 0;
+      }
+
+      fieldset {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      label,
+      legend {
+        font-size: var(--t-sm-fs);
+        line-height: var(--t-sm-lh);
+        color: var(--c-fg);
+      }
+
+      :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+        width: 100%;
+        min-height: var(--invites-control-min-size);
+        padding-block: var(--p-sm);
+        padding-inline: var(--p-sm);
+        color: var(--c-fg);
+        background-color: var(--c-bg);
+        border: var(--b-wd) solid var(--c-bc);
+        border-radius: var(--r-sm);
+
+        &:focus-visible {
+          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline-offset: 2px;
+        }
+
+        &[aria-invalid="true"] {
+          border-color: var(--c-fb-dn);
+        }
+      }
+
+      textarea {
+        min-height: calc(var(--invites-control-min-size) * 2);
+        resize: vertical;
+      }
+
+      [role="alert"] {
+        color: var(--c-fb-dn);
+        font-size: var(--t-sm-fs);
+        line-height: var(--t-sm-lh);
+      }
+
+      label:has(> input:is([type="checkbox"], [type="radio"])) {
+        display: flex;
+        align-items: center;
+        gap: var(--g-sm);
+        min-height: var(--invites-control-min-size);
+      }
+    }
+
+    .action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--invites-control-min-size);
+      padding-block: var(--p-sm);
+      padding-inline: var(--p);
+      color: var(--c-ac-co);
+      background-color: var(--c-ac);
+      border: var(--b-wd) solid var(--c-ac-bc);
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--c-ac-fg);
+        background-color: var(--c-ac-bg);
+      }
+
+      &:focus-visible {
+        outline: max(2px, var(--b-wd)) solid var(--c-ac);
+        outline-offset: 2px;
+      }
+
+      &:disabled,
+      &[aria-disabled="true"] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &.action-secondary {
+        color: var(--c-fg);
+        background-color: var(--c-bg);
+        border-color: var(--c-bc);
+
+        &:hover {
+          color: var(--c-ac-fg);
+          background-color: var(--c-ac-bg);
+          border-color: var(--c-ac-bc);
+        }
+      }
+    }
+
+    .banner {
+      margin: 0;
+      padding-block: var(--p);
+      padding-inline: var(--p);
+      color: var(--c-fg);
+      background-color: var(--c-sf);
+      border: var(--b-wd) solid var(--c-bc);
+      border-radius: var(--r-sm);
+    }
+
+    .panel[data-accent] .banner {
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+      border-color: var(--c-ac-bc);
+    }
+
+    .skeleton {
+      min-height: calc(var(--s-xl) * 3);
+      background-color: color-mix(in oklab, var(--c-mu) 18%, var(--c-sf));
+      border-radius: var(--r-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th,
+      td {
+        padding-block: var(--p-sm);
+        padding-inline: var(--p-sm);
+        text-align: left;
+        border-bottom: var(--b-wd) solid var(--c-bc);
+      }
+
+      th {
+        font-size: var(--t-sm-fs);
+        color: var(--c-mu);
+      }
+    }
+
+    .pill {
+      display: inline-block;
+      padding-block: var(--p-xs);
+      padding-inline: var(--p-sm);
+      color: var(--c-fg);
+      background-color: var(--c-bg);
+      border: var(--b-wd) solid var(--c-bc);
+      border-radius: var(--r-xl);
+      font-size: var(--t-sm-fs);
+      line-height: var(--t-sm-lh);
+
+      &[data-accent] {
+        color: var(--c-ac-fg);
+        background-color: var(--c-ac-bg);
+        border-color: var(--c-ac-bc);
+      }
+    }
+  }
+}

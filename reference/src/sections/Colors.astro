@@ -29,9 +29,9 @@ const theme = [
   { label: "Accent", token: "--c-ac", ink: "--c-ac-co" },
   { label: "Secondary", token: "--c-sc", ink: "--c-sc-co" },
   { label: "Tertiary", token: "--c-tr", ink: "--c-tr-co" },
-  { label: "Success", token: "--c-su", ink: "--c-su-fg" },
-  { label: "Warning", token: "--c-wn", ink: "--c-wn-fg" },
-  { label: "Danger", token: "--c-dn", ink: "--c-dn-fg" },
+  { label: "Success", token: "--c-fb-su", ink: "--c-fb-su-co" },
+  { label: "Warning", token: "--c-fb-wn", ink: "--c-fb-wn-co" },
+  { label: "Danger", token: "--c-fb-dn", ink: "--c-fb-dn-co" },
 ] as const;
 
 const accent = [
@@ -62,8 +62,8 @@ const feedback = [
   {
     title: "Success",
     items: [
-      { label: "Solid", token: "--c-su", ink: "--c-su-fg", grouped: true },
-      { label: "Contrast", token: "--c-su-fg", ink: "--c-su", grouped: true },
+      { label: "Solid", token: "--c-fb-su", ink: "--c-fb-su-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-su-co", ink: "--c-fb-su", grouped: true },
       { label: "Text", token: "--c-ac-fg", accent: "success" },
       { label: "Background", token: "--c-ac-bg", accent: "success" },
       { label: "Border", token: "--c-ac-bc", accent: "success" },
@@ -72,8 +72,8 @@ const feedback = [
   {
     title: "Warning",
     items: [
-      { label: "Solid", token: "--c-wn", ink: "--c-wn-fg", grouped: true },
-      { label: "Contrast", token: "--c-wn-fg", ink: "--c-wn", grouped: true },
+      { label: "Solid", token: "--c-fb-wn", ink: "--c-fb-wn-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-wn-co", ink: "--c-fb-wn", grouped: true },
       { label: "Text", token: "--c-ac-fg", accent: "warning" },
       { label: "Background", token: "--c-ac-bg", accent: "warning" },
       { label: "Border", token: "--c-ac-bc", accent: "warning" },
@@ -82,8 +82,8 @@ const feedback = [
   {
     title: "Danger",
     items: [
-      { label: "Solid", token: "--c-dn", ink: "--c-dn-fg", grouped: true },
-      { label: "Contrast", token: "--c-dn-fg", ink: "--c-dn", grouped: true },
+      { label: "Solid", token: "--c-fb-dn", ink: "--c-fb-dn-co", grouped: true },
+      { label: "Contrast", token: "--c-fb-dn-co", ink: "--c-fb-dn", grouped: true },
       { label: "Text", token: "--c-ac-fg", accent: "danger" },
       { label: "Background", token: "--c-ac-bg", accent: "danger" },
       { label: "Border", token: "--c-ac-bc", accent: "danger" },
@@ -93,7 +93,7 @@ const feedback = [
 ---
 
 <Section {...sections.colors}>
-  <p class="c-mu" slot="summary">Use semantic roles and paired foregrounds in content. Supported explicit routes are
+  <p class="c-mu" slot="summary">Use semantic roles and paired contrast colors in content. Supported explicit routes are
     <code>secondary</code>, <code>tertiary</code>, <code>success</code>, <code>warning</code>, and <code>danger</code>;
     omit <code>data-accent</code> for the default accent. Palette swatches remain source colors.</p>
 

@@ -31,17 +31,17 @@ import { sections } from "../data";
 
   <Specimen id="container-boundaries" title="Container boundaries">
     <div class="sg-grid-list">
-      <section data-fixture="grid-boundary-sm" aria-label="Small grid boundary">
+      <section data-fixture="grid-boundary-sm">
         <div class="c sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
-      <section data-fixture="grid-boundary-default" aria-label="Default grid boundary">
+      <section data-fixture="grid-boundary-default">
         <div class="c"><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
-      <section data-fixture="grid-boundary-lg" aria-label="Large grid boundary">
+      <section data-fixture="grid-boundary-lg">
         <div class="c lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
-      <section data-fixture="grid-boundary-nested" aria-label="Nested grid boundary">
-        <div class="c"><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner" aria-label="Nested inner grid boundary"><div class="c"><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
+      <section data-fixture="grid-boundary-nested">
+        <div class="c"><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div class="c"><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
       </section>
     </div>
   </Specimen>
@@ -91,7 +91,7 @@ import { sections } from "../data";
   </Specimen>
 </Section>
 
-<section class="sg-section" data-fixture="grid-no-container" aria-label="Grid without a container boundary">
+<section id="grid-no-container" class="sg-section" data-fixture="grid-no-container">
   <div class="sg-grid-list">
     <div>
       <div class="sg-specimen-label"><code>g="3"</code><span>no container fallback</span></div>

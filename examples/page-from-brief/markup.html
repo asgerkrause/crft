@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: page from brief (non-canonical)</title>
+    <!--
+      Consumer app after copy:
+        - one import of adopted global.css
+        - project rules in the project's normal CSS owner (see example.css)
+      Paths are host placeholders.
+    -->
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <a class="sr focusable" href="#main">Skip to content</a>
+
+    <header>
+      <div class="c">
+        <div class="s h sb center">
+          <strong><a href="/">CRFT</a></strong>
+          <nav aria-label="Primary">
+            <ul class="s h">
+              <li><a href="#proof">Why</a></li>
+              <li><a href="#refuse">Boundaries</a></li>
+              <li><a href="#adoption">Copy</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Orientation + signature move 1: ownership ladder beside the primary path. -->
+      <section>
+        <div class="c lg">
+          <div g="12-6">
+            <header class="s" c="7-6">
+              <p class="t-sm c-mu">For leads shipping the next site</p>
+              <h1>Ship structure without a component tax.</h1>
+              <p class="t-lg">
+                CRFT is a finite CSS system—tokens, type, layout, skins—not a
+                library of product widgets. Copy once, keep ownership obvious,
+                migrate one visible slice at a time.
+              </p>
+              <p>
+                <a class="action" href="/docs/adoption">Copy CRFT in one project</a>
+              </p>
+            </header>
+
+            <aside class="s" c="5-6">
+              <h2 class="h3">Ownership ladder</h2>
+              <ol>
+                <li>
+                  <span class="t-sm c-mu">First</span>
+                  Native semantic HTML and browser behavior.
+                </li>
+                <li>
+                  <span class="t-sm c-mu">Second</span>
+                  Public CRFT API confirmed in the handbook and CSS.
+                </li>
+                <li>
+                  <span class="t-sm c-mu">Third</span>
+                  Distinctive chrome in project-owned CSS. This specimen uses
+                  <code>@layer project</code>; CRFT does not require that owner.
+                </li>
+              </ol>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- This section ID is the Why navigation target. -->
+      <section id="proof" data-skin="tone">
+        <div class="c">
+          <div g="3-2">
+            <header class="s" c="0">
+              <h2>What you can verify in the repo</h2>
+              <p class="t-lg">
+                Claims map to live owners—not a slide deck feature grid.
+              </p>
+            </header>
+
+            <article class="proof-tile s">
+              <h3>One entrypoint</h3>
+              <p>
+                <code>global.css</code> sets layer order. Product presentation
+                stays project-owned; copied owners change only for brand or
+                intentional system behavior.
+              </p>
+            </article>
+
+            <article class="proof-tile s">
+              <h3>Named container</h3>
+              <p>
+                Page grids hang under <code>section &gt; .c</code>. Large,
+                medium, and small resolve from that boundary.
+              </p>
+            </article>
+
+            <article class="proof-tile s" data-accent="success">
+              <h3>Verified ownership</h3>
+              <p>
+                Public tokens and attributes stay searchable. Private grid and
+                scrub implementation properties never become product API.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- This section ID is the Boundaries navigation target. -->
+      <section id="refuse" data-skin="invert">
+        <div class="c">
+          <div class="s">
+            <h2>What this page will not sell you</h2>
+            <p class="t-sm" data-accent="warning">
+              Warning: if a vendor pitch needs these, it is not CRFT.
+            </p>
+            <ul>
+              <li>A component registry or “hero” primitive as shared API.</li>
+              <li>
+                <code>data-theme</code> or palette names as
+                <code>data-accent</code> routes.
+              </li>
+              <li>Accidental unlayered utilities that silently outrank the system.</li>
+              <li>Framework adapters shipped inside the CSS snapshot.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="c sm">
+          <div class="s">
+            <h2>Before you copy</h2>
+            <details>
+              <summary>Does copy overwrite our CSS?</summary>
+              <p>
+                No. Copy vendors a snapshot and refuses targets that already
+                exist. Legacy sheets stay until you migrate slice by slice.
+              </p>
+            </details>
+            <details>
+              <summary>Where do our buttons and cards go?</summary>
+              <p>
+                In product markup and project-owned CSS. <code>.btn</code>,
+                <code>.crd</code>, and <code>.lnk</code> are project component
+                naming conventions. CRFT does not style them.
+              </p>
+            </details>
+            <details>
+              <summary>How do we know the brief was honored?</summary>
+              <p>
+                One primary action, three signature moves visible without CSS,
+                and every layout claim labeled observed, inferred, or unknown.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- This section ID is the Copy navigation target. -->
+      <section id="adoption">
+        <div class="c">
+          <div class="s">
+            <h2>Start with one project root</h2>
+            <p class="t-lg">
+              Run copy, own the snapshot, and put the first band’s chrome in
+              project-owned CSS. Edit copied owners only for brand or intentional
+              system behavior. Expand only after verification.
+            </p>
+            <p>
+              <a class="action" href="/docs/adoption">Copy CRFT in one project</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="c">
+        <div class="s">
+          <p class="t-sm c-mu">
+            Non-canonical page-from-brief specimen. The brief owns product
+            intent, <code>CRAFT.md</code> routes documentation, and CSS owns live behavior.
+          </p>
+          <p class="t-sm">
+            <a href="/docs">Handbook</a> · <a href="/docs/migration">Migration</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

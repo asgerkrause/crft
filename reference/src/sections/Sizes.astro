@@ -3,10 +3,10 @@ import Section from "../components/Section.astro";
 import { sections } from "../data";
 
 const scaleFamilies = [
-  { id: "spacing", title: "Spacing", prefix: "s", boxClass: "sg-measure", property: "--sg-size", control: "--s-sc", base: "--s-ba" },
-  { id: "gap", title: "Gap", prefix: "g", boxClass: "sg-gap-box", property: "gap", control: "--g-sc", base: "--g-ba" },
-  { id: "padding", title: "Padding", prefix: "p", boxClass: "sg-padding-box", property: "padding", control: "--p-sc", base: "--p-ba" },
-  { id: "radius", title: "Radius", prefix: "r", boxClass: "sg-radius-box", property: "border-radius", control: "--r-sc", base: "--r-ba" },
+  { id: "spacing", title: "Spacing", prefix: "s", boxClass: "sg-measure", property: "--sg-size", ratio: "--s-rt", anchor: "--s" },
+  { id: "gap", title: "Gap", prefix: "g", boxClass: "sg-gap-box", property: "gap", ratio: "--g-rt", anchor: "--g" },
+  { id: "padding", title: "Padding", prefix: "p", boxClass: "sg-padding-box", property: "padding", ratio: "--p-rt", anchor: "--p" },
+  { id: "radius", title: "Radius", prefix: "r", boxClass: "sg-radius-box", property: "border-radius", ratio: "--r-rt", anchor: "--r" },
 ] as const;
 
 const variants = ["xs", "sm", "", "lg", "xl"] as const;
@@ -21,7 +21,7 @@ const variants = ["xs", "sm", "", "lg", "xl"] as const;
         <div class="sg-heading-wrap">
           <h3 class="t-lg">{family.title}</h3>
         </div>
-        <p><code>{family.control}</code> scale control · <code>{family.base}</code> base</p>
+        <p><code>{family.ratio}</code> ratio · <code>{family.anchor}</code> anchor</p>
       </header>
       <div class="sg-measure-ramp">
         {variants.map((variant) => {

@@ -1,0 +1,48 @@
+@layer project {
+  /*
+    Non-canonical example — consumer-owned rules only.
+    This specimen uses @layer project after CRFT global.css.
+  */
+
+  main > section {
+    header {
+      align-self: end;
+    }
+
+    .img-w {
+      /* Focal crop is local evidence, not a shared token. */
+      --hero-img-pos: 68% 35%;
+
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+
+      img {
+        display: block;
+        width: 100%;
+        object-fit: cover;
+        object-position: var(--hero-img-pos);
+      }
+    }
+  }
+
+  .action {
+    display: inline-block;
+    padding-block: var(--p-sm);
+    padding-inline: var(--p);
+    color: var(--c-ac-co);
+    background-color: var(--c-ac);
+    border: var(--b-wd) solid var(--c-ac-bc);
+    border-radius: var(--r);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--c-ac-fg);
+      background-color: var(--c-ac-bg);
+    }
+
+    &:focus-visible {
+      outline: max(2px, var(--b-wd)) solid var(--c-ac);
+      outline-offset: 2px;
+    }
+  }
+}

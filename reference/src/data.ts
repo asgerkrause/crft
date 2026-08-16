@@ -7,8 +7,8 @@ interface Section {
 
 export const sections = {
   colors: { id: "colors", title: "Colors", api: "--c-*", nav: "Color" },
-  type: { id: "typography", title: "Typography", api: ".hd · .h* · .t-*", nav: "Type" },
-  sizes: { id: "sizes", title: "Sizes", api: "--h-* · --l-* · --s-* · --g-* · --p-* · --r-*", nav: "Sizes" },
+  type: { id: "typography", title: "Typography", api: ".h0 · .h1–.h6 · .t-*", nav: "Type" },
+  sizes: { id: "sizes", title: "Sizes", api: "--l-* · --s-* · --g-* · --p-* · --r-*", nav: "Sizes" },
   layout: { id: "layout", title: "Layout", api: ".c · .s", nav: "Layout" },
   grid: { id: "grid", title: "Grid", api: "g · c · r · o" },
   skins: { id: "skins", title: "Skins", api: "data-skin", nav: "Skins" },
