@@ -36,6 +36,10 @@ These properties are private:
 - `--m-src-to`
 - `--m-src-fr`
 - `--m-plx`
+- `--t-st`
+- `--t-fs-lo`
+- `--t-fs-hi`
+- `--t-fs-sl`
 
 Never use them in product CSS or public examples. The isolated reference may consume `--m-src-to` for its section indicator.
 
@@ -64,7 +68,8 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 - Prefer semantic elements, native attributes, ARIA state, `:has()`, and bounded local structure before classes. Add a class only for a stable component, page scope, behavior, or visual role that structure cannot safely own.
 - Keep nesting shallow and specificity flat.
 - Use tokens by semantic job. Keep local literals and formulas local.
-- Reserve logical `*-block` and `*-inline` properties for padding and margin.
+- Use padding and margin shorthand when one declaration controls multiple sides.
+- Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` for one physical side.
 - Use normal `font-weight`, not `font-variation-settings`.
 - Override a type role’s `--t-*-mw` token instead of setting heading or text-role `max-width`.
 

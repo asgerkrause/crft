@@ -38,15 +38,15 @@ Use page chrome as direct body children unless project truth requires another co
 </body>
 ```
 
-`body > header`, `main > section`, and `body > footer` receive their owned block spacing from `layout.css`. Section identity and region naming follow `html.md`; layout does not require either.
+`body > header`, `body > main > section`, and `body > footer` receive shared block and inline padding from `layout.css`. The header uses compact block padding. The footer preserves the larger lead-in and uses compact bottom padding. Section identity and region naming follow `html.md`; layout does not require either.
 
 ## Container
 
-`.c` sets full available width, content measure, inline page padding, vertical flow, and a structural gap. Use:
+`.c` sets full available width, content measure, vertical flow, and a structural gap. Page landmarks own the inline gutter. Narrow and wide measures derive from the default content width so one override changes the family coherently. Use:
 
 - `.c` for the default content measure;
-- `.c.sm` for narrow reading or focused content;
-- `.c.lg` for wide compositions.
+- `.c.sm` for two-thirds of the default measure;
+- `.c.lg` for four-thirds of the default measure.
 
 Place `.c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > .c` relationship establishes the named inline-size query context `container`.
 
@@ -78,6 +78,10 @@ Choose the smallest container that preserves the content relationship. A wide co
 ```
 
 Use a stack when one axis and one gap describe the relationship. Use grid for repeated columns or spans. Use direct project CSS for overlap, intrinsic tracks, sticky regions, or another local composition.
+
+## Property form
+
+Use padding and margin shorthand when one declaration controls multiple sides. In two-value shorthand, the first value controls top and bottom and the second controls left and right. Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` when one physical side changes.
 
 ## Spacing ownership
 

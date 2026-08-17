@@ -85,7 +85,7 @@ A card defines:
 
 ```html
 <article class="crd s">
-  <p class="t-sm c-mu">Release</p>
+  <p t="sm" class="c-mu">Release</p>
   <h3>CRFT documentation</h3>
   <p>Sixteen focused owners with one task router.</p>
   <a class="lnk" href="/releases/crft">Review release</a>

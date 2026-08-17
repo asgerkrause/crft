@@ -34,6 +34,37 @@ test("container grids resolve independently and no-container grids retain fallba
   expect(columns).toBe(3);
 });
 
+test("fluid type clamps, interpolates, inherits, and respects explicit roles", async ({ page }) => {
+  const size = (name) => fixture(page, name).evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+
+  await page.setViewportSize({ width: 400, height: 900 });
+  await page.goto("/#long-content");
+
+  const minimum = {
+    body: await page.locator("body").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
+    inherited: await size("type-inherited-item"),
+    semantic: await size("type-semantic-heading"),
+    override: await size("type-visual-override"),
+  };
+  expect(minimum.body).toBeCloseTo(14, 1);
+  expect(minimum.inherited).toBeCloseTo(minimum.body, 2);
+  expect(minimum.semantic).toBeCloseTo(16.1, 1);
+  expect(minimum.override).toBeCloseTo(24.486, 1);
+
+  await page.setViewportSize({ width: 1000, height: 900 });
+  const midpoint = await size("type-visual-override");
+  expect(midpoint).toBeGreaterThan(minimum.override);
+
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const maximum = {
+    body: await page.locator("body").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
+    override: await size("type-visual-override"),
+  };
+  expect(maximum.body).toBeCloseTo(20, 1);
+  expect(maximum.override).toBeCloseTo(76.832, 1);
+  expect(midpoint).toBeLessThan(maximum.override);
+});
+
 test("keyboard order follows source order despite visual reordering", async ({ page }) => {
   await page.goto("/#visual-order-focus");
   const grid = fixture(page, "visual-order-focus");

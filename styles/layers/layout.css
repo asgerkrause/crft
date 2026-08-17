@@ -17,34 +17,36 @@
 }
 
 @layer layout {
-  body>header {
-    padding: var(--l-bl-x) 0;
-  }
+  body {
+    >header,
+    >main>section,
+    >footer {
+      padding: var(--l-bl-y) var(--l-bl-x);
+    }
 
-  main>section {
-    padding: var(--l-bl-y) 0;
-  }
+    >header {
+      padding-block: var(--p);
+    }
 
-  body>footer {
-    padding: var(--l-bl-x) 0;
-    padding-top: var(--l-bl-y);
+    >footer {
+      padding-bottom: var(--p);
+    }
   }
 
   .c {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: calc(var(--l-cw) + var(--l-bl-x) * 2);
+    max-width: var(--l-cw);
     margin-inline: auto;
-    padding-inline: var(--l-bl-x);
     gap: var(--s);
 
     &.sm {
-      max-width: calc(var(--l-cw-sm) + var(--l-bl-x) * 2);
+      max-width: calc(var(--l-cw) / 3 * 2);
     }
 
     &.lg {
-      max-width: calc(var(--l-cw-lg) + var(--l-bl-x) * 2);
+      max-width: calc(var(--l-cw) / 3 * 4);
     }
   }
 

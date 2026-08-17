@@ -127,7 +127,7 @@
       background-color: var(--c-ac-bg);
       border: var(--b-wd) solid var(--c-ac-bc);
       border-radius: var(--r-xl);
-      font-size: var(--t-sm-fs);
+      font-size: .8em;
       line-height: var(--t-sm-lh);
       letter-spacing: 0.08em;
       text-transform: uppercase;

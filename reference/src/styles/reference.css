@@ -118,7 +118,7 @@
     padding: var(--p-sm) var(--p-sm) max(var(--p-sm), env(safe-area-inset-bottom));
     background: transparent;
     pointer-events: none;
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
 
     &:after {
       content: '';
@@ -156,7 +156,7 @@
 
   .sg-main-inner {
     container: container / inline-size;
-    width: min(100%, var(--l-cw-lg));
+    width: min(100%, calc(var(--l-cw) / 3 * 4));
     margin-inline: auto;
     padding-inline: var(--l-bl-x);
   }
@@ -211,7 +211,7 @@
   .sg-a11y-note {
     color: var(--sg-muted);
     font-family: var(--t-ff-mo);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-rail-nav {
@@ -423,14 +423,13 @@
   .sg-overview h1 {
     --t-h1-mw: 12ch;
     margin-block: var(--g-lg) var(--g);
-    font-size: var(--t-h0-fs);
   }
 
-  .sg-overview .t-lg {
+  .sg-overview [t="lg"] {
     --t-lg-mw: 42ch;
   }
 
-  .sg-overview .t-lg+p {
+  .sg-overview [t="lg"]+p {
     margin-block-start: var(--g-lg);
   }
 
@@ -447,9 +446,6 @@
     gap: var(--g-xs);
   }
 
-  .sg-section-header h2 {
-    font-size: var(--t-h2-fs);
-  }
 
   .sg-section-header>code {
     text-align: end;
@@ -511,7 +507,6 @@
 
   .sg-swatch>div:has(> span)>span {
     font-family: inherit;
-    font-size: var(--t-h2-fs);
     line-height: .75;
   }
 
@@ -521,7 +516,7 @@
     align-items: center;
     gap: var(--g-xs);
     padding: var(--p-sm);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-swatch figcaption code:not(.sg-chip) {
@@ -535,11 +530,16 @@
     border-radius: var(--r-xs);
     background: var(--c-sf);
     color: var(--c-fg);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
 
     &.class {
       background: var(--c-sf);
       color: var(--c-fg);
+    }
+
+    &.attribute {
+      background: var(--c-tr-bg);
+      color: var(--c-tr-fg);
     }
 
     &.html {
@@ -578,7 +578,7 @@
     display: grid;
     gap: var(--g-xs);
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-specimen-meta code:not(.sg-chip),
@@ -632,7 +632,7 @@
 
   .sg-scale-row span {
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-scale-families {
@@ -658,7 +658,7 @@
   .sg-scale-family>header p {
     color: var(--sg-muted);
     font-family: var(--t-ff-mo);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-measure-ramp {
@@ -689,7 +689,7 @@
 
   .sg-measure code {
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-gap-box {
@@ -747,7 +747,7 @@
     padding: 0.15em 0.35em;
     background: var(--c-bg);
     color: var(--c-fg);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-width-specimens {
@@ -814,7 +814,7 @@
     border-inline-start: var(--b-wd) solid var(--sg-accent);
     color: var(--sg-muted);
     font-family: var(--t-ff-mo);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-row-sample>* {
@@ -844,7 +844,7 @@
     background: var(--c-bg);
     color: var(--c-fg);
     font-family: var(--t-ff-mo);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
     text-align: center;
   }
 
@@ -910,7 +910,7 @@
 
   #forms label {
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   #forms textarea {
@@ -934,7 +934,7 @@
     padding-inline-start: var(--g);
     border-inline-start: var(--b-wd) solid var(--sg-line);
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   #native table {
@@ -956,7 +956,7 @@
   #native thead {
     color: var(--sg-muted);
     font-family: var(--t-ff-mo);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   #native summary {
@@ -969,7 +969,7 @@
   }
 
   #native dialog {
-    max-inline-size: min(100% - var(--l-bl-x) * 2, var(--l-cw-sm));
+    max-inline-size: min(100% - var(--l-bl-x) * 2, calc(var(--l-cw) / 3 * 2));
     padding: var(--p);
     border: var(--b-wd) solid var(--c-fg);
     border-radius: var(--r);
@@ -1130,7 +1130,7 @@
   .sg-scroll-example figcaption {
     margin-block-start: var(--g);
     color: var(--sg-muted);
-    font-size: var(--t-sm-fs);
+    font-size: .8em;
   }
 
   .sg-inline-specimens {
@@ -1147,7 +1147,7 @@
     border-radius: .2em;
     color: var(--c-mu);
     background: var(--c-sf);
-    font-size: var(--t-bd-fs);
+    font-size: 1em;
   }
 
   .sg-inline-specimens .utility {

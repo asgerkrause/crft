@@ -27,8 +27,12 @@ const topicDocs = topicNames.map((name) => `craft/${name}.md`);
 const retiredTopicDocs = ["strategy", "design", "structure", "css", "quality"].map((name) => `craft/${name}.md`);
 const retiredTopicPattern = /craft\/(?:strategy|design|structure|css|quality)\.md/i;
 const canonicalDocs = ["README.md", "AGENTS.md", "CRAFT.md", ...topicDocs, "skills/crft/SKILL.md"];
-const privateProperties = ["--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx"];
-const typeMeasureRoles = ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
+const privateProperties = [
+  "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
+  "--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl",
+];
+const typeRoles = ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
+const typeMeasureRoles = [...typeRoles];
 const supportedAccentRoutes = ["danger", "secondary", "success", "tertiary", "warning"];
 const supportedSkins = ["accent", "invert", "tone"];
 
@@ -80,7 +84,8 @@ if (!craft.includes("intentionally does not ship a product CLI, consumer analyze
 }
 for (const migration of [
   "styles/layers/{base,tokens,type,layout,features,utility}.css",
-  ".h0` and `--t-h0-*",
+  "t=\"h0\"",
+  "--t-fs-min",
   "--t-ff-*",
   "--t-fw-*",
   "--c-fb-su",
@@ -116,7 +121,7 @@ for (const component of [".btn", ".crd", ".lnk"]) {
   }
 }
 const documentedHooks = {
-  "craft/type.md": [".h0", ".h1", ".h2", ".h3", ".h4", ".h5", ".h6", ".t-bd", ".t-lg", ".t-sm"],
+  "craft/type.md": ["t"],
   "craft/layout.md": [".c", ".c.sm", ".c.lg", ".s", ".s.h", ".s.w", ".s.center", ".s.sb", "container"],
   "craft/grid.md": ["g", "c", "r", "o", "a-sm", "a", "a-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable", ".c-fg", ".c-mu", ".c-ac", ".c-sc", ".f-sa", ".f-se", ".f-mo", ".f-bd", ".f-dp", ".w-lt", ".w-rg", ".w-bd", ".tt-uc", ".tt-lc", ".tt-no", ".tt-cp"],
@@ -215,13 +220,21 @@ for (const [family, file] of [["SNZ Sans", "sans.ttf"], ["SNZ Mono", "mono.ttf"]
     fail(`${family} must load ../${file} with a registered 100 900 font-weight range`);
   }
 }
-const typeHookSignals = {
-  ".h0": ".h0 {", ".h1": "h1, .h1 {", ".h2": "h2, .h2 {", ".h3": "h3, .h3 {",
-  ".h4": "h4, .h4 {", ".h5": "h5, .h5 {", ".h6": "h6, .h6 {",
-  ".t-bd": "p, .t-bd {", ".t-lg": ".t-lg {", ".t-sm": ".t-sm {",
-};
-for (const [hook, signal] of Object.entries(typeHookSignals)) {
-  if (!hasCssSignal(typeCss, signal)) fail(`type.css is missing documented hook ${hook}`);
+if (!hasCssSignal(typeCss, ':where(body, h1, h2, h3, h4, h5, h6, [t]) {')) {
+  fail("type.css is missing the bounded fluid type calculation boundary");
+}
+for (const role of typeRoles) {
+  if (!hasCssSignal(typeCss, `[t="${role}"]`)) fail(`type.css is missing documented t value ${role}`);
+}
+for (const heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
+  if (!hasCssSignal(typeCss, `${heading}, [t="${heading}"] {`)) fail(`type.css is missing native ${heading} mapping`);
+}
+for (const property of ["--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl"]) {
+  if (!typeCss.includes(property)) fail(`type.css is missing private fluid property ${property}`);
+}
+if (!hasCssSignal(typeCss, "font-size: clamp(")) fail("type.css is missing fluid font-size clamping");
+if (/\.(?:h[0-6]|t-(?:lg|bd|sm))(?:[\s,:.{#]|$)/i.test(allCss)) {
+  fail("canonical CSS retains a retired class-based type role");
 }
 
 const layoutHookSignals = {
@@ -231,6 +244,14 @@ const layoutHookSignals = {
 };
 for (const [hook, signal] of Object.entries(layoutHookSignals)) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing documented hook ${hook}`);
+}
+for (const signal of [
+  "body { >header, >main>section, >footer { padding: var(--l-bl-y) var(--l-bl-x)",
+  ">header { padding-block: var(--p)", ">footer { padding-bottom: var(--p)",
+  "max-width: var(--l-cw)", "max-width: calc(var(--l-cw) / 3 * 2)",
+  "max-width: calc(var(--l-cw) / 3 * 4)",
+]) {
+  if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing viewport-derived container behavior: ${signal}`);
 }
 const gridHookSignals = {
   g: "[g] {", c: "[g]>[c", r: "[g]>[r", o: "[g]>[o", "a-sm": '[g="a-sm"]',
@@ -371,6 +392,9 @@ const validateExampleMarkup = (html, path) => {
   }
   for (const value of attributeValues(active, "data-accent")) {
     if (!supportedAccentRoutes.includes(value)) fail(`${path} uses unsupported data-accent ${value}`);
+  }
+  for (const value of attributeValues(active, "t")) {
+    if (!typeRoles.includes(value)) fail(`${path} uses unsupported t value ${value}`);
   }
   for (const value of attributeValues(active, "g")) {
     if (!["", "a", "a-sm", "a-lg", "sg"].includes(value) && !validResponsiveNumber(value, 12)) {

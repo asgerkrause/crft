@@ -85,13 +85,16 @@ CRFT does not support an in-place upgrade from the earlier frontend package. Pre
 | Repository entrypoint `global.css` | Canonical source `styles/global.css`; copy it through the copier |
 | Flat `styles/{base,tokens,type,layout,features,utility}.css` | `styles/layers/{base,tokens,type,layout,features,utility}.css` |
 | `styles/project.css` | The receiving project’s existing CSS owner |
-| `.hd` and `--t-hd-*` | `.h0` and `--t-h0-*` |
+| `.hd`, `.h0`–`.h6`, and `.t-lg`/`.t-bd`/`.t-sm` | `t="h0"`–`t="h6"` and `t="lg"`/`t="bd"`/`t="sm"`; native headings need no attribute |
+| `--t-h0-fs`–`--t-sm-fs` | No direct replacement; use the native or explicit `t` role and fluid type foundations |
 | `--f-*` font families | `--t-ff-*` |
 | `--w-*` font weights | `--t-fw-*` |
 | `--h-h` | `--l-hh` |
+| `--l-cw-sm`, `--l-cw-lg` | No direct replacement; `.c.sm` and `.c.lg` derive from `--l-cw` |
 | `--l-bl-h`, `--l-bl-v` | `--l-bl-x`, `--l-bl-y` |
-| `--s-ba`, `--g-ba`, `--p-ba`, `--r-ba`, `--t-ba` | `--s`, `--g`, `--p`, `--r`, `--t` |
-| `--s-sc`, `--g-sc`, `--p-sc`, `--r-sc`, `--t-sc` | `--s-rt`, `--g-rt`, `--p-rt`, `--r-rt`, `--t-rt` |
+| `--s-ba`, `--g-ba`, `--p-ba`, `--r-ba` | `--s`, `--g`, `--p`, `--r` |
+| `--s-sc`, `--g-sc`, `--p-sc`, `--r-sc` | `--s-rt`, `--g-rt`, `--p-rt`, `--r-rt` |
+| `--t-ba`, `--t-sc`, `--t`, `--t-rt` | `--t-fs-min`, `--t-fs-max`, `--t-rt-min`, and `--t-rt-max` |
 | `--c-su`, `--c-wn`, `--c-dn` | `--c-fb-su`, `--c-fb-wn`, `--c-fb-dn` |
 | `--c-su-fg`, `--c-wn-fg`, `--c-dn-fg` | `--c-fb-su-co`, `--c-fb-wn-co`, `--c-fb-dn-co` |
 | `data-skin="secondary"` or `data-skin="tertiary"` | `data-skin="accent"` plus the matching `data-accent` value |

@@ -186,12 +186,20 @@ test("project examples may style project component conventions", (t) => {
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
-test("documented type hooks remain source-backed", (t) => {
+test("documented type roles remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/type.css", "  .h0 {\n", "  .display-zero {\n");
+  replace(root, "styles/layers/type.css", "  [t=\"h0\"] {\n", "  [t=\"display\"] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /type\.css is missing documented hook \.h0/);
+  assert.match(result.stderr, /type\.css is missing documented t value h0/);
+});
+
+test("fluid type calculation remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/type.css", "    font-size: clamp(", "    font-size: min(");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /type\.css is missing fluid font-size clamping/);
 });
 
 test("documented layout hooks remain source-backed", (t) => {
@@ -200,6 +208,14 @@ test("documented layout hooks remain source-backed", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /layout\.css is missing documented hook \.c\.sm/);
+});
+
+test("derived container ratios remain source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/layout.css", "max-width: calc(var(--l-cw) / 3 * 2)", "max-width: calc(var(--l-cw) * .75)");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /layout\.css is missing viewport-derived container behavior/);
 });
 
 test("documented grid modes remain source-backed", (t) => {
@@ -264,6 +280,14 @@ test("image scrub remains inside its reduced-motion gate", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
+});
+
+test("an unsupported type role fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", 't="sm"', 't="xs"');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses unsupported t value xs/);
 });
 
 test("an unsupported accent route fails", (t) => {
@@ -348,7 +372,7 @@ test("the router records the retired tooling boundary", (t) => {
 
 test("adoption keeps the breaking migration record", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", ".h0` and `--t-h0-*", ".display` and `--t-display-*");
+  replace(root, "craft/adopt.md", "t=\"h0\"", "t=\"display\"");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing breaking migration guidance/);

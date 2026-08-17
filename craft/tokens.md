@@ -7,7 +7,7 @@ read_when: Finding a token, changing brand values, choosing semantic roles, crea
 
 # Tokens
 
-`styles/layers/tokens.css` is the sole catalog and authority for live values, formulas, schemes, skins, responsive scales, and reduced-motion substitutions. This file documents every public token name and its semantic job.
+`styles/layers/tokens.css` is the sole catalog and authority for public token values, token formulas, schemes, skins, responsive scales, and reduced-motion substitutions. Behavior owners may keep private calculation state. This file documents every public token name and its semantic job.
 
 ## Use and admission
 
@@ -39,7 +39,7 @@ Projects own copied token values. Put base brand values in the copied `styles/la
 
 Scale families use `xs`, `sm`, the unsuffixed anchor, `lg`, and `xl`. Their `rt` member controls the family ratio. Change a complete family coherently.
 
-Type-role suffixes have stable jobs: `fs` font size, `lh` line height, `ls` letter spacing, `fw` font weight, `tt` text transform, and `mw` readable maximum measure.
+Type-role suffixes have stable jobs: `lh` line height, `ls` letter spacing, `fw` font weight, `tt` text transform, and `mw` readable maximum measure. Fluid font size comes from the shared type foundations and the native or explicit `t` role.
 
 ## Public token index
 
@@ -52,8 +52,9 @@ The names between the index markers must exactly match declarations in `styles/l
 | Tokens | Job |
 | --- | --- |
 | `--l-hh` | Shared header-height role for project composition |
-| `--l-cw`, `--l-cw-sm`, `--l-cw-lg` | Default, narrow, and wide content measures used by `.c` |
-| `--l-bl-x`, `--l-bl-y` | Page-landmark inline and section-block spacing |
+| `--l-vp-min`, `--l-vp-max` | Shared minimum and maximum viewport bounds for responsive formulas |
+| `--l-cw` | Default content measure; narrow and wide `.c` variants derive from it |
+| `--l-bl-x`, `--l-bl-y` | Page "bleed" x- and y axes |
 
 ### Structural scales
 
@@ -106,27 +107,28 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--t-ff-sa`, `--t-ff-se`, `--t-ff-mo` | Sans, serif, and monospace font families |
 | `--t-ff-bd`, `--t-ff-dp` | Body and display font-family roles |
 | `--t-fw-lt`, `--t-fw-rg`, `--t-fw-bd` | Light, regular, and bold font-weight roles |
-| `--t-rt`, `--t` | Type scale ratio and base size |
+| `--t-fs-min`, `--t-fs-max` | Minimum and maximum body-size foundations for fluid type |
+| `--t-rt-min`, `--t-rt-max` | Minimum and maximum ratios for the fluid type scale |
 
 ### Heading roles
 
 | Tokens | Job |
 | --- | --- |
-| `--t-h0-fs`, `--t-h0-lh`, `--t-h0-ls`, `--t-h0-fw`, `--t-h0-tt`, `--t-h0-mw` | Display role size, line height, spacing, weight, transform, and measure |
-| `--t-h1-fs`, `--t-h1-lh`, `--t-h1-ls`, `--t-h1-fw`, `--t-h1-tt`, `--t-h1-mw` | Heading-one role properties |
-| `--t-h2-fs`, `--t-h2-lh`, `--t-h2-ls`, `--t-h2-fw`, `--t-h2-tt`, `--t-h2-mw` | Heading-two role properties |
-| `--t-h3-fs`, `--t-h3-lh`, `--t-h3-ls`, `--t-h3-fw`, `--t-h3-tt`, `--t-h3-mw` | Heading-three role properties |
-| `--t-h4-fs`, `--t-h4-lh`, `--t-h4-ls`, `--t-h4-fw`, `--t-h4-tt`, `--t-h4-mw` | Heading-four role properties |
-| `--t-h5-fs`, `--t-h5-lh`, `--t-h5-ls`, `--t-h5-fw`, `--t-h5-tt`, `--t-h5-mw` | Heading-five role properties |
-| `--t-h6-fs`, `--t-h6-lh`, `--t-h6-ls`, `--t-h6-fw`, `--t-h6-tt`, `--t-h6-mw` | Heading-six role properties |
+| `--t-h0-lh`, `--t-h0-ls`, `--t-h0-fw`, `--t-h0-tt`, `--t-h0-mw` | Display role line height, spacing, weight, transform, and measure |
+| `--t-h1-lh`, `--t-h1-ls`, `--t-h1-fw`, `--t-h1-tt`, `--t-h1-mw` | Heading-one role properties |
+| `--t-h2-lh`, `--t-h2-ls`, `--t-h2-fw`, `--t-h2-tt`, `--t-h2-mw` | Heading-two role properties |
+| `--t-h3-lh`, `--t-h3-ls`, `--t-h3-fw`, `--t-h3-tt`, `--t-h3-mw` | Heading-three role properties |
+| `--t-h4-lh`, `--t-h4-ls`, `--t-h4-fw`, `--t-h4-tt`, `--t-h4-mw` | Heading-four role properties |
+| `--t-h5-lh`, `--t-h5-ls`, `--t-h5-fw`, `--t-h5-tt`, `--t-h5-mw` | Heading-five role properties |
+| `--t-h6-lh`, `--t-h6-ls`, `--t-h6-fw`, `--t-h6-tt`, `--t-h6-mw` | Heading-six role properties |
 
 ### Text roles
 
 | Tokens | Job |
 | --- | --- |
-| `--t-lg-fs`, `--t-lg-lh`, `--t-lg-ls`, `--t-lg-fw`, `--t-lg-tt`, `--t-lg-mw` | Large-text role properties |
-| `--t-bd-fs`, `--t-bd-lh`, `--t-bd-ls`, `--t-bd-fw`, `--t-bd-tt`, `--t-bd-mw` | Body-text role properties |
-| `--t-sm-fs`, `--t-sm-lh`, `--t-sm-ls`, `--t-sm-fw`, `--t-sm-tt`, `--t-sm-mw` | Small-text role properties |
+| `--t-lg-lh`, `--t-lg-ls`, `--t-lg-fw`, `--t-lg-tt`, `--t-lg-mw` | Large-text role properties |
+| `--t-bd-lh`, `--t-bd-ls`, `--t-bd-fw`, `--t-bd-tt`, `--t-bd-mw` | Body-text role properties |
+| `--t-sm-lh`, `--t-sm-ls`, `--t-sm-fw`, `--t-sm-tt`, `--t-sm-mw` | Small-text role properties |
 
 ### Motion
 
@@ -149,8 +151,12 @@ Never use these properties in product CSS or public examples:
 - `--m-src-to`
 - `--m-src-fr`
 - `--m-plx`
+- `--t-st`
+- `--t-fs-lo`
+- `--t-fs-hi`
+- `--t-fs-sl`
 
-They are implementation state for public grid and motion hooks. Their presence does not create public API.
+They are implementation state for public grid, type, and motion hooks. Their presence does not create public API.
 
 ## Common mistakes
 

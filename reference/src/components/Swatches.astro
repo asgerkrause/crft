@@ -23,7 +23,7 @@ const { label, items, accent } = Astro.props;
     <li r={item.featured ? "2" : undefined} c={item.featured ? "2" : undefined}>
       <figure class="sg-swatch" data-accent={item.accent}>
         <div style={`--sg-color:var(${item.color ?? item.token})${item.ink ? `;--sg-ink:var(${item.ink});color:var(--sg-ink)` : ""}`}>
-          {item.ink && <span aria-hidden="true">Aa</span>}
+          {item.ink && <span t="h2" aria-hidden="true">Aa</span>}
         </div>
         <figcaption>{item.label} {item.grouped ? <span><code>{item.token}</code></span> : <code>{item.token}</code>}</figcaption>
       </figure>

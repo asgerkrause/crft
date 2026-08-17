@@ -2,9 +2,9 @@
   :root {
     /* Layout */
     --l-hh: 4rem;
-    --l-cw: 90rem;
-    --l-cw-sm: 60rem;
-    --l-cw-lg: 120rem;
+    --l-vp-min: 400;
+    --l-vp-max: 1600;
+    --l-cw: calc(var(--l-vp-max) * 0.0625rem);
     --l-bl-x: 2rem;
     --l-bl-y: 12rem;
 
@@ -161,54 +161,49 @@
     --t-fw-rg: 400;
     --t-fw-bd: 600;
 
-    /* Type Scale */
-    --t-rt: 1.333;
-    --t: 1rem;
+    /* Fluid Type Scale */
+    --t-fs-min: 14;
+    --t-fs-max: 20;
+    --t-rt-min: 1.15;
+    --t-rt-max: 1.4;
 
     /* Heading zero & Headings */
-    --t-h0-fs: calc(pow(var(--t-rt), 6) * var(--t));
     --t-h0-lh: 1;
     --t-h0-ls: -0.01em;
     --t-h0-fw: var(--t-fw-rg);
     --t-h0-tt: none;
     --t-h0-mw: 70ch;
 
-    --t-h1-fs: calc(pow(var(--t-rt), 5) * var(--t));
     --t-h1-lh: 1;
     --t-h1-ls: -0.01em;
     --t-h1-fw: var(--t-fw-rg);
     --t-h1-tt: none;
     --t-h1-mw: 70ch;
 
-    --t-h2-fs: calc(pow(var(--t-rt), 4) * var(--t));
     --t-h2-lh: 1.05;
     --t-h2-ls: -0.01em;
     --t-h2-fw: var(--t-fw-rg);
     --t-h2-tt: none;
     --t-h2-mw: 70ch;
 
-    --t-h3-fs: calc(pow(var(--t-rt), 3) * var(--t));
     --t-h3-lh: 1.1;
     --t-h3-ls: -0.01em;
     --t-h3-fw: var(--t-fw-rg);
     --t-h3-tt: none;
     --t-h3-mw: 70ch;
 
-    --t-h4-fs: calc(pow(var(--t-rt), 2) * var(--t));
     --t-h4-lh: 1.2;
     --t-h4-ls: -0.02em;
     --t-h4-fw: var(--t-fw-rg);
     --t-h4-tt: none;
     --t-h4-mw: 70ch;
 
-    --t-h5-fs: calc(pow(var(--t-rt), 1) * var(--t));
     --t-h5-lh: 1.2;
     --t-h5-ls: -0.01em;
     --t-h5-fw: var(--t-fw-rg);
     --t-h5-tt: none;
     --t-h5-mw: 70ch;
 
-    --t-h6-fs: calc(pow(var(--t-rt), -1) * var(--t));
     --t-h6-lh: 1.2;
     --t-h6-ls: -0.01em;
     --t-h6-fw: var(--t-fw-rg);
@@ -216,21 +211,18 @@
     --t-h6-mw: 70ch;
 
     /* Text levels */
-    --t-lg-fs: calc(pow(var(--t-rt), 1) * var(--t));
     --t-lg-lh: 1.2;
     --t-lg-ls: -0.02em;
     --t-lg-fw: var(--t-fw-rg);
     --t-lg-tt: none;
     --t-lg-mw: 70ch;
 
-    --t-bd-fs: var(--t);
     --t-bd-lh: 1.4;
     --t-bd-ls: -0.02em;
     --t-bd-fw: var(--t-fw-rg);
     --t-bd-tt: none;
     --t-bd-mw: 70ch;
 
-    --t-sm-fs: calc(pow(var(--t-rt), -1) * var(--t));
     --t-sm-lh: 1.2;
     --t-sm-ls: -0.01em;
     --t-sm-fw: var(--t-fw-rg);

@@ -61,7 +61,7 @@
 
       label,
       legend {
-        font-size: var(--t-sm-fs);
+        font-size: .8em;
         line-height: var(--t-sm-lh);
         color: var(--c-fg);
       }
@@ -93,7 +93,7 @@
 
       [role="alert"] {
         color: var(--c-fb-dn);
-        font-size: var(--t-sm-fs);
+        font-size: .8em;
         line-height: var(--t-sm-lh);
       }
 
@@ -183,7 +183,7 @@
       }
 
       th {
-        font-size: var(--t-sm-fs);
+        font-size: .8em;
         color: var(--c-mu);
       }
     }
@@ -196,7 +196,7 @@
       background-color: var(--c-bg);
       border: var(--b-wd) solid var(--c-bc);
       border-radius: var(--r-xl);
-      font-size: var(--t-sm-fs);
+      font-size: .8em;
       line-height: var(--t-sm-lh);
 
       &[data-accent] {

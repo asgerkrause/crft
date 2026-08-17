@@ -18,8 +18,8 @@ const requiredSections = [
   "features", "utilities", "architecture", "tokens",
 ];
 const requiredMarkup = [
-  'class="h0"', 'class="h1"', 'class="h2"', 'class="h3"', 'class="h4"', 'class="h5"', 'class="h6"',
-  'class="t-lg"', 'class="t-bd"', 'class="t-sm"', 'class="sr focusable"',
+  't="h0"', 't="h1"', 't="h2"', 't="h3"', 't="h4"', 't="h5"', 't="h6"',
+  't="lg"', 't="bd"', 't="sm"', 'class="sr focusable"',
   'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
   'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',
   'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="invert"',
@@ -27,12 +27,15 @@ const requiredMarkup = [
   'class="img-w" data-scrub', 'data-scrub="reverse"', 'id="grid-no-container"',
   'id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
-const internalProperties = ["--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx"];
+const internalProperties = [
+  "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
+  "--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl",
+];
 const requiredFixtures = [
   "grid-boundary-sm", "grid-boundary-default", "grid-boundary-lg", "grid-boundary-nested", "grid-boundary-nested-inner", "grid-no-container",
   "grid-sm", "grid-default", "grid-lg", "grid-nested-outer", "grid-nested-inner", "grid-no-container-grid",
   "visual-order-focus", "visual-order-first", "visual-order-second", "visual-order-third",
-  "type-long-content", "type-semantic-heading", "type-large-text", "type-body-text", "type-small-text",
+  "type-long-content", "type-semantic-heading", "type-visual-override", "type-large-text", "type-body-text", "type-small-text", "type-inheritance", "type-inherited-item",
   "skin-accent-primary", "skin-accent-secondary", "skin-accent-tertiary", "skin-accent-success", "skin-accent-warning", "skin-accent-danger", "skin-nested-outer", "skin-nested-inner",
   "native-details", "native-focus", "native-hidden", "native-dialog-trigger", "native-dialog",
   "progressive-disclosure", "progressive-corner", "reduced-motion", "progressive-scroll-default", "progressive-scroll-reverse",
