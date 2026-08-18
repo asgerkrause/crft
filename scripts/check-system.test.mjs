@@ -204,10 +204,10 @@ test("fluid type calculation remains source-backed", (t) => {
 
 test("native first-paint remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/base.css", ":where(a[href]) {", ":where(a) {");
+  replace(root, "styles/layers/base.css", ":where(a, button, label) {", ":where(a, button) {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /base\.css is missing native enhancement: :where\(a\[href\]\) \{/);
+  assert.match(result.stderr, /base\.css is missing native enhancement: :where\(a, button, label\) \{/);
 });
 
 test("documented layout hooks remain source-backed", (t) => {

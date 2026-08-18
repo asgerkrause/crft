@@ -148,15 +148,15 @@
     padding-inline-start: 0;
   }
 
-  :where(a[href]) {
+  :where(a) {
     color: inherit;
-    text-decoration: underline;
-    text-decoration-thickness: from-font;
-    text-underline-offset: 0.15em;
+    text-decoration: none;
   }
 
-  :where(nav a[href]) {
-    text-decoration: none;
+  :where(a, button, label) {
+    transition-property: color, background, border, transform, opacity;
+    transition-duration: var(--m-td);
+    transition-timing-function: var(--m-tf-o);
   }
 
   :where([aria-current="page"]) {

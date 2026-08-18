@@ -342,7 +342,8 @@ if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss,
 }
 for (const signal of [
   "@supports selector(details::details-content)", "corner-shape: squircle",
-  ':where(a[href]) {', ':where(nav a[href]) {', '[aria-current="page"]',
+  ':where(a) {', ':where(a, button, label) {', 'transition-duration: var(--m-td)',
+  '[aria-current="page"]',
   "list-style-position: outside",
   "border: var(--b-wd) solid var(--c-bc)",
   "border-color: var(--c-fb-dn)",

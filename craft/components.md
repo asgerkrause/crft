@@ -66,7 +66,7 @@ Use one primary action group per decision area. Secondary actions must remain av
 
 This is project CSS, not a CRFT component recipe. Change its dimensions and treatment from product evidence.
 
-Inline links must remain identifiable in surrounding prose. Base underlines `a[href]` outside navigation. Preserve that underline or another verified non-color cue unless placement and context make the link unambiguous.
+Inline links must remain identifiable in surrounding prose. Base removes the default underline and inherits color. Project CSS must add an underline or another verified non-color cue unless placement and context make the link unambiguous.
 
 ## Cards
 

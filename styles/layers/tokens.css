@@ -89,7 +89,7 @@
     --c-fg: var(--c-fg-base);
     --c-sf: color-mix(in srgb, var(--c-fg) 5%, var(--c-bg));
     --c-bc: color-mix(in srgb, var(--c-fg) 25%, transparent);
-    --c-mu: color-mix(in srgb, var(--c-fg) 80%, transparent);
+    --c-mu: color-mix(in srgb, var(--c-fg) 45%, transparent);
 
     --c-ac-bg: color-mix(in srgb, var(--c-ac) 15%, var(--c-bg));
     --c-ac-fg: color-mix(in srgb, var(--c-ac) 25%, var(--c-fg));

@@ -96,7 +96,7 @@ The names between the index markers must exactly match declarations in `styles/l
 | --- | --- |
 | `--c-bg-base`, `--c-fg-base` | Scheme-aware base canvas and foreground sources |
 | `--c-bg`, `--c-fg` | Active canvas and foreground |
-| `--c-sf`, `--c-bc`, `--c-mu` | Active surface, border, and muted-content roles |
+| `--c-sf`, `--c-bc`, `--c-mu` | Active surface, border, and secondary muted-content tone |
 | `--c-ac-bg`, `--c-ac-fg`, `--c-ac-bc` | Active accent’s subtle background, foreground, and border roles |
 | `--c-sc-bg`, `--c-sc-fg`, `--c-sc-bc` | Secondary accent’s subtle background, foreground, and border roles |
 | `--c-tr-bg`, `--c-tr-fg`, `--c-tr-bc` | Tertiary accent’s subtle background, foreground, and border roles |
