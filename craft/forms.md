@@ -94,7 +94,7 @@ See [`examples/product-interface/`](../examples/product-interface/) for native c
 
 Keep each label, control, helper, and error as one visual group. Separate field groups more than content inside a field. Let labels, errors, and actions wrap. Do not use fixed heights that clip text.
 
-Project CSS owns control surfaces, borders, spacing, density, and action presentation. Use CRFT semantic color and spacing roles. Verify each state in every canvas where the form appears.
+Base supplies minimal control chrome. Project CSS owns density, filled actions, and any tighter field layout. Use CRFT semantic color and spacing roles. Verify each state in every canvas where the form appears.
 
 ## Common mistakes
 

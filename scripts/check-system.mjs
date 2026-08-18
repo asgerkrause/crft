@@ -342,6 +342,10 @@ if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss,
 }
 for (const signal of [
   "@supports selector(details::details-content)", "corner-shape: squircle",
+  ':where(a[href]) {', ':where(nav a[href]) {', '[aria-current="page"]',
+  "list-style-position: outside",
+  "border: var(--b-wd) solid var(--c-bc)",
+  "border-color: var(--c-fb-dn)",
 ]) {
   if (!hasCssSignal(baseCss, signal)) fail(`base.css is missing native enhancement: ${signal}`);
 }

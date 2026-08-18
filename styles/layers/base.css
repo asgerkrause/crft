@@ -61,6 +61,59 @@
 
   :where(button, [type="button"], [type="reset"], [type="submit"]) {
     appearance: button;
+    min-height: 2.75rem;
+    padding: var(--p-sm) var(--p);
+    color: inherit;
+    background: var(--c-bg);
+    border: var(--b-wd) solid var(--c-bc);
+    border-radius: var(--r-sm);
+  }
+
+  :where(
+    input:not(
+      [type="button"],
+      [type="submit"],
+      [type="reset"],
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="file"],
+      [type="hidden"],
+      [type="image"],
+      [type="color"]
+    ),
+    select,
+    textarea
+  ) {
+    min-height: 2.75rem;
+    padding: var(--p-sm) var(--p);
+    color: inherit;
+    background: var(--c-bg);
+    border: var(--b-wd) solid var(--c-bc);
+    border-radius: var(--r-sm);
+  }
+
+  :where(
+    input:not(
+      [type="button"],
+      [type="submit"],
+      [type="reset"],
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="file"],
+      [type="hidden"],
+      [type="image"],
+      [type="color"]
+    ),
+    select,
+    textarea
+  )[aria-invalid="true"] {
+    border-color: var(--c-fb-dn);
+  }
+
+  :where(button, input, select, textarea):disabled {
+    color: var(--c-mu);
   }
 
   :where(textarea) {
@@ -86,15 +139,29 @@
   }
 
   :where(ul, ol) {
-    list-style-position: inside;
+    list-style-position: outside;
+    padding-inline-start: 1.25em;
   }
 
   :where(nav ul, nav ol) {
     list-style: none;
+    padding-inline-start: 0;
   }
 
-  :where(a) {
+  :where(a[href]) {
     color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.15em;
+  }
+
+  :where(nav a[href]) {
+    text-decoration: none;
+  }
+
+  :where([aria-current="page"]) {
+    text-decoration: underline;
+    font-weight: var(--t-fw-bd);
   }
 
   :where(button, a, input, select, textarea, summary) {

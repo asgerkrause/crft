@@ -202,6 +202,14 @@ test("fluid type calculation remains source-backed", (t) => {
   assert.match(result.stderr, /type\.css is missing fluid font-size clamping/);
 });
 
+test("native first-paint remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/base.css", ":where(a[href]) {", ":where(a) {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /base\.css is missing native enhancement: :where\(a\[href\]\) \{/);
+});
+
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/layers/layout.css", "    &[c~=\"sm\"] {\n", "    &[c~=\"narrow\"] {\n");
