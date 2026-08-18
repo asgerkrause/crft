@@ -25,8 +25,8 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 
   <main>
     <section>
-      <div class="c">
-        <div class="s">
+      <div c>
+        <div s>
           <h2>Proof</h2>
           <div g="3-2">...</div>
         </div>
@@ -42,7 +42,7 @@ Use one visible primary `main`. Use `section` for a thematic grouping and give i
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 
-Place `.c` only inside page landmarks. The exact `section > .c` relationship establishes CRFT’s named responsive container. A responsive grid is a descendant of that boundary, not the `.c` element.
+Place `c` only inside page landmarks. The exact `section > [c]` relationship establishes CRFT’s named responsive container. A responsive grid is a descendant of that boundary, not the `[c]` element.
 
 ## Element and selector ownership
 
@@ -64,11 +64,11 @@ A skip link justifies a target ID on `main`. An explicit `label[for]` justifies 
 
 ## Native base guarantees
 
-`styles/layers/base.css` supplies these bounded defaults:
+`styles/layers/base.css` owns `@layer reset` then `@layer base`. Reset only neutralizes the user agent. Base supplies these bounded defaults:
 
 | Area                | Guarantee                                                                                                                                                                                                         |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Box and document    | Border-box sizing, zero default spacing, minimum document height, light/dark color scheme, intrinsic-size interpolation, stable scrollbar gutter, tab size, text-size control, and font smoothing                 |
+| Box and document    | Border-box sizing, zero default spacing, minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, text-size control, and font smoothing |
 | Active canvas       | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors                                                                                                                |
 | Controls            | Font, color, letter spacing, text transform, native button appearance, square default radius, vertical textarea resize, content-driven textarea field sizing, text selection, and touch manipulation              |
 | Media and data      | Responsive images, video, canvas, and SVG; automatic image/video height; visible SVG overflow; collapsed table borders                                                                                            |
@@ -76,8 +76,10 @@ A skip link justifies a target ID on `main`. An explicit `label[for]` justifies 
 | Interaction         | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, target scroll offset, and transparent tap highlight                                              |
 | Hidden and disabled | `[hidden]` cannot be overridden by ordinary display rules. Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
 | Dialog              | Unconstrained dialog size, inherited color, and semantic dark backdrop                                                                                                                                            |
+| Disclosure          | Native `details` remains operable. When `::details-content` is supported, closed content animates with motion roles                                                                                                |
+| Corners             | When `corner-shape` is supported, every box uses a squircle. The shape is visible only where radius exists                                                                                                        |
 | Text details        | Strong weight, small text role, subscript and superscript positioning, monospace code elements, code treatment, abbreviation underline metrics, placeholder color, and progress alignment                         |
-| Structural defaults | Borderless fieldsets and iframes, clipped horizontal overflow on `main`, and inherited active colors for selection and emphasis                                                                                   |
+| Structural defaults | Borderless fieldsets and iframes, and inherited active colors for selection and emphasis. Page-landmark overflow and view-transition names belong to [`layout.md`](layout.md)                                     |
 
 Unsupported properties are ignored by the browser while the native element remains usable. These rules improve a correct element. They do not make an incorrect element semantic or accessible.
 
@@ -114,7 +116,7 @@ Do not use JavaScript for responsive layout, derivable visual state, static sect
 - An ID with no fragment, relationship, behavior, integration, or stable identity job.
 - `aria-labelledby` on every section, which creates unnecessary region landmarks.
 - `aria-label` or `aria-labelledby` on a generic wrapper that cannot use an author-provided name.
-- `g` placed on the same element as the section `.c` boundary.
+- `g` placed on the same element as the section `[c]` boundary.
 - A clickable `div` replacing a link or button.
 - ARIA state that disagrees with visible or application state.
 - CSS visual order used to repair source order.

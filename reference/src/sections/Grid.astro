@@ -5,7 +5,7 @@ import { sections } from "../data";
 ---
 
 <Section {...sections.grid}>
-  <p class="c-mu" slot="summary">Grid attributes apply to a grid and its direct children. On small screens every grid
+  <p t="mu" slot="summary">Grid attributes apply to a grid and its direct children. On small screens every grid
     becomes a flex column; source order must remain meaningful.</p>
 
   <Specimen id="columns-and-spans" title="Columns and spans">
@@ -15,16 +15,16 @@ import { sections } from "../data";
         <div g><span>One</span><span>Two</span><span>Three</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>g="8-4" + c="4-2"</code><span>responsive span</span></div>
-        <div g="8-4"><span c="4-2">Featured</span><span>Default</span><span>Default</span></div>
+        <div class="sg-specimen-label"><code>g="8-4" + x="4-2"</code><span>responsive span</span></div>
+        <div g="8-4"><span x="4-2">Featured</span><span>Default</span><span>Default</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>c="0"</code><span>full row</span></div>
-        <div g="4-2"><span c="0">Full row</span><span>Two</span><span>Three</span></div>
+        <div class="sg-specimen-label"><code>x="0"</code><span>full row</span></div>
+        <div g="4-2"><span x="0">Full row</span><span>Two</span><span>Three</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>r="2-1"</code><span>controlled row span</span></div>
-        <div g="3"><span r="2-1">Row span</span><span>Two</span><span>Three</span><span>Four</span></div>
+        <div class="sg-specimen-label"><code>y="2-1"</code><span>controlled row span</span></div>
+        <div g="3"><span y="2-1">Row span</span><span>Two</span><span>Three</span><span>Four</span></div>
       </div>
     </div>
   </Specimen>
@@ -32,16 +32,16 @@ import { sections } from "../data";
   <Specimen id="container-boundaries" title="Container boundaries">
     <div class="sg-grid-list">
       <section data-fixture="grid-boundary-sm">
-        <div class="c sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div c="sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-default">
-        <div class="c"><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div c><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-lg">
-        <div class="c lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div c="lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-nested">
-        <div class="c"><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div class="c"><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
+        <div c><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div c><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
       </section>
     </div>
   </Specimen>
@@ -85,7 +85,7 @@ import { sections } from "../data";
     <div class="sg-grid-list">
       <div>
         <div class="sg-specimen-label"><code>g="sg"</code><span>nested subgrid</span></div>
-        <div g="3"><span>One</span><span g="sg" c="2"><i>Nested one</i><i>Nested two</i></span></div>
+        <div g="3"><span>One</span><span g="sg" x="2"><i>Nested one</i><i>Nested two</i></span></div>
       </div>
     </div>
   </Specimen>

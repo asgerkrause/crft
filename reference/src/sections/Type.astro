@@ -20,27 +20,41 @@ const textRoles = [
 ] as const;
 
 const families = [
-  { token: "--t-ff-sa", className: "f-sa", label: "Sans text" },
-  { token: "--t-ff-se", className: "f-se", label: "Serif text" },
-  { token: "--t-ff-mo", className: "f-mo", label: "Mono text" },
-  { token: "--t-ff-bd", className: "f-bd", label: "Body text" },
-  { token: "--t-ff-dp", className: "f-dp", label: "Display text" },
+  { token: "--t-ff-sa", label: "Sans text" },
+  { token: "--t-ff-se", label: "Serif text" },
+  { token: "--t-ff-mo", label: "Mono text" },
+  { token: "--t-ff-bd", label: "Body text" },
+  { token: "--t-ff-dp", label: "Display text" },
 ] as const;
 
 const weights = [
-  { token: "--t-fw-lt", className: "w-lt", label: "Light text" },
-  { token: "--t-fw-rg", className: "w-rg", label: "Regular text" },
-  { token: "--t-fw-bd", className: "w-bd", label: "Bold text" },
+  { token: "--t-fw-lt", label: "Light text" },
+  { token: "--t-fw-rg", label: "Regular text" },
+  { token: "--t-fw-bd", label: "Bold text" },
+] as const;
+
+const colors = [
+  { flag: "fg", label: "Foreground" },
+  { flag: "mu", label: "Muted" },
+  { flag: "ac", label: "Accent" },
+  { flag: "sc", label: "Secondary" },
+] as const;
+
+const transforms = [
+  { flag: "uc", label: "upper text" },
+  { flag: "lc", label: "LOWER TEXT" },
+  { flag: "no", label: "No Transform" },
+  { flag: "cp", label: "capitalized words" },
 ] as const;
 ---
 
 <Section {...sections.type}>
-  <p slot="summary" class="c-mu">Use semantic headings for document structure and visual roles only when presentation intentionally differs.</p>
+  <p slot="summary" t="mu">Use semantic headings for document structure and visual roles only when presentation intentionally differs.</p>
 
   <Specimen id="headings" title="Headings">
     <div class="sg-type-list">
       {headings.map((heading) => (
-        <article class:list={["sg-type-row", "s", "h", "sb", { "sg-type-display": heading.display }]}>
+        <article class:list={["sg-type-row", { "sg-type-display": heading.display }]} s="h sb">
           {heading.html ? (
             <span><code class="sg-chip html">{heading.html}</code> <code class="sg-chip attribute">t="{heading.role}"</code></span>
           ) : (
@@ -55,7 +69,7 @@ const weights = [
   <Specimen id="text" title="Text">
     <div class="sg-type-list">
       {textRoles.map((role) => (
-        <article class="sg-type-row s h sb">
+        <article class="sg-type-row" s="h sb">
           <code class="sg-chip attribute">t="{role.role}"</code>
           <p t={role.role}>{role.label}</p>
         </article>
@@ -64,7 +78,7 @@ const weights = [
   </Specimen>
 
   <Specimen id="long-content" title="Long content">
-    <article class="s" data-fixture="type-long-content">
+    <article s data-fixture="type-long-content">
       <h4 data-fixture="type-semantic-heading">Semantic headings retain a readable measure when a long sentence needs more than one line to communicate its complete meaning.</h4>
       <h4 t="h1" data-fixture="type-visual-override">A semantic heading can use an explicit visual role without changing its document level.</h4>
       <p t="lg" data-fixture="type-large-text">Large text retains its own readable measure across enough content to wrap naturally without clipping or a project-owned width.</p>
@@ -77,9 +91,9 @@ const weights = [
   <Specimen id="families" title="Families">
     <div class="sg-type-list">
       {families.map((family) => (
-        <article class="sg-type-row s h sb">
-          <span><code class="sg-chip token">{family.token}</code> <code class="sg-chip class">.{family.className}</code></span>
-          <p class={family.className}>{family.label}</p>
+        <article class="sg-type-row" s="h sb">
+          <code class="sg-chip token">{family.token}</code>
+          <p style={`font-family: var(${family.token})`}>{family.label}</p>
         </article>
       ))}
     </div>
@@ -88,29 +102,56 @@ const weights = [
   <Specimen id="weights" title="Weights">
     <div class="sg-type-list">
       {weights.map((weight) => (
-        <article class="sg-type-row s h sb">
-          <span><code class="sg-chip token">{weight.token}</code> <code class="sg-chip class">.{weight.className}</code></span>
-          <p t="h2" class={weight.className}>{weight.label}</p>
+        <article class="sg-type-row" s="h sb">
+          <code class="sg-chip token">{weight.token}</code>
+          <p t="h2" style={`font-weight: var(${weight.token})`}>{weight.label}</p>
         </article>
       ))}
     </div>
   </Specimen>
 
+  <Specimen id="color-flags" title="Color flags">
+    <div class="sg-type-list">
+      {colors.map((color) => (
+        <article class="sg-type-row" s="h sb">
+          <code class="sg-chip attribute">t="{color.flag}"</code>
+          <p t={color.flag}>{color.label}</p>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="transform-flags" title="Transform flags">
+    <div class="sg-type-list">
+      {transforms.map((transform) => (
+        <article class="sg-type-row" s="h sb">
+          <code class="sg-chip attribute">t="{transform.flag}"</code>
+          <p t={transform.flag}>{transform.label}</p>
+        </article>
+      ))}
+    </div>
+  </Specimen>
+
+  <Specimen id="line-clamp" title="Line clamp">
+    <p l="2" data-fixture="type-clamp">A supporting paragraph can stop after two lines when the heading already carries the meaning and the extra sentences would push the following action out of the first screen.</p>
+    <p t="sm"><code>l="2"</code> keeps the full text in the DOM.</p>
+  </Specimen>
+
   <Specimen id="elements" title="Elements">
     <div class="sg-type-list">
-      <article class="sg-type-row s h sb"><code class="sg-chip html">mark</code><p t="h2"><mark>Marked text</mark></p></article>
-      <article class="sg-type-row s h sb"><span><code class="sg-chip html">strong</code> <code class="sg-chip html">b</code></span><p t="h2"><strong>Strong</strong> and <b>bold</b></p></article>
-      <article class="sg-type-row s h sb"><span><code class="sg-chip html">em</code> <code class="sg-chip html">i</code></span><p t="h2"><em>Emphasized</em> and <i>alternate voice</i></p></article>
-      <article class="sg-type-row s h sb"><code class="sg-chip html">a</code><p t="h2"><a href="#typography">Linked text</a></p></article>
-      <article class="sg-type-row s h sb"><code class="sg-chip html">small</code><p t="h2"><small>Small print</small></p></article>
-      <article class="sg-type-row s h sb"><span><code class="sg-chip html">code</code> <code class="sg-chip html">kbd</code> <code class="sg-chip html">samp</code></span><p t="h2"><code>const role = "public"</code> <kbd>⌘ K</kbd> <samp>Ready</samp></p></article>
-      <article class="sg-type-row s h sb"><code class="sg-chip html">pre</code><pre><code>section &gt; .c &#123;
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">mark</code><p t="h2"><mark>Marked text</mark></p></article>
+      <article class="sg-type-row" s="h sb"><span><code class="sg-chip html">strong</code> <code class="sg-chip html">b</code></span><p t="h2"><strong>Strong</strong> and <b>bold</b></p></article>
+      <article class="sg-type-row" s="h sb"><span><code class="sg-chip html">em</code> <code class="sg-chip html">i</code></span><p t="h2"><em>Emphasized</em> and <i>alternate voice</i></p></article>
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">a</code><p t="h2"><a href="#typography">Linked text</a></p></article>
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">small</code><p t="h2"><small>Small print</small></p></article>
+      <article class="sg-type-row" s="h sb"><span><code class="sg-chip html">code</code> <code class="sg-chip html">kbd</code> <code class="sg-chip html">samp</code></span><p t="h2"><code>const role = "public"</code> <kbd>⌘ K</kbd> <samp>Ready</samp></p></article>
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">pre</code><pre><code>section &gt; [c] &#123;
   container: container / inline-size;
 &#125;</code></pre></article>
-      <article class="sg-type-row s h sb"><code class="sg-chip html">blockquote</code><blockquote t="h2"><p>Meaning before hooks.</p><cite>CRFT system strategy</cite></blockquote></article>
-      <article class="sg-type-row s h sb"><span><code class="sg-chip html">sub</code> <code class="sg-chip html">sup</code></span><p t="h2">H<sub>2</sub>O · x<sup>2</sup></p></article>
-      <article class="sg-type-row s h sb"><code class="sg-chip html">abbr</code><p t="h2"><abbr title="Cascading Style Sheets">CSS</abbr></p></article>
-      <article class="sg-type-row s h sb"><span><code class="sg-chip html">del</code> <code class="sg-chip html">ins</code></span><p t="h2"><del>Removed</del> <ins>Inserted</ins></p></article>
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">blockquote</code><blockquote t="h2"><p>Meaning before hooks.</p><cite>CRFT system strategy</cite></blockquote></article>
+      <article class="sg-type-row" s="h sb"><span><code class="sg-chip html">sub</code> <code class="sg-chip html">sup</code></span><p t="h2">H<sub>2</sub>O · x<sup>2</sup></p></article>
+      <article class="sg-type-row" s="h sb"><code class="sg-chip html">abbr</code><p t="h2"><abbr title="Cascading Style Sheets">CSS</abbr></p></article>
+      <article class="sg-type-row" s="h sb"><span><code class="sg-chip html">del</code> <code class="sg-chip html">ins</code></span><p t="h2"><del>Removed</del> <ins>Inserted</ins></p></article>
     </div>
   </Specimen>
 </Section>

@@ -120,7 +120,7 @@ test("the HTML owner states the purpose-based identifier contract", (t) => {
 
 test("canonical examples reject names on generic wrappers", (t) => {
   const root = makeFixture(t);
-  replace(root, "README.md", "  <div class=\"c\">", "  <div class=\"c\" aria-label=\"Content\">");
+  replace(root, "README.md", "  <div c>", "  <div c aria-label=\"Content\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /names a generic div wrapper/);
@@ -170,9 +170,9 @@ test("a project component selector in canonical CSS fails", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "styles/layers/features.css",
-    ":where(dialog, input, textarea, select)",
-    ":where(.btn, dialog, input, textarea, select)",
+    "styles/layers/base.css",
+    ":where(dialog) {",
+    ":where(.btn, dialog) {",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -188,7 +188,7 @@ test("project examples may style project component conventions", (t) => {
 
 test("documented type roles remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/type.css", "  [t=\"h0\"] {\n", "  [t=\"display\"] {\n");
+  replace(root, "styles/layers/type.css", "  [t~=\"h0\"] {\n", "  [t~=\"display\"] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /type\.css is missing documented t value h0/);
@@ -204,10 +204,10 @@ test("fluid type calculation remains source-backed", (t) => {
 
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "    &.sm {\n", "    &.narrow {\n");
+  replace(root, "styles/layers/layout.css", "    &[c=\"sm\"] {\n", "    &[c=\"narrow\"] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /layout\.css is missing documented hook \.c\.sm/);
+  assert.match(result.stderr, /layout\.css is missing documented hook c="sm"/);
 });
 
 test("derived container ratios remain source-backed", (t) => {
@@ -220,15 +220,15 @@ test("derived container ratios remain source-backed", (t) => {
 
 test("documented grid modes remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "&[g=\"a-sm\"]", "&[g=\"fixture\"]");
+  replace(root, "styles/layers/grid.css", "&[g=\"a-sm\"]", "&[g=\"fixture\"]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /layout\.css is missing documented grid hook a-sm/);
+  assert.match(result.stderr, /grid\.css is missing documented grid hook a-sm/);
 });
 
 test("every documented numeric grid position remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "[g]>[r$=\"4\"]", "[g]>[r$=\"5\"]");
+  replace(root, "styles/layers/grid.css", "[g]>[y$=\"4\"]", "[g]>[y$=\"5\"]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing row-span grid rule/);
@@ -236,7 +236,7 @@ test("every documented numeric grid position remains source-backed", (t) => {
 
 test("the finite utility surface remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/utility.css", "  .c-fg {\n", "  .foreground {\n");
+  replace(root, "styles/layers/utility.css", "  .sr {\n", "  .visually-hidden {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /utility\.css selectors differ/);
@@ -250,17 +250,17 @@ test("documented color boundaries remain source-backed", (t) => {
   assert.match(result.stderr, /missing a documented skin or accent boundary/);
 });
 
-test("documented feature hooks remain source-backed", (t) => {
+test("documented motion hooks remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/features.css", ".img-w[data-scrub]", ".media[data-scrub]");
+  replace(root, "styles/layers/motion.css", ".img-w[data-scrub]", ".media[data-scrub]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /features\.css is missing documented feature hook/);
+  assert.match(result.stderr, /motion\.css is missing documented motion hook/);
 });
 
 test("the generic scrub progress rule remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/features.css", "      [data-scrub] {\n", "      [data-progress] {\n");
+  replace(root, "styles/layers/motion.css", "      [data-scrub] {\n", "      [data-progress] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing the generic scrub progress rule/);
@@ -268,7 +268,7 @@ test("the generic scrub progress rule remains source-backed", (t) => {
 
 test("image scrub remains inside its feature gate", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/features.css", "@supports (animation-timeline: view())", "@supports (display: grid)");
+  replace(root, "styles/layers/motion.css", "@supports (animation-timeline: view())", "@supports (display: grid)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
@@ -276,7 +276,7 @@ test("image scrub remains inside its feature gate", (t) => {
 
 test("image scrub remains inside its reduced-motion gate", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/features.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
+  replace(root, "styles/layers/motion.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
@@ -284,10 +284,10 @@ test("image scrub remains inside its reduced-motion gate", (t) => {
 
 test("an unsupported type role fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", 't="sm"', 't="xs"');
+  replace(root, "examples/foundations/markup.html", 't="sm mu"', 't="xs"');
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses unsupported t value xs/);
+  assert.match(result.stderr, /uses unsupported t token xs/);
 });
 
 test("an unsupported accent route fails", (t) => {

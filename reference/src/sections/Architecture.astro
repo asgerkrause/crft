@@ -4,18 +4,20 @@ import Specimen from "../components/Specimen.astro";
 import { sections } from "../data";
 
 const layers = [
-  { order: "01", label: "Base", file: "styles/layers/base.css" },
-  { order: "02", label: "Tokens", file: "styles/layers/tokens.css" },
-  { order: "03", label: "Type", file: "styles/layers/type.css" },
-  { order: "04", label: "Layout", file: "styles/layers/layout.css" },
-  { order: "05", label: "Features", file: "styles/layers/features.css" },
-  { order: "06", label: "Utility", file: "styles/layers/utility.css" },
-  { order: "07", label: "Project", file: "consumer-owned CSS" },
+  { order: "01", label: "Reset", file: "styles/layers/base.css" },
+  { order: "02", label: "Base", file: "styles/layers/base.css" },
+  { order: "03", label: "Tokens", file: "styles/layers/tokens.css" },
+  { order: "04", label: "Type", file: "styles/layers/type.css" },
+  { order: "05", label: "Layout", file: "styles/layers/layout.css" },
+  { order: "06", label: "Grid", file: "styles/layers/grid.css" },
+  { order: "07", label: "Motion", file: "styles/layers/motion.css" },
+  { order: "08", label: "Utility", file: "styles/layers/utility.css" },
+  { order: "09", label: "Project", file: "consumer-owned CSS" },
 ] as const;
 ---
 
 <Section {...sections.architecture}>
-  <p slot="summary" class="c-mu">Import <code>styles/global.css</code> once. Six focused layer owners compose the kit.</p>
+  <p slot="summary" t="mu">Import <code>styles/global.css</code> once. Each layer name is a job.</p>
 
   <Specimen id="layer-order" title="Layer order">
     <ol class="sg-architecture-list">

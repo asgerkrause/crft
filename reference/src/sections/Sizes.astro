@@ -13,10 +13,10 @@ const variants = ["xs", "sm", "", "lg", "xl"] as const;
 ---
 
 <Section {...sections.sizes}>
-  <p slot="summary" class="c-mu">These rows show the public scale families. Their values and responsive formulas remain in the token source.</p>
+  <p slot="summary" t="mu">These rows show the public scale families. Their values and responsive formulas remain in the token source.</p>
 
   {scaleFamilies.map((family) => (
-    <article id={family.id} class="sg-scale-family s">
+    <article id={family.id} class="sg-scale-family" s>
       <header>
         <div class="sg-heading-wrap">
           <h3 t="lg">{family.title}</h3>

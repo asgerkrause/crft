@@ -16,13 +16,13 @@
   <body>
     <a class="sr focusable" href="#main">Skip to content</a>
 
-    <!-- Header .c remains intrinsic because it is not a section query boundary. -->
+    <!-- Header [c] remains intrinsic because it is not a section query boundary. -->
     <header>
-      <div class="c">
-        <div class="s h sb center">
+      <div c>
+        <div s="h sb ct">
           <strong><a href="/">CRFT foundations</a></strong>
           <nav aria-label="Primary">
-            <ul class="s h">
+            <ul s="h">
               <li><a href="#orientation">Overview</a></li>
               <li><a href="#proof">Proof</a></li>
               <li><a href="#faq">FAQ</a></li>
@@ -35,9 +35,9 @@
     <main id="main">
       <!-- This section ID is the Overview navigation target. -->
       <section id="orientation">
-        <div class="c">
-          <div class="s">
-            <p t="sm" class="c-mu">Primer</p>
+        <div c>
+          <div s>
+            <p t="sm mu">Primer</p>
             <h1>Compose with ownership, not a kit.</h1>
             <p t="lg">
               Semantic HTML first, public CRFT API second, distinctive chrome
@@ -54,36 +54,36 @@
 
       <!--
         This section ID is the Proof navigation target. The grid remains below
-        section > .c. data-accent routes tokens; project CSS paints the tile.
+        section > [c]. data-accent routes tokens; project CSS paints the tile.
       -->
       <section id="proof" data-skin="tone">
-        <div class="c">
+        <div c>
           <div g="3-2">
-            <header class="s" c="0">
+            <header s x="0">
               <h2>What stays public</h2>
               <p t="lg">
                 Three durable seams. Color alone never carries the meaning.
               </p>
             </header>
 
-            <article class="proof-tile s">
+            <article class="proof-tile" s>
               <h3>Structure</h3>
               <p>
                 Landmarks, one clear outline, and
-                <code>section &gt; .c</code> as the layout query boundary.
+                <code>section &gt; [c]</code> as the layout query boundary.
               </p>
             </article>
 
-            <article class="proof-tile s">
+            <article class="proof-tile" s>
               <h3>Grammar</h3>
               <p>
                 Type roles, stacks, and
-                <code>g</code>/<code>c</code>/<code>r</code>/<code>o</code>
+                <code>g</code>/<code>x</code>/<code>y</code>/<code>o</code>
                 resolved as large, medium, then small.
               </p>
             </article>
 
-            <article class="proof-tile s" data-accent="success">
+            <article class="proof-tile" s data-accent="success">
               <h3>Verified path</h3>
               <p>
                 Skins and accent routes stay semantic; product paint stays
@@ -96,8 +96,8 @@
 
       <!-- This section ID is the FAQ navigation target. -->
       <section id="faq">
-        <div class="c sm">
-          <div class="s">
+        <div c="sm">
+          <div s>
             <h2>FAQ</h2>
             <details>
               <summary>Is this example canonical?</summary>
@@ -128,9 +128,9 @@
     </main>
 
     <footer>
-      <div class="c">
-        <div class="s">
-          <p t="sm" class="c-mu">
+      <div c>
+        <div s>
+          <p t="sm mu">
             Non-canonical specimen. Private properties and invented tokens are
             out of scope.
           </p>

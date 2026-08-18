@@ -39,8 +39,8 @@ Do not apply palette swatches directly when a semantic role expresses the job.
 
 ```html
 <section data-skin="accent" data-accent="secondary">
-  <div class="c">
-    <div class="s">
+  <div c>
+    <div s>
       <h2>Evidence</h2>
       <aside data-skin="tone">Nested context</aside>
     </div>
@@ -71,7 +71,7 @@ Apply a skin only at a meaningful canvas boundary. Do not recolor descendants on
 
 ```html
 <p data-accent="success">
-  <strong class="c-ac">Saved.</strong>
+  <strong t="ac">Saved.</strong>
   Your draft remains available.
 </p>
 ```

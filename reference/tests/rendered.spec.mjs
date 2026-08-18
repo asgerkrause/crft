@@ -22,7 +22,7 @@ test("container grids resolve independently and no-container grids retain fallba
 
   await fixture(page, "grid-boundary-lg").evaluate((boundary) => {
     boundary.style.width = "1100px";
-    const container = boundary.querySelector(":scope > .c");
+    const container = boundary.querySelector(":scope > [c]");
     container.style.width = "100%";
     container.style.maxWidth = "none";
   });
@@ -69,7 +69,7 @@ test("keyboard order follows source order despite visual reordering", async ({ p
   await page.goto("/#visual-order-focus");
   const grid = fixture(page, "visual-order-focus");
   await grid.evaluate((element) => {
-    const container = element.closest("section")?.querySelector(":scope > .c") ?? element.closest(".c");
+    const container = element.closest("section")?.querySelector(":scope > [c]") ?? element.closest("[c]");
     container.style.width = "1100px";
     container.style.maxWidth = "none";
   });
@@ -211,7 +211,7 @@ test("muted text meets WCAG AA across skins, presets, and both schemes", async (
       }, { mode, preset });
       const colors = await cards.evaluateAll((elements) => elements.map((element) => {
         const sample = document.createElement("span");
-        sample.className = "c-mu";
+        sample.setAttribute("t", "mu");
         sample.textContent = "Muted";
         element.append(sample);
         const foreground = getComputedStyle(sample).color;

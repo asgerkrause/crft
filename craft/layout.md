@@ -17,14 +17,14 @@ Use page chrome as direct body children unless project truth requires another co
 <body>
   <header>
     <nav aria-label="Primary">
-      <div class="c">...</div>
+      <div c>...</div>
     </nav>
   </header>
 
   <main>
     <section>
-      <div class="c">
-        <div class="s">
+      <div c>
+        <div s>
           <h2>Work</h2>
           ...
         </div>
@@ -33,51 +33,63 @@ Use page chrome as direct body children unless project truth requires another co
   </main>
 
   <footer>
-    <div class="c">...</div>
+    <div c>...</div>
   </footer>
 </body>
 ```
 
-`body > header`, `body > main > section`, and `body > footer` receive shared block and inline padding from `layout.css`. The header uses compact block padding. The footer preserves the larger lead-in and uses compact bottom padding. Section identity and region naming follow `html.md`; layout does not require either.
+`body > header`, `body > main > section`, and `body > footer` receive shared block padding and inline bleed from `layout.css`. The header uses compact block padding. The footer preserves the larger lead-in and uses compact bottom padding. `main` clips horizontal overflow and, with the header and footer, receives a view-transition name. Section identity and region naming follow `html.md`; layout does not require either.
 
 ## Container
 
-`.c` sets full available width, content measure, vertical flow, and a structural gap. Page landmarks own the inline gutter. Narrow and wide measures derive from the default content width so one override changes the family coherently. Use:
+`c` sets full available width, content measure, vertical flow, and a structural gap. Narrow and wide measures derive from the default content width so one override changes the family coherently. Use:
 
-- `.c` for the default content measure;
-- `.c.sm` for two-thirds of the default measure;
-- `.c.lg` for four-thirds of the default measure.
+- `c` for the default content measure;
+- `c="sm"` for two-thirds of the default measure;
+- `c="lg"` for four-thirds of the default measure.
 
-Place `.c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > .c` relationship establishes the named inline-size query context `container`.
+`c` owns measure only. Do not put alignment on `c`. Place `c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > [c]` relationship establishes the named inline-size query context `container`.
 
-Do not apply containment to every `.c`. Do not put a responsive `[g]` on the boundary itself. Grid and other responsive composition sit inside it.
+Do not apply containment to every `[c]`. Do not put a responsive `[g]` on the boundary itself. Grid and other responsive composition sit inside it.
 
 Choose the smallest container that preserves the content relationship. A wide container is not a substitute for a deliberate grid or media composition.
 
 ## Stack
 
-`.s` creates a vertical flow with the public gap role. Qualifiers compose one relationship:
+`s` creates a vertical flow with the public gap role. Flags compose one relationship:
 
 | Hook | Operation |
 | --- | --- |
-| `.s` | Vertical stack |
-| `.s.h` | Horizontal stack |
-| `.s.w` | Allow wrapping |
-| `.s.center` | Center children on the cross axis |
-| `.s.sb` | Distribute available main-axis space between children |
+| `s` | Vertical stack |
+| `s="h"` | Horizontal stack |
+| `s="w"` | Allow wrapping |
+| `s="ct"` | Center children on the cross axis |
+| `s="sb"` | Distribute available main-axis space between children |
 
 ```html
 <section>
-  <div class="c sm">
-    <div class="s">
+  <div c="sm">
+    <div s>
       <h2>Actions</h2>
-      <div class="s h w sb">...</div>
+      <div s="h w sb">...</div>
     </div>
   </div>
 </section>
 ```
 
 Use a stack when one axis and one gap describe the relationship. Use grid for repeated columns or spans. Use direct project CSS for overlap, intrinsic tracks, sticky regions, or another local composition.
+
+## Image frame
+
+`.img-w` is the public media frame. It is a block that clips overflow. The image fills the inline size and keeps intrinsic height until project CSS supplies an aspect ratio, object fit, or focal point.
+
+```html
+<figure class="img-w">
+  <img src="work.jpg" alt="Finished interface at the results step">
+</figure>
+```
+
+Do not put radius, crop, or parallax on the image without a frame. Image scrub is an opt-in on this same wrapper; see [`motion.md`](motion.md).
 
 ## Property form
 
@@ -102,11 +114,12 @@ At small widths, preserve source order, reachable controls, readable measure, me
 ## Common mistakes
 
 - An ID added only to style a page section.
-- `.c` outside header, section, or footer page landmarks.
-- A responsive grid placed on `section > .c`.
-- Containment applied to header or footer `.c`.
+- `c` outside header, section, or footer page landmarks.
+- A responsive grid placed on `section > [c]`.
+- Containment applied to header or footer `[c]`.
+- Alignment flags placed on `c` instead of `s`.
 - Child margins used to create group rhythm.
-- `.s.sb` used without available space or a clear distribution job.
+- `s="sb"` used without available space or a clear distribution job.
 - A new layout utility for one composition.
 
 ## Verify

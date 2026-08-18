@@ -17,7 +17,7 @@ Brief:
 - strategy translated into section jobs and source order;
 - one thesis and primary action group;
 - an ownership ladder, proof claims, refusal strip, FAQ, and closing action;
-- `section > .c`, public grid and type roles, `tone` and `invert` skins;
+- `section > [c]`, public grid and type roles, `tone` and `invert` skins;
 - project-owned action and editorial presentation.
 
 Read [`markup.html`](markup.html) and [`example.css`](example.css).

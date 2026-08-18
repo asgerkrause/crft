@@ -31,10 +31,10 @@ CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motio
 | Token names, semantic jobs, scales, public and private boundaries | [`craft/tokens.md`](craft/tokens.md) |
 | Semantic color, schemes, skins, accents, feedback, contrast | [`craft/color.md`](craft/color.md) |
 | Fonts, roles, measure, hierarchy, wrapping, weight | [`craft/type.md`](craft/type.md) |
-| Page chrome, sections, containers, stacks, spacing | [`craft/layout.md`](craft/layout.md) |
-| Responsive grid attributes, container states, source order | [`craft/grid.md`](craft/grid.md) |
+| Page chrome, sections, `c` measure, `s` stacks, spacing | [`craft/layout.md`](craft/layout.md) |
+| Responsive `g` `x` `y` `o` attributes, container states, source order | [`craft/grid.md`](craft/grid.md) |
 | Finite utility selectors and admission threshold | [`craft/utilities.md`](craft/utilities.md) |
-| Motion roles, reduced motion, disclosure, corners, scrub | [`craft/motion.md`](craft/motion.md) |
+| Motion roles, reduced motion, scrub, view transitions | [`craft/motion.md`](craft/motion.md) |
 | Copying, CSS ownership, extension, migration, updates | [`craft/adopt.md`](craft/adopt.md) |
 | Semantics, focus, keyboard, names, contrast, assistive technology | [`craft/accessibility.md`](craft/accessibility.md) |
 | Media loading, fonts, runtime, stability, budgets | [`craft/performance.md`](craft/performance.md) |
@@ -74,6 +74,51 @@ Keep DOM, reading, heading, and keyboard order meaningful without CSS. Add an ID
 Keep product presentation project-owned. Prefer a semantic element, native attribute, public CRFT hook, or bounded structural selector before a class. Add a class for a stable component, page scope, behavior, or visual role that structure cannot safely own. Add no dependency without a material capability or risk reduction.
 
 `.btn`, `.crd`, and `.lnk` are project naming conventions. CRFT does not style or implement them.
+
+## Public hook grammar
+
+Attributes are the finite CRFT composition API. Classes are the override and use-case layer.
+
+| Kind | Owns |
+| --- | --- |
+| Attribute | Finite composition: `c`, `s`, `t`, `g`, `x`, `y`, `o`, `l` |
+| `data-*` | Inherited canvas or opt-in: `data-skin`, `data-accent`, `data-scrub` |
+| Class | Override, recovery, or product use case: `.img-w`, `.sr`, `.btn`, `.crd` |
+| Token | Scales used in CSS. Never a markup matrix |
+
+Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h w sb"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
+
+<!-- public-hook-index:start -->
+
+| Hook | Owner | Job |
+| --- | --- | --- |
+| `c` | layout | Content measure |
+| `c="sm"` | layout | Narrow measure |
+| `c="lg"` | layout | Wide measure |
+| `s` | layout | Stack |
+| `s="h"` | layout | Horizontal stack |
+| `s="w"` | layout | Wrapping stack |
+| `s="ct"` | layout | Cross-axis center |
+| `s="sb"` | layout | Space-between |
+| `container` | layout | Named query context |
+| `.img-w` | layout | Media frame |
+| `t` | type | Role plus optional color and transform flags |
+| `l` | type | Line clamp |
+| `g` | grid | Parent column count |
+| `x` | grid | Child column span |
+| `y` | grid | Child row span |
+| `o` | grid | Child visual order |
+| `a-sm` | grid | Auto-fill narrow items |
+| `a` | grid | Auto-fill default items |
+| `a-lg` | grid | Auto-fill wide items |
+| `sg` | grid | Ancestor subgrid |
+| `data-skin` | color | Canvas boundary |
+| `data-accent` | color | Accent route |
+| `data-scrub` | motion | Image scrub |
+| `.sr` | utilities | Screen-reader content |
+| `.sr.focusable` | utilities | Restorable screen-reader content |
+
+<!-- public-hook-index:end -->
 
 ## Evidence
 

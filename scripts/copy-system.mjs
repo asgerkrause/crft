@@ -13,13 +13,14 @@ import { fileURLToPath } from "node:url";
 
 const files = [
   "global.css",
-  "sans.ttf",
-  "mono.ttf",
+  "sans.woff",
+  "mono.woff",
   "layers/base.css",
   "layers/tokens.css",
   "layers/type.css",
   "layers/layout.css",
-  "layers/features.css",
+  "layers/grid.css",
+  "layers/motion.css",
   "layers/utility.css",
 ];
 

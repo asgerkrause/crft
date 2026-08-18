@@ -14,14 +14,10 @@ CRFT exposes a finite utility surface for stable operations used by unrelated ma
 | Purpose | Selectors | Operation |
 | --- | --- | --- |
 | Screen-reader content | `.sr`, `.sr.focusable` | Visually hide content; restore focusable content when keyboard-focused |
-| Semantic color | `.c-fg`, `.c-mu`, `.c-ac`, `.c-sc` | Apply active foreground, muted, primary-accent, or secondary-accent color |
-| Font family | `.f-sa`, `.f-se`, `.f-mo`, `.f-bd`, `.f-dp` | Apply sans, serif, mono, body, or display family |
-| Font weight | `.w-lt`, `.w-rg`, `.w-bd` | Apply light, regular, or bold weight |
-| Text transform | `.tt-uc`, `.tt-lc`, `.tt-no`, `.tt-cp` | Apply uppercase, lowercase, no transform, or capitalization |
-
-Store text in natural case. Use transform utilities only for presentation.
 
 `.sr.focusable` is intended for skip links and other keyboard-restorable content. Do not apply `.sr` to content that must remain visible or to hide a focusable control without a restoration path.
+
+Color and transform flags live on `t` in [`type.md`](type.md). Line clamp is `l` in that owner. Measure is `c`. Grouping is `s`. Grid spans are `x` and `y`. Spacing, alignment, radius, and wrap stay on stacks, tokens, or project CSS. Do not add a utility matrix for those jobs.
 
 ## Admission threshold
 
@@ -39,11 +35,10 @@ Keep one-off values, component details, responsive variants, state variants, ali
 
 - Combining utilities until markup becomes a component styling language.
 - Adding arbitrary spacing, color, or responsive utilities.
-- Using `.c-ac` as the only feedback signal.
 - Applying `.sr` to a control that remains keyboard-focusable but cannot become visible.
-- Typing uppercase source copy instead of using presentation.
 - Adding a utility for one call site.
+- Importing a spacing, alignment, or border class catalog to “complete” the system.
 
 ## Verify
 
-Confirm every documented selector exists in `styles/layers/utility.css` and no undocumented utility exists. Test `.sr.focusable` by keyboard. Check semantic color utilities across skins, accents, and schemes. Confirm font and transform utilities preserve type semantics, wrapping, and accessible names.
+Confirm every documented selector exists in `styles/layers/utility.css` and no undocumented utility exists. Test `.sr.focusable` by keyboard.

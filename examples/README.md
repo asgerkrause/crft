@@ -30,7 +30,7 @@ The examples assume copied CRFT CSS, one `styles/global.css` import, and project
 
 - IDs appear only when fragments, native or ARIA relationships, behavior, integration, or stable external identity need them.
 - Sections become named regions only when the landmark improves navigation.
-- Responsive grids sit below `section > .c`.
+- Responsive grids sit below `section > [c]`.
 - `o` always uses all large-medium-small positions.
 - Public token names come from `styles/layers/tokens.css`.
 - Private properties never appear. `data-theme` may appear only in explanatory text that rejects its use.

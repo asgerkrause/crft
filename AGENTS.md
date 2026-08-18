@@ -13,15 +13,16 @@ CRFT is not a component library. `.btn`, `.crd`, and `.lnk` are project conventi
 Import `styles/global.css` once. It declares:
 
 ```css
-@layer base, tokens, type, layout, features, utility;
+@layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
-- `base.css`: reset, native defaults, focus, and active colors.
+- `base.css`: `@layer reset` then `@layer base` — neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners.
 - `tokens.css`: all public tokens, semantic colors, skins, scales, and reduced motion.
-- `type.css`: fonts and type roles.
-- `layout.css`: page spacing, `section > .c`, stacks, and grid.
-- `features.css`: progressive disclosure, native corners, and scroll motion.
-- `utility.css`: finite public utilities.
+- `type.css`: fonts, type roles, `t` flags, and `l`.
+- `layout.css`: page spacing, `section > [c]`, stacks, and `.img-w`.
+- `grid.css`: `g`, `x`, `y`, and `o`.
+- `motion.css`: image scrub and view transitions.
+- `utility.css`: `.sr` and `.sr.focusable`.
 
 Put a shared rule in the first owner that fully explains it. Consumers own their copy. Brand in `tokens.css`. Keep product CSS in the project’s normal owner.
 
@@ -63,7 +64,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 - Use `body > header` with navigation, `body > main > section`, and `body > footer` unless project truth requires another coherent structure.
 - Add an `id` only for a fragment, native or ARIA relationship, behavior, integration, or stable external identity. Keep every ID unique and non-empty.
 - Give a section a useful heading when its content has one. Add `aria-labelledby` only when the section should become a useful named region.
-- Place `.c` only inside page landmarks. `section > .c` establishes the named query context.
+- Place `c` only inside page landmarks. `section > [c]` establishes the named query context.
 - Keep DOM, reading, heading, and keyboard order meaningful without CSS.
 - Prefer semantic elements, native attributes, ARIA state, `:has()`, and bounded local structure before classes. Add a class only for a stable component, page scope, behavior, or visual role that structure cannot safely own.
 - Keep nesting shallow and specificity flat.
@@ -75,11 +76,11 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 
 ## Grid and color
 
-A responsive `[g]` is a descendant of `section > .c`, not the boundary itself. Without that ancestor it stays stacked.
+A responsive `[g]` is a descendant of `section > [c]`, not the boundary itself. Without that ancestor it stays stacked.
 
 - `g`: empty, `N`, `L-M`, or a documented special mode.
-- `c`: `N` or `L-M`; `0` means full row and `1`–`12` are spans.
-- `r`: `N` or `L-M`; spans are `1`–`4`.
+- `x`: `N` or `L-M`; `0` means full row and `1`–`12` are spans.
+- `y`: `N` or `L-M`; spans are `1`–`4`.
 - `o`: always full `L-M-S` using `f`, `a`, or `l`.
 
 Visual order does not change source order.
@@ -93,7 +94,7 @@ node scripts/copy-system.mjs --dry-run <absolute-target>
 node scripts/copy-system.mjs <absolute-target>
 ```
 
-The copier adds nine CSS-system files and refuses conflicts. It never merges or upgrades owned files.
+The copier adds ten CSS-system files and refuses conflicts. It never merges or upgrades owned files.
 
 Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks.
 

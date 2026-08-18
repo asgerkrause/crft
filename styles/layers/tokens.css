@@ -1,3 +1,4 @@
+/* Tokens: public values, skins, scales, and reduced motion. */
 @layer tokens {
   :root {
     /* Layout */
@@ -244,6 +245,20 @@
     --m-td: 200ms;
     --m-td-s: 400ms;
     --m-td-ss: 800ms;
+
+    --m-vt-blur: .5em;
+    --m-vt-i-y: 1em;
+    --m-vt-i-x: 0em;
+    --m-vt-o-y: -1em;
+    --m-vt-o-x: 0em;
+    --m-vt-d: var(--m-td);
+
+    @media (orientation: portrait) {
+      --m-vt-i-y: 0em;
+      --m-vt-i-x: -1em;
+      --m-vt-o-y: 0em;
+      --m-vt-o-x: 1em;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       --m-tf-i: linear;

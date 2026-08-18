@@ -16,9 +16,10 @@ const markedCodeNames = (document, marker, pattern) => {
   return [...block[1].matchAll(pattern)].map((match) => match[1]);
 };
 
-const layers = ["base", "tokens", "type", "layout", "features", "utility"];
-const files = layers.map((layer) => `styles/layers/${layer}.css`);
-const copiedFiles = ["global.css", "sans.ttf", "mono.ttf", ...layers.map((layer) => `layers/${layer}.css`)];
+const preludeLayers = ["reset", "base", "tokens", "type", "layout", "grid", "motion", "utility"];
+const layerFiles = ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
+const files = layerFiles.map((layer) => `styles/layers/${layer}.css`);
+const copiedFiles = ["global.css", "sans.woff", "mono.woff", ...layerFiles.map((layer) => `layers/${layer}.css`)];
 const topicNames = [
   "brief", "composition", "html", "components", "forms", "tokens", "color", "type",
   "layout", "grid", "utilities", "motion", "adopt", "accessibility", "performance", "verify",
@@ -32,11 +33,16 @@ const privateProperties = [
   "--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl",
 ];
 const typeRoles = ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
+const typeColors = ["fg", "mu", "ac", "sc"];
+const typeTransforms = ["uc", "lc", "cp", "no"];
 const typeMeasureRoles = [...typeRoles];
+const stackFlags = ["h", "w", "ct", "sb"];
+const containerValues = ["", "sm", "lg"];
+const clampValues = ["", "1", "2", "3", "4"];
 const supportedAccentRoutes = ["danger", "secondary", "success", "tertiary", "warning"];
 const supportedSkins = ["accent", "invert", "tone"];
 
-for (const path of [...canonicalDocs, "styles/global.css", ...files, "styles/sans.ttf", "styles/mono.ttf"]) {
+for (const path of [...canonicalDocs, "styles/global.css", ...files, "styles/sans.woff", "styles/mono.woff"]) {
   if (!existsSync(new URL(path, root))) fail(`missing canonical file: ${path}`);
 }
 const actualTopicDocs = readdirSync(new URL("craft/", root))
@@ -49,7 +55,11 @@ for (const path of retiredTopicDocs) {
 }
 
 if (existsSync(new URL("tooling/", root))) fail("tooling/ remains; CRFT has no product CLI or analyzer");
-if (existsSync(new URL("styles/layers/primitive.css", root))) fail("styles/layers/primitive.css is outside the six-owner CSS contract");
+if (existsSync(new URL("styles/layers/primitive.css", root))) fail("styles/layers/primitive.css is outside the canonical CSS contract");
+if (existsSync(new URL("styles/layers/features.css", root))) fail("styles/layers/features.css remains; base and motion now own those jobs");
+if (existsSync(new URL("styles/sans.ttf", root)) || existsSync(new URL("styles/mono.ttf", root))) {
+  fail("TrueType fonts remain; WOFF is the copied font format");
+}
 if (existsSync(new URL(".agents/skills/snz-css-system/", root)) || existsSync(new URL(".agents/skills/snz-frontend/", root))) {
   fail("retired split skill packs remain");
 }
@@ -83,8 +93,13 @@ if (!craft.includes("intentionally does not ship a product CLI, consumer analyze
   fail("CRAFT.md does not record the retired tooling boundary");
 }
 for (const migration of [
-  "styles/layers/{base,tokens,type,layout,features,utility}.css",
+  "styles/layers/{base,tokens,type,layout,grid,motion,utility}.css",
+  "styles/layers/features.css",
+  "motion.css",
   "t=\"h0\"",
+  "c=\"sm\"",
+  "[x]",
+  "[y]",
   "--t-fs-min",
   "--t-ff-*",
   "--t-fw-*",
@@ -121,10 +136,10 @@ for (const component of [".btn", ".crd", ".lnk"]) {
   }
 }
 const documentedHooks = {
-  "craft/type.md": ["t"],
-  "craft/layout.md": [".c", ".c.sm", ".c.lg", ".s", ".s.h", ".s.w", ".s.center", ".s.sb", "container"],
-  "craft/grid.md": ["g", "c", "r", "o", "a-sm", "a", "a-lg", "sg"],
-  "craft/utilities.md": [".sr", ".sr.focusable", ".c-fg", ".c-mu", ".c-ac", ".c-sc", ".f-sa", ".f-se", ".f-mo", ".f-bd", ".f-dp", ".w-lt", ".w-rg", ".w-bd", ".tt-uc", ".tt-lc", ".tt-no", ".tt-cp"],
+  "craft/type.md": ["t", "l"],
+  "craft/layout.md": ["c", "c=\"sm\"", "c=\"lg\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"", "container", ".img-w"],
+  "craft/grid.md": ["g", "x", "y", "o", "a-sm", "a", "a-lg", "sg"],
+  "craft/utilities.md": [".sr", ".sr.focusable"],
   "craft/motion.md": [".img-w", "data-scrub"],
   "craft/color.md": ["data-skin", "data-accent"],
 };
@@ -133,6 +148,19 @@ for (const [path, hooks] of Object.entries(documentedHooks)) {
     if (!docsByPath[path].includes(`\`${hook}\``)) fail(`${path} does not document public hook ${hook}`);
   }
 }
+if (!craft.includes("## Public hook grammar")) fail("CRAFT.md is missing the public hook grammar");
+if (!craft.includes("Do not add margin, padding, gap, radius, align, or justify attributes")) {
+  fail("CRAFT.md does not reject a spacing or alignment matrix");
+}
+const indexedHooks = markedCodeNames(craft, "public-hook-index", /`([^`]+)`/g);
+const expectedHooks = unique(Object.values(documentedHooks).flat()).sort();
+if (!indexedHooks) fail("CRAFT.md is missing the public hook index");
+else if (unique(indexedHooks).sort().join("|") !== expectedHooks.join("|")) {
+  fail("CRAFT.md hook index differs from the documented hook map");
+}
+if (!skill.includes("Do not add a spacing, alignment, or display matrix")) {
+  fail("skills/crft/SKILL.md does not reject a spacing matrix");
+}
 
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
@@ -140,25 +168,32 @@ const allCss = files.map((file) => source[file]).join("\n");
 const tokensCss = source["styles/layers/tokens.css"];
 const typeCss = source["styles/layers/type.css"];
 const layoutCss = source["styles/layers/layout.css"];
-const featuresCss = source["styles/layers/features.css"];
+const gridCss = source["styles/layers/grid.css"];
+const motionCss = source["styles/layers/motion.css"];
+const baseCss = source["styles/layers/base.css"];
 const utilityCss = source["styles/layers/utility.css"];
 
-const expectedImports = layers.map((layer) => `layers/${layer}.css`);
+const expectedImports = layerFiles.map((layer) => `layers/${layer}.css`);
 const expectedGlobal = [
-  `@layer ${layers.join(", ")};`,
+  `@layer ${preludeLayers.join(", ")};`,
   "",
   ...expectedImports.map((file) => `@import "./${file}";`),
 ].join("\n");
-if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and six imports");
+if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and seven imports");
 
 const actualCssFiles = readdirSync(new URL("styles/layers/", root))
   .filter((name) => name.endsWith(".css"))
   .map((name) => `styles/layers/${name}`)
   .sort();
-if (actualCssFiles.join("|") !== [...files].sort().join("|")) fail("styles/layers/ differs from the six-owner map");
-files.forEach((file, index) => {
+if (actualCssFiles.join("|") !== [...files].sort().join("|")) fail("styles/layers/ differs from the canonical owner map");
+files.forEach((file) => {
   const declared = unique([...source[file].matchAll(/@layer\s+([a-z-]+)\s*\{/g)].map((match) => match[1]));
-  if (declared.length !== 1 || declared[0] !== layers[index]) fail(`${file} must own only @layer ${layers[index]}`);
+  if (file.endsWith("base.css")) {
+    if (declared.join("|") !== "reset|base") fail(`${file} must own @layer reset then @layer base`);
+    return;
+  }
+  const expected = file.match(/layers\/([a-z]+)\.css$/)?.[1];
+  if (declared.length !== 1 || declared[0] !== expected) fail(`${file} must own only @layer ${expected}`);
 });
 
 const copyScript = read("scripts/copy-system.mjs");
@@ -214,9 +249,9 @@ for (const role of typeMeasureRoles) {
 }
 if (/body\s*\{[^}]*max-width/s.test(typeCss)) fail("type.css must keep body unconstrained");
 if (/font-variation-settings/i.test(typeCss)) fail("type.css must use registered font-weight instead of font-variation-settings");
-for (const [family, file] of [["SNZ Sans", "sans.ttf"], ["SNZ Mono", "mono.ttf"]]) {
+for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff"]]) {
   const face = [...typeCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
-  if (!face || !face.includes(`src: url("../${file}") format("truetype");`) || !/font-weight:\s*100 900;/.test(face)) {
+  if (!face || !face.includes(`src: url("../${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) {
     fail(`${family} must load ../${file} with a registered 100 900 font-weight range`);
   }
 }
@@ -224,10 +259,16 @@ if (!hasCssSignal(typeCss, ':where(body, h1, h2, h3, h4, h5, h6, [t]) {')) {
   fail("type.css is missing the bounded fluid type calculation boundary");
 }
 for (const role of typeRoles) {
-  if (!hasCssSignal(typeCss, `[t="${role}"]`)) fail(`type.css is missing documented t value ${role}`);
+  if (!hasCssSignal(typeCss, `[t~="${role}"]`)) fail(`type.css is missing documented t value ${role}`);
 }
 for (const heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
-  if (!hasCssSignal(typeCss, `${heading}, [t="${heading}"] {`)) fail(`type.css is missing native ${heading} mapping`);
+  if (!hasCssSignal(typeCss, `${heading}, [t~="${heading}"] {`)) fail(`type.css is missing native ${heading} mapping`);
+}
+for (const flag of typeColors) {
+  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t color flag ${flag}`);
+}
+for (const flag of typeTransforms) {
+  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t transform flag ${flag}`);
 }
 for (const property of ["--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl"]) {
   if (!typeCss.includes(property)) fail(`type.css is missing private fluid property ${property}`);
@@ -238,48 +279,51 @@ if (/\.(?:h[0-6]|t-(?:lg|bd|sm))(?:[\s,:.{#]|$)/i.test(allCss)) {
 }
 
 const layoutHookSignals = {
-  ".c": ".c {", ".c.sm": "&.sm {", ".c.lg": "&.lg {", ".s": ".s {",
-  ".s.h": "&.h {", ".s.w": "&.w {", ".s.center": "&.center {", ".s.sb": "&.sb {",
-  container: "section>.c { container: container / inline-size",
+  c: "[c] {", "c=\"sm\"": '&[c="sm"] {', "c=\"lg\"": '&[c="lg"] {',
+  s: "[s] {", "s=\"h\"": '&[s~="h"] {', "s=\"w\"": '&[s~="w"] {',
+  "s=\"ct\"": '&[s~="ct"] {', "s=\"sb\"": '&[s~="sb"] {',
+  container: "section>[c] { container: container / inline-size",
+  ".img-w": ".img-w {",
 };
 for (const [hook, signal] of Object.entries(layoutHookSignals)) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing documented hook ${hook}`);
 }
 for (const signal of [
-  "body { >header, >main>section, >footer { padding: var(--l-bl-y) var(--l-bl-x)",
+  ">header, >main>section, >footer { padding: var(--l-bl-y) var(--l-bl-x)",
   ">header { padding-block: var(--p)", ">footer { padding-bottom: var(--p)",
+  "view-transition-name: header", "view-transition-name: main", "view-transition-name: footer",
   "max-width: var(--l-cw)", "max-width: calc(var(--l-cw) / 3 * 2)",
   "max-width: calc(var(--l-cw) / 3 * 4)",
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing viewport-derived container behavior: ${signal}`);
 }
 const gridHookSignals = {
-  g: "[g] {", c: "[g]>[c", r: "[g]>[r", o: "[g]>[o", "a-sm": '[g="a-sm"]',
+  g: "[g] {", x: "[g]>[x", y: "[g]>[y", o: "[g]>[o", "a-sm": '[g="a-sm"]',
   a: '[g="a"]', "a-lg": '[g="a-lg"]', sg: '[g="sg"]',
 };
 for (const [hook, signal] of Object.entries(gridHookSignals)) {
-  if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing documented grid hook ${hook}`);
+  if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing documented grid hook ${hook}`);
 }
 for (let position = 1; position <= 12; position += 1) {
-  for (const signal of [`[g$="${position}"]`, `[g^="${position}"]`, `[g]>[c$="${position}"]`, `[g]>[c^="${position}"]`]) {
-    if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing numeric grid rule ${signal}`);
+  for (const signal of [`[g$="${position}"]`, `[g^="${position}"]`, `[g]>[x$="${position}"]`, `[g]>[x^="${position}"]`]) {
+    if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing numeric grid rule ${signal}`);
   }
 }
-for (const signal of ['[g]>[c$="0"]', '[g]>[c^="0"]']) {
-  if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing full-row grid rule ${signal}`);
+for (const signal of ['[g]>[x$="0"]', '[g]>[x^="0"]']) {
+  if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing full-row grid rule ${signal}`);
 }
 for (let position = 1; position <= 4; position += 1) {
-  for (const signal of [`[g]>[r$="${position}"]`, `[g]>[r^="${position}"]`]) {
-    if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing row-span grid rule ${signal}`);
+  for (const signal of [`[g]>[y$="${position}"]`, `[g]>[y^="${position}"]`]) {
+    if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing row-span grid rule ${signal}`);
   }
 }
 for (const position of ["f", "a", "l"]) {
   for (const signal of [`[g]>[o$="-${position}"]`, `[g]>[o*="-${position}-"]`, `[g]>[o^="${position}"]`]) {
-    if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing visual-order grid rule ${signal}`);
+    if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing visual-order grid rule ${signal}`);
   }
 }
 for (const signal of ["--l-gc: 3", "--l-cs: 1", "--l-rs: 1"]) {
-  if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing omitted-span default ${signal}`);
+  if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing omitted-span default ${signal}`);
 }
 const expectedUtilityHooks = documentedHooks["craft/utilities.md"].filter((hook) => hook !== ".sr.focusable").sort();
 const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s*\{/gm)].map((match) => `.${match[1]}`)).sort();
@@ -289,29 +333,43 @@ if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss,
   fail("tokens.css is missing a documented skin or accent boundary");
 }
 for (const signal of [
-  "@supports selector(details::details-content)", ":where(dialog, input, textarea, select)",
+  "@supports selector(details::details-content)", "corner-shape: squircle",
+]) {
+  if (!hasCssSignal(baseCss, signal)) fail(`base.css is missing native enhancement: ${signal}`);
+}
+if (!hasCssSignal(typeCss, "[l] {") || !hasCssSignal(typeCss, '[l="4"]')) {
+  fail("type.css is missing documented l");
+}
+for (const signal of [
   ".img-w[data-scrub]", "&[data-scrub='reverse']>img",
 ]) {
-  if (!hasCssSignal(featuresCss, signal)) fail(`features.css is missing documented feature hook: ${signal}`);
+  if (!hasCssSignal(motionCss, signal)) fail(`motion.css is missing documented motion hook: ${signal}`);
 }
-const genericScrub = featuresCss.match(/(?:^|\n)\s+\[data-scrub\]\s*\{([^}]*)\}/)?.[1];
+const genericScrub = motionCss.match(/(?:^|\n)\s+\[data-scrub\]\s*\{([^}]*)\}/)?.[1];
 if (!genericScrub || !hasCssSignal(genericScrub, "animation-timeline: view()") || !hasCssSignal(genericScrub, "animation-range: entry 0% exit 100%")) {
-  fail("features.css is missing the generic scrub progress rule");
+  fail("motion.css is missing the generic scrub progress rule");
 }
-if (!hasCssSignal(featuresCss, "@supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) {")) {
-  fail("features.css scrub must remain inside feature and reduced-motion gates");
+if (!hasCssSignal(motionCss, "@supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) {")) {
+  fail("motion.css scrub must remain inside feature and reduced-motion gates");
+}
+if (!hasCssSignal(motionCss, "@supports (view-transition-name: none)") || !hasCssSignal(motionCss, "@view-transition")) {
+  fail("motion.css is missing gated view transitions");
 }
 
 for (const signal of [
-  "section>.c { container: container / inline-size", "display: flex", "flex-direction: column",
-  "@container container (width >=30rem)", "@container container (width >=60rem)",
-  "grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr))", '[g]> :is([c="0"], [c$="-0"])',
-  '[g]> :is([c="0"], [c^="0-"])', '[g]>[o*="-a-"]', '[g]>[o^="a"]',
+  "section>[c] { container: container / inline-size", "display: flex", "flex-direction: column",
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing invariant: ${signal}`);
 }
-if (/@media\s*\(\s*width\b/.test(layoutCss)) fail("layout.css must use container queries for grid states");
-if (/(?:^|})\s*\.c\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > .c may establish the query boundary");
+for (const signal of [
+  "@container container (width >=30rem)", "@container container (width >=60rem)",
+  "grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr))", '[g]> :is([x="0"], [x$="-0"])',
+  '[g]> :is([x="0"], [x^="0-"])', '[g]>[o*="-a-"]', '[g]>[o^="a"]',
+]) {
+  if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing invariant: ${signal}`);
+}
+if (/@media\s*\(\s*width\b/.test(gridCss)) fail("grid.css must use container queries for grid states");
+if (/(?:^|})\s*\[c\]\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > [c] may establish the query boundary");
 
 const accentRoutes = unique([...tokensCss.matchAll(/\[data-accent\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 const skinRoutes = unique([...tokensCss.matchAll(/\[data-skin\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
@@ -321,7 +379,7 @@ const documentedAccentRoutes = markedCodeNames(docsByPath["craft/color.md"], "ac
 const documentedSkinRoutes = markedCodeNames(docsByPath["craft/color.md"], "skin-value-index", /`([a-z-]+)`/g)?.sort();
 if (!documentedAccentRoutes || documentedAccentRoutes.join("|") !== accentRoutes.join("|")) fail("craft/color.md accent routes differ from source");
 if (!documentedSkinRoutes || documentedSkinRoutes.join("|") !== skinRoutes.join("|")) fail("craft/color.md skin routes differ from source");
-if (!featuresCss.includes("&[data-scrub='reverse']>img")) fail("features.css is missing reverse scrub behavior");
+if (!motionCss.includes("&[data-scrub='reverse']>img")) fail("motion.css is missing reverse scrub behavior");
 if (/\.(?:btn|crd|lnk|card)(?:[\s,:.{#]|$)/i.test(allCss)) fail("canonical CSS styles a project component naming convention");
 
 for (const property of privateProperties) {
@@ -353,6 +411,8 @@ const retiredExampleHooks = [
   "invites-form", "field", "field-group", "field-msg", "choice", "roster", "band", "orientation", "proof",
   "faq", "refuse", "convert", "hero", "copy", "media", "board", "masthead", "deck", "folio", "folio-panel",
   "pull", "issues", "issues-lead", "pitch", "ladder", "ladder-steps", "proof-intro", "refuse-callout", "refuse-list",
+  "c", "s", "center", "c-fg", "c-mu", "c-ac", "c-sc", "f-sa", "f-se", "f-mo", "f-bd", "f-dp",
+  "w-lt", "w-rg", "w-bd", "tt-uc", "tt-lc", "tt-no", "tt-cp",
 ];
 const validateIdentifiers = (html, path) => {
   const active = html.replace(/<!--[\s\S]*?-->/g, "");
@@ -394,7 +454,19 @@ const validateExampleMarkup = (html, path) => {
     if (!supportedAccentRoutes.includes(value)) fail(`${path} uses unsupported data-accent ${value}`);
   }
   for (const value of attributeValues(active, "t")) {
-    if (!typeRoles.includes(value)) fail(`${path} uses unsupported t value ${value}`);
+    const tokens = value.trim().split(/\s+/).filter(Boolean);
+    let roles = 0;
+    let colors = 0;
+    let transforms = 0;
+    for (const token of tokens) {
+      if (typeRoles.includes(token)) roles += 1;
+      else if (typeColors.includes(token)) colors += 1;
+      else if (typeTransforms.includes(token)) transforms += 1;
+      else fail(`${path} uses unsupported t token ${token}`);
+    }
+    if (roles > 1) fail(`${path} uses more than one t role`);
+    if (colors > 1) fail(`${path} uses more than one t color`);
+    if (transforms > 1) fail(`${path} uses more than one t transform`);
   }
   for (const value of attributeValues(active, "g")) {
     if (!["", "a", "a-sm", "a-lg", "sg"].includes(value) && !validResponsiveNumber(value, 12)) {
@@ -402,10 +474,25 @@ const validateExampleMarkup = (html, path) => {
     }
   }
   for (const value of attributeValues(active, "c")) {
-    if (!value || !validResponsiveNumber(value, 12, true)) fail(`${path} uses invalid c value ${value || "(empty)"}`);
+    if (!containerValues.includes(value)) fail(`${path} uses invalid c value ${value || "(empty)"}`);
   }
-  for (const value of attributeValues(active, "r")) {
-    if (!value || !validResponsiveNumber(value, 4)) fail(`${path} uses invalid r value ${value || "(empty)"}`);
+  for (const value of attributeValues(active, "s")) {
+    const tokens = value.trim().split(/\s+/).filter(Boolean);
+    const seen = new Set();
+    for (const token of tokens) {
+      if (!stackFlags.includes(token)) fail(`${path} uses invalid s flag ${token}`);
+      if (seen.has(token)) fail(`${path} repeats s flag ${token}`);
+      seen.add(token);
+    }
+  }
+  for (const value of attributeValues(active, "x")) {
+    if (!value || !validResponsiveNumber(value, 12, true)) fail(`${path} uses invalid x value ${value || "(empty)"}`);
+  }
+  for (const value of attributeValues(active, "y")) {
+    if (!value || !validResponsiveNumber(value, 4)) fail(`${path} uses invalid y value ${value || "(empty)"}`);
+  }
+  for (const value of attributeValues(active, "l")) {
+    if (!clampValues.includes(value)) fail(`${path} uses invalid l value ${value || "(empty)"}`);
   }
   for (const value of attributeValues(active, "o")) {
     if (!/^[fal]-[fal]-[fal]$/.test(value)) fail(`${path} uses invalid o value ${value}`);
@@ -485,5 +572,5 @@ if (existsSync(exampleRoot)) {
 }
 
 if (!process.exitCode) {
-  console.log(`PASS: CRFT contract — ${publicTokens.length} public tokens, ${privateProperties.length} private properties, ${layers.length} layers, ${files.length} shared stylesheets`);
+  console.log(`PASS: CRFT contract — ${publicTokens.length} public tokens, ${privateProperties.length} private properties, ${preludeLayers.length} layers, ${files.length} shared stylesheets`);
 }

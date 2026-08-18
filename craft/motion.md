@@ -1,13 +1,13 @@
 ---
-title: CRFT motion and progressive features
+title: CRFT motion
 status: canonical
 owner: motion
-read_when: Adding motion, disclosure animation, native corner enhancement, image scrub, reduced-motion behavior, or unsupported-feature fallback.
+read_when: Adding motion, image scrub, view transitions, reduced-motion behavior, or unsupported-feature fallback.
 ---
 
-# Motion and progressive features
+# Motion
 
-Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. CSS owns live timing and reduced-motion substitutions.
+Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. `styles/layers/motion.css` owns opt-in scrub and view transitions. Native disclosure animation and squircle corners live in `base.css`; see [`html.md`](html.md). CSS owns live timing and reduced-motion substitutions.
 
 ## Decision
 
@@ -33,25 +33,6 @@ Project motion uses public tokens in project CSS. Add a local property for a com
 
 Reduced motion remaps the shared timing roles and durations in `tokens.css`. Position or parallax motion must still be removed or bypassed when the resulting tiny duration is not a complete reduced-motion experience.
 
-## Native disclosure
-
-CRFT progressively animates native `details` content only when `::details-content` is supported. The closed and open states remain native and useful without support.
-
-```html
-<details>
-  <summary>What does CRFT copy?</summary>
-  <p>Nine owned files with no runtime dependency.</p>
-</details>
-```
-
-Do not replace disclosure semantics with animation markup or JavaScript.
-
-## Native corners
-
-When `corner-shape` is supported, CRFT gives native `dialog`, `input`, `textarea`, and `select` a squircle corner shape. The shape becomes visible only when project CSS supplies a non-zero `border-radius`. Without support, the CRFT base remains square unless project CSS supplies another radius treatment.
-
-`.btn` and `.crd` are not enhancement targets because they are project conventions, not CRFT components.
-
 ## Image scrub
 
 The public image enhancement is:
@@ -67,6 +48,12 @@ Use `data-scrub="reverse"` to reverse travel. Apply the hook only when the wrapp
 CRFT activates scrub only when view timelines are supported and the user has not requested reduced motion. Otherwise the image remains static. The generic `[data-scrub]` rule supplies internal progress to this public image hook. It is not a separate documented consumer feature.
 
 Do not scrub proof that must remain fully visible, interactive media, text, or controls.
+
+## View transitions
+
+When view transitions are supported, same-origin navigations cross-fade `main` using the public `--m-vt-*` tokens. Header and footer keep their names so chrome can stay stable. Reduced motion removes the animation. Without support, navigation is instantaneous.
+
+Project CSS may retune the public view-transition tokens. Do not invent a second navigation motion language.
 
 ## Progressive stagger
 
@@ -112,7 +99,7 @@ JavaScript motion must own lifecycle, interruption, cancellation, and teardown. 
 - Using `sibling-index()` without a complete static fallback and both feature gates.
 - Splitting text without font, resize, content, selection, localization, and assistive-technology evidence.
 - Animating layout properties when a simpler static or transform result is available.
-- Adding `.btn` or `.crd` to canonical feature selectors.
+- Adding `.btn` or `.crd` to canonical motion or base selectors.
 
 ## Verify
 

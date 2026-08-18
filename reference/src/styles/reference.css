@@ -133,7 +133,7 @@
     }
   }
 
-  .sg-header>.c {
+  .sg-header>[c] {
     flex-direction: row;
     width: fit-content;
     max-width: 100%;
@@ -145,12 +145,12 @@
     pointer-events: auto;
   }
 
-  .sg-header>.c:has(.sg-rail-nav) {
+  .sg-header>[c]:has(.sg-rail-nav) {
     flex: 0 1 auto;
     min-width: 0;
   }
 
-  .sg-header>.c:has(:is(.sg-logo, .sg-controls-trigger)) {
+  .sg-header>[c]:has(:is(.sg-logo, .sg-controls-trigger)) {
     flex: none;
   }
 
@@ -185,7 +185,7 @@
     text-decoration: none;
   }
 
-  .sg-header>.c:has(.sg-logo) {
+  .sg-header>[c]:has(.sg-logo) {
     anchor-name: --sg-logo;
   }
 
@@ -290,7 +290,7 @@
     }
   }
 
-  .sg-header>.c:has(.sg-controls-trigger) {
+  .sg-header>[c]:has(.sg-controls-trigger) {
     anchor-name: --sg-controls;
   }
 
@@ -363,7 +363,8 @@
 
   #forms :where(input, select, textarea),
   #native button,
-  #features button {
+  #native input,
+  #motion button {
     min-block-size: 2.25rem;
     padding: var(--g-sm) var(--g);
     border: var(--b-wd) solid var(--sg-line);
@@ -595,7 +596,7 @@
     min-width: 0;
   }
 
-  .sg-type-row .s {
+  .sg-type-row[s] {
     gap: var(--g-sm);
   }
 
@@ -755,7 +756,7 @@
     gap: var(--g-sm);
   }
 
-  .sg-width-specimens .c {
+  .sg-width-specimens [c] {
     display: flex;
     flex-direction: row;
     align-items: baseline;
@@ -766,18 +767,18 @@
     background: var(--sg-surface);
   }
 
-  .sg-width-specimens .c::before {
+  .sg-width-specimens [c]::before {
     inline-size: var(--g-sm);
     align-self: stretch;
     background: var(--sg-accent);
     content: "";
   }
 
-  .sg-width-specimens .c:nth-child(2)::before {
+  .sg-width-specimens [c]:nth-child(2)::before {
     background: var(--c-sc);
   }
 
-  .sg-width-specimens .c:nth-child(3)::before {
+  .sg-width-specimens [c]:nth-child(3)::before {
     background: var(--c-tr);
   }
 
@@ -821,7 +822,7 @@
     flex: 1 1 auto;
   }
 
-  .sg-row-sample.s.h.w>* {
+  .sg-row-sample[s~="w"]>* {
     flex-basis: calc(50% - var(--g-sm));
   }
 
@@ -848,7 +849,7 @@
     text-align: center;
   }
 
-  .sg-grid-list [g]> :is([c], [r]) {
+  .sg-grid-list [g]> :is([x], [y]) {
     border-color: var(--sg-accent);
     background: var(--sg-accent);
     color: var(--c-ac-co);
@@ -1111,10 +1112,18 @@
     }
   }
 
-  .img-w[data-scrub] {
+  .sg-scroll-example .img-w {
     aspect-ratio: 12 / 7;
-    overflow: clip;
     border-radius: var(--r-lg);
+
+    >img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .img-w[data-scrub] {
+    overflow: clip;
 
     @supports (corner-shape: squircle) {
       corner-shape: squircle;
@@ -1319,7 +1328,7 @@
       padding-block: var(--sg-section-space);
       border-top: var(--b-wd) solid var(--sg-line);
 
-      >.c>[g] {
+      >[c]>[g] {
         align-items: start;
 
         >.section-name-wrap {

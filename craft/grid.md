@@ -2,25 +2,25 @@
 title: CRFT grid
 status: canonical
 owner: grid
-read_when: Using g, c, r, or o attributes; choosing responsive spans; using auto-fit or subgrid; or checking container fallback.
+read_when: Using g, x, y, or o attributes; choosing responsive spans; using auto-fit or subgrid; or checking container fallback.
 ---
 
 # Grid
 
-CRFT grid describes large, medium, and small states from the nearest ancestor `section > .c` inline size. CSS owns the exact query thresholds and internal selector operators.
+CRFT grid describes large, medium, and small states from the nearest ancestor `section > [c]` inline size. `styles/layers/grid.css` owns the live selectors. CSS owns the exact query thresholds and internal selector operators.
 
 ## Boundary and fallback
 
-A responsive `[g]` must be a descendant of `section > .c`, not the same element:
+A responsive `[g]` must be a descendant of `section > [c]`, not the same element:
 
 ```html
 <section>
-  <div class="c">
-    <div class="s">
+  <div c>
+    <div s>
       <h2>Work</h2>
       <div g="12-6">
-        <article c="5-3">...</article>
-        <aside c="7-3">...</aside>
+        <article x="5-3">...</article>
+        <aside x="7-3">...</aside>
       </div>
     </div>
   </div>
@@ -36,25 +36,25 @@ Grid presentation never changes DOM, reading, or keyboard meaning. IDs and regio
 | Attribute | Public values | Job |
 | --- | --- | --- |
 | `g` | Empty, `N`, or `L-M` | Parent column count |
-| `c` | `N` or `L-M` | Child column span |
-| `r` | `N` or `L-M` | Child row span |
+| `x` | `N` or `L-M` | Child column span |
+| `y` | `N` or `L-M` | Child row span |
 | `o` | Complete `L-M-S` | Child presentation order |
 
-For `g`, `c`, and `r`, one number applies at large and medium. Two positions describe large and medium. Small remains stacked.
+For `g`, `x`, and `y`, one number applies at large and medium. Two positions describe large and medium. Small remains stacked.
 
 - `g` column counts are `1` through `12`.
-- `c` spans are `1` through `12`. `0` means a full row.
-- `r` spans are `1` through `4`.
-- Omit `c` or `r` for the default span.
+- `x` spans are `1` through `12`. `0` means a full row.
+- `y` spans are `1` through `4`.
+- Omit `x` or `y` for the default span.
 - Every `o` value contains all three positions. Use `f` for first, `a` for authored, and `l` for last.
 
 ```html
 <section>
-  <div class="c">
+  <div c>
     <h2>Comparison</h2>
     <div g="3-2">
-      <article c="2-1" o="a-a-f">...</article>
-      <aside c="1" o="a-a-l">...</aside>
+      <article x="2-1" o="a-a-f">...</article>
+      <aside x="1" o="a-a-l">...</aside>
     </div>
   </div>
 </section>
@@ -81,14 +81,14 @@ Do not expose internal prefix, suffix, or substring attribute-selector operators
 
 ## Common mistakes
 
-- Putting `g` on the `.c` query boundary.
+- Putting `g` on the `[c]` query boundary.
 - Assuming a grid outside a page section becomes responsive.
-- Writing three numeric positions for `g`, `c`, or `r`.
+- Writing three numeric positions for `g`, `x`, or `y`.
 - Omitting a position from `o`.
-- Using `c="0"` as a zero-width item instead of a full row.
+- Using `x="0"` as a zero-width item instead of a full row.
 - Using visual order to repair incorrect source order.
 - Treating malformed values as supported fallback API.
 
 ## Verify
 
-Check canonical and omitted positions at large, medium, and small container states across `.c.sm`, `.c`, and `.c.lg`. Include nested section boundaries, intrinsic header/footer `.c`, and no-container fallback. Verify nested grids, full rows, auto modes, subgrid, row spans, visual order, source order, keyboard order, long content, and malformed-value rejection.
+Check canonical and omitted positions at large, medium, and small container states across `c="sm"`, `c`, and `c="lg"`. Include nested section boundaries, intrinsic header/footer `[c]`, and no-container fallback. Verify nested grids, full rows, auto modes, subgrid, row spans, visual order, source order, keyboard order, long content, and malformed-value rejection.

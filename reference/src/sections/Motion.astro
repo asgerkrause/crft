@@ -5,23 +5,18 @@ import { sections } from "../data";
 import placeholder from "../assets/placehold.svg";
 ---
 
-<Section {...sections.features}>
-  <p class="c-mu" slot="summary">Optional features retain useful fallback behavior and respect reduced-motion preferences.</p>
+<Section {...sections.motion}>
+  <p t="mu" slot="summary">Opt-in motion keeps a complete static result and respects reduced-motion preferences.</p>
 
   <Specimen id="disclosure" title="Disclosure">
     <details open data-fixture="progressive-disclosure">
       <summary>Disclosure animation</summary>
-      <p>When supported, native details content animates with motion roles.</p>
+      <p>When supported, native details content animates with motion roles. The closed and open states remain native without support.</p>
     </details>
   </Specimen>
 
-  <Specimen id="corner-shape" title="Corner shape">
-    <p>Supported browsers enhance native control corners. Project components keep their own presentation.</p>
-    <label>Native input <input data-fixture="progressive-corner" value="Corner shape" readonly></label>
-  </Specimen>
-
   <Specimen id="motion-roles" title="Motion roles">
-    <div class="sg-motion-groups s" data-fixture="reduced-motion">
+    <div class="sg-motion-groups" s data-fixture="reduced-motion">
       <fieldset class="sg-motion-speed">
         <legend>Preview duration</legend>
         <div>
@@ -64,5 +59,9 @@ import placeholder from "../assets/placehold.svg";
         <figcaption>Reverse <code>data-scrub="reverse"</code></figcaption>
       </figure>
     </div>
+  </Specimen>
+
+  <Specimen id="view-transitions" title="View transitions">
+    <p>Supported browsers animate same-origin navigation of <code>main</code> with <code>--m-vt-*</code>. Header and footer keep their names. Reduced motion removes the animation.</p>
   </Specimen>
 </Section>

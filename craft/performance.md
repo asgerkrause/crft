@@ -44,13 +44,13 @@ Media composition belongs to [`composition.md`](composition.md). This file owns 
 
 ## Fonts
 
-CRFT’s copied source registers two variable TrueType files with swap behavior. A project may replace the copied files or loading strategy after it verifies license, format, required glyphs and weights, fallback metrics, preload cost, and layout shift.
+CRFT’s copied source registers two variable WOFF files with swap behavior. A project may replace the copied files or loading strategy after it verifies license, format, required glyphs and weights, fallback metrics, preload cost, and layout shift.
 
 Load only families, weights, styles, and subsets the rendered product needs. A preload is useful only when the resource is required early and the browser would otherwise discover it late.
 
 ## Runtime
 
-Ship no client runtime for static sections. Prefer native HTML and CSS for structure, responsive layout, state styling, disclosure, and progressive features.
+Ship no client runtime for static sections. Prefer native HTML and CSS for structure, responsive layout, state styling, disclosure, and gated motion.
 
 JavaScript owns behavior, data, lifecycle, and integration that the platform cannot provide cleanly. Load it at the smallest useful boundary. Remove listeners, observers, and timers during teardown.
 

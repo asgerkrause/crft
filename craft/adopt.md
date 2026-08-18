@@ -18,23 +18,24 @@ node scripts/copy-system.mjs --dry-run /absolute/path/to/project/styles
 node scripts/copy-system.mjs /absolute/path/to/project/styles
 ```
 
-The copier validates the complete source and destination before publishing nine files:
+The copier validates the complete source and destination before publishing ten files:
 
 ```text
 styles/
   global.css
-  sans.ttf
-  mono.ttf
+  sans.woff
+  mono.woff
   layers/
     base.css
     tokens.css
     type.css
     layout.css
-    features.css
+    grid.css
+    motion.css
     utility.css
 ```
 
-An existing target directory is allowed only when all nine destinations are absent. Any conflict aborts before the intended copy. The copier never merges, overwrites, injects an import, copies skills, or creates project presentation.
+An existing target directory is allowed only when all ten destinations are absent. Any conflict aborts before the intended copy. The copier never merges, overwrites, injects an import, copies skills, or creates project presentation.
 
 Load `styles/global.css` once from the project’s existing CSS entrypoint.
 
@@ -43,17 +44,20 @@ Load `styles/global.css` once from the project’s existing CSS entrypoint.
 `styles/global.css` declares this order:
 
 ```css
-@layer base, tokens, type, layout, features, utility;
+@layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
 | Owner | Responsibility |
 | --- | --- |
-| `base.css` | Reset, document settings, native defaults, focus, and active colors |
+| `base.css` | `@layer reset` then `@layer base`: neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners |
 | `tokens.css` | Public tokens, semantic colors, skins, scales, and reduced motion |
-| `type.css` | Bundled fonts and type roles |
-| `layout.css` | Page spacing, containers, stacks, and grid grammar |
-| `features.css` | Progressive disclosure, native corners, and image scrub |
+| `type.css` | Bundled fonts, type roles, `t` flags, and `l` |
+| `layout.css` | Page spacing, `c` measure, `s` stacks, and `.img-w` |
+| `grid.css` | Attribute grid grammar |
+| `motion.css` | Image scrub and view transitions |
 | `utility.css` | Finite public utilities |
+
+Do not add a spacing, alignment, border, or wrap utility matrix. Attributes are the finite composition API. Classes are the override and use-case layer. Unrelated markup that needs a stable operation still has to pass the admission tests in [`utilities.md`](utilities.md).
 
 Put a shared rule in the first owner that fully explains it. Brand values belong in copied `tokens.css`. Edit another copied owner only when the project intentionally changes that system behavior.
 
@@ -83,14 +87,23 @@ CRFT does not support an in-place upgrade from the earlier frontend package. Pre
 | Earlier contract | CRFT contract or action |
 | --- | --- |
 | Repository entrypoint `global.css` | Canonical source `styles/global.css`; copy it through the copier |
-| Flat `styles/{base,tokens,type,layout,features,utility}.css` | `styles/layers/{base,tokens,type,layout,features,utility}.css` |
+| Flat `styles/{base,tokens,type,layout,features,utility}.css` | `styles/layers/{base,tokens,type,layout,grid,motion,utility}.css`; `reset` lives in `base.css` |
+| `styles/layers/features.css` | Native disclosure and corners in `base.css`; scrub and view transitions in `motion.css` |
+| Grid rules in `layout.css` | `styles/layers/grid.css` |
 | `styles/project.css` | The receiving project’s existing CSS owner |
 | `.hd`, `.h0`–`.h6`, and `.t-lg`/`.t-bd`/`.t-sm` | `t="h0"`–`t="h6"` and `t="lg"`/`t="bd"`/`t="sm"`; native headings need no attribute |
+| `.c`, `.c.sm`, `.c.lg` | `c`, `c="sm"`, `c="lg"` |
+| `.s` plus modifier classes | `s` plus space-separated flags `h`, `w`, `ct`, `sb` |
+| Grid span `[c]` / `[r]` | `[x]` / `[y]` |
+| `.c-fg` `.c-mu` `.c-ac` `.c-sc` | `t` color flags `fg` `mu` `ac` `sc` |
+| `.tt-uc` `.tt-lc` `.tt-cp` `.tt-no` | `t` transform flags `uc` `lc` `cp` `no` |
+| `.f-*` and `.w-*` | No replacement. Change family or weight in project CSS |
+| `data-clamp` | `l`; empty `l` is three lines |
 | `--t-h0-fs`–`--t-sm-fs` | No direct replacement; use the native or explicit `t` role and fluid type foundations |
 | `--f-*` font families | `--t-ff-*` |
 | `--w-*` font weights | `--t-fw-*` |
 | `--h-h` | `--l-hh` |
-| `--l-cw-sm`, `--l-cw-lg` | No direct replacement; `.c.sm` and `.c.lg` derive from `--l-cw` |
+| `--l-cw-sm`, `--l-cw-lg` | No direct replacement; `c="sm"` and `c="lg"` derive from `--l-cw` |
 | `--l-bl-h`, `--l-bl-v` | `--l-bl-x`, `--l-bl-y` |
 | `--s-ba`, `--g-ba`, `--p-ba`, `--r-ba` | `--s`, `--g`, `--p`, `--r` |
 | `--s-sc`, `--g-sc`, `--p-sc`, `--r-sc` | `--s-rt`, `--g-rt`, `--p-rt`, `--r-rt` |
@@ -114,6 +127,8 @@ A copied project does not follow CRFT automatically. To adopt a later upstream c
 6. record the adopted revision in the project’s normal dependency or decision record if useful.
 
 Do not overwrite consumer-owned files with the copy script.
+
+Container queries are required for a responsive grid. Scrub, view transitions, squircle corners, and disclosure animation stay optional.
 
 When adopting the routed accent-canvas contract, replace removed color-specific skins explicitly:
 
@@ -149,4 +164,4 @@ A direct product component rule is not a failed migration. Preserve the smallest
 
 ## Verify
 
-Run the dry run, copy into a disposable target, and compare all nine files byte-for-byte. Confirm the project imports `global.css` once, CSS layer order remains intact, brand values have one owner, product CSS remains project-owned, and no source file was merged or overwritten.
+Run the dry run, copy into a disposable target, and compare all ten files byte-for-byte. Confirm the project imports `global.css` once, CSS layer order remains intact, brand values have one owner, product CSS remains project-owned, and no source file was merged or overwritten.

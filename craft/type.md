@@ -2,7 +2,7 @@
 title: CRFT type
 status: canonical
 owner: type
-read_when: Choosing semantic or visual type roles, fonts, hierarchy, measure, wrapping, weight, or type overrides.
+read_when: Choosing semantic or visual type roles, t flags, fonts, hierarchy, measure, wrapping, weight, or line clamp.
 ---
 
 # Type
@@ -17,15 +17,25 @@ Public visual values are `h0`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `lg`, `bd`, a
 
 ```html
 <section>
-  <div class="c">
-    <div class="s">
-      <p t="sm" class="c-mu">Release 1</p>
+  <div c>
+    <div s>
+      <p t="sm mu">Release 1</p>
       <h2 t="h1">One router, focused owners</h2>
       <p t="lg">Find the rule without loading the whole system.</p>
     </div>
   </div>
 </section>
 ```
+
+`t` is a token list. Write one role, then optional color and transform flags. CSS matches each token with `~=`.
+
+| Kind | Tokens | Rule |
+| --- | --- | --- |
+| Role | `h0` `h1` `h2` `h3` `h4` `h5` `h6` `lg` `bd` `sm` | At most one. Native `h1`–`h6` need no role token. |
+| Color | `fg` `mu` `ac` `sc` | At most one. |
+| Transform | `uc` `lc` `cp` `no` | At most one. |
+
+Do not put weight or family on `t`. `bd` is already the body role. A one-off serif or bold line is project CSS.
 
 Do not add `t` when inherited body type or the native heading role is correct. A paragraph, list item, blockquote, table, or control inherits body type unless its presentation needs an explicit role.
 
@@ -34,6 +44,16 @@ Do not add `t` when inherited body type or the native heading role is correct. A
 Body type and each native or explicit role interpolate between the shared viewport bounds. Heading roles use steps `5` through `-1`. Text roles use `1`, `0`, and `-1` for `lg`, `bd`, and `sm`.
 
 The private calculation state lives on each type boundary. Projects change the public minimum size, maximum size, and ratio foundations instead of using private calculation properties. Spacing, padding, gaps, and radius remain static.
+
+## Line clamp
+
+`l` truncates a text block to a fixed number of lines. Supported values are `1` through `4`. An empty `l` uses three lines. The complete text remains in the DOM.
+
+```html
+<p l="2">A long supporting sentence that must not push the following action off the first screen.</p>
+```
+
+Use clamp only when overflow is acceptable and the full meaning is available another way, such as a heading, caption, or details. Do not clamp a heading that is the only name of a region or control.
 
 ## Hierarchy
 
@@ -60,9 +80,9 @@ CRFT balances headings and uses pretty wrapping for body roles. Verify long word
 
 ## Fonts and weight
 
-`styles/layers/type.css` registers bundled `sans.ttf` and `mono.ttf` as variable-weight families. Font-family tokens route sans, serif, monospace, body, and display roles.
+`styles/layers/type.css` registers bundled `sans.woff` and `mono.woff` as variable-weight families. Font-family tokens route sans, serif, monospace, body, and display roles.
 
-Use normal `font-weight`. Do not use `font-variation-settings` for the registered weight axis. Use the finite font-family and weight utilities only for stable operations.
+Use normal `font-weight`. Do not use `font-variation-settings` for the registered weight axis. Change family or weight in project CSS when a role token is not enough.
 
 Projects may replace copied font files and family mappings when their license, formats, preload strategy, fallback metrics, and required weights are verified.
 
@@ -70,7 +90,7 @@ Projects may replace copied font files and family mappings when their license, f
 
 Choose type character from product and brand evidence. Check line height, letter spacing, weight, transform, punctuation, numeric alignment, selection, and fallback behavior in context.
 
-Store copy in natural case. Use a role token or the finite transform utilities for presentation. Use tabular numbers in project CSS when changing values would otherwise shift layout.
+Store copy in natural case. Use a role token or a `t` transform flag for presentation. Use tabular numbers in project CSS when changing values would otherwise shift layout.
 
 ## Common mistakes
 

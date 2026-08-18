@@ -3,17 +3,17 @@ import { modes, navigation, presets } from "../data";
 ---
 
 <header class="sg-header">
-  <div class="c">
+  <div c>
     <a class="sg-logo" href="#overview">CRFT</a>
   </div>
 
-  <div class="c">
+  <div c>
     <nav class="sg-rail-nav" aria-label="Reference sections">
       {navigation.map((item) => <a href={`#${item.id}`}>{item.nav}</a>)}
     </nav>
   </div>
 
-  <div class="c">
+  <div c>
     <button class="sg-controls-trigger" type="button" popovertarget="styleguide-preferences"
       aria-controls="styleguide-preferences" aria-expanded="false">Controls</button>
   </div>

@@ -49,6 +49,7 @@
       p {
         letter-spacing: 0.14em;
         color: var(--c-fg);
+        font-weight: var(--t-fw-bd);
       }
     }
 
@@ -79,6 +80,10 @@
         padding-block: var(--p-lg);
         padding-inline: var(--p-lg);
         border: var(--b-wd) solid var(--c-bc);
+
+        h2 {
+          font-weight: var(--t-fw-bd);
+        }
       }
 
       blockquote {
@@ -90,6 +95,7 @@
 
         p {
           margin: 0;
+          font-family: var(--t-ff-se);
         }
       }
     }
@@ -165,6 +171,7 @@
     .index {
       margin: 0;
       color: var(--c-ac);
+      font-family: var(--t-ff-mo);
       letter-spacing: 0.12em;
     }
   }

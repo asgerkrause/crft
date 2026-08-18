@@ -1,3 +1,4 @@
+/* Motion: opt-in scrub and view transitions. */
 @property --m-src-to {
   syntax: "<number>";
   inherits: true;
@@ -15,38 +16,7 @@
   --m-src-fr: 1;
 }
 
-@layer features {
-  @supports selector(details::details-content) {
-    details {
-      overflow: clip;
-
-      &::details-content {
-        height: 0;
-        overflow: clip;
-        content-visibility: hidden;
-        transition:
-          height var(--m-td) var(--m-tf-o),
-          content-visibility var(--m-td) allow-discrete;
-      }
-
-      &[open]::details-content {
-        height: auto;
-        content-visibility: visible;
-      }
-    }
-
-    summary {
-      cursor: pointer;
-      user-select: none;
-    }
-  }
-
-  @supports (corner-shape: squircle) {
-    :where(dialog, input, textarea, select) {
-      corner-shape: squircle;
-    }
-  }
-
+@layer motion {
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       @keyframes m-src-to {
@@ -90,6 +60,44 @@
         &[data-scrub='reverse']>img {
           translate: 0 calc(var(--m-plx) * var(--m-src-to) * -1);
         }
+      }
+    }
+  }
+
+  @supports (view-transition-name: none) {
+    @view-transition {
+      navigation: auto;
+    }
+
+    ::view-transition-old(main) {
+      animation: var(--m-vt-d) var(--m-tf-i) both m-vt-out;
+    }
+
+    ::view-transition-new(main) {
+      animation: var(--m-vt-d) var(--m-tf-o) both m-vt-in;
+      animation-delay: var(--m-vt-d);
+    }
+
+    @keyframes m-vt-out {
+      to {
+        opacity: 0;
+        transform: translate(var(--m-vt-o-x), var(--m-vt-o-y));
+        filter: blur(var(--m-vt-blur));
+      }
+    }
+
+    @keyframes m-vt-in {
+      from {
+        opacity: 0;
+        transform: translate(var(--m-vt-i-x), var(--m-vt-i-y));
+        filter: blur(var(--m-vt-blur));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-old(main),
+      ::view-transition-new(main) {
+        animation: none;
       }
     }
   }

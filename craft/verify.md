@@ -61,7 +61,7 @@ The reference proves selected CRFT behavior. Product acceptance requires the pro
 
 ## Responsive and state matrix
 
-Choose test sizes from content and supported behavior. For CRFT grid work, include `.c.sm`, `.c`, `.c.lg`, nested section boundaries, intrinsic header/footer containers, and the no-container stacked fallback.
+Choose test sizes from content and supported behavior. For CRFT grid work, include `c="sm"`, `c`, `c="lg"`, nested section boundaries, intrinsic header/footer containers, and the no-container stacked fallback.
 
 Exercise every state that can occur. Do not mark a state not applicable because the fixture omits it when the product can produce it.
 

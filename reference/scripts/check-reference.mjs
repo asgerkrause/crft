@@ -15,16 +15,16 @@ const sameValues = (left, right) => left.length === right.length && left.every((
 const accentRoutes = (value) => unique([...value.matchAll(/\bdata-accent\s*=\s*(["'])([^"']+)\1/g)].map((match) => match[2])).sort();
 const requiredSections = [
   "overview", "colors", "typography", "sizes", "layout", "grid", "skins", "native", "forms",
-  "features", "utilities", "architecture", "tokens",
+  "motion", "utilities", "architecture", "tokens",
 ];
 const requiredMarkup = [
   't="h0"', 't="h1"', 't="h2"', 't="h3"', 't="h4"', 't="h5"', 't="h6"',
   't="lg"', 't="bd"', 't="sm"', 'class="sr focusable"',
-  'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
+  'g="8-4"', 'x="4-2"', 'x="0"', 'y="2-1"', 'o="f-a-l"',
   'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',
   'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="invert"',
   'data-skin="accent" data-accent="secondary"', 'data-skin="accent" data-accent="tertiary"',
-  'class="img-w" data-scrub', 'data-scrub="reverse"', 'id="grid-no-container"',
+  'class="img-w" data-scrub', 'data-scrub="reverse"', 'l="2"', 'id="grid-no-container"',
   'id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
 const internalProperties = [
@@ -39,6 +39,7 @@ const requiredFixtures = [
   "skin-accent-primary", "skin-accent-secondary", "skin-accent-tertiary", "skin-accent-success", "skin-accent-warning", "skin-accent-danger", "skin-nested-outer", "skin-nested-inner",
   "native-details", "native-focus", "native-hidden", "native-dialog-trigger", "native-dialog",
   "progressive-disclosure", "progressive-corner", "reduced-motion", "progressive-scroll-default", "progressive-scroll-reverse",
+  "type-clamp", "layout-image-frame",
 ];
 
 let previousSection = -1;
@@ -119,7 +120,7 @@ for (const property of internalProperties) {
 }
 
 let previousLayer = -1;
-for (const layer of ["base", "tokens", "type", "layout", "features", "utility", "project"]) {
+for (const layer of ["reset", "base", "tokens", "type", "layout", "grid", "motion", "utility", "project"]) {
   const position = css.indexOf(`@layer ${layer}{`);
   if (position <= previousLayer) throw new Error(`Built CSS layer order is invalid at ${layer}.`);
   previousLayer = position;

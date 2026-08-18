@@ -14,7 +14,7 @@ A workspace-invitations screen with filters, an invite form, and visible loading
 
 - native labels, controls, groups, validation, disabled state, and submit behavior;
 - `aria-invalid`, `aria-describedby`, `aria-busy`, alerts, and status text;
-- `section > .c` with large and medium filter/form columns;
+- `section > [c]` with large and medium filter/form columns;
 - semantic skins and success or danger accent routing;
 - native form-element selectors plus project-owned action, banner, panel, and state presentation.
 

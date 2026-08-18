@@ -70,20 +70,21 @@ const groups: readonly TokenGroup[] = [
     title: "Motion",
     rows: [
       { label: "Motion", tokens: "--m-tf-i · --m-tf-o · --m-tf-io · --m-tf-g · --m-tf-s · --m-td-sf · --m-td-f · --m-td · --m-td-s · --m-td-ss" },
+      { label: "View transitions", tokens: "--m-vt-blur · --m-vt-i-y · --m-vt-i-x · --m-vt-o-y · --m-vt-o-x · --m-vt-d" },
     ],
   },
 ] as const;
 ---
 
 <Section {...sections.tokens}>
-  <p slot="summary" class="c-mu">This catalog names the public API only. Refer to the token source for values and
+  <p slot="summary" t="mu">This catalog names the public API only. Refer to the token source for values and
     derivations.</p>
 
   {groups.map((group) => (
     <Specimen id={group.id} title={group.title}>
       <div class="sg-type-list">
         {group.rows.map((row) => (
-          <div class="sg-type-row s h sb">
+          <div class="sg-type-row" s="h sb">
             <p class="sg-specimen-meta"><span>{row.label}</span></p>
             <p>
               {row.chips

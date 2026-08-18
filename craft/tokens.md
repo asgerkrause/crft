@@ -53,7 +53,7 @@ The names between the index markers must exactly match declarations in `styles/l
 | --- | --- |
 | `--l-hh` | Shared header-height role for project composition |
 | `--l-vp-min`, `--l-vp-max` | Shared minimum and maximum viewport bounds for responsive formulas |
-| `--l-cw` | Default content measure; narrow and wide `.c` variants derive from it |
+| `--l-cw` | Default content measure; narrow and wide `c` variants derive from it |
 | `--l-bl-x`, `--l-bl-y` | Page "bleed" x- and y axes |
 
 ### Structural scales
@@ -137,6 +137,7 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--m-tf-i`, `--m-tf-o`, `--m-tf-io` | In, out, and in-out timing functions |
 | `--m-tf-g`, `--m-tf-s` | Glide and spring-like timing functions |
 | `--m-td-sf`, `--m-td-f`, `--m-td`, `--m-td-s`, `--m-td-ss` | Successive motion durations from shortest to longest |
+| `--m-vt-blur`, `--m-vt-i-y`, `--m-vt-i-x`, `--m-vt-o-y`, `--m-vt-o-x`, `--m-vt-d` | Page view-transition blur, incoming and outgoing offsets, and duration |
 
 <!-- public-token-index:end -->
 

@@ -5,7 +5,7 @@ import { sections } from "../data";
 ---
 
 <Section {...sections.native}>
-  <p class="c-mu" slot="summary">Use the native element that already carries meaning and behavior before adding an abstraction.</p>
+  <p t="mu" slot="summary">Use the native element that already carries meaning and behavior before adding an abstraction.</p>
 
   <Specimen id="tables" title="Tables">
     <table>
@@ -35,6 +35,7 @@ import { sections } from "../data";
       <p>Details remains operable without enhancement support.</p>
     </details>
     <p><a href="#native-dialog" data-fixture="native-focus">Visible focus follows keyboard navigation.</a> The <code>hidden</code> attribute removes content from layout and assistive technology.<span data-fixture="native-hidden" hidden>Hidden state specimen.</span></p>
+    <label>Native input <input data-fixture="progressive-corner" value="Corner shape" readonly></label>
     <button type="button" data-fixture="native-dialog-trigger" command="show-modal" commandfor="native-dialog">Open dialog</button>
     <dialog id="native-dialog" data-fixture="native-dialog">
       <p>A native dialog uses the browser’s modal behavior.</p><button type="button" command="close" commandfor="native-dialog">Close dialog</button>
