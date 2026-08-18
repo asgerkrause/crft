@@ -204,7 +204,7 @@ test("fluid type calculation remains source-backed", (t) => {
 
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "    &[c=\"sm\"] {\n", "    &[c=\"narrow\"] {\n");
+  replace(root, "styles/layers/layout.css", "    &[c~=\"sm\"] {\n", "    &[c~=\"narrow\"] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /layout\.css is missing documented hook c="sm"/);

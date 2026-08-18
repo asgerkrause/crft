@@ -86,7 +86,7 @@ Attributes are the finite CRFT composition API. Classes are the override and use
 | Class | Override, recovery, or product use case: `.img-w`, `.sr`, `.btn`, `.crd` |
 | Token | Scales used in CSS. Never a markup matrix |
 
-Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h w sb"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
+Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h w sb"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
 
 <!-- public-hook-index:start -->
 
@@ -95,6 +95,7 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 | `c` | layout | Content measure |
 | `c="sm"` | layout | Narrow measure |
 | `c="lg"` | layout | Wide measure |
+| `c="ct"` | layout | Center container children |
 | `s` | layout | Stack |
 | `s="h"` | layout | Horizontal stack |
 | `s="w"` | layout | Wrapping stack |

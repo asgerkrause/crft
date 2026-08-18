@@ -37,7 +37,8 @@ const typeColors = ["fg", "mu", "ac", "sc"];
 const typeTransforms = ["uc", "lc", "cp", "no"];
 const typeMeasureRoles = [...typeRoles];
 const stackFlags = ["h", "w", "ct", "sb"];
-const containerValues = ["", "sm", "lg"];
+const containerMeasures = ["sm", "lg"];
+const containerFlags = ["ct"];
 const clampValues = ["", "1", "2", "3", "4"];
 const supportedAccentRoutes = ["danger", "secondary", "success", "tertiary", "warning"];
 const supportedSkins = ["accent", "invert", "tone"];
@@ -137,7 +138,7 @@ for (const component of [".btn", ".crd", ".lnk"]) {
 }
 const documentedHooks = {
   "craft/type.md": ["t", "l"],
-  "craft/layout.md": ["c", "c=\"sm\"", "c=\"lg\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"", "container", ".img-w"],
+  "craft/layout.md": ["c", "c=\"sm\"", "c=\"lg\"", "c=\"ct\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"", "container", ".img-w"],
   "craft/grid.md": ["g", "x", "y", "o", "a-sm", "a", "a-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable"],
   "craft/motion.md": [".img-w", "data-scrub"],
@@ -279,7 +280,8 @@ if (/\.(?:h[0-6]|t-(?:lg|bd|sm))(?:[\s,:.{#]|$)/i.test(allCss)) {
 }
 
 const layoutHookSignals = {
-  c: "[c] {", "c=\"sm\"": '&[c="sm"] {', "c=\"lg\"": '&[c="lg"] {',
+  c: "[c] {", "c=\"sm\"": '&[c~="sm"] {', "c=\"lg\"": '&[c~="lg"] {',
+  "c=\"ct\"": '&[c~="ct"] {',
   s: "[s] {", "s=\"h\"": '&[s~="h"] {', "s=\"w\"": '&[s~="w"] {',
   "s=\"ct\"": '&[s~="ct"] {', "s=\"sb\"": '&[s~="sb"] {',
   container: "section>[c] { container: container / inline-size",
@@ -474,7 +476,16 @@ const validateExampleMarkup = (html, path) => {
     }
   }
   for (const value of attributeValues(active, "c")) {
-    if (!containerValues.includes(value)) fail(`${path} uses invalid c value ${value || "(empty)"}`);
+    const tokens = value.trim().split(/\s+/).filter(Boolean);
+    let measures = 0;
+    const seen = new Set();
+    for (const token of tokens) {
+      if (containerMeasures.includes(token)) measures += 1;
+      else if (!containerFlags.includes(token)) fail(`${path} uses invalid c token ${token}`);
+      if (seen.has(token)) fail(`${path} repeats c token ${token}`);
+      seen.add(token);
+    }
+    if (measures > 1) fail(`${path} uses more than one c measure`);
   }
   for (const value of attributeValues(active, "s")) {
     const tokens = value.trim().split(/\s+/).filter(Boolean);

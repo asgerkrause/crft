@@ -37,12 +37,16 @@
     margin-inline: auto;
     gap: var(--s);
 
-    &[c="sm"] {
+    &[c~="sm"] {
       max-width: calc(var(--l-cw) / 3 * 2);
     }
 
-    &[c="lg"] {
+    &[c~="lg"] {
       max-width: calc(var(--l-cw) / 3 * 4);
+    }
+
+    &[c~="ct"] {
+      align-items: center;
     }
   }
 

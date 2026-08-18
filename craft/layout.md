@@ -46,9 +46,10 @@ Use page chrome as direct body children unless project truth requires another co
 
 - `c` for the default content measure;
 - `c="sm"` for two-thirds of the default measure;
-- `c="lg"` for four-thirds of the default measure.
+- `c="lg"` for four-thirds of the default measure;
+- `c="ct"` to center children on the cross axis.
 
-`c` owns measure only. Do not put alignment on `c`. Place `c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > [c]` relationship establishes the named inline-size query context `container`.
+Measure and `ct` may share one value, as in `c="sm ct"`. Do not add other alignment flags to `c`. Place `c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > [c]` relationship establishes the named inline-size query context `container`.
 
 Do not apply containment to every `[c]`. Do not put a responsive `[g]` on the boundary itself. Grid and other responsive composition sit inside it.
 
@@ -117,7 +118,7 @@ At small widths, preserve source order, reachable controls, readable measure, me
 - `c` outside header, section, or footer page landmarks.
 - A responsive grid placed on `section > [c]`.
 - Containment applied to header or footer `[c]`.
-- Alignment flags placed on `c` instead of `s`.
+- Stack flags other than `ct` placed on `c`.
 - Child margins used to create group rhythm.
 - `s="sb"` used without available space or a clear distribution job.
 - A new layout utility for one composition.
