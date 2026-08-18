@@ -8,6 +8,8 @@
     --l-cw: calc(var(--l-vp-max) * 0.0625rem);
     --l-bl-x: 2rem;
     --l-bl-y: 12rem;
+    --l-cq-md: 30rem;
+    --l-cq-lg: 60rem;
 
     /* Unified Sizing / Spacing Scale */
     --s-rt: 2;

@@ -290,6 +290,30 @@ test("an unsupported type role fails", (t) => {
   assert.match(result.stderr, /uses unsupported t token xs/);
 });
 
+test("an unsupported s flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h tight"');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses invalid s flag tight/);
+});
+
+test("more than one s gap fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h sm lg"');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses more than one s gap/);
+});
+
+test("named container-query tokens must match grid literals", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "--l-cq-md: 30rem;", "--l-cq-md: 32rem;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /grid\.css is missing invariant/);
+});
+
 test("an unsupported accent route fails", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/layers/tokens.css", "[data-accent='danger']", "[data-accent='accent']");

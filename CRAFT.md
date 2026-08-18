@@ -86,7 +86,7 @@ Attributes are the finite CRFT composition API. Classes are the override and use
 | Class | Override, recovery, or product use case: `.img-w`, `.sr`, `.btn`, `.crd` |
 | Token | Scales used in CSS. Never a markup matrix |
 
-Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h w sb"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
+Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h sm ct"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
 
 <!-- public-hook-index:start -->
 
@@ -101,6 +101,10 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 | `s="w"` | layout | Wrapping stack |
 | `s="ct"` | layout | Cross-axis center |
 | `s="sb"` | layout | Space-between |
+| `s="xs"` | layout | Tight stack gap |
+| `s="sm"` | layout | Small stack gap |
+| `s="lg"` | layout | Large stack gap |
+| `s="xl"` | layout | Extra-large stack gap |
 | `container` | layout | Named query context |
 | `.img-w` | layout | Media frame |
 | `t` | type | Role plus optional color and transform flags |

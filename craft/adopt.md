@@ -128,7 +128,11 @@ A copied project does not follow CRFT automatically. To adopt a later upstream c
 
 Do not overwrite consumer-owned files with the copy script.
 
-Container queries are required for a responsive grid. Scrub, view transitions, squircle corners, and disclosure animation stay optional.
+Container queries are required for a responsive grid. Match `--l-cq-md` and `--l-cq-lg` when project CSS must share a grid state. Do not put custom properties in `@container` conditions.
+
+`--l-bl-y` is the section rhythm. Keep the copied editorial interval for marketing pages. Set a tighter value in the copied `tokens.css` for a product interface. That is a brand override, not a new hook.
+
+Scrub, view transitions, squircle corners, and disclosure animation stay optional.
 
 When adopting the routed accent-canvas contract, replace removed color-specific skins explicitly:
 

@@ -55,6 +55,7 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--l-vp-min`, `--l-vp-max` | Shared minimum and maximum viewport bounds for responsive formulas |
 | `--l-cw` | Default content measure; narrow and wide `c` variants derive from it |
 | `--l-bl-x`, `--l-bl-y` | Page "bleed" x- and y axes |
+| `--l-cq-md`, `--l-cq-lg` | Medium and large named container-query thresholds; grid queries must match these values |
 
 ### Structural scales
 

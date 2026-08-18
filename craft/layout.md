@@ -49,7 +49,7 @@ Use page chrome as direct body children unless project truth requires another co
 - `c="lg"` for four-thirds of the default measure;
 - `c="ct"` to center children on the cross axis.
 
-Measure and `ct` may share one value, as in `c="sm ct"`. Do not add other alignment flags to `c`. Place `c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > [c]` relationship establishes the named inline-size query context `container`.
+Measure and `ct` may share one value, as in `c="sm ct"`. `c="ct"` is `align-items: center` only. It does not change text alignment. A centered hero is project CSS. Do not add other alignment flags to `c`. Place `c` only inside page landmarks. Header and footer containers remain intrinsic. The exact `section > [c]` relationship establishes the named inline-size query context `container`.
 
 Do not apply containment to every `[c]`. Do not put a responsive `[g]` on the boundary itself. Grid and other responsive composition sit inside it.
 
@@ -57,7 +57,7 @@ Choose the smallest container that preserves the content relationship. A wide co
 
 ## Stack
 
-`s` creates a vertical flow with the public gap role. Flags compose one relationship:
+`s` creates a vertical flow with the public gap role. Flags compose one relationship. At most one gap step. Empty `s` uses `--g`.
 
 | Hook | Operation |
 | --- | --- |
@@ -66,13 +66,19 @@ Choose the smallest container that preserves the content relationship. A wide co
 | `s="w"` | Allow wrapping |
 | `s="ct"` | Center children on the cross axis |
 | `s="sb"` | Distribute available main-axis space between children |
+| `s="xs"` | Tight gap |
+| `s="sm"` | Small gap |
+| `s="lg"` | Large gap |
+| `s="xl"` | Extra-large gap |
+
+`sm` and `lg` on `s` select a gap step. On `c` they select a measure. Do not put structural `--s` on a stack. The parent `[c]` already owns that rhythm.
 
 ```html
 <section>
   <div c="sm">
     <div s>
       <h2>Actions</h2>
-      <div s="h w sb">...</div>
+      <div s="h w sm">...</div>
     </div>
   </div>
 </section>
@@ -104,6 +110,8 @@ Use padding and margin shorthand when one declaration controls multiple sides. I
 - Internal breathing room belongs to component padding.
 - One exceptional visual offset belongs to project composition.
 
+`--l-bl-y` is the section rhythm. Marketing copies keep the shipped editorial interval. A product site sets a tighter `--l-bl-y` in its copied `tokens.css`. Do not add a density hook.
+
 Do not use child margins to repair a parent relationship. Avoid nesting stacks when one parent gap can express the same grouping.
 
 ## Responsive behavior
@@ -119,6 +127,8 @@ At small widths, preserve source order, reachable controls, readable measure, me
 - A responsive grid placed on `section > [c]`.
 - Containment applied to header or footer `[c]`.
 - Stack flags other than `ct` placed on `c`.
+- `c="ct"` treated as centered type.
+- More than one gap step on `s`.
 - Child margins used to create group rhythm.
 - `s="sb"` used without available space or a clear distribution job.
 - A new layout utility for one composition.

@@ -9,6 +9,8 @@ read_when: Using g, x, y, or o attributes; choosing responsive spans; using auto
 
 CRFT grid describes large, medium, and small states from the nearest ancestor `section > [c]` inline size. `styles/layers/grid.css` owns the live selectors. CSS owns the exact query thresholds and internal selector operators.
 
+`--l-cq-md` is the medium threshold. `--l-cq-lg` is the large threshold. The `@container` queries keep matching literals because custom properties are not reliable in container conditions. Project CSS that must match a grid state copies those token values. Do not invent a second pair of breakpoints.
+
 ## Boundary and fallback
 
 A responsive `[g]` must be a descendant of `section > [c]`, not the same element:

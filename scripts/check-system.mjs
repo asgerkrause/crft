@@ -37,6 +37,7 @@ const typeColors = ["fg", "mu", "ac", "sc"];
 const typeTransforms = ["uc", "lc", "cp", "no"];
 const typeMeasureRoles = [...typeRoles];
 const stackFlags = ["h", "w", "ct", "sb"];
+const stackGaps = ["xs", "sm", "lg", "xl"];
 const containerMeasures = ["sm", "lg"];
 const containerFlags = ["ct"];
 const clampValues = ["", "1", "2", "3", "4"];
@@ -138,7 +139,10 @@ for (const component of [".btn", ".crd", ".lnk"]) {
 }
 const documentedHooks = {
   "craft/type.md": ["t", "l"],
-  "craft/layout.md": ["c", "c=\"sm\"", "c=\"lg\"", "c=\"ct\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"", "container", ".img-w"],
+  "craft/layout.md": [
+    "c", "c=\"sm\"", "c=\"lg\"", "c=\"ct\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"",
+    "s=\"xs\"", "s=\"sm\"", "s=\"lg\"", "s=\"xl\"", "container", ".img-w",
+  ],
   "craft/grid.md": ["g", "x", "y", "o", "a-sm", "a", "a-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable"],
   "craft/motion.md": [".img-w", "data-scrub"],
@@ -284,6 +288,8 @@ const layoutHookSignals = {
   "c=\"ct\"": '&[c~="ct"] {',
   s: "[s] {", "s=\"h\"": '&[s~="h"] {', "s=\"w\"": '&[s~="w"] {',
   "s=\"ct\"": '&[s~="ct"] {', "s=\"sb\"": '&[s~="sb"] {',
+  "s=\"xs\"": '&[s~="xs"] {', "s=\"sm\"": '&[s~="sm"] {',
+  "s=\"lg\"": '&[s~="lg"] {', "s=\"xl\"": '&[s~="xl"] {',
   container: "section>[c] { container: container / inline-size",
   ".img-w": ".img-w {",
 };
@@ -363,8 +369,12 @@ for (const signal of [
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing invariant: ${signal}`);
 }
+const containerQueryMd = tokensCss.match(/--l-cq-md\s*:\s*([^;]+);/)?.[1].trim();
+const containerQueryLg = tokensCss.match(/--l-cq-lg\s*:\s*([^;]+);/)?.[1].trim();
+if (!containerQueryMd || !containerQueryLg) fail("tokens.css is missing named container-query thresholds");
 for (const signal of [
-  "@container container (width >=30rem)", "@container container (width >=60rem)",
+  `@container container (width >=${containerQueryMd})`,
+  `@container container (width >=${containerQueryLg})`,
   "grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr))", '[g]> :is([x="0"], [x$="-0"])',
   '[g]> :is([x="0"], [x^="0-"])', '[g]>[o*="-a-"]', '[g]>[o^="a"]',
 ]) {
@@ -490,11 +500,14 @@ const validateExampleMarkup = (html, path) => {
   for (const value of attributeValues(active, "s")) {
     const tokens = value.trim().split(/\s+/).filter(Boolean);
     const seen = new Set();
+    let gaps = 0;
     for (const token of tokens) {
-      if (!stackFlags.includes(token)) fail(`${path} uses invalid s flag ${token}`);
+      if (stackGaps.includes(token)) gaps += 1;
+      else if (!stackFlags.includes(token)) fail(`${path} uses invalid s flag ${token}`);
       if (seen.has(token)) fail(`${path} repeats s flag ${token}`);
       seen.add(token);
     }
+    if (gaps > 1) fail(`${path} uses more than one s gap`);
   }
   for (const value of attributeValues(active, "x")) {
     if (!value || !validResponsiveNumber(value, 12, true)) fail(`${path} uses invalid x value ${value || "(empty)"}`);
