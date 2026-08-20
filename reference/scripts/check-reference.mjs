@@ -19,7 +19,9 @@ const requiredSections = [
 ];
 const requiredMarkup = [
   't="h0"', 't="h1"', 't="h2"', 't="h3"', 't="h4"', 't="h5"', 't="h6"',
-  't="lg"', 't="bd"', 't="sm"', 'class="sr focusable"',
+  't="lg"', 't="bd"', 't="sm"',
+  't="lt"', 't="rg"', 't="bo"', 't="sa"', 't="se"', 't="mo"', 't="fb"', 't="dp"',
+  'class="sr focusable"',
   'g="8-4"', 'x="4-2"', 'x="0"', 'y="2-1"', 'o="f-a-l"',
   's="sm"',
   'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',

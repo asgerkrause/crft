@@ -8,20 +8,22 @@ Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical own
 
 [`CRAFT.md`](CRAFT.md) is the only complete task router. It routes to 16 focused topic owners under `craft/`.
 
-`styles/**` owns live values, formulas, breakpoints, selectors, skins, and motion. [`examples/`](examples/) contains runnable evidence, not API. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint and the skill to install globally.
+`styles/**` owns live values, formulas, breakpoints, selectors, skins, and motion. [`examples/`](examples/) contains runnable evidence, not API.
 
 CRFT has no dependency on another frontend doctrine. It is not a component library.
 
 ## Copy the CSS
 
+Ask which layers to copy. Do not dump the full tree onto an existing site.
+
 ```sh
-node scripts/copy-system.mjs --dry-run /absolute/path/to/project/styles
-node scripts/copy-system.mjs /absolute/path/to/project/styles
+node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project/styles
+node scripts/copy-system.mjs --layers tokens,type --fonts /absolute/path/to/project/styles
 ```
 
-The copier adds `global.css`, both fonts, and seven `layers/*.css` owners. It refuses conflicts and never merges or upgrades project-owned files.
+The copier writes requested `layers/*.css` files. It does not copy `global.css`. Fonts copy only with `--fonts`. It refuses conflicts and never merges or upgrades project-owned files. Put the printed prelude and `@import`s at the top of the project CSS file. Brand in the copied `tokens.css`. Keep product presentation in the project’s normal CSS owner.
 
-Load `styles/global.css` once. Brand in `styles/layers/tokens.css`. Keep product presentation in the project’s normal CSS owner.
+CRFT is the system. [`CRAFT.md`](CRAFT.md) is the task router. [`craft/`](craft/) holds topic owners. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint.
 
 ## Use
 

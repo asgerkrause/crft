@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { resolveAdoptRequest } from "./copy-system.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -18,8 +19,9 @@ const markedCodeNames = (document, marker, pattern) => {
 
 const preludeLayers = ["reset", "base", "tokens", "type", "layout", "grid", "motion", "utility"];
 const layerFiles = ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
-const files = layerFiles.map((layer) => `styles/layers/${layer}.css`);
-const copiedFiles = ["global.css", "sans.woff", "mono.woff", ...layerFiles.map((layer) => `layers/${layer}.css`)];
+const extraLayerFiles = ["fonts"];
+const sourceImportOrder = ["base", "tokens", "fonts", "type", "layout", "grid", "motion", "utility"];
+const files = [...layerFiles, ...extraLayerFiles].map((layer) => `styles/layers/${layer}.css`);
 const topicNames = [
   "brief", "composition", "html", "components", "forms", "tokens", "color", "type",
   "layout", "grid", "utilities", "motion", "adopt", "accessibility", "performance", "verify",
@@ -35,6 +37,8 @@ const privateProperties = [
 const typeRoles = ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
 const typeColors = ["fg", "mu", "ac", "sc"];
 const typeTransforms = ["uc", "lc", "cp", "no"];
+const typeWeightFlags = ["lt", "rg", "bo"];
+const typeFamilyFlags = ["sa", "se", "mo", "fb", "dp"];
 const typeMeasureRoles = [...typeRoles];
 const stackFlags = ["h", "w", "ct", "sb"];
 const stackGaps = ["xs", "sm", "lg", "xl"];
@@ -109,6 +113,14 @@ for (const migration of [
   "data-skin=\"accent\"",
   "No CRFT replacement",
   "provides no aliases",
+  "--layers",
+  "Do not default to the full tree on an existing site",
+  "does not copy `global.css`",
+  "Observed",
+  "--t-h1-fs",
+  "--fonts",
+  "lt`, `rg`, `bo",
+  "sa`, `se`, `mo",
 ]) {
   if (!adoption.includes(migration)) fail(`craft/adopt.md is missing breaking migration guidance: ${migration}`);
 }
@@ -166,25 +178,31 @@ else if (unique(indexedHooks).sort().join("|") !== expectedHooks.join("|")) {
 if (!skill.includes("Do not add a spacing, alignment, or display matrix")) {
   fail("skills/crft/SKILL.md does not reject a spacing matrix");
 }
+if (!skill.includes("--layers")) fail("skills/crft/SKILL.md does not route overlay copy through --layers");
+if (!skill.includes("inventory")) fail("skills/crft/SKILL.md does not require inventory before token fill");
+if (!skill.includes("Do not invent")) fail("skills/crft/SKILL.md does not refuse invented CRFT without a copy");
+if (!skill.includes("at most three")) fail("skills/crft/SKILL.md does not cap topic reads");
+if (!skill.includes("class on `section`")) fail("skills/crft/SKILL.md does not forbid class on section");
 
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
 const allCss = files.map((file) => source[file]).join("\n");
 const tokensCss = source["styles/layers/tokens.css"];
 const typeCss = source["styles/layers/type.css"];
+const fontsCss = source["styles/layers/fonts.css"];
 const layoutCss = source["styles/layers/layout.css"];
 const gridCss = source["styles/layers/grid.css"];
 const motionCss = source["styles/layers/motion.css"];
 const baseCss = source["styles/layers/base.css"];
 const utilityCss = source["styles/layers/utility.css"];
 
-const expectedImports = layerFiles.map((layer) => `layers/${layer}.css`);
+const expectedImports = sourceImportOrder.map((layer) => `layers/${layer}.css`);
 const expectedGlobal = [
   `@layer ${preludeLayers.join(", ")};`,
   "",
   ...expectedImports.map((file) => `@import "./${file}";`),
 ].join("\n");
-if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and seven imports");
+if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and eight imports");
 
 const actualCssFiles = readdirSync(new URL("styles/layers/", root))
   .filter((name) => name.endsWith(".css"))
@@ -197,15 +215,29 @@ files.forEach((file) => {
     if (declared.join("|") !== "reset|base") fail(`${file} must own @layer reset then @layer base`);
     return;
   }
+  if (file.endsWith("fonts.css")) {
+    if (declared.join("|") !== "type") fail(`${file} must own @layer type`);
+    return;
+  }
   const expected = file.match(/layers\/([a-z]+)\.css$/)?.[1];
   if (declared.length !== 1 || declared[0] !== expected) fail(`${file} must own only @layer ${expected}`);
 });
 
 const copyScript = read("scripts/copy-system.mjs");
-const manifestBlock = copyScript.match(/const files = \[([\s\S]*?)\];/);
-const copyManifest = manifestBlock ? [...manifestBlock[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]) : [];
-if (copyManifest.join("|") !== copiedFiles.join("|")) fail("copy-system.mjs manifest differs from the canonical CSS tree");
 if (/skill|inject|seess/i.test(copyScript)) fail("copy-system.mjs retains removed skill, inject, or product identifiers");
+const tokensOnly = resolveAdoptRequest({ layers: "tokens" });
+if (tokensOnly.manifest.join("|") !== "layers/tokens.css") fail("copy-system.mjs tokens profile is not tokens.css only");
+if (/global\.css/.test(tokensOnly.entryBlock)) fail("copy-system.mjs entry block still names global.css");
+const fullCopy = resolveAdoptRequest({ layers: "full" });
+if (fullCopy.manifest.includes("global.css") || fullCopy.manifest.includes("layers/fonts.css") || fullCopy.manifest.some((file) => file.endsWith(".woff"))) {
+  fail("copy-system.mjs full profile copies global.css, fonts, or woffs");
+}
+try {
+  resolveAdoptRequest({ layers: "grid" });
+  fail("copy-system.mjs allows grid without layout");
+} catch (error) {
+  if (!/requires/.test(error.message)) fail(`copy-system.mjs grid refusal is unclear: ${error.message}`);
+}
 
 const publicTokens = unique([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
 const publicTokenSet = new Set(publicTokens);
@@ -239,6 +271,7 @@ if (!tokenDocument.includes("styles/layers/tokens.css") || !/sole catalog and au
 }
 for (const signal of [
   "A section needs no ID by default.",
+  "Do not put a class on `section`.",
   "Add `aria-labelledby` only when the section should become a useful named `region` landmark.",
   "Do not style through IDs.",
 ]) {
@@ -254,8 +287,9 @@ for (const role of typeMeasureRoles) {
 }
 if (/body\s*\{[^}]*max-width/s.test(typeCss)) fail("type.css must keep body unconstrained");
 if (/font-variation-settings/i.test(typeCss)) fail("type.css must use registered font-weight instead of font-variation-settings");
+if (/@font-face/i.test(typeCss)) fail("type.css must not register faces; fonts.css owns @font-face");
 for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff"]]) {
-  const face = [...typeCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
+  const face = [...fontsCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
   if (!face || !face.includes(`src: url("../${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) {
     fail(`${family} must load ../${file} with a registered 100 900 font-weight range`);
   }
@@ -274,6 +308,18 @@ for (const flag of typeColors) {
 }
 for (const flag of typeTransforms) {
   if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t transform flag ${flag}`);
+}
+for (const flag of typeWeightFlags) {
+  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t weight flag ${flag}`);
+}
+for (const flag of typeFamilyFlags) {
+  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t family flag ${flag}`);
+}
+if (!hasCssSignal(typeCss, '[t~="bo"] { font-weight: var(--t-fw-bd)')) {
+  fail("type.css t flag bo must consume --t-fw-bd");
+}
+if (!hasCssSignal(typeCss, '[t~="fb"] { font-family: var(--t-ff-bd)')) {
+  fail("type.css t flag fb must consume --t-ff-bd");
 }
 for (const property of ["--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl"]) {
   if (!typeCss.includes(property)) fail(`type.css is missing private fluid property ${property}`);
@@ -353,6 +399,7 @@ for (const signal of [
 if (!hasCssSignal(typeCss, "[l] {") || !hasCssSignal(typeCss, '[l="4"]')) {
   fail("type.css is missing documented l");
 }
+if (/\[w=/.test(typeCss) || /\[f=/.test(typeCss)) fail("type.css must not keep w or f attributes; weight and family are t flags");
 for (const signal of [
   ".img-w[data-scrub]", "&[data-scrub='reverse']>img",
 ]) {
@@ -455,6 +502,9 @@ const validateIdentifiers = (html, path) => {
   for (const match of active.matchAll(/<(div|span)\b([^>]*)>/gi)) {
     if (/\saria-(?:label|labelledby)\s*=/i.test(match[2])) fail(`${path} names a generic ${match[1]} wrapper`);
   }
+  for (const match of active.matchAll(/<section\b([^>]*)>/gi)) {
+    if (/\sclass\s*=/i.test(match[1])) fail(`${path} puts a class on a section`);
+  }
 };
 const validateExampleMarkup = (html, path) => {
   const active = html.replace(/<!--[\s\S]*?-->/g, "");
@@ -475,16 +525,24 @@ const validateExampleMarkup = (html, path) => {
     let roles = 0;
     let colors = 0;
     let transforms = 0;
+    let weights = 0;
+    let families = 0;
     for (const token of tokens) {
       if (typeRoles.includes(token)) roles += 1;
       else if (typeColors.includes(token)) colors += 1;
       else if (typeTransforms.includes(token)) transforms += 1;
+      else if (typeWeightFlags.includes(token)) weights += 1;
+      else if (typeFamilyFlags.includes(token)) families += 1;
       else fail(`${path} uses unsupported t token ${token}`);
     }
     if (roles > 1) fail(`${path} uses more than one t role`);
     if (colors > 1) fail(`${path} uses more than one t color`);
     if (transforms > 1) fail(`${path} uses more than one t transform`);
+    if (weights > 1) fail(`${path} uses more than one t weight`);
+    if (families > 1) fail(`${path} uses more than one t family`);
   }
+  if (attributeValues(active, "w").length) fail(`${path} uses retired w attribute; put lt, rg, or bo on t`);
+  if (attributeValues(active, "f").length) fail(`${path} uses retired f attribute; put sa, se, mo, fb, or dp on t`);
   for (const value of attributeValues(active, "g")) {
     if (!["", "a", "a-sm", "a-lg", "sg"].includes(value) && !validResponsiveNumber(value, 12)) {
       fail(`${path} uses invalid g value ${value}`);

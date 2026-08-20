@@ -434,3 +434,51 @@ test("the skill must stay a thin router", (t) => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /no longer a thin router/);
 });
+
+test("adoption documents overlay copy", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/adopt.md", "Do not default to the full tree on an existing site", "Always copy every layer");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing breaking migration guidance: Do not default to the full tree on an existing site/);
+});
+
+test("type.css must not keep @font-face after the fonts extract", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/type.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /must not register faces/);
+});
+
+test("example markup rejects class on section", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<section id=\"orientation\">", "<section id=\"orientation\" class=\"page-block\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /puts a class on a section/);
+});
+
+test("an unsupported t weight flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 t=\"bold\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses unsupported t token bold/);
+});
+
+test("an unsupported t family flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<code t=\"mo\">", "<code t=\"comic\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses unsupported t token comic/);
+});
+
+test("retired w attribute fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 w=\"bd\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses retired w attribute/);
+});

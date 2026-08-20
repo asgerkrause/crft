@@ -24,7 +24,7 @@ Each directory contains:
 - `example.css`: one project-owned presentation;
 - `README.md`: purpose, decisions, checks, and limits.
 
-The examples assume copied CRFT CSS, one `styles/global.css` import, and project CSS in the project’s normal entrypoint. Their styles use an explicit `project` layer for portability. Projects may use another coherent owner.
+The examples assume the canonical CRFT tree loaded through `styles/global.css` in this repository. Consumer projects copy selected layers and put the prelude in their own CSS entry. Example styles use an explicit `project` layer for portability. Projects may use another coherent owner.
 
 ## Rules
 

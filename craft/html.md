@@ -38,7 +38,7 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 </body>
 ```
 
-Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default.
+Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default. Do not put a class on `section`. Section identity is `id` when it has a fragment, native or ARIA relationship, behavior, integration, or stable external identity job. `data-skin` and `data-accent` remain canvas hooks.
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 

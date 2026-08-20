@@ -52,7 +52,9 @@ Read every owner in **Start with**. Use the route above for any omitted topic th
 | CSS API or adoption | Affected CSS owner from the route, [tokens](craft/tokens.md), [adoption](craft/adopt.md), [verification](craft/verify.md) | Accessibility, performance |
 | Full CRFT system audit | [Verification](craft/verify.md), then the other 15 owners in route order | — |
 
-A complete product build reads its applicable workflow, not all 16 owners by default. A full CRFT system audit reads all owners.
+A complete product build reads its applicable workflow, not all 16 owners by default. Pick the row from the task. Do not default to page-build. A full CRFT system audit reads all owners.
+
+CRFT is the system. `CRAFT.md` is this router. `craft/` holds topic owners.
 
 ## Decisions
 
@@ -86,7 +88,7 @@ Attributes are the finite CRFT composition API. Classes are the override and use
 | Class | Override, recovery, or product use case: `.img-w`, `.sr`, `.btn`, `.crd` |
 | Token | Scales used in CSS. Never a markup matrix |
 
-Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu"`, `s="h sm ct"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
+Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu bo se"`, `s="h sm ct"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
 
 <!-- public-hook-index:start -->
 
@@ -107,7 +109,7 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 | `s="xl"` | layout | Extra-large stack gap |
 | `container` | layout | Named query context |
 | `.img-w` | layout | Media frame |
-| `t` | type | Role plus optional color and transform flags |
+| `t` | type | Role plus optional color, transform, weight, and family flags |
 | `l` | type | Line clamp |
 | `g` | grid | Parent column count |
 | `x` | grid | Child column span |

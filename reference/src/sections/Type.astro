@@ -20,17 +20,17 @@ const textRoles = [
 ] as const;
 
 const families = [
-  { token: "--t-ff-sa", label: "Sans text" },
-  { token: "--t-ff-se", label: "Serif text" },
-  { token: "--t-ff-mo", label: "Mono text" },
-  { token: "--t-ff-bd", label: "Body text" },
-  { token: "--t-ff-dp", label: "Display text" },
+  { flag: "sa", label: "Sans" },
+  { flag: "se", label: "Serif" },
+  { flag: "mo", label: "Mono" },
+  { flag: "fb", label: "Body family" },
+  { flag: "dp", label: "Display family" },
 ] as const;
 
 const weights = [
-  { token: "--t-fw-lt", label: "Light text" },
-  { token: "--t-fw-rg", label: "Regular text" },
-  { token: "--t-fw-bd", label: "Bold text" },
+  { flag: "lt", label: "Light" },
+  { flag: "rg", label: "Regular" },
+  { flag: "bo", label: "Bold" },
 ] as const;
 
 const colors = [
@@ -49,7 +49,7 @@ const transforms = [
 ---
 
 <Section {...sections.type}>
-  <p slot="summary" t="mu">Use semantic headings for document structure and visual roles only when presentation intentionally differs.</p>
+  <p slot="summary" t="mu">Use semantic headings for document structure and visual roles only when presentation intentionally differs. Weight and family are flags on <code>t</code>. Bold is <code>bo</code>, not the body role <code>bd</code>.</p>
 
   <Specimen id="headings" title="Headings">
     <div class="sg-type-list">
@@ -92,8 +92,8 @@ const transforms = [
     <div class="sg-type-list">
       {families.map((family) => (
         <article class="sg-type-row" s="h sb">
-          <code class="sg-chip token">{family.token}</code>
-          <p style={`font-family: var(${family.token})`}>{family.label}</p>
+          <code class="sg-chip attribute">t="{family.flag}"</code>
+          <p t={family.flag}>{family.label}</p>
         </article>
       ))}
     </div>
@@ -103,8 +103,8 @@ const transforms = [
     <div class="sg-type-list">
       {weights.map((weight) => (
         <article class="sg-type-row" s="h sb">
-          <code class="sg-chip token">{weight.token}</code>
-          <p t="h2" style={`font-weight: var(${weight.token})`}>{weight.label}</p>
+          <code class="sg-chip attribute">t="{weight.flag}"</code>
+          <p t={weight.flag}>{weight.label}</p>
         </article>
       ))}
     </div>
