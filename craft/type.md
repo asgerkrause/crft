@@ -2,7 +2,7 @@
 title: CRFT type
 status: canonical
 owner: type
-read_when: Choosing semantic or visual type roles, t flags, fonts, hierarchy, measure, wrapping, weight, or line clamp.
+read_when: Choosing semantic or visual type roles, t flags, fonts, family, hierarchy, measure, wrapping, weight, or line clamp.
 ---
 
 # Type
@@ -27,15 +27,23 @@ Public visual values are `h0`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `lg`, `bd`, a
 </section>
 ```
 
-`t` is a token list. Write one role, then optional color and transform flags. CSS matches each token with `~=`.
+`t` is a token list. Write one role, then optional color, transform, weight, and family flags. CSS matches each token with `~=`.
 
 | Kind | Tokens | Rule |
 | --- | --- | --- |
 | Role | `h0` `h1` `h2` `h3` `h4` `h5` `h6` `lg` `bd` `sm` | At most one. Native `h1`–`h6` need no role token. |
 | Color | `fg` `mu` `ac` `sc` | At most one. |
 | Transform | `uc` `lc` `cp` `no` | At most one. |
+| Weight | `lt` `rg` `bo` | At most one. Bold is `bo`, not `bd`. |
+| Family | `sa` `se` `mo` `fb` `dp` | At most one. |
 
-Do not put weight or family on `t`. `bd` is already the body role. A one-off serif or bold line is project CSS.
+`bd` is the body role. `bo` is bold. `fb` is the body family. Do not add attributes `w` or `f`. Wrap stays `s="w"`. First/last stay on `o`. Lowercase is `t~="lc"`. Line clamp stays `l`.
+
+```html
+<strong t="bo">Deadline</strong>
+<code t="mo">clamp()</code>
+<p t="sm mu bo se">One attribute.</p>
+```
 
 Do not add `t` when inherited body type or the native heading role is correct. A paragraph, list item, blockquote, table, or control inherits body type unless its presentation needs an explicit role.
 
@@ -80,9 +88,11 @@ CRFT balances headings and uses pretty wrapping for body roles. Verify long word
 
 ## Fonts and weight
 
-`styles/layers/type.css` registers bundled `sans.woff` and `mono.woff` as variable-weight families. Font-family tokens route sans, serif, monospace, body, and display roles.
+Font-family tokens route sans, serif, monospace, body, and display. Change a role’s default family through `--t-ff-bd` and `--t-ff-dp`. Use a `t` family flag when one run of text must differ from its role.
 
-Use normal `font-weight`. Do not use `font-variation-settings` for the registered weight axis. Change family or weight in project CSS when a role token is not enough.
+Use normal `font-weight`. Do not use `font-variation-settings` for the registered weight axis. Change a role’s default weight through `--t-*-fw`. Use a `t` weight flag when one run of text must differ from its role.
+
+Optional SNZ faces live in `styles/layers/fonts.css` and the copied woffs. `type.css` does not load them. Copy fonts only with `--fonts`. Without faces, `--t-ff-sa` falls through to `system-ui`.
 
 Projects may replace copied font files and family mappings when their license, formats, preload strategy, fallback metrics, and required weights are verified.
 
@@ -101,6 +111,9 @@ Store copy in natural case. Use a role token or a `t` transform flag for present
 - Changing private fluid calculation properties.
 - Using light weight for small operational text without rendered evidence.
 - Using `font-variation-settings` for weight.
+- Writing `t="bd"` for bold. Bold is `bo`.
+- Adding `w` or `f` attributes.
+- Using `l` for lowercase, `s="w"` as weight, or `o` first as family.
 
 ## Verify
 

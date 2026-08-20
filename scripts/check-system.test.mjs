@@ -202,6 +202,14 @@ test("fluid type calculation remains source-backed", (t) => {
   assert.match(result.stderr, /type\.css is missing fluid font-size clamping/);
 });
 
+test("native first-paint remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/base.css", ":where(a, button, label) {", ":where(a, button) {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /base\.css is missing native enhancement: :where\(a, button, label\) \{/);
+});
+
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/layers/layout.css", "    &[c~=\"sm\"] {\n", "    &[c~=\"narrow\"] {\n");
@@ -288,6 +296,30 @@ test("an unsupported type role fails", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /uses unsupported t token xs/);
+});
+
+test("an unsupported s flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h tight"');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses invalid s flag tight/);
+});
+
+test("more than one s gap fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h sm lg"');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses more than one s gap/);
+});
+
+test("named container-query tokens must match grid literals", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "--l-cq-md: 30rem;", "--l-cq-md: 32rem;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /grid\.css is missing invariant/);
 });
 
 test("an unsupported accent route fails", (t) => {
@@ -401,4 +433,52 @@ test("the skill must stay a thin router", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /no longer a thin router/);
+});
+
+test("adoption documents overlay copy", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/adopt.md", "Do not default to the full tree on an existing site", "Always copy every layer");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing breaking migration guidance: Do not default to the full tree on an existing site/);
+});
+
+test("type.css must not keep @font-face after the fonts extract", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/type.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /must not register faces/);
+});
+
+test("example markup rejects class on section", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<section id=\"orientation\">", "<section id=\"orientation\" class=\"page-block\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /puts a class on a section/);
+});
+
+test("an unsupported t weight flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 t=\"bold\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses unsupported t token bold/);
+});
+
+test("an unsupported t family flag fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<code t=\"mo\">", "<code t=\"comic\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses unsupported t token comic/);
+});
+
+test("retired w attribute fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 w=\"bd\">");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /uses retired w attribute/);
 });

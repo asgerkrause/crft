@@ -10,15 +10,16 @@ CRFT is not a component library. `.btn`, `.crd`, and `.lnk` are project conventi
 
 ## CSS ownership
 
-Import `styles/global.css` once. It declares:
+This repository loads `styles/global.css` once. Consumers copy selected `layers/*.css` files and put the printed prelude in their own CSS entry. They do not copy `global.css`.
 
 ```css
 @layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
-- `base.css`: `@layer reset` then `@layer base` — neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners.
+- `base.css`: `@layer reset` then `@layer base`. Neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners.
 - `tokens.css`: all public tokens, semantic colors, skins, scales, and reduced motion.
-- `type.css`: fonts, type roles, `t` flags, and `l`.
+- `fonts.css`: optional SNZ `@font-face` rules in `@layer type`.
+- `type.css`: type roles, `t` flags, and `l`.
 - `layout.css`: page spacing, `section > [c]`, stacks, and `.img-w`.
 - `grid.css`: `g`, `x`, `y`, and `o`.
 - `motion.css`: image scrub and view transitions.
@@ -63,7 +64,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 
 - Use `body > header` with navigation, `body > main > section`, and `body > footer` unless project truth requires another coherent structure.
 - Add an `id` only for a fragment, native or ARIA relationship, behavior, integration, or stable external identity. Keep every ID unique and non-empty.
-- Give a section a useful heading when its content has one. Add `aria-labelledby` only when the section should become a useful named region.
+- Give a section a useful heading when its content has one. Add `aria-labelledby` only when the section should become a useful named region. Do not put a class on `section`.
 - Place `c` only inside page landmarks. `section > [c]` establishes the named query context.
 - Keep DOM, reading, heading, and keyboard order meaningful without CSS.
 - Prefer semantic elements, native attributes, ARIA state, `:has()`, and bounded local structure before classes. Add a class only for a stable component, page scope, behavior, or visual role that structure cannot safely own.
@@ -90,11 +91,11 @@ Use `data-skin` for canvas context. Use `data-accent` to route `secondary`, `ter
 ## Adoption and quality
 
 ```sh
-node scripts/copy-system.mjs --dry-run <absolute-target>
-node scripts/copy-system.mjs <absolute-target>
+node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
+node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-The copier adds ten CSS-system files and refuses conflicts. It never merges or upgrades owned files.
+Ask which layers to copy. The copier writes those layer files and refuses conflicts. It never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional.
 
 Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks.
 

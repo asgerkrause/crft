@@ -102,9 +102,9 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 - Using a palette swatch where a semantic role exists.
 - Applying danger color to non-danger decoration.
 - Assuming one foreground works on every accent and scheme.
-- Using muted color without rendered contrast evidence.
+- Using muted color as body text. `--c-mu` is a secondary tone and is not a WCAG AA body-text role.
 - Communicating state through color alone.
 
 ## Verify
 
-Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast.
+Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Do not treat `--c-mu` as an AA body-text pair.

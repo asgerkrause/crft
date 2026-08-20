@@ -22,7 +22,6 @@
 
       a {
         color: var(--c-fg);
-        text-decoration: none;
 
         &:hover {
           color: var(--c-ac);
@@ -68,21 +67,10 @@
 
       :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
         width: 100%;
-        min-height: var(--invites-control-min-size);
-        padding-block: var(--p-sm);
-        padding-inline: var(--p-sm);
-        color: var(--c-fg);
-        background-color: var(--c-bg);
-        border: var(--b-wd) solid var(--c-bc);
-        border-radius: var(--r-sm);
 
         &:focus-visible {
           outline: max(2px, var(--b-wd)) solid var(--c-ac);
           outline-offset: 2px;
-        }
-
-        &[aria-invalid="true"] {
-          border-color: var(--c-fb-dn);
         }
       }
 

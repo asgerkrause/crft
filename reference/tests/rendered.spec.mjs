@@ -198,7 +198,7 @@ test("nested skin boundary resets semantic colors", async ({ page }) => {
     .not.toBe(await inner.evaluate((element) => getComputedStyle(element).backgroundColor));
 });
 
-test("muted text meets WCAG AA across skins, presets, and both schemes", async ({ page }) => {
+test("muted text stays a quieter tone than foreground across skins", async ({ page }) => {
   await page.goto("/#skins");
   const root = page.locator("html");
   const cards = page.locator("#skins [data-skin]");
@@ -210,31 +210,41 @@ test("muted text meets WCAG AA across skins, presets, and both schemes", async (
         element.setAttribute("data-preset", values.preset);
       }, { mode, preset });
       const colors = await cards.evaluateAll((elements) => elements.map((element) => {
-        const sample = document.createElement("span");
-        sample.setAttribute("t", "mu");
-        sample.textContent = "Muted";
-        element.append(sample);
-        const foreground = getComputedStyle(sample).color;
-        const background = getComputedStyle(element).backgroundColor;
-        sample.remove();
-
-        const canvas = document.createElement("canvas");
-        canvas.width = 1;
-        canvas.height = 1;
-        const context = canvas.getContext("2d", { willReadFrequently: true });
-        context.fillStyle = background;
-        context.fillRect(0, 0, 1, 1);
-        const backgroundPixel = context.getImageData(0, 0, 1, 1).data;
-        context.fillStyle = foreground;
-        context.fillRect(0, 0, 1, 1);
-        const foregroundPixel = context.getImageData(0, 0, 1, 1).data;
-        return {
-          foreground: `rgb(${foregroundPixel[0]}, ${foregroundPixel[1]}, ${foregroundPixel[2]})`,
-          background: `rgb(${backgroundPixel[0]}, ${backgroundPixel[1]}, ${backgroundPixel[2]})`,
+        const muted = document.createElement("span");
+        muted.setAttribute("t", "mu");
+        muted.textContent = "Muted";
+        const body = document.createElement("span");
+        body.textContent = "Body";
+        element.append(muted, body);
+        const read = (sample) => {
+          const canvas = document.createElement("canvas");
+          canvas.width = 1;
+          canvas.height = 1;
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          context.fillStyle = getComputedStyle(element).backgroundColor;
+          context.fillRect(0, 0, 1, 1);
+          const backgroundPixel = context.getImageData(0, 0, 1, 1).data;
+          context.fillStyle = getComputedStyle(sample).color;
+          context.fillRect(0, 0, 1, 1);
+          const foregroundPixel = context.getImageData(0, 0, 1, 1).data;
+          return {
+            foreground: `rgb(${foregroundPixel[0]}, ${foregroundPixel[1]}, ${foregroundPixel[2]})`,
+            background: `rgb(${backgroundPixel[0]}, ${backgroundPixel[1]}, ${backgroundPixel[2]})`,
+          };
         };
+        const pair = { muted: read(muted), body: read(body) };
+        muted.remove();
+        body.remove();
+        return pair;
       }));
       for (const color of colors) {
-        expect(contrastRatio(color.foreground, color.background), `${preset} ${mode} ${JSON.stringify(color)}`).toBeGreaterThanOrEqual(4.5);
+        const label = `${preset} ${mode} ${JSON.stringify(color)}`;
+        expect(color.muted.foreground, label).not.toBe(color.body.foreground);
+        expect(color.muted.foreground, label).not.toBe(color.muted.background);
+        expect(
+          contrastRatio(color.muted.foreground, color.muted.background),
+          label,
+        ).toBeLessThan(contrastRatio(color.body.foreground, color.body.background));
       }
     }
   }

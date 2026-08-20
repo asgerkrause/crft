@@ -361,18 +361,6 @@
     font-weight: var(--t-fw-bd);
   }
 
-  #forms :where(input, select, textarea),
-  #native button,
-  #native input,
-  #motion button {
-    min-block-size: 2.25rem;
-    padding: var(--g-sm) var(--g);
-    border: var(--b-wd) solid var(--sg-line);
-    border-radius: var(--r);
-    background: var(--c-bg);
-    color: var(--c-fg);
-  }
-
   #main-content {
     min-width: 0;
     padding-block-end: calc(var(--sg-dock-clearance) + var(--p-sm));
@@ -920,14 +908,6 @@
 
   #forms :where(input, select, textarea) {
     inline-size: 100%;
-  }
-
-  #forms :where(input, select, textarea):disabled {
-    color: var(--c-mu);
-  }
-
-  #forms :where(input, textarea)[aria-invalid="true"] {
-    border-color: var(--c-fb-dn);
   }
 
   #native-invalid-error {

@@ -38,7 +38,7 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 </body>
 ```
 
-Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default.
+Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default. Do not put a class on `section`. Section identity is `id` when it has a fragment, native or ARIA relationship, behavior, integration, or stable external identity job. `data-skin` and `data-accent` remain canvas hooks.
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 
@@ -70,9 +70,9 @@ A skip link justifies a target ID on `main`. An explicit `label[for]` justifies 
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Box and document    | Border-box sizing, zero default spacing, minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, text-size control, and font smoothing |
 | Active canvas       | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors                                                                                                                |
-| Controls            | Font, color, letter spacing, text transform, native button appearance, square default radius, vertical textarea resize, content-driven textarea field sizing, text selection, and touch manipulation              |
+| Controls            | Font, color, letter spacing, text transform, native button appearance, minimal field and button chrome, invalid border color, muted disabled text, vertical textarea resize, content-driven textarea field sizing, text selection, and touch manipulation |
 | Media and data      | Responsive images, video, canvas, and SVG; automatic image/video height; visible SVG overflow; collapsed table borders                                                                                            |
-| Lists and links     | List markers remain inside, navigation lists remove markers, and links inherit the current color                                                                                                                  |
+| Lists and links     | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color and surface transitions, and `aria-current="page"` is visible without color alone |
 | Interaction         | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, target scroll offset, and transparent tap highlight                                              |
 | Hidden and disabled | `[hidden]` cannot be overridden by ordinary display rules. Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
 | Dialog              | Unconstrained dialog size, inherited color, and semantic dark backdrop                                                                                                                                            |

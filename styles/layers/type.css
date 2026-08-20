@@ -1,21 +1,5 @@
-/* Type: fonts, roles, line clamp, and type flags. */
+/* Type: roles, line clamp, and type flags. Optional faces live in fonts.css. */
 @layer type {
-  @font-face {
-    font-family: "SNZ Sans";
-    src: url("../sans.woff") format("woff");
-    font-style: normal;
-    font-weight: 100 900;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: "SNZ Mono";
-    src: url("../mono.woff") format("woff");
-    font-style: normal;
-    font-weight: 100 900;
-    font-display: swap;
-  }
-
   :where(body, h1, h2, h3, h4, h5, h6, [t]) {
     --t-st: 0;
     --t-fs-lo: calc(var(--t-fs-min) * pow(var(--t-rt-min), var(--t-st)));
@@ -184,6 +168,38 @@
 
   [t~="cp"] {
     text-transform: capitalize;
+  }
+
+  [t~="lt"] {
+    font-weight: var(--t-fw-lt);
+  }
+
+  [t~="rg"] {
+    font-weight: var(--t-fw-rg);
+  }
+
+  [t~="bo"] {
+    font-weight: var(--t-fw-bd);
+  }
+
+  [t~="sa"] {
+    font-family: var(--t-ff-sa);
+  }
+
+  [t~="se"] {
+    font-family: var(--t-ff-se);
+  }
+
+  [t~="mo"] {
+    font-family: var(--t-ff-mo);
+  }
+
+  [t~="fb"] {
+    font-family: var(--t-ff-bd);
+  }
+
+  [t~="dp"] {
+    font-family: var(--t-ff-dp);
   }
 
   [l] {

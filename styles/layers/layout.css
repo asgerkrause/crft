@@ -74,6 +74,22 @@
     &[s~="sb"] {
       justify-content: space-between;
     }
+
+    &[s~="xs"] {
+      gap: var(--g-xs);
+    }
+
+    &[s~="sm"] {
+      gap: var(--g-sm);
+    }
+
+    &[s~="lg"] {
+      gap: var(--g-lg);
+    }
+
+    &[s~="xl"] {
+      gap: var(--g-xl);
+    }
   }
 
   .img-w {

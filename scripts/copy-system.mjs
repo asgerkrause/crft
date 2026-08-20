@@ -11,12 +11,24 @@ import { randomUUID } from "node:crypto";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const files = [
-  "global.css",
+const behaviorLayers = ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
+const layerDependencies = {
+  tokens: [],
+  type: ["tokens"],
+  layout: ["tokens"],
+  grid: ["tokens", "layout"],
+  base: ["tokens"],
+  motion: ["tokens", "layout"],
+  utility: [],
+};
+const importOrder = ["base", "tokens", "fonts", "type", "layout", "grid", "motion", "utility"];
+const cascadePrelude = "@layer reset, base, tokens, type, layout, grid, motion, utility, project;";
+const copyableSourceFiles = [
   "sans.woff",
   "mono.woff",
   "layers/base.css",
   "layers/tokens.css",
+  "layers/fonts.css",
   "layers/type.css",
   "layers/layout.css",
   "layers/grid.css",
@@ -24,16 +36,79 @@ const files = [
   "layers/utility.css",
 ];
 
-const usage = "Usage: node scripts/copy-system.mjs [--dry-run] <target>";
+const usage = "Usage: node scripts/copy-system.mjs [--dry-run] --layers <names> [--fonts] <target>";
+
+/**
+ * Resolve a consumer copy request to a file list and project-entry block.
+ * @param {{ layers?: unknown, fonts?: unknown }} input
+ */
+function resolveAdoptRequest(input) {
+  const { layers, fonts = false } = input ?? {};
+  if (typeof fonts !== "boolean") throw new TypeError("fonts must be a boolean");
+  const layerNames = parseLayerNames(layers);
+  for (const name of layerNames) {
+    const missing = (layerDependencies[name] ?? []).filter((need) => !layerNames.includes(need));
+    if (missing.length) {
+      throw new Error(`Layer ${name} requires ${missing.join(", ")}`);
+    }
+  }
+
+  const selected = new Set(layerNames);
+  if (fonts) selected.add("fonts");
+  const cssFiles = importOrder.filter((name) => selected.has(name)).map((name) => `layers/${name}.css`);
+  const manifest = fonts ? [...cssFiles, "sans.woff", "mono.woff"] : cssFiles;
+  return {
+    layerNames,
+    fonts,
+    manifest,
+    entryBlock: [
+      cascadePrelude,
+      "",
+      ...cssFiles.map((file) => `@import "./${file}";`),
+    ].join("\n"),
+  };
+}
+
+/** @param {unknown} layers */
+function parseLayerNames(layers) {
+  if (layers == null || layers === "") throw new Error(usage);
+  const raw = Array.isArray(layers) ? layers : String(layers).split(",");
+  const names = unique(raw.map((name) => String(name).trim()).filter(Boolean));
+  if (names.length === 1 && names[0] === "full") return [...behaviorLayers];
+  const unknown = names.filter((name) => !behaviorLayers.includes(name));
+  if (!names.length || unknown.length) {
+    throw new Error(`Unknown layer: ${unknown.join(", ") || "(empty)"}\n${usage}`);
+  }
+  return behaviorLayers.filter((name) => names.includes(name));
+}
+
+function unique(values) {
+  return [...new Set(values)];
+}
 
 function parseArguments(arguments_) {
   let dryRun = false;
+  let fonts = false;
+  let layers;
   const targets = [];
 
-  for (const argument of arguments_) {
+  for (let index = 0; index < arguments_.length; index += 1) {
+    const argument = arguments_[index];
     if (argument === "--dry-run") {
       if (dryRun) throw new Error(usage);
       dryRun = true;
+    } else if (argument === "--fonts") {
+      if (fonts) throw new Error(usage);
+      fonts = true;
+    } else if (argument === "--layers") {
+      if (layers != null) throw new Error(usage);
+      const value = arguments_[index + 1];
+      if (!value || value.startsWith("-")) throw new Error(usage);
+      layers = value;
+      index += 1;
+    } else if (argument.startsWith("--layers=")) {
+      if (layers != null) throw new Error(usage);
+      layers = argument.slice("--layers=".length);
     } else if (argument.startsWith("-")) {
       throw new Error(`${usage}\nUnknown option: ${argument}`);
     } else {
@@ -41,30 +116,48 @@ function parseArguments(arguments_) {
     }
   }
 
-  if (targets.length !== 1) throw new Error(usage);
-  return { dryRun, target: targets[0] };
+  if (layers == null || targets.length !== 1) throw new Error(usage);
+  return { dryRun, fonts, layers, target: targets[0] };
 }
 
 /**
- * Validate and copy through private staging, then atomically claim the empty target.
- * Under the documented stable-filesystem precondition, cleanup verifies the
- * recorded inode before recursively removing a process-created directory.
- * @param {{ sourceRoot: string, target: string, dryRun?: boolean, beforePublish?: (paths: { staging: string, target: string }) => Promise<void> | void }} input
+ * Validate and copy through private staging, then atomically claim the empty destinations.
+ * @param {{ sourceRoot: string, target: string, layers?: unknown, fonts?: boolean, dryRun?: boolean, beforePublish?: (paths: { staging: string, target: string }) => Promise<void> | void }} input
  */
 async function adoptSystem(input) {
-  const { sourceRoot, target: targetArgument, dryRun = false, beforePublish } = input ?? {};
+  const {
+    sourceRoot,
+    target: targetArgument,
+    layers,
+    fonts = false,
+    dryRun = false,
+    beforePublish,
+  } = input ?? {};
+  const adopted = resolveAdoptRequest({ layers, fonts });
   const repoRoot = await resolveSource(sourceRoot);
   const source = await hasSystemManifest(join(repoRoot, "styles")) ? join(repoRoot, "styles") : repoRoot;
   const destination = await resolveDestination(targetArgument, repoRoot, true);
-  await validateManifest(source, files);
-  await validateDestinationManifest(destination.target, files);
-  if (dryRun) return { sourceRoot: repoRoot, target: destination.target, dryRun: true };
+  await validateManifest(source, adopted.manifest);
+  await validateDestinationManifest(destination.target, adopted.manifest);
+  if (dryRun) {
+    return {
+      sourceRoot: repoRoot,
+      target: destination.target,
+      dryRun: true,
+      ...adopted,
+    };
+  }
 
-  await copyIntoTarget({ source, destination, manifest: files, beforePublish });
-  return { sourceRoot: repoRoot, target: destination.target, dryRun: false };
+  await copyIntoTarget({ source, destination, manifest: adopted.manifest, beforePublish });
+  return {
+    sourceRoot: repoRoot,
+    target: destination.target,
+    dryRun: false,
+    ...adopted,
+  };
 }
 
-/** Copy the system into an existing or new styles directory after a complete conflict preflight. */
+/** Copy the requested files into an existing or new styles directory after a complete conflict preflight. */
 async function copyIntoTarget({ source, destination, manifest, beforePublish }) {
   let staging = await createOwnedDirectory(join(destination.parent, `.crft-stage-${randomUUID()}`), "staging");
   let targetCreated;
@@ -223,18 +316,26 @@ async function copyManifest(source, staging, manifest) {
   }
 }
 
+function printPlan(result) {
+  console.log(`PLAN: copy ${result.manifest.length} files to ${result.target}`);
+  for (const file of result.manifest) console.log(`  ${join(result.target, file)}`);
+  console.log("PLAN: project entry");
+  console.log(result.entryBlock);
+  console.log("PLAN: no files created");
+}
+
 async function main() {
   try {
-    const { dryRun, target } = parseArguments(process.argv.slice(2));
+    const { dryRun, fonts, layers, target } = parseArguments(process.argv.slice(2));
     const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
-    const result = await adoptSystem({ sourceRoot, target, dryRun });
+    const result = await adoptSystem({ sourceRoot, target, layers, fonts, dryRun });
 
     if (dryRun) {
-      console.log(`PLAN: copy ${files.length} files to ${result.target}`);
-      for (const file of files) console.log(`  ${join(result.target, file)}`);
-      console.log("PLAN: no files created");
+      printPlan(result);
     } else {
-      console.log(`COPIED: ${files.length} files to ${result.target}`);
+      console.log(`COPIED: ${result.manifest.length} files to ${result.target}`);
+      console.log("ENTRY:");
+      console.log(result.entryBlock);
     }
   } catch (error) {
     console.error(`ERROR: ${error.message}`);
@@ -242,6 +343,11 @@ async function main() {
   }
 }
 
-export { adoptSystem, files };
+export {
+  adoptSystem,
+  behaviorLayers,
+  copyableSourceFiles,
+  resolveAdoptRequest,
+};
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main();
