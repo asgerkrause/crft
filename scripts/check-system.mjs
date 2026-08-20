@@ -11,6 +11,17 @@ const unique = (values) => [...new Set(values)];
 const stripCssComments = (value) => value.replace(/\/\*[\s\S]*?\*\//g, "");
 const normalizeCss = (value) => value.replace(/\s+/g, "");
 const hasCssSignal = (css, signal) => normalizeCss(css).includes(normalizeCss(signal));
+const assertWeightVariationPair = (css, path) => {
+  const active = stripCssComments(css);
+  for (const match of active.matchAll(/font-weight:\s*([^;]+);/g)) {
+    const value = match[1].trim();
+    if (/^\d+\s+\d+$/.test(value)) continue;
+    const window = active.slice(match.index, match.index + match[0].length + 120);
+    if (!hasCssSignal(window, `font-variation-settings: "wght" ${value}`)) {
+      fail(`${path} font-weight ${value} must pair font-variation-settings "wght"`);
+    }
+  }
+};
 const markedCodeNames = (document, marker, pattern) => {
   const block = document.match(new RegExp(`<!-- ${marker}:start -->([\\s\\S]*?)<!-- ${marker}:end -->`));
   if (!block) return undefined;
@@ -286,7 +297,14 @@ for (const role of typeMeasureRoles) {
   }
 }
 if (/body\s*\{[^}]*max-width/s.test(typeCss)) fail("type.css must keep body unconstrained");
-if (/font-variation-settings/i.test(typeCss)) fail("type.css must use registered font-weight instead of font-variation-settings");
+assertWeightVariationPair(typeCss, "styles/layers/type.css");
+assertWeightVariationPair(baseCss, "styles/layers/base.css");
+if (!hasCssSignal(typeCss, 'font-variation-settings: "wght" var(--t-fw-bd)')) {
+  fail("type.css must pair registered font-weight with the wght axis");
+}
+if (!docsByPath["craft/type.md"].includes('font-variation-settings: "wght"') || !docsByPath["AGENTS.md"].includes('font-variation-settings: "wght"')) {
+  fail("type guidance must keep font-weight paired with font-variation-settings wght");
+}
 if (/@font-face/i.test(typeCss)) fail("type.css must not register faces; fonts.css owns @font-face");
 for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff"]]) {
   const face = [...fontsCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
@@ -315,7 +333,7 @@ for (const flag of typeWeightFlags) {
 for (const flag of typeFamilyFlags) {
   if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t family flag ${flag}`);
 }
-if (!hasCssSignal(typeCss, '[t~="bo"] { font-weight: var(--t-fw-bd)')) {
+if (!hasCssSignal(typeCss, '[t~="bo"] { font-weight: var(--t-fw-bd); font-variation-settings: "wght" var(--t-fw-bd)')) {
   fail("type.css t flag bo must consume --t-fw-bd");
 }
 if (!hasCssSignal(typeCss, '[t~="fb"] { font-family: var(--t-ff-bd)')) {
@@ -388,7 +406,9 @@ if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss,
 }
 for (const signal of [
   "@supports selector(details::details-content)", "corner-shape: squircle",
-  ':where(a) {', ':where(a, button, label) {', 'transition-duration: var(--m-td)',
+  ':where(a) {', ':where(a, button, label) {',
+  "transition-property: color, background, border, transform, opacity, font-variation-settings",
+  'transition-duration: var(--m-td)',
   '[aria-current="page"]',
   "list-style-position: outside",
   "border: var(--b-wd) solid var(--c-bc)",
@@ -588,6 +608,7 @@ const validateExampleMarkup = (html, path) => {
 const validateExampleCss = (css, path) => {
   const active = stripCssComments(css);
   if (!/^\s*@layer\s+project\s*\{/.test(active)) fail(`${path} must declare its chosen project layer`);
+  assertWeightVariationPair(active, path);
   for (const hook of retiredExampleHooks) {
     if (new RegExp(`\\.${hook}(?![a-z0-9-])`, "i").test(active)) fail(`${path} retains unnecessary example selector .${hook}`);
   }

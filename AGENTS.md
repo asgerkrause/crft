@@ -72,7 +72,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 - Use tokens by semantic job. Keep local literals and formulas local.
 - Use padding and margin shorthand when one declaration controls multiple sides.
 - Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` for one physical side.
-- Use normal `font-weight`, not `font-variation-settings`.
+- Set `font-weight` and `font-variation-settings: "wght"` to the same token. Do not set one without the other.
 - Override a type role’s `--t-*-mw` token instead of setting heading or text-role `max-width`.
 
 ## Grid and color

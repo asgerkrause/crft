@@ -90,7 +90,7 @@ CRFT balances headings and uses pretty wrapping for body roles. Verify long word
 
 Font-family tokens route sans, serif, monospace, body, and display. Change a role’s default family through `--t-ff-bd` and `--t-ff-dp`. Use a `t` family flag when one run of text must differ from its role.
 
-Use normal `font-weight`. Do not use `font-variation-settings` for the registered weight axis. Change a role’s default weight through `--t-*-fw`. Use a `t` weight flag when one run of text must differ from its role.
+Set `font-weight` and `font-variation-settings: "wght"` to the same token. `font-weight` is the fallback. The `wght` axis interpolates on variable faces and on `a`, `button`, and `label` transitions. Do not set one without the other. Change a role’s default weight through `--t-*-fw`. Use a `t` weight flag when one run of text must differ from its role.
 
 Optional SNZ faces live in `styles/layers/fonts.css` and the copied woffs. `type.css` does not load them. Copy fonts only with `--fonts`. Without faces, `--t-ff-sa` falls through to `system-ui`.
 
@@ -110,11 +110,11 @@ Store copy in natural case. Use a role token or a `t` transform flag for present
 - Setting direct `max-width` on a role element.
 - Changing private fluid calculation properties.
 - Using light weight for small operational text without rendered evidence.
-- Using `font-variation-settings` for weight.
+- Setting `font-weight` without the matching `font-variation-settings: "wght"` token, or variation without `font-weight`.
 - Writing `t="bd"` for bold. Bold is `bo`.
 - Adding `w` or `f` attributes.
 - Using `l` for lowercase, `s="w"` as weight, or `o` first as family.
 
 ## Verify
 
-Inspect semantic headings and every `t` value. Test native inheritance, semantic headings with visual overrides, real long and short content, role measure, scoped token overrides, fallback fonts, loaded weights, zoom, text resize, localization, and wrapping without clipping. Confirm `body` remains unconstrained and each role consumes its matching measure token once.
+Inspect semantic headings and every `t` value. Test native inheritance, semantic headings with visual overrides, real long and short content, role measure, scoped token overrides, fallback fonts, loaded weights, zoom, text resize, localization, and wrapping without clipping. Confirm `body` remains unconstrained and each role consumes its matching measure token once. Confirm each weight sets `font-weight` and `font-variation-settings: "wght"` to the same token.

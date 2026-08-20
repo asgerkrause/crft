@@ -443,6 +443,32 @@ test("adoption documents overlay copy", (t) => {
   assert.match(result.stderr, /missing breaking migration guidance: Do not default to the full tree on an existing site/);
 });
 
+test("type.css font-weight must pair the wght axis", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "styles/layers/type.css",
+    "    font-weight: var(--t-bd-fw);\n    font-variation-settings: \"wght\" var(--t-bd-fw);",
+    "    font-weight: var(--t-bd-fw);",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /must pair font-variation-settings "wght"/);
+});
+
+test("link transitions must include font-variation-settings", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "styles/layers/base.css",
+    "transition-property: color, background, border, transform, opacity, font-variation-settings;",
+    "transition-property: color, background, border, transform, opacity;",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing native enhancement: transition-property: color, background, border, transform, opacity, font-variation-settings/);
+});
+
 test("type.css must not keep @font-face after the fonts extract", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/layers/type.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");

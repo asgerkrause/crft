@@ -134,6 +134,7 @@
     summary {
       cursor: pointer;
       font-weight: var(--t-fw-bd);
+      font-variation-settings: "wght" var(--t-fw-bd);
 
       &:focus-visible {
         outline: max(2px, var(--b-wd)) solid var(--c-ac);

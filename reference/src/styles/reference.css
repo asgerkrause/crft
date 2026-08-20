@@ -97,6 +97,7 @@
     background: var(--c-bg);
     color: var(--c-fg);
     font-weight: var(--t-fw-bd);
+    font-variation-settings: "wght" var(--t-fw-bd);
     text-decoration: none;
     translate: 0 -180%;
   }
@@ -236,7 +237,8 @@
   .sg-controls-trigger {
     color: var(--sg-muted);
     font-weight: var(--t-fw-rg);
-    transition-property: color, font-weight;
+    font-variation-settings: "wght" var(--t-fw-rg);
+    transition-property: color, font-weight, font-variation-settings;
     transition-duration: var(--m-td-f);
     transition-timing-function: var(--m-tf-o);
   }
@@ -359,6 +361,7 @@
 
   .sg-config-options label:has(input:checked) {
     font-weight: var(--t-fw-bd);
+    font-variation-settings: "wght" var(--t-fw-bd);
   }
 
   #main-content {
@@ -943,6 +946,7 @@
   #native summary {
     cursor: pointer;
     font-weight: var(--t-fw-bd);
+    font-variation-settings: "wght" var(--t-fw-bd);
   }
 
   #native details p {

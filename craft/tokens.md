@@ -107,7 +107,7 @@ The names between the index markers must exactly match declarations in `styles/l
 | --- | --- |
 | `--t-ff-sa`, `--t-ff-se`, `--t-ff-mo` | Sans, serif, and monospace font families |
 | `--t-ff-bd`, `--t-ff-dp` | Body and display font-family roles |
-| `--t-fw-lt`, `--t-fw-rg`, `--t-fw-bd` | Light, regular, and bold font-weight roles |
+| `--t-fw-lt`, `--t-fw-rg`, `--t-fw-bd` | Light, regular, and bold weight roles for `font-weight` and the `wght` axis |
 | `--t-fs-min`, `--t-fs-max` | Minimum and maximum body-size foundations for fluid type |
 | `--t-rt-min`, `--t-rt-max` | Minimum and maximum ratios for the fluid type scale |
 

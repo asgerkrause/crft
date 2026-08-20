@@ -50,6 +50,7 @@
         letter-spacing: 0.14em;
         color: var(--c-fg);
         font-weight: var(--t-fw-bd);
+        font-variation-settings: "wght" var(--t-fw-bd);
       }
     }
 
@@ -72,6 +73,7 @@
         h1 {
           font-family: var(--t-ff-se);
           font-weight: var(--t-fw-bd);
+          font-variation-settings: "wght" var(--t-fw-bd);
         }
       }
 
@@ -83,6 +85,7 @@
 
         h2 {
           font-weight: var(--t-fw-bd);
+          font-variation-settings: "wght" var(--t-fw-bd);
         }
       }
 
@@ -110,6 +113,7 @@
       border-radius: var(--r);
       font-family: var(--t-ff-bd);
       font-weight: var(--t-fw-bd);
+      font-variation-settings: "wght" var(--t-fw-bd);
       letter-spacing: 0.04em;
       text-decoration: none;
       text-transform: uppercase;
@@ -158,6 +162,7 @@
       a {
         color: var(--c-ac);
         font-weight: var(--t-fw-bd);
+        font-variation-settings: "wght" var(--t-fw-bd);
         text-decoration-thickness: 1px;
         text-underline-offset: 0.18em;
 
