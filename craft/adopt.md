@@ -7,11 +7,36 @@ read_when: Copying CRFT, choosing a CSS owner, branding a copy, extending projec
 
 # Adoption and extension
 
-CRFT CSS is dependency-free copied source. The receiving project owns its copy. CRFT does not merge or automatically upgrade owned files.
+CRFT can guide a project without becoming its stylesheet. Every adopted result is project-owned. CRFT does not merge or automatically upgrade owned files.
 
-## Copy
+## Choose a mode
 
-Ask which layers to copy. Do not default to the full tree on an existing site.
+| Mode | Result | CRFT public hooks |
+| --- | --- | --- |
+| Strategy only | Semantic HTML and project CSS informed by CRFT guidance; no CRFT files | None |
+| Local extraction | Only useful declarations, tokens, or relationships moved into an existing project stylesheet | None |
+| Selected complete layers | Explicit layer files and their declared dependencies, optionally copied by the script | Only retained live hooks from copied layers |
+| Explicit full adoption | Every behavior layer requested with `--layers full` | Complete documented reference API |
+
+Choose the least complete mode for each affected subsystem. A project may combine local extraction for one subsystem with selected complete layers for another; extraction itself grants no CRFT hooks. Do not infer copying from an adoption request. Do not default to the full tree on an existing site. Projects may later remove or simplify any subsystem they own; after simplification, live CSS—not the file name—defines the retained contract.
+
+## Extract into an existing stylesheet
+
+Local extraction is a project refactor, not a partial CRFT API:
+
+1. inventory the semantic jobs, relationships, selectors, fallbacks, and browser constraints the project actually needs;
+2. move only those declarations into the project’s existing CSS owner and naming strategy;
+3. keep a calculated relationship only when the project uses that relationship;
+4. delete unused tokens, scale members, ratios, formulas, private state, selectors, and dependencies;
+5. verify the retained semantics, accessibility primitives, unsupported-feature fallbacks, and project behavior.
+
+If a project needs static type, define only its project-owned semantic type sizes and roles. Do not preserve `--t-fs-min`, `--t-fs-max`, `--t-rt-min`, `--t-rt-max`, `--t-st`, `--t-fs-lo`, `--t-fs-hi`, `--t-fs-sl`, or viewport dependencies solely to resemble the reference fluid scale. Apply the same deletion test to spacing, gap, padding, radius, color, layout, grid, and motion families.
+
+Extracted CRFT names do not grant CRFT markup hooks. Keep the result clearly project-owned. If that subsystem needs a CRFT hook, adopt the complete layer that owns it; other subsystems may remain local extractions.
+
+## Copy complete layers
+
+The copier is an optional whole-layer convenience for selected complete layers or explicit full adoption. Ask which layers to copy only after the project chooses one of those modes.
 
 ```sh
 node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project/styles
@@ -52,13 +77,13 @@ Canonical `styles/global.css` declares this order:
 | `motion.css` | Image scrub and view transitions |
 | `utility.css` | Finite public utilities |
 
-A copied layer is the only permission to use its hooks. Tokens-only may use `var(--*)`, `data-skin`, and `data-accent`. Do not use `t` or `l` without `type.css`. Do not use `g` without `layout.css` and `grid.css`.
+A copied layer permits only the hooks retained in its live project-owned contents; the file name alone is not proof after simplification. Tokens-only may use retained public tokens, `data-skin`, and `data-accent`. Do not use `t` or `l` without their live `type.css` selectors. Do not use `g` without the live layout boundary and grid selectors.
 
-A hand-copied `tokens.css` used as a brand sheet is a local extract. Do not call it CRFT and do not use CRFT markup hooks.
+A token subset placed in an existing stylesheet is a local extraction. Keep only semantic jobs and relationships the project uses; do not call it a copied CRFT layer or use CRFT markup hooks on that basis.
 
 Do not add a spacing, alignment, border, or wrap utility matrix. Attributes are the finite composition API. Classes are the override and use-case layer. Unrelated markup that needs a stable operation still has to pass the admission tests in [`utilities.md`](utilities.md).
 
-Put a shared rule in the first owner that fully explains it. Brand values belong in copied `tokens.css`. Edit another copied owner only when the project intentionally changes that system behavior.
+Put a shared rule in the first owner that fully explains it. Brand values belong in a copied complete `tokens.css` or the project’s existing token owner for local extraction. Edit another copied owner only when the project intentionally changes that system behavior.
 
 Keep product presentation in the project’s normal CSS owner and layer structure. CRFT does not require `project.css`, a branded directory, or a special component registry.
 
@@ -81,7 +106,7 @@ Prefer deletion, reuse, and direct CSS over wrappers, flags, helper classes, Jav
 
 ## Breaking replacement
 
-CRFT does not support an in-place upgrade from the earlier frontend package. Preserve the old project CSS, copy CRFT into an empty target, and migrate one complete slice at a time. Do not load the old and new canonical layers together.
+CRFT provides no in-place compatibility upgrade from the earlier frontend package. Preserve the old project CSS and migrate one complete slice at a time. For selected complete layers or full adoption, copy into an empty target and do not load old and new canonical layers together. Strategy-only and local-extraction work stays in the project’s existing owners.
 
 | Earlier contract | CRFT contract or action |
 | --- | --- |
@@ -99,7 +124,7 @@ CRFT does not support an in-place upgrade from the earlier frontend package. Pre
 | `.f-*` | `t` family flags `sa`, `se`, `mo`, `fb`, `dp` |
 | `.w-*` | `t` weight flags `lt`, `rg`, `bo`. Bold is `bo`, not `bd`. |
 | `data-clamp` | `l`; empty `l` is three lines |
-| `--t-h0-fs`–`--t-sm-fs` | No direct replacement; use the native or explicit `t` role and fluid type foundations |
+| `--t-h0-fs`–`--t-sm-fs` | No required CRFT replacement; adopt the complete fluid `type` layer only when that strategy fits, otherwise use project-owned static semantic type tokens |
 | `--f-*` font families | `--t-ff-*` |
 | `--w-*` font weights | `--t-fw-*` |
 | `--h-h` | `--l-hh` |
@@ -130,7 +155,7 @@ Do not overwrite consumer-owned files with the copy script.
 
 Container queries are required for a responsive grid. Match `--l-cq-md` and `--l-cq-lg` when project CSS must share a grid state. Do not put custom properties in `@container` conditions.
 
-`--l-bl-y` is the section rhythm. Keep the copied editorial interval for marketing pages. Set a tighter value in the copied `tokens.css` for a product interface. That is a brand override, not a new hook.
+In the complete reference, `--l-bl-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
 
 Scrub, view transitions, squircle corners, and disclosure animation stay optional.
 
@@ -148,18 +173,19 @@ Use the same replacement for `tertiary`. The new boundary routes both the canvas
 
 ## Migrate existing CSS
 
-1. Ask which layers to copy. Copy those files without deleting or disabling existing CSS.
-2. Inventory the site before writing `tokens.css`.
-3. Classify each rule as native behavior, existing public CRFT API, project-owned CSS, or unproven shared-system candidate.
-4. Migrate one complete user-visible slice, including states and responsive behavior.
-5. Verify semantics, source order, keyboard behavior, contrast, motion, and large-medium-small rendering.
-6. Search every consumer before deleting replaced selectors, variables, files, or generated CSS.
+1. Choose strategy only, local extraction, selected complete layers, or explicit full adoption from observed project needs.
+2. Inventory the site before editing project tokens or copied `tokens.css`.
+3. For a whole-layer mode, name every layer and dependency explicitly, then copy without deleting or disabling existing CSS. For local extraction, edit the existing project owner instead.
+4. Classify each rule as native behavior, adopted complete-layer API, project-owned CSS, or unproven shared-system candidate.
+5. Migrate one complete user-visible slice, including states and responsive behavior.
+6. Verify semantics, source order, keyboard behavior, contrast, motion, and large-medium-small rendering.
+7. Search every consumer before deleting replaced selectors, variables, files, or generated CSS.
 
 A direct product component rule is not a failed migration. Preserve the smallest project-owned rule when CRFT does not own that presentation.
 
 ### Inventory
 
-Do not patch copied `tokens.css` until this table exists. Every row needs a source. Missing evidence is `gap`, not a guessed value.
+Do not patch copied `tokens.css` or a project token owner for local extraction until this table exists. Every row needs a source. Missing evidence is `gap`, not a guessed value.
 
 | Observed | Source | Viewport or state | CRFT job | Action |
 | --- | --- | --- | --- | --- |
@@ -168,17 +194,19 @@ Do not patch copied `tokens.css` until this table exists. Every row needs a sour
 | body color | computed + `body` rule | light | `--c-fg` | map |
 | `.card { padding: 13px }` | one component | — | none | local |
 
-Actions: `map` writes the copied token. `scope` overrides at a boundary. `local` stays in project CSS. `gap` has no evidence.
+Actions: `map` writes the selected token owner. `scope` overrides at a boundary. `local` stays as a direct project rule. `gap` has no evidence.
 
 Collect from source CSS always: custom properties, headings, body, colors, spacing clusters, font stacks, class grammar. Collect computed styles from the running page when a URL exists, at two widths. If the site cannot be rendered, mark computed cells `gap`.
 
-There is no `--t-h1-fs`. Heading size is `--t-fs-min`, `--t-fs-max`, `--t-rt-min`, and `--t-rt-max`. Do not reverse-engineer `--t-st`. That property is private. Weight flags on `t` are `lt`, `rg`, and `bo` only. Bold is `bo`, not `bd`.
+In the complete reference `type` layer, there is no `--t-h1-fs`; heading size uses `--t-fs-min`, `--t-fs-max`, `--t-rt-min`, and `--t-rt-max`. Do not reverse-engineer `--t-st`; it is private. A local static extraction should instead define only project-owned semantic type sizes and omit the fluid foundations and private state. Weight flags on the complete `t` API are `lt`, `rg`, and `bo` only. Bold is `bo`, not `bd`.
 
 Show the table before the patch. If two heading treatments fight for one token, stop and ask.
 
 ## Common mistakes
 
+- Treating the copier as the required adoption path.
 - Copying the full tree onto an existing site without asking.
+- Preserving an unused subsystem, token family, ratio, formula, or private property only to resemble CRFT.
 - Copying `global.css` into the project.
 - Copying into a directory with conflicting destination files.
 - Editing CRFT source when only one product needs a rule.
@@ -186,8 +214,8 @@ Show the table before the patch. If two heading treatments fight for one token, 
 - Filling tokens from one computed `h1`.
 - Treating the copied system as an automatically managed dependency.
 - Blindly replacing a project-owned copy during an update.
-- Adding another token, utility, or component dialect beside CRFT.
+- Adding another token, utility, or component dialect beside an adopted complete layer without a project need.
 
 ## Verify
 
-Run the dry run for the requested layers. Copy into a disposable target and compare those files byte-for-byte. Confirm `global.css` was not added, the project entry has the prelude and imports, brand values have one owner, product CSS remains project-owned, and no source file was merged or overwritten.
+For strategy-only work, confirm no CRFT files or hooks were introduced. For local extraction, confirm every retained declaration has an observed project job, no absent complete-layer hook is used, and unused families, formulas, private state, selectors, and dependencies are gone. For whole-layer copy, run the dry run for the requested layers, copy into a disposable target, and compare those files byte-for-byte. Confirm `global.css` was not added, the project entry has the prelude and imports, brand values have one owner, product CSS remains project-owned, and no source file was merged or overwritten.

@@ -86,6 +86,95 @@ test("the token owner routes live authority to CSS", (t) => {
   assert.match(result.stderr, /must route live token values and formulas/);
 });
 
+test("retired holistic authority claims are rejected", (t) => {
+  for (const claim of [
+    "CRFT is the system.",
+    "CRFT is design authority.",
+    "CRFT provides product strategy.",
+    "CRFT governs design judgment.",
+    "This guide owns product intent.",
+    "CRFT owns product strategy, not just CSS.",
+  ]) {
+    const root = makeFixture(t);
+    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    const result = runCheck(root);
+    assert.equal(result.status, 1, claim);
+    assert.match(result.stderr, /retired CRFT strategy claim/, claim);
+  }
+});
+
+test("explicit authority denials remain allowed", (t) => {
+  for (const claim of [
+    "CRFT provides no product strategy.",
+    "CRFT supplies CSS without design judgment.",
+  ]) {
+    const root = makeFixture(t);
+    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    const result = runCheck(root);
+    assert.equal(result.status, 0, claim);
+  }
+});
+
+test("mandatory copier and fluid-type claims are rejected", (t) => {
+  for (const claim of ["The copier is required.", "Fluid type is mandatory."]) {
+    const root = makeFixture(t);
+    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    const result = runCheck(root);
+    assert.equal(result.status, 1, claim);
+    assert.match(result.stderr, /retired CRFT strategy claim/, claim);
+  }
+});
+
+test("adoption modes remain explicit", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/adopt.md", "| Local extraction |", "| Project subset |");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /adoption modes differ from the canonical four-mode contract/);
+});
+
+test("local extraction grants no CRFT hooks", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "craft/adopt.md",
+    "| Local extraction | Only useful declarations, tokens, or relationships moved into an existing project stylesheet | None |",
+    "| Local extraction | Only useful declarations, tokens, or relationships moved into an existing project stylesheet | Complete API |",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Local extraction must expose no CRFT hooks/);
+});
+
+test("selected layers expose retained live hooks only", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/adopt.md", "Only retained live hooks from copied layers", "Every documented hook");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /selected layers must expose retained live hooks only/);
+});
+
+test("fluid type remains optional for projects", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/type.md", "Fluid type is a reference strategy, not a project requirement", "Fluid type is required");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /craft\/type\.md must keep fluid type optional for projects/);
+});
+
+test("direct CRFT guidance rejects product authority", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "skills/crft/SKILL.md",
+    "It does not supply product strategy, design judgment, taste, or product accessibility acceptance.",
+    "It supplies product strategy, design judgment, taste, and product accessibility acceptance.",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /retired CRFT strategy claim/);
+});
+
 test("the public token index rejects duplicate names", (t) => {
   const root = makeFixture(t);
   replace(root, "craft/tokens.md", "| `--l-hh` |", "| `--l-hh`, `--l-hh` |");

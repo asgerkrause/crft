@@ -7,7 +7,7 @@ read_when: Building or accepting semantics, keyboard behavior, focus, accessible
 
 # Accessibility
 
-Accessibility is an acceptance boundary for every CRFT interface. Semantic implementation belongs to the relevant topic owner. This file owns the user-facing requirements and evidence.
+Accessibility is an implementation and verification boundary for CRFT guidance and adopted CSS. Semantic implementation belongs to the relevant topic owner. This file documents reusable primitives, fallbacks, and evidence prompts; the product owns its requirements, target standards, assistive-technology scope, and acceptance.
 
 ## Native first
 
@@ -83,4 +83,4 @@ Use `.sr` for content that must remain available to assistive technology but not
 
 ## Verify
 
-Complete the primary task with keyboard only. Inspect the accessibility tree and names. Exercise every applicable state and overlay. Test zoom, text resize, narrow reflow, both color schemes, every skin, reduced motion, and unsupported features. Use target assistive technologies when the product scope requires them. Record untested combinations as not verified, not passed.
+Complete the primary task with keyboard only. Inspect the accessibility tree and names. Exercise every applicable state and overlay. Test zoom, text resize, narrow reflow, both color schemes, every skin, reduced motion, and unsupported features. Product authority selects target standards, task coverage, and assistive technologies. Record untested combinations as not verified, not passed; CRFT evidence alone cannot mark product accessibility accepted.
