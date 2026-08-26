@@ -7,7 +7,7 @@ read_when: Finding a token, changing brand values, choosing semantic roles, crea
 
 # Tokens
 
-`styles/layers/tokens.css` is the sole catalog and authority for public token values, token formulas, schemes, skins, responsive scales, and reduced-motion substitutions. Behavior owners may keep private calculation state. This file documents every public token name and its semantic job.
+Within the complete CRFT reference, `styles/layers/tokens.css` is the sole catalog and authority for public token values, formulas, schemes, skins, responsive scales, and reduced-motion substitutions. Behavior owners may keep private calculation state. This file documents every public reference token name and its semantic job; it does not prescribe a project’s token inventory or values.
 
 ## Use and admission
 
@@ -19,9 +19,11 @@ Use the first complete option:
 4. Direct literal when the value is local and clearer than indirection.
 5. New public token only after unrelated consumers prove one reusable system role.
 
-Do not mirror every literal as a token. Do not use palette swatches where a semantic role exists. A token name must preserve semantic indirection and remain compatible with its complete family.
+Do not mirror every literal as a token. Do not use palette swatches where a semantic role exists. A public CRFT token name must preserve semantic indirection and remain compatible with its complete reference family.
 
-Projects own copied token values. Put base brand values in the copied `styles/layers/tokens.css`. Keep campaign-only or component-only variation at its narrowest project boundary.
+Keep a calculated value when the relationship itself is useful and adopted. Do not add a public token that only restates existing math. Use a direct project value when no durable relationship exists.
+
+Projects own copied token values and local extracts. A copied complete `tokens.css` keeps its public contract; a local extraction keeps only the semantic jobs and relationships the project uses. A copied project does not owe CRFT a complete token family after it intentionally re-homes that family into project CSS. Put base brand values in the selected project owner and keep campaign-only or component-only variation at its narrowest boundary.
 
 ## Family grammar
 
@@ -37,9 +39,9 @@ Projects own copied token values. Put base brand values in the copied `styles/la
 | `--t-*` | Font, weight, scale, type role, and measure |
 | `--m-*` | Motion timing functions and durations |
 
-Scale families use `xs`, `sm`, the unsuffixed anchor, `lg`, and `xl`. Their `rt` member controls the family ratio. Change a complete family coherently.
+Complete reference scale families use `xs`, `sm`, the unsuffixed anchor, `lg`, and `xl`; their `rt` member controls the family ratio. Change a copied complete family coherently. A local extraction may keep static members and delete the ratio and formulas when the project does not use that relationship.
 
-Type-role suffixes have stable jobs: `lh` line height, `ls` letter spacing, `fw` font weight, `tt` text transform, and `mw` readable maximum measure. Fluid font size comes from the shared type foundations and the native or explicit `t` role.
+Type-role suffixes have stable jobs: `lh` line height, `ls` letter spacing, `fw` font weight, `tt` text transform, and `mw` readable maximum measure. The complete reference derives fluid font size from shared foundations and the native or explicit `t` role; projects adopting another type strategy do not inherit that requirement.
 
 ## Public token index
 
@@ -168,6 +170,7 @@ They are implementation state for public grid, type, and motion hooks. Their pre
 - Setting a heading’s `max-width` instead of its matching `--t-*-mw` token.
 - Using private grid or scrub state in project CSS.
 - Copying token values into documentation.
+- Preserving an unused ratio, formula, private property, or family member only to resemble CRFT.
 
 ## Verify
 

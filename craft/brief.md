@@ -2,16 +2,16 @@
 title: CRFT brief
 status: canonical
 owner: brief
-read_when: Defining the product outcome, page argument, content jobs, copy, evidence, or signature moves.
+read_when: Recording a supplied product outcome, page argument, content jobs, copy, evidence, or signature moves before implementation.
 ---
 
 # Brief
 
-Define the job before structure or presentation. This file owns product intent and content function. It does not prescribe section templates.
+Record the job before structure or presentation. This file is a worksheet for product intent and content decisions supplied by project or design authority. It does not create those decisions or prescribe section templates.
 
 ## Product record
 
-Record only supported facts:
+Record only supported facts. If project or design authority has not supplied a decision, mark it **Blocked**; CRFT does not choose it.
 
 ```text
 User:
@@ -87,7 +87,7 @@ Do not turn one reference detail into shared API. See [`examples/page-from-refer
 
 ## Signature moves
 
-Choose zero to three distinctive relationships. For each move, record its strategic job, owner, responsive behavior, static or reduced-motion form, and acceptance evidence.
+Record zero to three distinctive relationships approved by project or design authority. For each move, record its strategic job, owner, responsive behavior, static or reduced-motion form, and acceptance evidence.
 
 Prefer one coherent move to several unrelated effects.
 
@@ -101,4 +101,4 @@ Prefer one coherent move to several unrelated effects.
 
 ## Verify
 
-Before implementation, confirm the outcome, audience, page argument, section sequence, primary action, proof, signature moves, responsive implications, and unresolved decisions. Keep this record shorter than the content it guides.
+Before implementation, have project authority confirm the outcome, audience, page argument, section sequence, primary action, proof, signature moves, responsive implications, and unresolved decisions. CRFT records that input; it does not approve it. Keep this record shorter than the content it guides.

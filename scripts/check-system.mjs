@@ -94,6 +94,20 @@ for (const [path, source] of Object.entries(docsByPath)) {
   if (/\/Users\/|\/home\/|~\/|[A-Z]:\\/.test(source)) fail(`${path} contains an absolute private path`);
   if (/\[TODO(?::|\])/i.test(source)) fail(`${path} contains an unresolved TODO`);
 }
+const retiredStrategyPatterns = [
+  /\bCRFT is (?!not\b)[^.\n]*(?:frontend design|design system|complete [^.\n]*system|the system)\b/i,
+  /\bCRFT is (?!not\b)(?:the\s+)?(?:product strategy|design authority|product accessibility authority)\b/i,
+  /\b(?:CRFT|It|This (?:file|owner|guide|document)|Composition|The (?:system|strategy|reference))\s+(?:owns|decides|approves|sets|supplies|provides|combines|governs|controls|directs|determines)(?:(?!\b(?:not|no|without)\b)[^.\n])*(?:product strategy|product intent|design judgment|visual judgment|taste|product accessibility|user-facing requirements|form behavior|product-state requirements)/i,
+  /\bfluid type\s+(?:is|remains|must be|should be)\s+(?:required|mandatory)\b/i,
+  /\b(?:must|shall|required to)\s+(?:use|run)\s+(?:the\s+)?(?:CRFT\s+)?(?:copier|copy-system)\b/i,
+  /\b(?:copier|copy-system)[^.\n]*\b(?:is|remains)\s+(?:required|mandatory)\b/i,
+];
+for (const [path, source] of Object.entries(docsByPath)) {
+  for (const pattern of retiredStrategyPatterns) {
+    const claim = source.match(pattern)?.[0];
+    if (claim) fail(`${path} contains retired CRFT strategy claim: ${claim}`);
+  }
+}
 for (const path of referenceBrandSources) {
   const source = read(path);
   if (/\bseess\b|snz-frontend|snz-css-system/i.test(source)) fail(`${path} references a retired frontend source`);
@@ -106,6 +120,19 @@ if (!referenceHeader.includes('<header class="sg-header">') || referenceHeader.i
 
 const craft = docsByPath["CRAFT.md"];
 const adoption = docsByPath["craft/adopt.md"];
+const adoptionModeBlock = adoption.match(/## Choose a mode\n([\s\S]*?)\n## /)?.[1];
+const adoptionModeRows = [...(adoptionModeBlock ?? "").matchAll(/^\| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/gm)]
+  .map((match) => match.slice(1).map((cell) => cell.trim()))
+  .filter(([name]) => name !== "Mode" && !/^-+$/.test(name));
+const adoptionModes = adoptionModeRows.map(([name]) => name);
+const expectedAdoptionModes = ["Strategy only", "Local extraction", "Selected complete layers", "Explicit full adoption"];
+if (adoptionModes.join("|") !== expectedAdoptionModes.join("|")) fail("craft/adopt.md adoption modes differ from the canonical four-mode contract");
+for (const mode of ["Strategy only", "Local extraction"]) {
+  if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`craft/adopt.md ${mode} must expose no CRFT hooks`);
+}
+if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Selected complete layers")?.[2] ?? "")) {
+  fail("craft/adopt.md selected layers must expose retained live hooks only");
+}
 if (!craft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
   fail("CRAFT.md does not record the retired tooling boundary");
 }
@@ -155,6 +182,27 @@ for (const [index, path] of topicDocs.entries()) {
 const skill = docsByPath["skills/crft/SKILL.md"];
 if (!skill.includes("CRAFT.md")) fail("skills/crft/SKILL.md does not route through CRAFT.md");
 if (skill.length > 5000) fail("skills/crft/SKILL.md is no longer a thin router");
+const skillAsk = skill.match(/## Ask\n([\s\S]*?)\n## Detect/)?.[1] ?? "";
+const skillCopy = skill.match(/## Copy\n([\s\S]*?)\n## Work/)?.[1] ?? "";
+const skillWork = skill.match(/## Work\n([\s\S]*?)\n## Stop/)?.[1] ?? "";
+for (const mode of expectedAdoptionModes) {
+  if (!skillAsk.toLowerCase().includes(mode.toLowerCase())) fail(`skills/crft/SKILL.md Ask is missing adoption mode: ${mode}`);
+}
+if (!/local extraction[^.\n]*selected complete layers[^.\n]*coexist/i.test(skillAsk) || !/extraction itself grants no CRFT hooks/i.test(skillAsk)) {
+  fail("skills/crft/SKILL.md Ask must allow mixed subsystem modes without granting extraction hooks");
+}
+if (!/copier[^.\n]*optional[^.\n]*whole-layer/i.test(skillCopy)) {
+  fail("skills/crft/SKILL.md Copy must keep the copier optional and whole-layer only");
+}
+if (!/fluid type[^.\n]*(?:unnecessary|not needed|optional)[^.\n]*static semantic type tokens/i.test(skillWork)) {
+  fail("skills/crft/SKILL.md Work must keep fluid type optional for projects");
+}
+if (!/file presence alone[^.\n]*not API/i.test(skill)) {
+  fail("skills/crft/SKILL.md must inspect retained live hooks after project simplification");
+}
+if (!/fluid type[^.\n]*(?:not a project requirement|optional)/i.test(docsByPath["craft/type.md"])) {
+  fail("craft/type.md must keep fluid type optional for projects");
+}
 for (const component of [".btn", ".crd", ".lnk"]) {
   if (!craft.includes(component) || !docsByPath["craft/components.md"].includes(component)) {
     fail(`${component} is missing from the project component naming boundary`);

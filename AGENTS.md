@@ -2,15 +2,17 @@
 
 ## Scope
 
-CRFT is the complete SNZ frontend design and CSS system. Read `CRAFT.md`, then only the owners required by its route.
+CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRAFT.md`, then only the owners required by its route.
 
-CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation owns decisions and use. Examples are evidence, not API.
+CRFT owns its canonical reference CSS and documented contract. It does not own product strategy, design judgment, taste, brand, content, or product accessibility acceptance.
+
+Within the reference, CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation explains decisions and use. Examples are evidence, not API.
 
 CRFT is not a component library. `.btn`, `.crd`, and `.lnk` are project conventions. CRFT may document their project use, but must not add canonical styling, variants, tokens, markup contracts, or behavior.
 
 ## CSS ownership
 
-This repository loads `styles/global.css` once. Consumers copy selected `layers/*.css` files and put the printed prelude in their own CSS entry. They do not copy `global.css`.
+This repository loads `styles/global.css` once. For each affected subsystem, consumers may use guidance only, extract project-owned parts into an existing stylesheet, copy selected complete layers, or explicitly adopt the full reference. Local extraction and selected complete layers may coexist; extraction itself grants no CRFT hooks. The copier supports the whole-layer modes only. Consumers do not copy `global.css`.
 
 ```css
 @layer reset, base, tokens, type, layout, grid, motion, utility;
@@ -25,9 +27,9 @@ This repository loads `styles/global.css` once. Consumers copy selected `layers/
 - `motion.css`: image scrub and view transitions.
 - `utility.css`: `.sr` and `.sr.focusable`.
 
-Put a shared rule in the first owner that fully explains it. Consumers own their copy. Brand in `tokens.css`. Keep product CSS in the project’s normal owner.
+Put a shared rule in the first owner that fully explains it. Consumers own every result. Brand in a copied complete `tokens.css` or the project’s existing token owner. Keep product CSS in the project’s normal owner.
 
-Public API consists of token names declared in `tokens.css`, documented selectors and attributes, the named `container` context, and native guarantees in `base.css`. `craft/tokens.md` documents every exact public token name and job without copying live values.
+The complete-layer public API consists of live token names in `tokens.css`, documented selectors and attributes still present in their owning layer, the named `container` context, and retained native guarantees in `base.css`. File presence alone is not proof after project simplification. A local extraction grants none of these hooks. `craft/tokens.md` documents every exact public reference token name and job without copying live values.
 
 These properties are private:
 
@@ -69,7 +71,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 - Keep DOM, reading, heading, and keyboard order meaningful without CSS.
 - Prefer semantic elements, native attributes, ARIA state, `:has()`, and bounded local structure before classes. Add a class only for a stable component, page scope, behavior, or visual role that structure cannot safely own.
 - Keep nesting shallow and specificity flat.
-- Use tokens by semantic job. Keep local literals and formulas local.
+- Use tokens by semantic job. Keep a calculated relationship only when the adopted strategy uses it; otherwise keep a local literal and delete unused token machinery.
 - Use padding and margin shorthand when one declaration controls multiple sides.
 - Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` for one physical side.
 - Set `font-weight` and `font-variation-settings: "wght"` to the same token. Do not set one without the other.
@@ -95,9 +97,11 @@ node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
 node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-Ask which layers to copy. The copier writes those layer files and refuses conflicts. It never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional.
+Choose the least complete mode for each affected subsystem before asking which layers to copy. The copier is optional whole-layer convenience. It writes requested layer files and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional.
 
-Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks.
+For local extraction, keep only observed semantic jobs and useful relationships in the project’s existing owners. Remove unused token families, ratios, formulas, private state, selectors, and dependencies. Static project type must not retain the reference fluid machinery.
+
+Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks. Product authority owns design and accessibility acceptance.
 
 For every change:
 

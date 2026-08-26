@@ -7,7 +7,7 @@ read_when: Building forms, validation, async actions, status, errors, empty stat
 
 # Forms and product states
 
-Use native controls and truthful HTML state. This file owns form behavior and visible product-state requirements, not shared form presentation.
+Use native controls and truthful HTML state. This file records sound form semantics, state implementation, and recovery constraints. The product owns its workflow, required states, language, and acceptance.
 
 ## Field contract
 
@@ -74,7 +74,7 @@ Use `aria-busy="true"` on the region being updated. Use a stable `role="status"`
 
 ## Product states
 
-Implement every applicable state:
+Product behavior determines which states apply and what they mean. Implement every applicable state truthfully:
 
 | State | Required result |
 | --- | --- |
