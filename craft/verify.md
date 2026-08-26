@@ -23,20 +23,20 @@ cd reference && bun run test
 
 Deterministic checks can verify files, token names, selectors, attributes, grammar, examples, copy integrity, and built reference contracts. They cannot prove strategy, accessibility, visual quality, or full browser behavior.
 
-### Judgment
+### Project judgment
 
-Review:
+Project or design authority reviews:
 
 - product outcome and page argument;
 - content hierarchy and nearby evidence;
 - composition, rhythm, density, type, color, and media;
 - semantic structure, source order, state, and component boundaries;
 - copy function and unsupported claims;
-- accessibility and project ownership;
+- product accessibility acceptance and project ownership;
 - responsive decisions and intentional departures;
 - code and interface economy.
 
-State the evidence for each material judgment. Do not turn preference into a defect.
+CRFT supplies prompts and implementation evidence, not the verdict. State the evidence and named authority for each material judgment. Do not turn CRFT preference into a defect.
 
 ### Rendered
 
@@ -117,4 +117,4 @@ Lead with a failure, blocker, or material limit. Do not hide it after passing ch
 
 ## Completion
 
-A frontend is complete only when each applicable gate has explicit evidence and no unresolved failure blocks its product outcome, task path, accessibility, public contract, or supported fallback.
+Project authority decides when a frontend is complete. CRFT verification can report completion of its applicable implementation checks only when each has explicit evidence and no unresolved failure blocks the task path, adopted public contract, semantic behavior, accessibility primitive, or supported fallback.

@@ -6,9 +6,9 @@ scope: frontend
 
 # CRFT
 
-CRFT is the SNZ frontend design and CSS system. It owns strategy, design judgment, semantic structure, CSS, accessibility, performance, and verification.
+CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. It documents semantic CSS constraints, accessibility primitives and fallbacks, adoption, migration, and verification.
 
-Read this router first. Then read only the owners needed for the task.
+CRFT owns its canonical reference CSS and documented contract. It does not own product strategy, design judgment, taste, brand, content, or product accessibility acceptance. Read this router first, then only the owners needed for the task.
 
 ## Authority
 
@@ -17,17 +17,17 @@ Read this router first. Then read only the owners needed for the task.
 3. CRFT and the relevant owner documents.
 4. Examples and visual references as evidence only.
 
-CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation owns decisions and use.
+Within the canonical reference, CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation explains the reference decisions and use; the receiving project owns product decisions.
 
 ## Route
 
 | Need | Owner |
 | --- | --- |
-| Outcome, audience, page argument, content jobs, copy | [`craft/brief.md`](craft/brief.md) |
-| Visual hierarchy, rhythm, density, surfaces, media | [`craft/composition.md`](craft/composition.md) |
+| Recording supplied outcome, audience, content jobs, copy, and evidence | [`craft/brief.md`](craft/brief.md) |
+| Applying supplied visual direction through hierarchy, rhythm, density, surfaces, and media | [`craft/composition.md`](craft/composition.md) |
 | Semantics, landmarks, sections, source order, navigation, JavaScript | [`craft/html.md`](craft/html.md) |
 | Buttons, links, cards, component boundaries and states | [`craft/components.md`](craft/components.md) |
-| Controls, labels, validation, async and product states | [`craft/forms.md`](craft/forms.md) |
+| Native controls, labels, validation, async implementation, and recovery | [`craft/forms.md`](craft/forms.md) |
 | Token names, semantic jobs, scales, public and private boundaries | [`craft/tokens.md`](craft/tokens.md) |
 | Semantic color, schemes, skins, accents, feedback, contrast | [`craft/color.md`](craft/color.md) |
 | Fonts, roles, measure, hierarchy, wrapping, weight | [`craft/type.md`](craft/type.md) |
@@ -42,7 +42,7 @@ CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motio
 
 ## Common workflows
 
-Read every owner in **Start with**. Use the route above for any omitted topic the task affects.
+Read every owner in **Start with**. Use the route above for any omitted topic the task affects. Brief and composition record and apply project-supplied direction; they do not replace the project’s product or design authority.
 
 | Workflow | Start with | Add when affected |
 | --- | --- | --- |
@@ -50,15 +50,15 @@ Read every owner in **Start with**. Use the route above for any omitted topic th
 | Component | [Components](craft/components.md), [HTML](craft/html.md), [accessibility](craft/accessibility.md), [verification](craft/verify.md) | Forms, tokens, color, type, layout, motion |
 | Form or product interface | [Forms](craft/forms.md), [components](craft/components.md), [HTML](craft/html.md), [accessibility](craft/accessibility.md), [verification](craft/verify.md) | Color, layout, grid, performance |
 | CSS API or adoption | Affected CSS owner from the route, [tokens](craft/tokens.md), [adoption](craft/adopt.md), [verification](craft/verify.md) | Accessibility, performance |
-| Full CRFT system audit | [Verification](craft/verify.md), then the other 15 owners in route order | — |
+| Full CRFT reference audit | [Verification](craft/verify.md), then the other 15 owners in route order | — |
 
-A complete product build reads its applicable workflow, not all 16 owners by default. Pick the row from the task. Do not default to page-build. A full CRFT system audit reads all owners.
+A product task using CRFT reads its applicable workflow, not all 16 owners by default. Pick the row from the task. Do not default to page-build. A full CRFT reference audit reads all owners.
 
-CRFT is the system. `CRAFT.md` is this router. `craft/` holds topic owners.
+CRFT is the strategy and reference. `CRAFT.md` is this router. `craft/` holds topic guidance.
 
 ## Decisions
 
-CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS system, routed guidance, copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption remains copy-and-own and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
+CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS reference, routed guidance, optional whole-layer copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption may use strategy only, local project extraction, selected complete layers, or explicit full adoption. Every result is project-owned and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
 
 Use the extension order owned by [`craft/adopt.md`](craft/adopt.md): semantic HTML and existing owners before public CRFT API, public tokens before scoped overrides, and one direct project rule before any new shared API.
 
@@ -70,7 +70,7 @@ Keep product presentation project-owned. Prefer a semantic element, native attri
 
 ## Public hook grammar
 
-Attributes are the finite CRFT composition API. Classes are the override and use-case layer.
+The public hook grammar describes the complete reference. A hook exists only when its owning layer is adopted and the live project copy still contains it; file presence alone is not proof after simplification. Local extraction grants no CRFT API. Attributes are the finite CRFT composition API. Classes are the override and use-case layer.
 
 | Kind | Owns |
 | --- | --- |
@@ -118,6 +118,22 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 
 <!-- public-hook-index:end -->
 
+## Never
+
+<!-- ban-index:start -->
+never `*-block-start` or `*-inline-start` single-side longhands
+never a class on `section`
+never style through an ID selector
+never `data-theme`; canvas is `data-skin`
+never new spacing, alignment, or display utility matrices
+never substring attribute selectors in documentation
+never `w` or `f` attributes on `t`
+never `bd` as a weight flag; bold is `bo`
+never set `font-weight` without `font-variation-settings` wght or vice versa
+never heading max-width; override the role's `--t-*-mw` token
+Private properties never appear in product CSS; the list lives in the contract and [`craft/tokens.md`](craft/tokens.md).
+<!-- ban-index:end -->
+
 ## Evidence
 
 Label material claims:
@@ -132,7 +148,7 @@ Label material claims:
 Pass each applicable gate:
 
 1. **Deterministic:** repository and contract checks.
-2. **Judgment:** strategy, hierarchy, design, ownership, copy, and accessibility.
+2. **Project judgment:** project authority decides strategy, hierarchy, design, copy, and product accessibility acceptance; CRFT checks that implementation evidence and ownership are explicit.
 3. **Rendered:** relevant sizes, states, keyboard path, contrast, motion, media, console, and network.
 
 Report failed, blocked, and unverified gates. Confidence does not replace evidence.

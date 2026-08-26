@@ -2,16 +2,16 @@
 title: CRFT composition
 status: canonical
 owner: composition
-read_when: Choosing visual direction, hierarchy, rhythm, density, boundaries, media placement, or responsive composition.
+read_when: Applying supplied visual direction through hierarchy, rhythm, density, boundaries, media placement, or responsive composition.
 ---
 
 # Composition
 
-Composition turns the brief and semantic structure into visible relationships. It owns visual judgment, not live CSS values.
+Composition translates project-approved direction and semantic structure into visible relationships. This owner records implementation constraints and evidence; it does not own visual judgment or taste.
 
 ## Direction
 
-Describe direction with implementable relationships:
+If project or design authority has not supplied direction, mark it blocked rather than deriving taste from CRFT. Describe supplied direction with implementable relationships:
 
 - calm or dense;
 - restrained or expressive;
@@ -103,6 +103,6 @@ Hold a composition until its content stops fitting. Change the relationship, not
 
 ## Verify
 
-A composition passes when hierarchy matches the brief, distinctive moves are scarce and purposeful, groups remain clear without decoration, type and media work with real content, responsive changes preserve meaning, and local art direction remains project-owned.
+Project or design authority decides whether a composition passes. CRFT review can verify that hierarchy matches the supplied brief, groups remain clear, type and media work with real content, responsive changes preserve meaning, and local art direction remains project-owned.
 
 Review [`examples/page-from-brief/`](../examples/page-from-brief/) and [`examples/branded-extension/`](../examples/branded-extension/) for complete compositions, not reusable patterns.

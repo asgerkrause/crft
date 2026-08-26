@@ -7,7 +7,7 @@ read_when: Choosing semantic or visual type roles, t flags, fonts, family, hiera
 
 # Type
 
-Semantic elements define document meaning. CRFT type roles define visual treatment. `styles/layers/type.css` owns the live selectors and fluid calculation. It consumes public foundations and role tokens from `tokens.css`.
+Semantic elements define document meaning. The complete CRFT reference uses type roles for visual treatment. `styles/layers/type.css` owns its live selectors and fluid calculation and consumes public foundations and role tokens from `tokens.css`. Fluid type is a reference strategy, not a project requirement.
 
 ## Roles
 
@@ -47,11 +47,13 @@ Public visual values are `h0`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `lg`, `bd`, a
 
 Do not add `t` when inherited body type or the native heading role is correct. A paragraph, list item, blockquote, table, or control inherits body type unless its presentation needs an explicit role.
 
-## Fluid scale
+## Type strategy
 
-Body type and each native or explicit role interpolate between the shared viewport bounds. Heading roles use steps `5` through `-1`. Text roles use `1`, `0`, and `-1` for `lg`, `bd`, and `sm`.
+The complete `type.css` layer is fluid: body type and each native or explicit role interpolate between shared viewport bounds. Heading roles use steps `5` through `-1`. Text roles use `1`, `0`, and `-1` for `lg`, `bd`, and `sm`. Its private calculation state lives on each type boundary; projects that adopt this complete layer change the public size and ratio foundations instead of private calculation properties.
 
-The private calculation state lives on each type boundary. Projects change the public minimum size, maximum size, and ratio foundations instead of using private calculation properties. Spacing, padding, gaps, and radius remain static.
+A project that does not need fluid type should not copy `type.css`. Implement static semantic type roles in the project’s existing stylesheet and keep only the sizes, line heights, weights, measures, and family mappings it uses. Remove the fluid ratios, formulas, private state, and viewport dependencies rather than preserving ceremonial CRFT variables. Those project-owned roles are not the CRFT `t` or `l` API.
+
+Use the same test for any responsive or calculated type relationship: retain it only when it expresses an adopted strategy the project needs.
 
 Two accessibility gates guard every retune of the foundations, enforced by `scripts/check-system.mjs`:
 
@@ -119,7 +121,8 @@ Store copy in natural case. Use a role token or a `t` transform flag for present
 - Applying `t="h0"` as if it changed document semantics.
 - Adding `t="bd"` when inherited body type is already correct.
 - Setting direct `max-width` on a role element.
-- Changing private fluid calculation properties.
+- Changing private fluid calculation properties in an adopted complete layer.
+- Copying the fluid layer for a project that only needs static semantic type roles.
 - Using light weight for small operational text without rendered evidence.
 - Setting `font-weight` without the matching `font-variation-settings: "wght"` token, or variation without `font-weight`.
 - Writing `t="bd"` for bold. Bold is `bo`.
@@ -128,4 +131,4 @@ Store copy in natural case. Use a role token or a `t` transform flag for present
 
 ## Verify
 
-Inspect semantic headings and every `t` value. Test native inheritance, semantic headings with visual overrides, real long and short content, role measure, scoped token overrides, fallback fonts, loaded weights, zoom, text resize, localization, and wrapping without clipping. Confirm `body` remains unconstrained and each role consumes its matching measure token once. Confirm each weight sets `font-weight` and `font-variation-settings: "wght"` to the same token.
+Verify the adopted type strategy. For the complete CRFT layer, inspect semantic headings and every `t` value; test inheritance, visual overrides, content lengths, role measure, scoped overrides, fallback fonts, loaded weights, zoom, text resize, localization, and wrapping. Confirm `body` remains unconstrained, each role consumes its matching measure token once, and each weight pairs `font-weight` with `font-variation-settings: "wght"`. For project-owned static type, verify the same user behavior and confirm no unused fluid foundation, private state, or viewport dependency remains.
