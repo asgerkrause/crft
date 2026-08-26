@@ -55,6 +55,17 @@ A project that does not need fluid type should not copy `type.css`. Implement st
 
 Use the same test for any responsive or calculated type relationship: retain it only when it expresses an adopted strategy the project needs.
 
+Two accessibility gates guard every retune of the foundations, enforced by `scripts/check-system.mjs`:
+
+- **Zoom growth.** Every step keeps a positive rem term in its fluid formula, so a larger user font size always grows the type. Numerically, a step's minimum size times the maximum viewport must exceed its maximum size times the minimum viewport.
+- **Doubling budget.** Steps `-1` through `1` (`sm`, `bd`, `lg`, and the small headings) keep their maximum at or below 2.5 times their minimum, so user font-size preference can still double the rendered text. Display steps `2` through `5` are exempt: large display type legitimately spans more, page zoom still scales it fully, and the zoom-growth gate above still applies to it.
+
+Between the viewport bounds the growth from font-size preference is partial by design; it reaches full doubling where the rem clamp ends bind. The rendered suite verifies both behaviors.
+
+## Cap trim
+
+Where `text-box` is supported, headings and `[t]` roles trim to cap height and alphabetic baseline, so stack and grid gaps measure optical text edges instead of line-box leading. Unsupported browsers keep normal leading; do not compensate with negative margins. A bare paragraph opts in by carrying `t="bd"`.
+
 ## Line clamp
 
 `l` truncates a text block to a fixed number of lines. Supported values are `1` through `4`. An empty `l` uses three lines. The complete text remains in the DOM.

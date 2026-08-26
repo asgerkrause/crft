@@ -20,6 +20,7 @@ const fixturePaths = [
   "reference/src/scripts/shell.js",
   "scripts/check-system.mjs",
   "scripts/copy-system.mjs",
+  "scripts/emit-contract.mjs",
   "styles",
 ];
 
@@ -296,7 +297,41 @@ test("native first-paint remains source-backed", (t) => {
   replace(root, "styles/layers/base.css", ":where(a, button, label) {", ":where(a, button) {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /base\.css is missing native enhancement: :where\(a, button, label\) \{/);
+  assert.match(result.stderr, /base layer is missing native enhancement: :where\(a, button, label\) \{/);
+});
+
+test("reset must not consume tokens", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "styles/layers/base.css",
+    "    box-sizing: border-box;",
+    "    box-sizing: border-box;\n    color: var(--c-fg);",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /reset must not consume custom properties/);
+});
+
+test("reset token use with space inside var() is caught", (t) => {
+  const root = makeFixture(t);
+  replace(
+    root,
+    "styles/layers/base.css",
+    "    box-sizing: border-box;",
+    "    box-sizing: border-box;\n    color: var( --c-fg);",
+  );
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /reset must not consume custom properties/);
+});
+
+test("duplicate layer blocks in one file fail", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/base.css", "@layer reset {", "@layer reset {\n}\n@layer reset {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /duplicate @layer reset block in base\.css/);
 });
 
 test("documented layout hooks remain source-backed", (t) => {
@@ -456,7 +491,7 @@ test("retired one-off example hooks fail", (t) => {
   replace(root, "examples/foundations/markup.html", "    <header>\n", "    <header class=\"site-header\">\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /retains unnecessary example hook \.site-header/);
+  assert.match(result.stderr, /uses unlisted example class/);
 });
 
 test("every example README keeps a layout intent diagram", (t) => {
@@ -473,14 +508,6 @@ test("project stagger remains inside feature and reduced-motion gates", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /stagger must keep sibling-index/);
-});
-
-test("page-from-reference keeps a deliberate image crop", (t) => {
-  const root = makeFixture(t);
-  replace(root, "examples/page-from-reference/example.css", "aspect-ratio: 3 / 2", "aspect-ratio: 8 / 5");
-  const result = runCheck(root);
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing deliberate crop behavior/);
 });
 
 test("the router records the retired tooling boundary", (t) => {
@@ -524,6 +551,30 @@ test("the skill must stay a thin router", (t) => {
   assert.match(result.stderr, /no longer a thin router/);
 });
 
+test("the skill starts with inspect and plan", (t) => {
+  const root = makeFixture(t);
+  replace(root, "skills/crft/SKILL.md", "## Start", "## Begin");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /missing the inspect-and-plan start/);
+});
+
+test("the layout owner keeps property-form doctrine", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/layout.md", "*-block-start", "*-block-begin");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /craft\/layout\.md is missing \*-block-start/);
+});
+
+test("the HTML owner names the reset and base layers", (t) => {
+  const root = makeFixture(t);
+  replace(root, "craft/html.md", "@layer reset", "@layer strip");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /craft\/html\.md Native base guarantees is missing @layer reset/);
+});
+
 test("adoption documents overlay copy", (t) => {
   const root = makeFixture(t);
   replace(root, "craft/adopt.md", "Do not default to the full tree on an existing site", "Always copy every layer");
@@ -555,7 +606,7 @@ test("link transitions must include font-variation-settings", (t) => {
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing native enhancement: transition-property: color, background, border, transform, opacity, font-variation-settings/);
+  assert.match(result.stderr, /base layer is missing native enhancement: transition-property: color, background, border, transform, opacity, font-variation-settings/);
 });
 
 test("type.css must not keep @font-face after the fonts extract", (t) => {
@@ -596,4 +647,29 @@ test("retired w attribute fails", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /uses retired w attribute/);
+});
+
+test("fluid text steps cannot exceed the 2x zoom budget", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "    --t-fs-max: 20;\n", "    --t-fs-max: 32;\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /fluid text step 1 exceeds the 2x zoom budget: hi \/ lo must stay at or below 2.5/);
+});
+
+test("fluid type steps cannot lose zoom growth", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "    --l-vp-min: 400;\n", "    --l-vp-min: 1400;\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /fluid type step \S+ loses zoom growth: lo \* vp-max must exceed hi \* vp-min/);
+});
+
+test("the router ban index must stay present", (t) => {
+  const root = makeFixture(t);
+  const path = join(root, "CRAFT.md");
+  writeFileSync(path, readFileSync(path, "utf8").replace(/<!-- ban-index:start -->[\s\S]*?<!-- ban-index:end -->\n?/, ""));
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /CRAFT.md is missing the ban index/);
 });

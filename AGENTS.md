@@ -18,7 +18,7 @@ This repository loads `styles/global.css` once. For each affected subsystem, con
 @layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
-- `base.css`: `@layer reset` then `@layer base`. Neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners.
+- `base.css`: `@layer reset` then `@layer base`. Reset strips the user agent without tokens. Base supplies native defaults, focus, active colors, disclosure animation, and squircle corners.
 - `tokens.css`: all public tokens, semantic colors, skins, scales, and reduced motion.
 - `fonts.css`: optional SNZ `@font-face` rules in `@layer type`.
 - `type.css`: type roles, `t` flags, and `l`.
@@ -97,7 +97,7 @@ node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
 node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-Choose the least complete mode for each affected subsystem before asking which layers to copy. The copier is optional whole-layer convenience. It writes requested layer files and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional.
+Choose the least complete mode for each affected subsystem before asking which layers to copy. The copier is optional whole-layer convenience. It writes requested layer files plus `layers/crft-manifest.json` (revision, hashes, contract snapshot) and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
 
 For local extraction, keep only observed semantic jobs and useful relationships in the project’s existing owners. Remove unused token families, ratios, formulas, private state, selectors, and dependencies. Static project type must not retain the reference fluid machinery.
 

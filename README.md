@@ -26,7 +26,11 @@ node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project
 node scripts/copy-system.mjs --layers tokens,type --fonts /absolute/path/to/project/styles
 ```
 
-The copier is an optional whole-layer convenience. It writes requested `layers/*.css` files, does not copy `global.css`, and never merges or upgrades project-owned files. Fonts copy only with `--fonts`. Keep product presentation and every adopted result in the project’s normal owners.
+The copier is an optional whole-layer convenience. It writes requested `layers/*.css` files plus `layers/crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. Fonts copy only with `--fonts`. Keep product presentation and every adopted result in the project’s normal owners.
+
+## Built for agents
+
+The public API is machine-readable, not prose. `node scripts/emit-contract.mjs` derives the full contract (tokens, hooks, skins, accents, layer dependencies, bans) from live CSS. The manifest makes every adopting repo self-describing, and `node scripts/check-project.mjs <styles-dir>` verifies consumer CSS against its adopted contract without needing this repository. An agent never has to guess what is API: the contract says so, and the checkers fail when it drifts.
 
 [`CRAFT.md`](CRAFT.md) is the task router. [`craft/`](craft/) holds topic guidance. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint.
 
@@ -54,7 +58,7 @@ This markup assumes the complete owning layers are present. Strategy-only and lo
 
 ```sh
 node scripts/check-system.mjs
-node --test
+node --test scripts/*.test.mjs
 cd reference && bun run test
 cd reference && bun run test:rendered
 ```

@@ -46,7 +46,9 @@ node scripts/copy-system.mjs --layers full /absolute/path/to/project/styles
 
 `--layers` is required. Names are `tokens`, `type`, `layout`, `grid`, `base`, `motion`, `utility`, or `full`. Dependencies are not filled in. `type`, `layout`, and `base` need `tokens`. `grid` and `motion` need `tokens` and `layout`. `--fonts` copies `layers/fonts.css` plus `sans.woff` and `mono.woff`.
 
-The copier writes requested files under the target `layers/` directory. It does not copy `global.css`. It never merges, overwrites, edits the project CSS file, copies skills, or creates project presentation. Any listed destination that already exists aborts the whole publish.
+The copier writes requested files under the target `layers/` directory plus one adoption record, `layers/crft-manifest.json`: the source revision, copied layers, file hashes, and a contract snapshot of public tokens, private properties, skins, accents, and layer dependencies. It does not copy `global.css`. It never merges, overwrites, edits the project CSS file, copies skills, or creates project presentation. Any listed destination that already exists, including an existing manifest, aborts the whole publish.
+
+A real copy also writes `layers/crft-manifest.json`: the source revision, copied layers, file hashes, and a contract snapshot of public tokens, private properties, skins, accents, and layer dependencies. The manifest is the adoption record. `node scripts/check-project.mjs <styles-dir>` reads it and checks project CSS for private-property use, banned single-side logical longhands, unknown CRFT-family tokens, and missing layer dependencies.
 
 Dry run prints the file list and the project-entry block. Put that prelude and those `@import`s at the top of the project’s real CSS file:
 
@@ -68,7 +70,7 @@ Canonical `styles/global.css` declares this order:
 
 | Owner | Responsibility |
 | --- | --- |
-| `base.css` | `@layer reset` then `@layer base`: neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners |
+| `base.css` | `@layer reset` then `@layer base`: reset strips the user agent without tokens; base supplies native defaults, focus, active colors, disclosure animation, and squircle corners |
 | `tokens.css` | Public tokens, semantic colors, skins, scales, and reduced motion |
 | `fonts.css` | Optional SNZ `@font-face` rules in `@layer type` |
 | `type.css` | Type roles, `t` flags, and `l` |
@@ -142,9 +144,9 @@ Live values also changed. Do not copy values from this table. Read the current C
 
 ## Intentional updates
 
-A copied project does not follow CRFT automatically. To adopt a later upstream change:
+A copied project does not follow CRFT automatically. `layers/crft-manifest.json` records the adopted revision and file hashes, and `node scripts/check-project.mjs <styles-dir>` verifies project CSS against the recorded contract: private-property use, single-side logical longhands, unknown CRFT-family tokens, and missing layer dependencies. To adopt a later upstream change:
 
-1. compare the project copy with the intended CRFT revision;
+1. compare the project copy with the intended CRFT revision recorded in the manifest;
 2. identify project-owned brand and behavior changes;
 3. apply one owner’s change at a time;
 4. resolve meaning instead of replacing the file blindly;

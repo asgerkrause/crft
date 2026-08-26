@@ -58,18 +58,9 @@ CRFT is the strategy and reference. `CRAFT.md` is this router. `craft/` holds to
 
 ## Decisions
 
-CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS reference, routed guidance, optional whole-layer copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Adoption may use strategy only, local project extraction, selected complete layers, or explicit full adoption. Every result is project-owned and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
+CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS reference, routed guidance, optional whole-layer copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption may use strategy only, local project extraction, selected complete layers, or explicit full adoption. Every result is project-owned and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
 
-Use the first complete option:
-
-1. Existing coherent project owner.
-2. Semantic HTML and native behavior.
-3. Existing public CRFT API.
-4. Public token in project CSS.
-5. Scoped token override.
-6. One direct project rule.
-7. Small JavaScript behavior.
-8. Shared CRFT API after unrelated consumers prove the role.
+Use the extension order owned by [`craft/adopt.md`](craft/adopt.md): semantic HTML and existing owners before public CRFT API, public tokens before scoped overrides, and one direct project rule before any new shared API.
 
 Keep DOM, reading, heading, and keyboard order meaningful without CSS. Add an ID only when a fragment, native or ARIA relationship, behavior, integration, or stable external identity needs it. Name a section as a region only when that landmark improves navigation.
 
@@ -126,6 +117,22 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 | `.sr.focusable` | utilities | Restorable screen-reader content |
 
 <!-- public-hook-index:end -->
+
+## Never
+
+<!-- ban-index:start -->
+never `*-block-start` or `*-inline-start` single-side longhands
+never a class on `section`
+never style through an ID selector
+never `data-theme`; canvas is `data-skin`
+never new spacing, alignment, or display utility matrices
+never substring attribute selectors in documentation
+never `w` or `f` attributes on `t`
+never `bd` as a weight flag; bold is `bo`
+never set `font-weight` without `font-variation-settings` wght or vice versa
+never heading max-width; override the role's `--t-*-mw` token
+Private properties never appear in product CSS; the list lives in the contract and [`craft/tokens.md`](craft/tokens.md).
+<!-- ban-index:end -->
 
 ## Evidence
 

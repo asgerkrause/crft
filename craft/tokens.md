@@ -21,7 +21,7 @@ Use the first complete option:
 
 Do not mirror every literal as a token. Do not use palette swatches where a semantic role exists. A public CRFT token name must preserve semantic indirection and remain compatible with its complete reference family.
 
-Keep a calculated value when the relationship itself is useful and adopted. Do not add a public token that only restates existing math. Use a direct project value when no durable relationship exists.
+Keep a calculated value when the relationship itself is useful and adopted. Do not add a public token that only restates existing math. A page chrome band is `calc((var(--l-bl-y) * 2) + var(--l-hh))`, not `--page-chrome`. Use a direct project value when no durable relationship exists.
 
 Projects own copied token values and local extracts. A copied complete `tokens.css` keeps its public contract; a local extraction keeps only the semantic jobs and relationships the project uses. A copied project does not owe CRFT a complete token family after it intentionally re-homes that family into project CSS. Put base brand values in the selected project owner and keep campaign-only or component-only variation at its narrowest boundary.
 

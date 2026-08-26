@@ -17,7 +17,7 @@ Use repository and contract checks to prove source facts:
 
 ```sh
 node scripts/check-system.mjs
-node --test
+node --test scripts/*.test.mjs
 cd reference && bun run test
 ```
 

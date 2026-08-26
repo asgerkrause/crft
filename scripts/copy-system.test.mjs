@@ -11,6 +11,7 @@ import {
 } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -138,7 +139,8 @@ test("command dry-run prints the plan and entry block without creating target", 
   const result = runCopy("--dry-run", "--layers", "tokens", target);
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /PLAN: copy 1 files/);
+  assert.match(result.stdout, /PLAN: copy 2 files/);
+  assert.match(result.stdout, /crft-manifest\.json/);
   assert.match(result.stdout, /PLAN: project entry/);
   assert.match(result.stdout, /@import "\.\/layers\/tokens\.css";/);
   assert.match(result.stdout, /PLAN: no files created/);
@@ -195,4 +197,61 @@ test("never removes a target created by another process before publish", async (
 
   assert.equal(readFileSync(target, "utf8"), "adversary target");
   assert.deepEqual(stagingDirectories(root), []);
+});
+
+function digest(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+test("real copy writes crft-manifest.json with layers and file hashes", async (t) => {
+  const root = fixture(t);
+  const source = await sourceFixture(root);
+  const target = join(root, "adopted");
+
+  await adoptSystem({ sourceRoot: source, target, layers: "tokens,type" });
+
+  const manifest = JSON.parse(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"));
+  assert.equal(manifest.source, "crft");
+  assert.deepEqual(manifest.layers, ["tokens", "type"]);
+  assert.equal(manifest.fonts, false);
+  assert.equal(manifest.files["layers/tokens.css"], digest("source:layers/tokens.css"));
+  assert.equal(manifest.files["layers/type.css"], digest("source:layers/type.css"));
+  assert.equal(manifest.files["layers/crft-manifest.json"], undefined);
+  assert.ok(Number.isFinite(Date.parse(manifest.copiedAt)));
+});
+
+test("dry-run lists crft-manifest.json without writing it", async (t) => {
+  const root = fixture(t);
+  const source = await sourceFixture(root);
+  const target = join(root, "adopted");
+
+  const result = await adoptSystem({ sourceRoot: source, target, layers: "tokens", dryRun: true });
+
+  assert.deepEqual(result.destinations, ["layers/tokens.css", "layers/crft-manifest.json"]);
+  assert.equal(existsSync(join(target, "layers/crft-manifest.json")), false);
+  assert.equal(existsSync(target), false);
+});
+
+test("existing crft-manifest.json refuses the whole publish", async (t) => {
+  const root = fixture(t);
+  const source = await sourceFixture(root);
+  const target = join(root, "adopted");
+  await mkdir(join(target, "layers"), { recursive: true });
+  writeFileSync(join(target, "layers/crft-manifest.json"), "{}\n");
+
+  await assert.rejects(adoptSystem({ sourceRoot: source, target, layers: "tokens" }), /Target already exists/);
+  assert.equal(existsSync(join(target, "layers/tokens.css")), false);
+  assert.equal(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"), "{}\n");
+});
+
+test("manifest contract includes a known public token and private property", async (t) => {
+  const root = fixture(t);
+  const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
+  const target = join(root, "adopted");
+
+  await adoptSystem({ sourceRoot, target, layers: "tokens" });
+
+  const manifest = JSON.parse(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"));
+  assert.ok(manifest.contract.publicTokens.includes("--c-fg"));
+  assert.ok(manifest.contract.privateProperties.includes("--l-gc"));
 });
