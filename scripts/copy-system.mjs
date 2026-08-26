@@ -4,10 +4,12 @@ import {
   copyFile,
   lstat,
   mkdir,
+  readFile,
   realpath,
   rm,
+  writeFile,
 } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,6 +25,7 @@ const layerDependencies = {
 };
 const importOrder = ["base", "tokens", "fonts", "type", "layout", "grid", "motion", "utility"];
 const cascadePrelude = "@layer reset, base, tokens, type, layout, grid, motion, utility, project;";
+const adoptionManifestFile = "layers/crft-manifest.json";
 const copyableSourceFiles = [
   "sans.woff",
   "mono.woff",
@@ -134,37 +137,49 @@ async function adoptSystem(input) {
     beforePublish,
   } = input ?? {};
   const adopted = resolveAdoptRequest({ layers, fonts });
+  const destinations = [...adopted.manifest, adoptionManifestFile];
   const repoRoot = await resolveSource(sourceRoot);
   const source = await hasSystemManifest(join(repoRoot, "styles")) ? join(repoRoot, "styles") : repoRoot;
   const destination = await resolveDestination(targetArgument, repoRoot, true);
   await validateManifest(source, adopted.manifest);
-  await validateDestinationManifest(destination.target, adopted.manifest);
+  await validateDestinationManifest(destination.target, destinations);
   if (dryRun) {
     return {
       sourceRoot: repoRoot,
       target: destination.target,
       dryRun: true,
+      destinations,
       ...adopted,
     };
   }
 
-  await copyIntoTarget({ source, destination, manifest: adopted.manifest, beforePublish });
+  await copyIntoTarget({
+    source,
+    destination,
+    manifest: adopted.manifest,
+    destinations,
+    sourceRoot: repoRoot,
+    adopted,
+    beforePublish,
+  });
   return {
     sourceRoot: repoRoot,
     target: destination.target,
     dryRun: false,
+    destinations,
     ...adopted,
   };
 }
 
 /** Copy the requested files into an existing or new styles directory after a complete conflict preflight. */
-async function copyIntoTarget({ source, destination, manifest, beforePublish }) {
+async function copyIntoTarget({ source, destination, manifest, destinations, sourceRoot, adopted, beforePublish }) {
   let staging = await createOwnedDirectory(join(destination.parent, `.crft-stage-${randomUUID()}`), "staging");
   let targetCreated;
   const copied = [];
   try {
     await copyManifest(source, staging.path, manifest);
-    for (const file of manifest) await requireAbsent(join(destination.target, file));
+    await writeAdoptionManifest(staging.path, sourceRoot, adopted, manifest);
+    for (const file of destinations) await requireAbsent(join(destination.target, file));
     if (beforePublish) await beforePublish({ staging: staging.path, target: destination.target });
     try {
       const entry = await lstat(destination.target);
@@ -173,7 +188,7 @@ async function copyIntoTarget({ source, destination, manifest, beforePublish }) 
       if (error.code !== "ENOENT") throw error;
       targetCreated = await createOwnedDirectory(destination.target, "target");
     }
-    for (const file of manifest) {
+    for (const file of destinations) {
       const output = join(destination.target, file);
       await mkdir(dirname(output), { recursive: true });
       await copyFile(join(staging.path, file), output, constants.COPYFILE_EXCL);
@@ -316,9 +331,42 @@ async function copyManifest(source, staging, manifest) {
   }
 }
 
+function sha256(bytes) {
+  return createHash("sha256").update(bytes).digest("hex");
+}
+
+async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
+  // Dynamic so this module stays loadable when copied without emit-contract.mjs.
+  const { buildContract } = await import(new URL("./emit-contract.mjs", import.meta.url));
+  const contract = buildContract(sourceRoot);
+  const files = {};
+  for (const file of manifest) {
+    files[file] = sha256(await readFile(join(staging, file)));
+  }
+  const body = {
+    source: "crft",
+    revision: contract.revision,
+    dirty: contract.dirty,
+    copiedAt: new Date().toISOString(),
+    layers: adopted.layerNames,
+    fonts: adopted.fonts,
+    files,
+    contract: {
+      publicTokens: contract.publicTokens,
+      privateProperties: contract.privateProperties,
+      skins: contract.skins,
+      accents: contract.accents,
+      layerDependencies: contract.layerDependencies,
+    },
+  };
+  await mkdir(join(staging, "layers"), { recursive: true });
+  await writeFile(join(staging, adoptionManifestFile), `${JSON.stringify(body, null, 2)}\n`);
+}
+
 function printPlan(result) {
-  console.log(`PLAN: copy ${result.manifest.length} files to ${result.target}`);
-  for (const file of result.manifest) console.log(`  ${join(result.target, file)}`);
+  const files = result.destinations ?? result.manifest;
+  console.log(`PLAN: copy ${files.length} files to ${result.target}`);
+  for (const file of files) console.log(`  ${join(result.target, file)}`);
   console.log("PLAN: project entry");
   console.log(result.entryBlock);
   console.log("PLAN: no files created");
@@ -333,7 +381,7 @@ async function main() {
     if (dryRun) {
       printPlan(result);
     } else {
-      console.log(`COPIED: ${result.manifest.length} files to ${result.target}`);
+      console.log(`COPIED: ${result.destinations.length} files to ${result.target}`);
       console.log("ENTRY:");
       console.log(result.entryBlock);
     }

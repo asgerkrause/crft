@@ -1,4 +1,4 @@
-/* Reset: neutralize the user agent. No brand. No layout. */
+/* Reset: neutralize the user agent. No brand. No layout. No tokens. */
 @layer reset {
   *,
   *::before,
@@ -10,6 +10,84 @@
     min-width: 0;
     margin: 0;
     padding: 0;
+  }
+
+  :where(html) {
+    text-size-adjust: none;
+  }
+
+  :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    border-radius: 0;
+  }
+
+  :where(button, select) {
+    text-transform: none;
+  }
+
+  :where(input, textarea) {
+    user-select: auto;
+  }
+
+  :where(textarea) {
+    resize: vertical;
+  }
+
+  :where(img, picture, video, canvas, svg) {
+    display: block;
+    max-width: 100%;
+  }
+
+  :where(img, video) {
+    height: auto;
+  }
+
+  :where(svg) {
+    overflow: visible;
+  }
+
+  :where(table) {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  :where(sub, sup) {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+  }
+
+  :where(sub) {
+    inset-block-end: -0.25em;
+  }
+
+  :where(sup) {
+    inset-block-start: -0.5em;
+  }
+
+  :where(progress) {
+    vertical-align: baseline;
+  }
+
+  :where(fieldset, iframe) {
+    border: 0;
+  }
+
+  :where(dialog) {
+    max-width: none;
+    max-height: none;
+  }
+
+  :where(button, a, input, select, textarea, summary) {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :where([hidden]) {
+    display: none !important;
   }
 }
 
@@ -30,7 +108,6 @@
     accent-color: var(--c-ac);
     caret-color: var(--c-ac);
     hanging-punctuation: first last;
-    text-size-adjust: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
@@ -45,18 +122,13 @@
     font-family: var(--t-ff-bd);
   }
 
-  :where(body, button, input, select, textarea) {
-    font: inherit;
-  }
-
   :where(button, input, select, textarea) {
-    color: inherit;
-    letter-spacing: inherit;
-    border-radius: 0;
+    text-align: start;
+    hanging-punctuation: none;
   }
 
-  :where(button, select) {
-    text-transform: none;
+  :where(button) {
+    user-select: none;
   }
 
   :where(button, [type="button"], [type="reset"], [type="submit"]) {
@@ -117,25 +189,8 @@
   }
 
   :where(textarea) {
-    resize: vertical;
-  }
-
-  :where(img, picture, video, canvas, svg) {
-    display: block;
-    max-width: 100%;
-  }
-
-  :where(img, video) {
-    height: auto;
-  }
-
-  :where(svg) {
-    overflow: visible;
-  }
-
-  :where(table) {
-    border-collapse: collapse;
-    border-spacing: 0;
+    field-sizing: content;
+    min-height: 6lh;
   }
 
   :where(ul, ol) {
@@ -165,10 +220,6 @@
     font-variation-settings: "wght" var(--t-fw-bd);
   }
 
-  :where(button, a, input, select, textarea, summary) {
-    -webkit-tap-highlight-color: transparent;
-  }
-
   :where(button, label, select, summary, [role="button"]) {
     cursor: pointer;
   }
@@ -177,13 +228,7 @@
     cursor: not-allowed;
   }
 
-  :where([hidden]) {
-    display: none !important;
-  }
-
   :where(dialog) {
-    max-width: none;
-    max-height: none;
     color: inherit;
 
     &::backdrop {
@@ -214,21 +259,6 @@
     font-size: 80%;
   }
 
-  :where(sub, sup) {
-    position: relative;
-    font-size: 75%;
-    line-height: 0;
-    vertical-align: baseline;
-  }
-
-  :where(sub) {
-    inset-block-end: -0.25em;
-  }
-
-  :where(sup) {
-    inset-block-start: -0.5em;
-  }
-
   :where(code, pre, kbd, samp) {
     font-family: var(--t-ff-mo);
   }
@@ -241,32 +271,14 @@
     font-size: 80%;
   }
 
-  :where(fieldset, iframe) {
-    border: 0;
-  }
-
   :where(abbr[title]) {
     text-decoration-thickness: from-font;
     text-underline-offset: 0.15em;
   }
 
-  :where(progress) {
-    vertical-align: baseline;
-  }
-
   ::placeholder {
     color: var(--c-mu);
     opacity: 1;
-  }
-
-  :where(textarea) {
-    field-sizing: content;
-    min-height: 6lh;
-    resize: vertical;
-  }
-
-  :where(input, textarea) {
-    user-select: auto;
   }
 
   :where(button, input, select, textarea) {

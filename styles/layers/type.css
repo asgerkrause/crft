@@ -9,6 +9,14 @@
     font-size: clamp(var(--t-fs-lo) * 0.0625rem, var(--t-fs-lo) * 0.0625rem - var(--t-fs-sl) * var(--l-vp-min) * 0.0625rem + var(--t-fs-sl) * 100vi, var(--t-fs-hi) * 0.0625rem);
   }
 
+  /* Roles trim to cap height and alphabetic baseline where supported, so stack and
+     grid gaps measure optical text edges instead of line-box leading. */
+  @supports (text-box: trim-both cap alphabetic) {
+    :where(h1, h2, h3, h4, h5, h6, [t]) {
+      text-box: trim-both cap alphabetic;
+    }
+  }
+
   body,
   [t~="bd"] {
     font-family: var(--t-ff-bd);

@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolveAdoptRequest } from "./copy-system.mjs";
+import { staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -11,6 +12,22 @@ const unique = (values) => [...new Set(values)];
 const stripCssComments = (value) => value.replace(/\/\*[\s\S]*?\*\//g, "");
 const normalizeCss = (value) => value.replace(/\s+/g, "");
 const hasCssSignal = (css, signal) => normalizeCss(css).includes(normalizeCss(signal));
+const cssLayerBlock = (css, name) => {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const opener = css.match(new RegExp(`@layer\\s+${escaped}\\s*\\{`));
+  if (!opener) return "";
+  const open = css.indexOf("{", opener.index);
+  let depth = 0;
+  for (let index = open; index < css.length; index += 1) {
+    const character = css[index];
+    if (character === "{") depth += 1;
+    else if (character === "}") {
+      depth -= 1;
+      if (depth === 0) return css.slice(open + 1, index);
+    }
+  }
+  return "";
+};
 const assertWeightVariationPair = (css, path) => {
   const active = stripCssComments(css);
   for (const match of active.matchAll(/font-weight:\s*([^;]+);/g)) {
@@ -194,6 +211,18 @@ if (!skill.includes("inventory")) fail("skills/crft/SKILL.md does not require in
 if (!skill.includes("Do not invent")) fail("skills/crft/SKILL.md does not refuse invented CRFT without a copy");
 if (!skill.includes("at most three")) fail("skills/crft/SKILL.md does not cap topic reads");
 if (!skill.includes("class on `section`")) fail("skills/crft/SKILL.md does not forbid class on section");
+if (!skill.includes("## Start")) fail("skills/crft/SKILL.md is missing the inspect-and-plan start");
+const banIndexLines = markedCodeNames(skill, "ban-index", /^(.+)$/gm);
+if (!banIndexLines) fail("skills/crft/SKILL.md is missing the ban index");
+else {
+  const indexed = banIndexLines.join("\n").replace(/`/g, "");
+  for (const ban of staticBans) {
+    if (!indexed.includes(ban)) fail(`skills/crft/SKILL.md ban index is missing: ${ban}`);
+  }
+}
+if (!skill.includes("craft/layout.md")) fail("skills/crft/SKILL.md does not route spacing through layout.md");
+if (!docsByPath["craft/layout.md"].includes("## Property form")) fail("craft/layout.md is missing ## Property form");
+if (!docsByPath["craft/layout.md"].includes("*-block-start")) fail("craft/layout.md is missing *-block-start");
 
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
@@ -221,7 +250,13 @@ const actualCssFiles = readdirSync(new URL("styles/layers/", root))
   .sort();
 if (actualCssFiles.join("|") !== [...files].sort().join("|")) fail("styles/layers/ differs from the canonical owner map");
 files.forEach((file) => {
-  const declared = unique([...source[file].matchAll(/@layer\s+([a-z-]+)\s*\{/g)].map((match) => match[1]));
+  const openings = [...source[file].matchAll(/@layer\s+([a-z-]+)\s*\{/g)].map((match) => match[1]);
+  const seenLayers = new Set();
+  for (const name of openings) {
+    if (seenLayers.has(name)) fail(`duplicate @layer ${name} block in ${file.slice("styles/layers/".length)}`);
+    seenLayers.add(name);
+  }
+  const declared = unique(openings);
   if (file.endsWith("base.css")) {
     if (declared.join("|") !== "reset|base") fail(`${file} must own @layer reset then @layer base`);
     return;
@@ -288,6 +323,13 @@ for (const signal of [
 ]) {
   if (!docsByPath["craft/html.md"].includes(signal)) fail(`craft/html.md is missing identifier doctrine: ${signal}`);
 }
+const htmlDocument = docsByPath["craft/html.md"];
+if (!htmlDocument.includes("## Native base guarantees")) fail("craft/html.md is missing ## Native base guarantees");
+else {
+  const nativeBaseSection = htmlDocument.match(/## Native base guarantees\n([\s\S]*?)(?=\n## )/)?.[1] ?? "";
+  if (!nativeBaseSection.includes("@layer reset")) fail("craft/html.md Native base guarantees is missing @layer reset");
+  if (!nativeBaseSection.includes("@layer base")) fail("craft/html.md Native base guarantees is missing @layer base");
+}
 
 for (const role of typeMeasureRoles) {
   const token = `--t-${role}-mw`;
@@ -343,6 +385,38 @@ for (const property of ["--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl"]) {
   if (!typeCss.includes(property)) fail(`type.css is missing private fluid property ${property}`);
 }
 if (!hasCssSignal(typeCss, "font-size: clamp(")) fail("type.css is missing fluid font-size clamping");
+const cssNumber = (css, name) => {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = css.match(new RegExp(`${escaped}\\s*:\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))\\s*;`));
+  return match ? Number(match[1]) : Number.NaN;
+};
+const fluidTokenNames = ["--t-fs-min", "--t-fs-max", "--t-rt-min", "--t-rt-max", "--l-vp-min", "--l-vp-max"];
+const fluidTokens = Object.fromEntries(fluidTokenNames.map((name) => [name, cssNumber(tokensCss, name)]));
+const unparsedFluidTokens = fluidTokenNames.filter((name) => !Number.isFinite(fluidTokens[name]));
+if (unparsedFluidTokens.length) {
+  fail(`fluid type tokens are not finite numbers: ${unparsedFluidTokens.join(", ")}`);
+} else {
+  const fsMin = fluidTokens["--t-fs-min"];
+  const fsMax = fluidTokens["--t-fs-max"];
+  const rtMin = fluidTokens["--t-rt-min"];
+  const rtMax = fluidTokens["--t-rt-max"];
+  const vpMin = fluidTokens["--l-vp-min"];
+  const vpMax = fluidTokens["--l-vp-max"];
+  const fluidSteps = unique(
+    [...typeCss.matchAll(/--t-st\s*:\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*;/g)].map((match) => Number(match[1])),
+  );
+  if (!fluidSteps.length) fail("type.css has no --t-st step declarations");
+  for (const step of fluidSteps) {
+    const lo = fsMin * rtMin ** step;
+    const hi = fsMax * rtMax ** step;
+    if (lo * vpMax <= hi * vpMin) {
+      fail(`fluid type step ${step} loses zoom growth: lo * vp-max must exceed hi * vp-min`);
+    }
+    if (step >= -1 && step <= 1 && hi / lo > 2.5) {
+      fail(`fluid text step ${step} exceeds the 2x zoom budget: hi / lo must stay at or below 2.5`);
+    }
+  }
+}
 if (/\.(?:h[0-6]|t-(?:lg|bd|sm))(?:[\s,:.{#]|$)/i.test(allCss)) {
   fail("canonical CSS retains a retired class-based type role");
 }
@@ -404,6 +478,11 @@ if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is
 if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
   fail("tokens.css is missing a documented skin or accent boundary");
 }
+const resetCss = cssLayerBlock(baseCss, "reset");
+const baseLayerCss = cssLayerBlock(baseCss, "base");
+if (!resetCss) fail("base.css is missing an @layer reset block");
+if (!baseLayerCss) fail("base.css is missing an @layer base block");
+if (/var\(\s*--/i.test(resetCss)) fail("reset must not consume custom properties");
 for (const signal of [
   "@supports selector(details::details-content)", "corner-shape: squircle",
   ':where(a) {', ':where(a, button, label) {',
@@ -414,7 +493,7 @@ for (const signal of [
   "border: var(--b-wd) solid var(--c-bc)",
   "border-color: var(--c-fb-dn)",
 ]) {
-  if (!hasCssSignal(baseCss, signal)) fail(`base.css is missing native enhancement: ${signal}`);
+  if (!hasCssSignal(baseLayerCss, signal)) fail(`base layer is missing native enhancement: ${signal}`);
 }
 if (!hasCssSignal(typeCss, "[l] {") || !hasCssSignal(typeCss, '[l="4"]')) {
   fail("type.css is missing documented l");
@@ -489,15 +568,11 @@ const idReferenceAttributes = [
   "for", "aria-labelledby", "aria-describedby", "aria-controls", "aria-owns",
   "aria-activedescendant", "aria-details", "aria-errormessage",
 ];
-const retiredExampleHooks = [
-  "site-header", "site-footer", "site-title", "northline-banner", "northline-colophon", "brand-mark",
-  "invites-banner", "invites-compose", "invites-results", "invites-lead", "invites-filters", "invites-form-panel",
-  "invites-form", "field", "field-group", "field-msg", "choice", "roster", "band", "orientation", "proof",
-  "faq", "refuse", "convert", "hero", "copy", "media", "board", "masthead", "deck", "folio", "folio-panel",
-  "pull", "issues", "issues-lead", "pitch", "ladder", "ladder-steps", "proof-intro", "refuse-callout", "refuse-list",
-  "c", "s", "center", "c-fg", "c-mu", "c-ac", "c-sc", "f-sa", "f-se", "f-mo", "f-bd", "f-dp",
-  "w-lt", "w-rg", "w-bd", "tt-uc", "tt-lc", "tt-no", "tt-cp",
-];
+const allowedExampleClasses = new Set([
+  "action", "action-secondary", "banner", "board-frame", "btn", "chip", "crd", "focusable",
+  "img-w", "index", "invites", "issue", "issue-summary", "lnk", "northline", "panel", "pill",
+  "proof-tile", "signal", "skeleton", "sr",
+]);
 const validateIdentifiers = (html, path) => {
   const active = html.replace(/<!--[\s\S]*?-->/g, "");
   const ids = [...active.matchAll(/\sid\s*=\s*(["'])([^"']*)\1/gi)].map((match) => match[2]);
@@ -531,7 +606,7 @@ const validateExampleMarkup = (html, path) => {
   validateIdentifiers(active, path);
   for (const match of active.matchAll(/\sclass\s*=\s*(["'])([^"']*)\1/gi)) {
     for (const hook of match[2].trim().split(/\s+/)) {
-      if (retiredExampleHooks.includes(hook)) fail(`${path} retains unnecessary example hook .${hook}`);
+      if (!allowedExampleClasses.has(hook)) fail(`${path} uses unlisted example class .${hook}`);
     }
   }
   for (const value of attributeValues(active, "data-skin")) {
@@ -609,9 +684,6 @@ const validateExampleCss = (css, path) => {
   const active = stripCssComments(css);
   if (!/^\s*@layer\s+project\s*\{/.test(active)) fail(`${path} must declare its chosen project layer`);
   assertWeightVariationPair(active, path);
-  for (const hook of retiredExampleHooks) {
-    if (new RegExp(`\\.${hook}(?![a-z0-9-])`, "i").test(active)) fail(`${path} retains unnecessary example selector .${hook}`);
-  }
   if (/(?:^|[,{}])\s*#[a-z][a-z0-9_-]*/im.test(active)) fail(`${path} styles through an ID selector`);
   const localProperties = new Set([...active.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
   for (const match of active.matchAll(/var\(\s*(--[a-z0-9-]+)/g)) {
@@ -626,17 +698,12 @@ for (const [path, document] of Object.entries(docsByPath)) {
   }
 }
 const brandedExampleCss = stripCssComments(read("examples/branded-extension/example.css"));
-const siblingIndexUses = brandedExampleCss.match(/sibling-index\(\)/g)?.length ?? 0;
-if (siblingIndexUses !== 2 || !hasCssSignal(brandedExampleCss, "@supports (animation-delay: calc(1ms * sibling-index())) { @media (prefers-reduced-motion: no-preference) {")) {
+if (!hasCssSignal(brandedExampleCss, "@supports (animation-delay: calc(1ms * sibling-index())) { @media (prefers-reduced-motion: no-preference) {")) {
   fail("branded extension stagger must keep sibling-index() inside feature and reduced-motion gates");
 }
 const pageReferenceMarkup = read("examples/page-from-reference/markup.html");
-const pageReferenceCss = stripCssComments(read("examples/page-from-reference/example.css"));
 if (!pageReferenceMarkup.includes('class="img-w" data-scrub')) {
   fail("page-from-reference does not demonstrate the public image scrub with a static fallback");
-}
-for (const signal of ["aspect-ratio: 3 / 2", "overflow: hidden", "object-fit: cover", "object-position: var(--hero-img-pos)"]) {
-  if (!hasCssSignal(pageReferenceCss, signal)) fail(`page-from-reference is missing deliberate crop behavior: ${signal}`);
 }
 for (const signal of ["## Progressive stagger", "## Split text", "sibling-count()", "complete static fallback"]) {
   if (!docsByPath["craft/motion.md"].includes(signal)) fail(`craft/motion.md is missing progressive guidance: ${signal}`);

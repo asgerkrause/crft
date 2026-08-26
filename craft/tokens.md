@@ -21,6 +21,8 @@ Use the first complete option:
 
 Do not mirror every literal as a token. Do not use palette swatches where a semantic role exists. A token name must preserve semantic indirection and remain compatible with its complete family.
 
+When a value is a relationship among existing tokens, write `calc()`. Do not add a public token that only restates that math. A page chrome band is `calc((var(--l-bl-y) * 2) + var(--l-hh))`, not `--page-chrome`. Add a token only when the job is independent.
+
 Projects own copied token values. Put base brand values in the copied `styles/layers/tokens.css`. Keep campaign-only or component-only variation at its narrowest project boundary.
 
 ## Family grammar

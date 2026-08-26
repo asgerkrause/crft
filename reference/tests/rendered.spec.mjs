@@ -65,6 +65,43 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
   expect(midpoint).toBeLessThan(maximum.override);
 });
 
+test("fluid type doubles with root font size at the clamp ends", async ({ page }) => {
+  const readSizes = () => page.evaluate(() => ({
+    body: Number.parseFloat(getComputedStyle(document.body).fontSize),
+    heading: Number.parseFloat(getComputedStyle(document.querySelector("[data-fixture=\"type-semantic-heading\"]")).fontSize),
+  }));
+  const zoomRoot = () => page.evaluate(() => {
+    document.documentElement.style.fontSize = "32px";
+  });
+  const resetRoot = () => page.evaluate(() => {
+    document.documentElement.style.fontSize = "";
+  });
+
+  await page.setViewportSize({ width: 400, height: 900 });
+  await page.goto("/#long-content");
+  const atMin = await readSizes();
+  await zoomRoot();
+  const atMinZoomed = await readSizes();
+  expect(Math.abs(atMinZoomed.body - atMin.body * 2)).toBeLessThanOrEqual(0.5);
+  expect(atMinZoomed.heading / atMin.heading).toBeGreaterThanOrEqual(1.9);
+
+  await resetRoot();
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const atMax = await readSizes();
+  await zoomRoot();
+  const atMaxZoomed = await readSizes();
+  expect(atMaxZoomed.body / atMax.body).toBeGreaterThanOrEqual(1.3);
+  expect(atMaxZoomed.heading / atMax.heading).toBeGreaterThanOrEqual(1.3);
+
+  await resetRoot();
+  await page.setViewportSize({ width: 1000, height: 900 });
+  const atMid = await readSizes();
+  await zoomRoot();
+  const atMidZoomed = await readSizes();
+  expect(atMidZoomed.body / atMid.body).toBeGreaterThanOrEqual(1.3);
+  expect(atMidZoomed.heading / atMid.heading).toBeGreaterThanOrEqual(1.3);
+});
+
 test("keyboard order follows source order despite visual reordering", async ({ page }) => {
   await page.goto("/#visual-order-focus");
   const grid = fixture(page, "visual-order-focus");

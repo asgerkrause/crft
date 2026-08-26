@@ -64,22 +64,34 @@ A skip link justifies a target ID on `main`. An explicit `label[for]` justifies 
 
 ## Native base guarantees
 
-`styles/layers/base.css` owns `@layer reset` then `@layer base`. Reset only neutralizes the user agent. Base supplies these bounded defaults:
+`styles/layers/base.css` owns `@layer reset` then `@layer base`. Reset only neutralizes the user agent and consumes no tokens. Base supplies native defaults that may use public tokens.
 
-| Area                | Guarantee                                                                                                                                                                                                         |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Box and document    | Border-box sizing, zero default spacing, minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, text-size control, and font smoothing |
-| Active canvas       | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors                                                                                                                |
-| Controls            | Font, color, letter spacing, text transform, native button appearance, minimal field and button chrome, invalid border color, muted disabled text, vertical textarea resize, content-driven textarea field sizing, text selection, and touch manipulation |
-| Media and data      | Responsive images, video, canvas, and SVG; automatic image/video height; visible SVG overflow; collapsed table borders                                                                                            |
-| Lists and links     | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-variation-settings` transitions, and `aria-current="page"` is visible without color alone |
-| Interaction         | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, target scroll offset, and transparent tap highlight                                              |
-| Hidden and disabled | `[hidden]` cannot be overridden by ordinary display rules. Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
-| Dialog              | Unconstrained dialog size, inherited color, and semantic dark backdrop                                                                                                                                            |
-| Disclosure          | Native `details` remains operable. When `::details-content` is supported, closed content animates with motion roles                                                                                                |
-| Corners             | When `corner-shape` is supported, every box uses a squircle. The shape is visible only where radius exists                                                                                                        |
-| Text details        | Strong weight, small text role, subscript and superscript positioning, monospace code elements, code treatment, abbreviation underline metrics, placeholder color, and progress alignment                         |
-| Structural defaults | Borderless fieldsets and iframes, and inherited active colors for selection and emphasis. Page-landmark overflow and view-transition names belong to [`layout.md`](layout.md)                                     |
+Reset:
+
+| Area | Guarantee |
+| --- | --- |
+| Box | Border-box sizing, zero default spacing, and `min-width: 0` |
+| Document quirks | No text-size adjustment and a transparent tap highlight |
+| Control strip | Inherited font, color, letter spacing, and line height; zero control radius; no forced text transform on `button` and `select`; restored selection on `input` and `textarea`; vertical textarea resize |
+| Media and data | Block images, video, canvas, and SVG; automatic image and video height; visible SVG overflow; collapsed table borders |
+| Structural strip | Borderless fieldsets and iframes, subscript and superscript positioning, progress alignment, unconstrained dialog size, and `[hidden]` that ordinary display rules cannot override |
+
+Base:
+
+| Area | Guarantee |
+| --- | --- |
+| Document | Minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, hanging punctuation, and font smoothing |
+| Active canvas | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors |
+| Controls | Native button appearance, start-aligned control text, no hanging punctuation on controls, no text selection on `button`, minimal field and button chrome, invalid border color, muted disabled text, content-driven textarea field sizing, and touch manipulation |
+| Lists and links | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-variation-settings` transitions, and `aria-current="page"` is visible without color alone |
+| Interaction | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, and target scroll offset |
+| Hidden and disabled | Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
+| Dialog | Inherited color and a semantic dark backdrop |
+| Disclosure | Native `details` remains operable. When `::details-content` is supported, closed content animates with motion roles |
+| Corners | When `corner-shape` is supported, every box uses a squircle. The shape is visible only where radius exists |
+| Text details | Strong weight, small text role, monospace code elements, code treatment, abbreviation underline metrics, and placeholder color |
+
+Page-landmark overflow and view-transition names belong to [`layout.md`](layout.md).
 
 Unsupported properties are ignored by the browser while the native element remains usable. These rules improve a correct element. They do not make an incorrect element semantic or accessible.
 

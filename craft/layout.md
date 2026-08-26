@@ -100,7 +100,7 @@ Do not put radius, crop, or parallax on the image without a frame. Image scrub i
 
 ## Property form
 
-Use padding and margin shorthand when one declaration controls multiple sides. In two-value shorthand, the first value controls top and bottom and the second controls left and right. Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` when one physical side changes.
+Use padding and margin shorthand when one declaration controls multiple sides. In two-value shorthand, the first value controls top and bottom and the second controls left and right. Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` when one physical side changes. Never use the `*-block-start`, `*-block-end`, `*-inline-start`, or `*-inline-end` single-side longhands; one physical side uses its physical name.
 
 ## Spacing ownership
 

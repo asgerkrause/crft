@@ -1,0 +1,10 @@
+{
+  "name": "crft",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-system.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "contract": "node scripts/emit-contract.mjs"
+  }
+}

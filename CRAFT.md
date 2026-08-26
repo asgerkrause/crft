@@ -58,18 +58,9 @@ CRFT is the system. `CRAFT.md` is this router. `craft/` holds topic owners.
 
 ## Decisions
 
-CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS system, routed guidance, copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Adoption remains copy-and-own and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
+CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS system, routed guidance, copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption remains copy-and-own and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
 
-Use the first complete option:
-
-1. Existing coherent project owner.
-2. Semantic HTML and native behavior.
-3. Existing public CRFT API.
-4. Public token in project CSS.
-5. Scoped token override.
-6. One direct project rule.
-7. Small JavaScript behavior.
-8. Shared CRFT API after unrelated consumers prove the role.
+Use the extension order owned by [`craft/adopt.md`](craft/adopt.md): semantic HTML and existing owners before public CRFT API, public tokens before scoped overrides, and one direct project rule before any new shared API.
 
 Keep DOM, reading, heading, and keyboard order meaningful without CSS. Add an ID only when a fragment, native or ARIA relationship, behavior, integration, or stable external identity needs it. Name a section as a region only when that landmark improves navigation.
 

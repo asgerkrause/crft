@@ -16,7 +16,7 @@ This repository loads `styles/global.css` once. Consumers copy selected `layers/
 @layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
-- `base.css`: `@layer reset` then `@layer base`. Neutralize the user agent, then native defaults, focus, active colors, disclosure animation, and squircle corners.
+- `base.css`: `@layer reset` then `@layer base`. Reset strips the user agent without tokens. Base supplies native defaults, focus, active colors, disclosure animation, and squircle corners.
 - `tokens.css`: all public tokens, semantic colors, skins, scales, and reduced motion.
 - `fonts.css`: optional SNZ `@font-face` rules in `@layer type`.
 - `type.css`: type roles, `t` flags, and `l`.
@@ -95,7 +95,7 @@ node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
 node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-Ask which layers to copy. The copier writes those layer files and refuses conflicts. It never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional.
+Ask which layers to copy. The copier writes those layer files plus `layers/crft-manifest.json` (revision, hashes, contract snapshot) and refuses conflicts. It never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
 
 Preserve semantic elements, native controls, visible focus, labels, names, source order, screen-reader recovery, contrast, reduced motion, and unsupported-feature fallbacks.
 
