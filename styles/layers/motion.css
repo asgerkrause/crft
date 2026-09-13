@@ -101,4 +101,22 @@
       }
     }
   }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes m-header-elevate {
+        to {
+          background: color-mix(in srgb, var(--c-bg) 85%, transparent);
+          backdrop-filter: blur(8px);
+          border-bottom: var(--b-wd) solid var(--c-bc);
+        }
+      }
+
+      body > header {
+        animation: m-header-elevate linear both;
+        animation-timeline: scroll();
+        animation-range: 0 3rem;
+      }
+    }
+  }
 }

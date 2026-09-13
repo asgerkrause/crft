@@ -119,6 +119,14 @@
     --c-sf: var(--c-bg-base);
   }
 
+  @media (prefers-contrast: more) {
+    [data-skin],
+    :root {
+      --c-mu: color-mix(in srgb, var(--c-fg) 75%, transparent);
+      --c-bc: color-mix(in srgb, var(--c-fg) 50%, transparent);
+    }
+  }
+
   [data-accent] {
     --c-ac-bg: color-mix(in srgb, var(--c-ac) 15%, var(--c-bg));
     --c-ac-fg: color-mix(in srgb, var(--c-ac) 25%, var(--c-fg));

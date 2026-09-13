@@ -6,3 +6,4 @@ reference/dist/
 reference/.astro/
 reference/test-results/
 reference/playwright-report/
+dist/

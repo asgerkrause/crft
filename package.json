@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "node scripts/build-dist.mjs",
     "check": "node scripts/check-system.mjs",
     "test": "node --test scripts/*.test.mjs",
     "contract": "node scripts/emit-contract.mjs"

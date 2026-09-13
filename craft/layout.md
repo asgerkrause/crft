@@ -26,6 +26,7 @@ Use page chrome as direct body children unless project truth requires another co
       <div c>
         <div s>
           <h2>Work</h2>
+          <p>Text</p>
           ...
         </div>
       </div>
@@ -59,17 +60,19 @@ Choose the smallest container that preserves the content relationship. A wide co
 
 `s` creates a vertical flow with the public gap role. Flags compose one relationship. At most one gap step. Empty `s` uses `--g`.
 
-| Hook | Operation |
-| --- | --- |
-| `s` | Vertical stack |
-| `s="h"` | Horizontal stack |
-| `s="w"` | Allow wrapping |
-| `s="ct"` | Center children on the cross axis |
+| Hook     | Operation                                             |
+| -------- | ----------------------------------------------------- |
+| `s`      | Vertical stack                                        |
+| `s="h"`  | Horizontal stack                                      |
+| `s="w"`  | Allow wrapping                                        |
+| `s="ct"` | Center children on the cross axis                     |
 | `s="sb"` | Distribute available main-axis space between children |
-| `s="xs"` | Tight gap |
-| `s="sm"` | Small gap |
-| `s="lg"` | Large gap |
-| `s="xl"` | Extra-large gap |
+| `s="xs"` | Tight gap                                             |
+| `s="sm"` | Small gap                                             |
+| `s="lg"` | Large gap                                             |
+| `s="xl"` | Extra-large gap                                       |
+| `s="sc"` | Sticky children                                       |
+| `s="st"` | Progressive stagger                                   |
 
 `sm` and `lg` on `s` select a gap step. On `c` they select a measure. Do not put structural `--s` on a stack. The parent `[c]` already owns that rhythm.
 
@@ -92,7 +95,7 @@ Use a stack when one axis and one gap describe the relationship. Use grid for re
 
 ```html
 <figure class="img-w">
-  <img src="work.jpg" alt="Finished interface at the results step">
+  <img src="work.jpg" alt="Finished interface at the results step" />
 </figure>
 ```
 

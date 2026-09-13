@@ -1,6 +1,10 @@
 /* Type: roles, line clamp, and type flags. Optional faces live in fonts.css. */
 @layer type {
-  :where(body, h1, h2, h3, h4, h5, h6, [t]) {
+  :where(
+    body, h1, h2, h3, h4, h5, h6,
+    [t~="h0"], [t~="h1"], [t~="h2"], [t~="h3"], [t~="h4"], [t~="h5"], [t~="h6"],
+    [t~="lg"], [t~="bd"], [t~="sm"]
+  ) {
     --t-st: 0;
     --t-fs-lo: calc(var(--t-fs-min) * pow(var(--t-rt-min), var(--t-st)));
     --t-fs-hi: calc(var(--t-fs-max) * pow(var(--t-rt-max), var(--t-st)));
@@ -12,7 +16,11 @@
   /* Roles trim to cap height and alphabetic baseline where supported, so stack and
      grid gaps measure optical text edges instead of line-box leading. */
   @supports (text-box: trim-both cap alphabetic) {
-    :where(h1, h2, h3, h4, h5, h6, [t]) {
+    :where(
+      h1, h2, h3, h4, h5, h6,
+      [t~="h0"], [t~="h1"], [t~="h2"], [t~="h3"], [t~="h4"], [t~="h5"], [t~="h6"],
+      [t~="lg"], [t~="bd"], [t~="sm"]
+    ) {
       text-box: trim-both cap alphabetic;
     }
   }

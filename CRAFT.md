@@ -98,6 +98,8 @@ Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t
 | `s="sm"` | layout | Small stack gap |
 | `s="lg"` | layout | Large stack gap |
 | `s="xl"` | layout | Extra-large stack gap |
+| `s="sc"` | layout | Sticky children |
+| `s="st"` | layout | Progressive stagger |
 | `container` | layout | Named query context |
 | `.img-w` | layout | Media frame |
 | `t` | type | Role plus optional color, transform, weight, and family flags |

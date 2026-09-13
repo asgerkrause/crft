@@ -86,7 +86,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  :where([hidden]) {
+  :where([hidden]:not([hidden="until-found"])) {
     display: none !important;
   }
 }
@@ -228,11 +228,52 @@
     cursor: not-allowed;
   }
 
-  :where(dialog) {
+  :where(dialog, [popover]) {
     color: inherit;
+    transition:
+      opacity var(--m-td) var(--m-tf-o),
+      translate var(--m-td) var(--m-tf-o),
+      display var(--m-td) allow-discrete,
+      overlay var(--m-td) allow-discrete;
+    opacity: 0;
+    translate: 0 0.75rem;
 
     &::backdrop {
       background: color-mix(in srgb, var(--c-sw-da) 80%, transparent);
+      transition:
+        opacity var(--m-td) var(--m-tf-o),
+        display var(--m-td) allow-discrete,
+        overlay var(--m-td) allow-discrete;
+      opacity: 0;
+    }
+  }
+
+  :where(dialog[open], [popover]:popover-open) {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @starting-style {
+    :where(dialog[open], [popover]:popover-open) {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+
+  :where(dialog:modal)::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    :where(dialog:modal)::backdrop {
+      opacity: 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :where(button, input, select, textarea, [role="button"]) {
+      border: 1px solid ButtonText;
+      outline-color: Highlight;
     }
   }
 

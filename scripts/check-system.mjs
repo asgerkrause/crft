@@ -68,7 +68,7 @@ const typeTransforms = ["uc", "lc", "cp", "no"];
 const typeWeightFlags = ["lt", "rg", "bo"];
 const typeFamilyFlags = ["sa", "se", "mo", "fb", "dp"];
 const typeMeasureRoles = [...typeRoles];
-const stackFlags = ["h", "w", "ct", "sb"];
+const stackFlags = ["h", "w", "ct", "sb", "sc", "st"];
 const stackGaps = ["xs", "sm", "lg", "xl"];
 const containerMeasures = ["sm", "lg"];
 const containerFlags = ["ct"];
@@ -229,7 +229,7 @@ const documentedHooks = {
   "craft/type.md": ["t", "l"],
   "craft/layout.md": [
     "c", "c=\"sm\"", "c=\"lg\"", "c=\"ct\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"",
-    "s=\"xs\"", "s=\"sm\"", "s=\"lg\"", "s=\"xl\"", "container", ".img-w",
+    "s=\"xs\"", "s=\"sm\"", "s=\"lg\"", "s=\"xl\"", "s=\"sc\"", "s=\"st\"", "container", ".img-w",
   ],
   "craft/grid.md": ["g", "x", "y", "o", "a-sm", "a", "a-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable"],
@@ -402,11 +402,11 @@ for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff
     fail(`${family} must load ../${file} with a registered 100 900 font-weight range`);
   }
 }
-if (!hasCssSignal(typeCss, ':where(body, h1, h2, h3, h4, h5, h6, [t]) {')) {
+if (!hasCssSignal(typeCss, ':where(body, h1, h2, h3, h4, h5, h6, [t~="h0"]')) {
   fail("type.css is missing the bounded fluid type calculation boundary");
 }
 for (const role of typeRoles) {
-  if (!hasCssSignal(typeCss, `[t~="${role}"]`)) fail(`type.css is missing documented t value ${role}`);
+  if (!hasCssSignal(typeCss, `[t~="${role}"] {`)) fail(`type.css is missing documented t value ${role}`);
 }
 for (const heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
   if (!hasCssSignal(typeCss, `${heading}, [t~="${heading}"] {`)) fail(`type.css is missing native ${heading} mapping`);

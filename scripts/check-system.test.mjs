@@ -40,7 +40,7 @@ function replace(root, relativePath, before, after) {
   const path = join(root, relativePath);
   const source = readFileSync(path, "utf8");
   assert.ok(source.includes(before), `${relativePath} fixture signal is missing`);
-  writeFileSync(path, source.replace(before, after));
+  writeFileSync(path, source.replaceAll(before, after));
 }
 
 function runCheck(root) {
