@@ -1,9 +1,5 @@
 /* Layout: page chrome, containers, stacks, and the image frame. */
 @layer layout {
-  html {
-    scroll-padding-top: var(--l-hh);
-  }
-
   body {
     display: flex;
     flex-direction: column;
@@ -15,10 +11,6 @@
     }
 
     >header {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      min-height: var(--l-hh);
       padding-block: var(--p);
       view-transition-name: header;
     }

@@ -82,7 +82,7 @@
       to {
         opacity: 0;
         transform: translate(var(--m-vt-o-x), var(--m-vt-o-y));
-        filter: blur(var(--m-blur));
+        filter: blur(var(--m-vt-blur));
       }
     }
 
@@ -90,7 +90,7 @@
       from {
         opacity: 0;
         transform: translate(var(--m-vt-i-x), var(--m-vt-i-y));
-        filter: blur(var(--m-blur));
+        filter: blur(var(--m-vt-blur));
       }
     }
 
@@ -99,24 +99,6 @@
       ::view-transition-old(*),
       ::view-transition-new(*) {
         animation: none;
-      }
-    }
-  }
-
-  @supports (animation-timeline: scroll()) {
-    @media (prefers-reduced-motion: no-preference) {
-      @keyframes m-header-elevate {
-        to {
-          background: color-mix(in srgb, var(--c-bg) 85%, transparent);
-          backdrop-filter: blur(var(--m-blur-bg));
-          border-bottom: var(--b-wd) solid var(--c-bc);
-        }
-      }
-
-      body > header {
-        animation: m-header-elevate linear both;
-        animation-timeline: scroll();
-        animation-range: 0 var(--l-hh);
       }
     }
   }

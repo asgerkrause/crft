@@ -53,7 +53,7 @@ The names between the index markers must exactly match declarations in `styles/l
 
 | Tokens | Job |
 | --- | --- |
-| `--l-hh` | Sticky header height; sticky stacks, header elevation, and project composition offset from it |
+| `--l-hh` | Shared header-height role; sticky stacks and project composition offset from it |
 | `--l-ch` | Native control height for buttons, inputs, selects, and textareas |
 | `--l-vp-min`, `--l-vp-max` | Shared minimum and maximum viewport bounds for responsive formulas |
 | `--l-cw` | Default content measure; narrow and wide `c` variants derive from it |
@@ -143,9 +143,8 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--m-tf-i`, `--m-tf-o`, `--m-tf-io` | In, out, and in-out timing functions |
 | `--m-tf-g`, `--m-tf-s` | Glide and spring-like timing functions |
 | `--m-td-sf`, `--m-td-f`, `--m-td`, `--m-td-s`, `--m-td-ss` | Successive motion durations from shortest to longest |
-| `--m-blur`, `--m-blur-bg` | Motion blur for view transitions and backdrop blur for the elevated header; both collapse to zero under reduced transparency |
 | `--m-lift` | Entry offset for dialogs and popovers |
-| `--m-vt-i-y`, `--m-vt-i-x`, `--m-vt-o-y`, `--m-vt-o-x`, `--m-vt-d` | Page view-transition incoming and outgoing offsets and duration |
+| `--m-vt-blur`, `--m-vt-i-y`, `--m-vt-i-x`, `--m-vt-o-y`, `--m-vt-o-x`, `--m-vt-d` | Page view-transition blur, incoming and outgoing offsets, and duration; blur is zero under reduced transparency |
 
 <!-- public-token-index:end -->
 

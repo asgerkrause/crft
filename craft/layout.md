@@ -39,7 +39,7 @@ Use page chrome as direct body children unless project truth requires another co
 </body>
 ```
 
-`body > header`, `body > main > section`, and `body > footer` receive shared block padding and inline bleed from `layout.css`. The header is sticky at the top, at least `--l-hh` tall, and uses compact block padding; the document's scroll padding, sticky stacks, and header elevation ([`motion.md`](motion.md)) offset from that same token, so anchors and focused controls land below it. The footer preserves the larger lead-in and uses compact bottom padding. `main` clips horizontal overflow and, with the header and footer, receives a view-transition name. Section identity and region naming follow `html.md`; layout does not require either.
+`body > header`, `body > main > section`, and `body > footer` receive shared block padding and inline bleed from `layout.css`. The header uses compact block padding and stays in flow; a sticky or elevated header is a project recipe in [`motion.md`](motion.md), and `--l-hh` is the shared height it and sticky stacks offset from. The footer preserves the larger lead-in and uses compact bottom padding. `main` clips horizontal overflow and, with the header and footer, receives a view-transition name. Section identity and region naming follow `html.md`; layout does not require either.
 
 ## Container
 

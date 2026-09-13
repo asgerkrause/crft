@@ -265,8 +265,7 @@
 
     --m-lift: 0.75rem;
 
-    --m-blur: .5em;
-    --m-blur-bg: 8px;
+    --m-vt-blur: .5em;
     --m-vt-i-y: 1em;
     --m-vt-i-x: 0em;
     --m-vt-o-y: -1em;
@@ -294,8 +293,7 @@
     }
 
     @media (prefers-reduced-transparency: reduce) {
-      --m-blur: 0;
-      --m-blur-bg: 0;
+      --m-vt-blur: 0;
     }
   }
 }
