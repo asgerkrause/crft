@@ -39,7 +39,7 @@ Use page chrome as direct body children unless project truth requires another co
 </body>
 ```
 
-`body > header`, `body > main > section`, and `body > footer` receive shared block padding and inline bleed from `layout.css`. The header uses compact block padding. The footer preserves the larger lead-in and uses compact bottom padding. `main` clips horizontal overflow and, with the header and footer, receives a view-transition name. Section identity and region naming follow `html.md`; layout does not require either.
+`body > header`, `body > main > section`, and `body > footer` receive shared block padding and inline bleed from `layout.css`. The header is sticky at the top, at least `--l-hh` tall, and uses compact block padding; the document's scroll padding, sticky stacks, and header elevation ([`motion.md`](motion.md)) offset from that same token, so anchors and focused controls land below it. The footer preserves the larger lead-in and uses compact bottom padding. `main` clips horizontal overflow and, with the header and footer, receives a view-transition name. Section identity and region naming follow `html.md`; layout does not require either.
 
 ## Container
 
@@ -76,6 +76,8 @@ Choose the smallest container that preserves the content relationship. A wide co
 
 `sm` and `lg` on `s` select a gap step. On `c` they select a measure. Do not put structural `--s` on a stack. The parent `[c]` already owns that rhythm.
 
+`s="sc"` makes every child sticky below the header, each one `--p-sm` lower than the previous, so stacked cards pile as the page scrolls. `s="st"` gives each child a transition delay that grows with source order; the children still need a project transition to run. Both use `sibling-index()`, which is not Baseline, so without support the stack is an ordinary stack, and stagger is also removed under reduced motion.
+
 ```html
 <section>
   <div c="sm">
@@ -87,7 +89,7 @@ Choose the smallest container that preserves the content relationship. A wide co
 </section>
 ```
 
-Use a stack when one axis and one gap describe the relationship. Use grid for repeated columns or spans. Use direct project CSS for overlap, intrinsic tracks, sticky regions, or another local composition.
+Use a stack when one axis and one gap describe the relationship. Use grid for repeated columns or spans. Use direct project CSS for overlap, intrinsic tracks, or another local composition.
 
 ## Image frame
 

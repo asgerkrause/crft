@@ -62,11 +62,11 @@
   }
 
   :where(sub) {
-    inset-block-end: -0.25em;
+    bottom: -0.25em;
   }
 
   :where(sup) {
-    inset-block-start: -0.5em;
+    top: -0.5em;
   }
 
   :where(progress) {
@@ -112,7 +112,7 @@
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--c-fg) 20%, transparent) transparent;
+    scrollbar-color: var(--c-bc) transparent;
   }
 
   :where(body) {
@@ -133,7 +133,7 @@
 
   :where(button, [type="button"], [type="reset"], [type="submit"]) {
     appearance: button;
-    min-height: 2.75rem;
+    min-height: var(--l-ch);
     padding: var(--p-sm) var(--p);
     color: inherit;
     background: var(--c-bg);
@@ -157,7 +157,7 @@
     select,
     textarea
   ) {
-    min-height: 2.75rem;
+    min-height: var(--l-ch);
     padding: var(--p-sm) var(--p);
     color: inherit;
     background: var(--c-bg);
@@ -208,6 +208,12 @@
     text-decoration: none;
   }
 
+  :where(p, li, dd, td, figcaption) :where(a) {
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.15em;
+  }
+
   :where(a, button, label) {
     transition-property: color, background, border, transform, opacity, font-variation-settings;
     transition-duration: var(--m-td);
@@ -236,10 +242,10 @@
       display var(--m-td) allow-discrete,
       overlay var(--m-td) allow-discrete;
     opacity: 0;
-    translate: 0 0.75rem;
+    translate: 0 var(--m-lift);
 
     &::backdrop {
-      background: color-mix(in srgb, var(--c-sw-da) 80%, transparent);
+      background: var(--c-sm);
       transition:
         opacity var(--m-td) var(--m-tf-o),
         display var(--m-td) allow-discrete,
@@ -256,7 +262,7 @@
   @starting-style {
     :where(dialog[open], [popover]:popover-open) {
       opacity: 0;
-      translate: 0 0.75rem;
+      translate: 0 var(--m-lift);
     }
   }
 
@@ -272,7 +278,7 @@
 
   @media (forced-colors: active) {
     :where(button, input, select, textarea, [role="button"]) {
-      border: 1px solid ButtonText;
+      border: var(--b-wd) solid ButtonText;
       outline-color: Highlight;
     }
   }
@@ -283,8 +289,8 @@
   }
 
   :focus-visible {
-    outline: max(2px, var(--b-wd)) solid currentColor;
-    outline-offset: 0.2em;
+    outline: max(var(--f-wd), var(--b-wd)) solid currentColor;
+    outline-offset: var(--f-of);
   }
 
   :target {
@@ -305,10 +311,9 @@
   }
 
   :where(code) {
-    background: color-mix(in srgb, var(--c-fg) 10%, transparent);
-    padding: .3em .6em;
-    border-radius: .2em;
-    line-height: 1;
+    background: var(--c-tn);
+    padding: 0 0.3em;
+    border-radius: var(--r-xs);
     font-size: 80%;
   }
 

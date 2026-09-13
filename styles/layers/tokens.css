@@ -3,6 +3,7 @@
   :root {
     /* Layout */
     --l-hh: 4rem;
+    --l-ch: 2.75rem;
     --l-vp-min: 400;
     --l-vp-max: 1600;
     --l-cw: calc(var(--l-vp-max) * 0.0625rem);
@@ -45,6 +46,10 @@
 
     /* Border */
     --b-wd: 1px;
+
+    /* Focus */
+    --f-wd: 2px;
+    --f-of: 0.2em;
 
     /* Color Swatches (Palette) */
     --c-sw-red: #f44;
@@ -90,6 +95,8 @@
     --c-sf: color-mix(in srgb, var(--c-fg) 5%, var(--c-bg));
     --c-bc: color-mix(in srgb, var(--c-fg) 25%, transparent);
     --c-mu: color-mix(in srgb, var(--c-fg) 45%, transparent);
+    --c-tn: color-mix(in srgb, var(--c-fg) 10%, transparent);
+    --c-sm: color-mix(in srgb, var(--c-sw-da) 80%, transparent);
 
     --c-ac-bg: color-mix(in srgb, var(--c-ac) 15%, var(--c-bg));
     --c-ac-fg: color-mix(in srgb, var(--c-ac) 25%, var(--c-fg));
@@ -256,7 +263,10 @@
     --m-td-s: 400ms;
     --m-td-ss: 800ms;
 
-    --m-vt-blur: .5em;
+    --m-lift: 0.75rem;
+
+    --m-blur: .5em;
+    --m-blur-bg: 8px;
     --m-vt-i-y: 1em;
     --m-vt-i-x: 0em;
     --m-vt-o-y: -1em;
@@ -281,6 +291,11 @@
       --m-td: 0.001ms;
       --m-td-s: 0.001ms;
       --m-td-ss: 0.001ms;
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      --m-blur: 0;
+      --m-blur-bg: 0;
     }
   }
 }

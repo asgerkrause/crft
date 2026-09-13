@@ -74,7 +74,7 @@ Reset:
 | Document quirks | No text-size adjustment and a transparent tap highlight |
 | Control strip | Inherited font, color, letter spacing, and line height; zero control radius; no forced text transform on `button` and `select`; restored selection on `input` and `textarea`; vertical textarea resize |
 | Media and data | Block images, video, canvas, and SVG; automatic image and video height; visible SVG overflow; collapsed table borders |
-| Structural strip | Borderless fieldsets and iframes, subscript and superscript positioning, progress alignment, unconstrained dialog size, and `[hidden]` that ordinary display rules cannot override |
+| Structural strip | Borderless fieldsets and iframes, subscript and superscript positioning, progress alignment, unconstrained dialog size, and `[hidden]` that ordinary display rules cannot override, except `hidden="until-found"`, which stays searchable |
 
 Base:
 

@@ -105,6 +105,10 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 - Using muted color as body text. `--c-mu` is a secondary tone and is not a WCAG AA body-text role.
 - Communicating state through color alone.
 
+## Contrast preferences
+
+`prefers-contrast: more` raises `--c-mu` and `--c-bc` opacity on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
+
 ## Verify
 
 Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Do not treat `--c-mu` as an AA body-text pair.

@@ -41,7 +41,7 @@
 
       [data-scrub] {
         animation-name: m-src-to, m-src-fr;
-        animation-duration: 1ms;
+        animation-duration: auto;
         animation-timing-function: linear;
         animation-fill-mode: both;
         animation-timeline: view();
@@ -82,7 +82,7 @@
       to {
         opacity: 0;
         transform: translate(var(--m-vt-o-x), var(--m-vt-o-y));
-        filter: blur(var(--m-vt-blur));
+        filter: blur(var(--m-blur));
       }
     }
 
@@ -90,13 +90,14 @@
       from {
         opacity: 0;
         transform: translate(var(--m-vt-i-x), var(--m-vt-i-y));
-        filter: blur(var(--m-vt-blur));
+        filter: blur(var(--m-blur));
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      ::view-transition-old(main),
-      ::view-transition-new(main) {
+      ::view-transition-group(*),
+      ::view-transition-old(*),
+      ::view-transition-new(*) {
         animation: none;
       }
     }
@@ -107,7 +108,7 @@
       @keyframes m-header-elevate {
         to {
           background: color-mix(in srgb, var(--c-bg) 85%, transparent);
-          backdrop-filter: blur(8px);
+          backdrop-filter: blur(var(--m-blur-bg));
           border-bottom: var(--b-wd) solid var(--c-bc);
         }
       }
@@ -115,7 +116,7 @@
       body > header {
         animation: m-header-elevate linear both;
         animation-timeline: scroll();
-        animation-range: 0 3rem;
+        animation-range: 0 var(--l-hh);
       }
     }
   }

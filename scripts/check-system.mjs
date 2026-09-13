@@ -484,7 +484,7 @@ for (const [hook, signal] of Object.entries(layoutHookSignals)) {
 }
 for (const signal of [
   ">header, >main>section, >footer { padding: var(--l-bl-y) var(--l-bl-x)",
-  ">header { padding-block: var(--p)", ">footer { padding-bottom: var(--p)",
+  ">header { position: sticky; top: 0; z-index: 1; min-height: var(--l-hh); padding-block: var(--p)", ">footer { padding-bottom: var(--p)",
   "view-transition-name: header", "view-transition-name: main", "view-transition-name: footer",
   "max-width: var(--l-cw)", "max-width: calc(var(--l-cw) / 3 * 2)",
   "max-width: calc(var(--l-cw) / 3 * 4)",

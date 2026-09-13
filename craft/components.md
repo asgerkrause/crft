@@ -51,7 +51,7 @@ Use one primary action group per decision area. Secondary actions must remain av
     align-items: center;
     justify-content: center;
     gap: var(--g-sm);
-    min-height: 2.75rem;
+    min-height: var(--l-ch);
     padding: var(--p-sm) var(--p);
     border: var(--b-wd) solid var(--c-ac);
     border-radius: var(--r);

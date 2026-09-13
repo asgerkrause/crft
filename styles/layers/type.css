@@ -33,7 +33,6 @@
     font-weight: var(--t-bd-fw);
     font-variation-settings: "wght" var(--t-bd-fw);
     text-transform: var(--t-bd-tt);
-    text-wrap: pretty;
   }
 
   p,
@@ -51,7 +50,6 @@
     font-weight: var(--t-lg-fw);
     font-variation-settings: "wght" var(--t-lg-fw);
     text-transform: var(--t-lg-tt);
-    text-wrap: pretty;
   }
 
   [t~="sm"] {
@@ -64,7 +62,6 @@
     font-weight: var(--t-sm-fw);
     font-variation-settings: "wght" var(--t-sm-fw);
     text-transform: var(--t-sm-tt);
-    text-wrap: pretty;
   }
 
   [t~="h0"] {

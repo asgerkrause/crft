@@ -186,7 +186,7 @@ test("the public token index rejects duplicate names", (t) => {
 
 test("the public token index rejects copied live values", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--l-hh` | Shared header-height role for project composition |", "| `--l-hh` | Shared header-height role set to `4rem` |");
+  replace(root, "craft/tokens.md", "| `--l-ch` | Native control height for buttons, inputs, selects, and textareas |", "| `--l-ch` | Native control height set to `2.75rem` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /duplicates a live value or formula/);
@@ -194,10 +194,10 @@ test("the public token index rejects copied live values", (t) => {
 
 test("every indexed public token requires a non-empty job", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--l-hh` | Shared header-height role for project composition |", "| `--l-hh` | |");
+  replace(root, "craft/tokens.md", "| `--l-ch` | Native control height for buttons, inputs, selects, and textareas |", "| `--l-ch` | |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /has an empty job for: --l-hh/);
+  assert.match(result.stderr, /has an empty job for: --l-ch/);
 });
 
 test("the HTML owner states the purpose-based identifier contract", (t) => {
