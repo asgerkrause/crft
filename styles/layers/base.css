@@ -245,7 +245,7 @@
     translate: 0 var(--m-lift);
 
     &::backdrop {
-      background: var(--c-sm);
+      background: color-mix(in srgb, var(--c-sw-da) 80%, transparent);
       transition:
         opacity var(--m-td) var(--m-tf-o),
         display var(--m-td) allow-discrete,
@@ -289,8 +289,8 @@
   }
 
   :focus-visible {
-    outline: max(var(--f-wd), var(--b-wd)) solid currentColor;
-    outline-offset: var(--f-of);
+    outline: max(2px, var(--b-wd)) solid currentColor;
+    outline-offset: 0.2em;
   }
 
   :target {
@@ -311,7 +311,7 @@
   }
 
   :where(code) {
-    background: var(--c-tn);
+    background: color-mix(in srgb, var(--c-fg) 10%, transparent);
     padding: 0 0.3em;
     border-radius: var(--r-xs);
     font-size: 80%;

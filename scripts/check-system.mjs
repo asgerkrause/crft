@@ -335,6 +335,15 @@ try {
 
 const publicTokens = unique([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
 const publicTokenSet = new Set(publicTokens);
+const unsizedFamilies = new Set(["--c", "--b", "--m", "--l"]);
+for (const token of publicTokens) {
+  const segments = token.split("-").slice(2);
+  const family = `--${segments[0]}`;
+  const role = segments[1];
+  if (unsizedFamilies.has(family) && ["xs", "sm", "lg", "xl", "rt"].includes(role)) {
+    fail(`${token} uses a size or ratio abbreviation in a family that has no size; see craft/tokens.md Naming and landing`);
+  }
+}
 const tokenDocument = docsByPath["craft/tokens.md"];
 const tokenIndexBlock = tokenDocument.match(/<!-- public-token-index:start -->([\s\S]*?)<!-- public-token-index:end -->/)?.[1];
 const documentedTokens = markedCodeNames(tokenDocument, "public-token-index", /`(--[a-z0-9-]+)`/g);

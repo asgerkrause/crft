@@ -673,3 +673,11 @@ test("the router ban index must stay present", (t) => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /CRAFT.md is missing the ban index/);
 });
+
+test("a size abbreviation in an unsized family fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/layers/tokens.css", "    --l-ch: 2.75rem;", "    --l-ch: 2.75rem;\n    --c-sm: red;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--c-sm uses a size or ratio abbreviation/);
+});

@@ -47,10 +47,6 @@
     /* Border */
     --b-wd: 1px;
 
-    /* Focus */
-    --f-wd: 2px;
-    --f-of: 0.2em;
-
     /* Color Swatches (Palette) */
     --c-sw-red: #f44;
     --c-sw-ora: #f60;
@@ -95,8 +91,6 @@
     --c-sf: color-mix(in srgb, var(--c-fg) 5%, var(--c-bg));
     --c-bc: color-mix(in srgb, var(--c-fg) 25%, transparent);
     --c-mu: color-mix(in srgb, var(--c-fg) 45%, transparent);
-    --c-tn: color-mix(in srgb, var(--c-fg) 10%, transparent);
-    --c-sm: color-mix(in srgb, var(--c-sw-da) 80%, transparent);
 
     --c-ac-bg: color-mix(in srgb, var(--c-ac) 15%, var(--c-bg));
     --c-ac-fg: color-mix(in srgb, var(--c-ac) 25%, var(--c-fg));

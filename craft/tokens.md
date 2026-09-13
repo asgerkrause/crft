@@ -43,6 +43,16 @@ Complete reference scale families use `xs`, `sm`, the unsuffixed anchor, `lg`, a
 
 Type-role suffixes have stable jobs: `lh` line height, `ls` letter spacing, `fw` font weight, `tt` text transform, and `mw` readable maximum measure. The complete reference derives fluid font size from shared foundations and the native or explicit `t` role; projects adopting another type strategy do not inherit that requirement.
 
+## Naming and landing
+
+A token name is `--{family}-{role}` with an optional `-{member}`: `--c-ac` is the accent source, `--c-ac-bg` its subtle background, `--t-h2-lh` the heading-two line height. Segments are two-letter abbreviations, consonants first (`bg`, `fg`, `mu`, `bc`, `ff`, `fw`, `lh`, `tf`, `td`), three when two would collide. Reuse an existing abbreviation for the same word everywhere; never reuse one for a different word. Size and ratio abbreviations keep their meaning everywhere: `sm` in `--t-sm-lh` is small text, `rt` is always a ratio. Never use `xs`, `sm`, `lg`, `xl`, or `rt` in a family that sizes nothing (color, border, motion, layout), and never use `bd` for anything but body. A name that reads as a size or a type role when it is neither is wrong; the checker fails it.
+
+Declare a new token in the `tokens.css` block that owns its family, next to its relatives. Put a scheme- or skin-dependent color under the `:root, [data-skin]` block so every canvas resets it. A private calculation property stays in its owning layer, is listed under Private state here and in `AGENTS.md`, and is never read by product CSS.
+
+A public token lands in four places or it does not land: `styles/layers/tokens.css`, the index below, the catalog in `reference/src/sections/Tokens.astro`, and any checker fixture that names it. `node scripts/check-system.mjs` and the reference build fail on the first two gaps; the fixture fails in `node --test`.
+
+Class names are three-letter consonant stems (`.btn`, `.crd`, `.lnk`, `.sr`) with `-w` for a wrapper (`.img-w`). Attribute flags are two letters (`t="sm mu"`, `s="h ct"`) and positions are digits. A project namespaces its own classes with a short prefix when they coexist with CRFT hooks.
+
 ## Public token index
 
 The names between the index markers must exactly match declarations in `styles/layers/tokens.css`. Jobs are documented here. Values remain in CSS.
@@ -73,7 +83,6 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--r-rt` | Radius scale ratio |
 | `--r`, `--r-xs`, `--r-sm`, `--r-lg`, `--r-xl` | Radius anchor and steps |
 | `--b-wd` | Shared border width |
-| `--f-wd`, `--f-of` | Focus-ring width and offset |
 
 ### Palette sources
 
@@ -101,7 +110,6 @@ The names between the index markers must exactly match declarations in `styles/l
 | `--c-bg-base`, `--c-fg-base` | Scheme-aware base canvas and foreground sources |
 | `--c-bg`, `--c-fg` | Active canvas and foreground |
 | `--c-sf`, `--c-bc`, `--c-mu` | Active surface, border, and secondary muted-content tone |
-| `--c-tn`, `--c-sm` | Inline code tint and modal scrim |
 | `--c-ac-bg`, `--c-ac-fg`, `--c-ac-bc` | Active accent’s subtle background, foreground, and border roles |
 | `--c-sc-bg`, `--c-sc-fg`, `--c-sc-bc` | Secondary accent’s subtle background, foreground, and border roles |
 | `--c-tr-bg`, `--c-tr-fg`, `--c-tr-bc` | Tertiary accent’s subtle background, foreground, and border roles |
