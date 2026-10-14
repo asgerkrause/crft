@@ -3,23 +3,23 @@ import Section from "../components/Section.astro";
 import { sections } from "../data";
 
 const scaleFamilies = [
-  { id: "spacing", title: "Spacing", prefix: "s", boxClass: "sg-measure", property: "--sg-size", ratio: "--s-rt", anchor: "--s" },
-  { id: "gap", title: "Gap", prefix: "g", boxClass: "sg-gap-box", property: "gap", ratio: "--g-rt", anchor: "--g" },
-  { id: "padding", title: "Padding", prefix: "p", boxClass: "sg-padding-box", property: "padding", ratio: "--p-rt", anchor: "--p" },
-  { id: "radius", title: "Radius", prefix: "r", boxClass: "sg-radius-box", property: "border-radius", ratio: "--r-rt", anchor: "--r" },
+  { id: "spacing", title: "Spacing", prefix: "space", boxClass: "sg-measure", property: "--sg-size", ratio: "--space-ratio", anchor: "--space" },
+  { id: "gap", title: "Gap", prefix: "gap", boxClass: "sg-gap-box", property: "gap", ratio: "--gap-ratio", anchor: "--gap" },
+  { id: "padding", title: "Padding", prefix: "padding", boxClass: "sg-padding-box", property: "padding", ratio: "--padding-ratio", anchor: "--padding" },
+  { id: "radius", title: "Radius", prefix: "radius", boxClass: "sg-radius-box", property: "border-radius", ratio: "--radius-ratio", anchor: "--radius" },
 ] as const;
 
 const variants = ["xs", "sm", "", "lg", "xl"] as const;
 ---
 
 <Section {...sections.sizes}>
-  <p slot="summary" t="mu">These rows show the public scale families. Their values and responsive formulas remain in the token source.</p>
+  <p slot="summary" class="sg-note">These rows show the public scale families. Their values and responsive formulas remain in the token source.</p>
 
   {scaleFamilies.map((family) => (
-    <article id={family.id} class="sg-scale-family" s>
+    <article id={family.id} class="s sg-scale-family">
       <header>
         <div class="sg-heading-wrap">
-          <h3 t="lg">{family.title}</h3>
+          <h3 class="lead">{family.title}</h3>
         </div>
         <p><code>{family.ratio}</code> ratio · <code>{family.anchor}</code> anchor</p>
       </header>

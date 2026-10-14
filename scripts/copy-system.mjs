@@ -5,6 +5,7 @@ import {
   lstat,
   mkdir,
   readFile,
+  readdir,
   realpath,
   rm,
   writeFile,
@@ -14,32 +15,16 @@ import { basename, dirname, isAbsolute, join, relative, resolve } from "node:pat
 import { fileURLToPath } from "node:url";
 
 const behaviorLayers = ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
-const layerDependencies = {
-  tokens: [],
-  type: ["tokens"],
-  layout: ["tokens"],
-  grid: ["tokens", "layout"],
-  base: ["tokens"],
-  motion: ["tokens", "layout"],
-  utility: [],
-};
-const importOrder = ["base", "tokens", "fonts", "type", "layout", "grid", "motion", "utility"];
 const cascadePrelude = "@layer reset, base, tokens, type, layout, grid, motion, utility, project;";
-const adoptionManifestFile = "layers/crft-manifest.json";
-const copyableSourceFiles = [
-  "sans.woff",
-  "mono.woff",
-  "layers/base.css",
-  "layers/tokens.css",
-  "layers/fonts.css",
-  "layers/type.css",
-  "layers/layout.css",
-  "layers/grid.css",
-  "layers/motion.css",
-  "layers/utility.css",
-];
+const adoptionManifestFile = "crft-manifest.json";
+const copyableSourceFiles = ["tokens.css", "crft.css", "sans.woff", "mono.woff"];
 
-const usage = "Usage: node scripts/copy-system.mjs [--dry-run] --layers <names> [--fonts] <target>";
+// The optional faces are the final marked section of the canonical token owner.
+function tokensWithoutFonts(css) {
+  return `${css.split("/* Optional bundled fonts. */")[0].trimEnd()}\n`;
+}
+
+const usage = "Usage: node scripts/copy-system.mjs [--dry-run] --layers <tokens|full> [--fonts] <target>";
 
 /**
  * Resolve a consumer copy request to a file list and project-entry block.
@@ -49,16 +34,7 @@ function resolveAdoptRequest(input) {
   const { layers, fonts = false } = input ?? {};
   if (typeof fonts !== "boolean") throw new TypeError("fonts must be a boolean");
   const layerNames = parseLayerNames(layers);
-  for (const name of layerNames) {
-    const missing = (layerDependencies[name] ?? []).filter((need) => !layerNames.includes(need));
-    if (missing.length) {
-      throw new Error(`Layer ${name} requires ${missing.join(", ")}`);
-    }
-  }
-
-  const selected = new Set(layerNames);
-  if (fonts) selected.add("fonts");
-  const cssFiles = importOrder.filter((name) => selected.has(name)).map((name) => `layers/${name}.css`);
+  const cssFiles = layerNames.length === 1 ? ["tokens.css"] : ["tokens.css", "crft.css"];
   const manifest = fonts ? [...cssFiles, "sans.woff", "mono.woff"] : cssFiles;
   return {
     layerNames,
@@ -75,18 +51,9 @@ function resolveAdoptRequest(input) {
 /** @param {unknown} layers */
 function parseLayerNames(layers) {
   if (layers == null || layers === "") throw new Error(usage);
-  const raw = Array.isArray(layers) ? layers : String(layers).split(",");
-  const names = unique(raw.map((name) => String(name).trim()).filter(Boolean));
-  if (names.length === 1 && names[0] === "full") return [...behaviorLayers];
-  const unknown = names.filter((name) => !behaviorLayers.includes(name));
-  if (!names.length || unknown.length) {
-    throw new Error(`Unknown layer: ${unknown.join(", ") || "(empty)"}\n${usage}`);
-  }
-  return behaviorLayers.filter((name) => names.includes(name));
-}
-
-function unique(values) {
-  return [...new Set(values)];
+  if (layers === "tokens") return ["tokens"];
+  if (layers === "full") return [...behaviorLayers];
+  throw new Error(`Unsupported layer selection: ${String(layers)}. Use tokens or full; extract individual behavior into project CSS.\n${usage}`);
 }
 
 function parseArguments(arguments_) {
@@ -178,6 +145,10 @@ async function copyIntoTarget({ source, destination, manifest, destinations, sou
   const copied = [];
   try {
     await copyManifest(source, staging.path, manifest);
+    if (!adopted.fonts) {
+      const path = join(staging.path, "tokens.css");
+      await writeFile(path, tokensWithoutFonts(await readFile(path, "utf8")));
+    }
     await writeAdoptionManifest(staging.path, sourceRoot, adopted, manifest);
     for (const file of destinations) await requireAbsent(join(destination.target, file));
     if (beforePublish) await beforePublish({ staging: staging.path, target: destination.target });
@@ -264,6 +235,12 @@ async function requireAbsent(path) {
 }
 
 async function validateDestinationManifest(target, manifest) {
+  try {
+    const names = await readdir(join(target, "layers"));
+    if (names.some((name) => name.endsWith(".css") || name === "crft-manifest.json")) throw new Error("Mixed flat and legacy layer packaging; use an empty adoption target");
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
   for (const file of manifest) await requireAbsent(join(target, file));
 }
 
@@ -344,6 +321,8 @@ async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
     files[file] = sha256(await readFile(join(staging, file)));
   }
   const body = {
+    contractVersion: 2,
+    packagingVersion: 1,
     source: "crft",
     revision: contract.revision,
     dirty: contract.dirty,
@@ -352,6 +331,10 @@ async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
     fonts: adopted.fonts,
     files,
     contract: {
+      contractVersion: 2,
+      packagingVersion: 1,
+      themes: contract.themes,
+      hooks: contract.hooks,
       publicTokens: contract.publicTokens,
       privateProperties: contract.privateProperties,
       skins: contract.skins,
@@ -359,7 +342,6 @@ async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
       layerDependencies: contract.layerDependencies,
     },
   };
-  await mkdir(join(staging, "layers"), { recursive: true });
   await writeFile(join(staging, adoptionManifestFile), `${JSON.stringify(body, null, 2)}\n`);
 }
 
@@ -396,6 +378,7 @@ export {
   behaviorLayers,
   copyableSourceFiles,
   resolveAdoptRequest,
+  tokensWithoutFonts,
 };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await main();

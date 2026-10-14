@@ -15,25 +15,17 @@ const layerDependencies = {
 };
 // Public composition hooks. Keep aligned with CRAFT.md public-hook-index.
 const hooks = {
-  attributes: [
-    "c", "s", "t", "g", "x", "y", "o", "l",
-    "data-skin", "data-accent", "data-scrub",
-    "container", "sg", "a", "a-sm", "a-lg",
-  ],
-  classes: [".img-w", ".sr", ".sr.focusable"],
+  attributes: ["g", "c", "r", "o", "l", "data-theme", "data-skin", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
+  classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable"],
 };
-// Static canon. Doc owners: AGENTS.md, craft docs, check-system.mjs.
 const staticBans = [
   "never *-block-start or *-inline-start single-side longhands",
   "never a class on section",
   "never style through an ID selector",
-  "never data-theme; canvas is data-skin",
   "never new spacing, alignment, or display utility matrices",
   "never substring attribute selectors in documentation",
-  "never w or f attributes on t",
-  "never bd as a weight flag; bold is bo",
-  "never set font-weight without font-variation-settings wght or vice versa",
-  "never heading max-width; override the role's --t-*-mw token",
+  "never explicit wght in canonical role axes; ordinary weight uses font-weight",
+  "never heading max-width; override the role's --ROLE-measure token",
 ];
 
 const unique = (values) => [...new Set(values)];
@@ -53,13 +45,16 @@ function resolveRoot(rootUrl) {
 }
 
 function findLayersDirectory(root) {
-  const styled = join(root, "styles", "layers");
-  if (existsSync(styled)) return styled;
+  for (const dir of [join(root, "styles"), root]) {
+    const layers = join(dir, "layers");
+    if (existsSync(layers) && readdirSync(layers).some((name) => name.endsWith(".css") || name === "crft-manifest.json")) return layers;
+    if (existsSync(join(dir, "tokens.css")) || existsSync(join(dir, "crft.css"))) return dir;
+  }
   return join(root, "layers");
 }
 
 function declaredProperties(css) {
-  return unique([...stripCssComments(css).matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1])).sort();
+  return unique([...stripCssComments(css).matchAll(/(--[a-z0-9_-]+)\s*:/g)].map((match) => match[1])).sort();
 }
 
 function quotedAttributeValues(css, attribute) {
@@ -69,7 +64,7 @@ function quotedAttributeValues(css, attribute) {
 
 function declaredLayers(css) {
   return unique(
-    [...stripCssComments(css).matchAll(/@layer\s+([a-z0-9-]+(?:\s*,\s*[a-z0-9-]+)*)\s*\{/gi)]
+    [...stripCssComments(css).matchAll(/@layer\s+([a-z0-9_-]+(?:\s*,\s*[a-z0-9_-]+)*)\s*\{/gi)]
       .flatMap((match) => match[1].split(",").map((name) => name.trim())),
   );
 }
@@ -92,18 +87,18 @@ function gitState(cwd) {
 function buildContract(rootUrl) {
   const root = resolveRoot(rootUrl);
   const layersDir = findLayersDirectory(root);
+  const flat = layersDir === root || layersDir === join(root, "styles");
   const files = existsSync(layersDir)
-    ? readdirSync(layersDir).filter((name) => name.endsWith(".css")).sort()
+    ? readdirSync(layersDir).filter((name) => flat ? ["tokens.css", "crft.css"].includes(name) : name.endsWith(".css")).sort()
     : [];
   const sources = Object.fromEntries(
     files.map((name) => [name, readFileSync(join(layersDir, name), "utf8")]),
   );
   const tokensCss = sources["tokens.css"] ?? "";
-  const publicTokens = declaredProperties(tokensCss);
+  const publicTokens = declaredProperties(tokensCss).filter((name) => !name.startsWith("--_"));
   const publicSet = new Set(publicTokens);
   const privateProperties = unique(
     files
-      .filter((name) => name !== "tokens.css")
       .flatMap((name) => declaredProperties(sources[name])),
   )
     .filter((name) => !publicSet.has(name))
@@ -111,6 +106,8 @@ function buildContract(rootUrl) {
   const git = gitState(root);
 
   return {
+    contractVersion: 2,
+    ...(flat ? { packagingVersion: 1 } : {}),
     revision: git.revision,
     dirty: git.dirty,
     publicTokens,
@@ -119,6 +116,7 @@ function buildContract(rootUrl) {
       ...privateProperties.map((name) => `never use ${name} in product CSS or examples`),
       ...staticBans,
     ],
+    themes: quotedAttributeValues(tokensCss, "data-theme"),
     skins: quotedAttributeValues(tokensCss, "data-skin"),
     accents: quotedAttributeValues(tokensCss, "data-accent"),
     layers: Object.fromEntries(files.map((name) => [name, declaredLayers(sources[name])])),

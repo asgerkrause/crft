@@ -65,6 +65,10 @@ Alternative text follows the media’s purpose. Decorative media uses an empty a
 
 The interface must remain usable with browser zoom, text resize, narrow width, long labels, translated text, user font settings, and dynamic status text. Do not clip essential content or actions with fixed dimensions. Preserve a reachable task path when controls wrap or regions scroll.
 
+## Links
+
+The base layer in `crft.css` removes link underlines globally so navigation and component links can own their affordance, and restores an underline for links inside `p`, `li`, `dd`, `td`, and `figcaption`, where a link sits in running text and color alone would not distinguish it. Keep that distinction when a project restyles inline links.
+
 ## Screen-reader utility
 
 Use `.sr` for content that must remain available to assistive technology but not visually rendered. Use `.sr.focusable` when keyboard focus must restore it, such as a skip link. Never leave a visually hidden interactive control focused and invisible.

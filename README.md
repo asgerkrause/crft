@@ -8,43 +8,43 @@ Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical own
 
 [`CRAFT.md`](CRAFT.md) is the only complete task router. It routes to 16 focused topic owners under `craft/`.
 
-`styles/**` owns live values, formulas, breakpoints, selectors, skins, and motion. [`examples/`](examples/) contains runnable evidence, not API.
+`styles/global.css` imports two owners: `styles/tokens.css` for brand values/recipes/optional fonts, and `styles/crft.css` for framework behavior. Eight logical layers keep their precedence. [`examples/`](examples/) contains runnable evidence, not API.
 
 CRFT has no dependency on another frontend doctrine. It is not a component library.
 
 ## Adopt the strategy
 
-Choose the least complete mode for each affected subsystem. A project may combine local extraction for one subsystem with selected complete layers for another; extraction itself grants no CRFT hooks.
+Choose the least complete mode for each affected subsystem. A project may combine local extraction for one subsystem with tokens-only adoption for another; extraction itself grants no CRFT hooks.
 
 - **Strategy only:** use the guidance with semantic HTML and project CSS; add no CRFT hooks or files.
 - **Local extraction:** move only the useful rules, tokens, and relationships into the project’s existing stylesheet, then remove unused CRFT state and dependencies. The result is project CSS, not a partial CRFT API.
-- **Selected complete layers:** optionally use the copier after explicitly naming each layer and required dependency; the script rejects incomplete selections.
+- **Tokens only:** copy the complete token owner; framework selectors remain project-owned.
 - **Explicit full adoption:** request `--layers full`; never infer this mode from an existing site.
 
 ```sh
 node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project/styles
-node scripts/copy-system.mjs --layers tokens,type --fonts /absolute/path/to/project/styles
+node scripts/copy-system.mjs --layers full --fonts /absolute/path/to/project/styles
 ```
 
-The copier is an optional whole-layer convenience. It writes requested `layers/*.css` files plus `layers/crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. Fonts copy only with `--fonts`. Keep product presentation and every adopted result in the project’s normal owners.
+The copier is an optional whole-layer convenience. It writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. `--layers` accepts only `tokens` or `full`. Fonts and their declarations copy only with `--fonts`. Semantic contractVersion 2 is unchanged; packagingVersion 1 identifies the flat package. Keep product presentation and every adopted result in the project’s normal owners.
 
 ## Built for agents
 
-The public API is machine-readable, not prose. `node scripts/emit-contract.mjs` derives the full contract (tokens, hooks, skins, accents, layer dependencies, bans) from live CSS. The manifest makes every adopting repo self-describing, and `node scripts/check-project.mjs <styles-dir>` verifies consumer CSS against its adopted contract without needing this repository. An agent never has to guess what is API: the contract says so, and the checkers fail when it drifts.
+The public API is machine-readable, not prose. `node scripts/emit-contract.mjs` derives the full contract (tokens, hooks, skins, accents, layer dependencies, bans) from live CSS. The manifest makes every adopting repo self-describing, and `node scripts/check-project.mjs <styles-dir>` verifies consumer CSS against its adopted contract. Run the checker from this checkout; it uses its adjacent contract helpers. An agent never has to guess what is API: the contract says so, and the checkers fail when it drifts.
 
 [`CRAFT.md`](CRAFT.md) is the task router. [`craft/`](craft/) holds topic guidance. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint.
 
-## Complete-layer example
+## Full-adoption example
 
-This markup assumes the complete owning layers are present. Strategy-only and local-extraction projects use their own CSS API.
+This markup assumes tokens.css and crft.css are present. Strategy-only and local-extraction projects use their own CSS API.
 
 ```html
 <section data-skin="tone">
-  <div c>
-    <div s>
+  <div class="c">
+    <div class="s">
       <h2>Meaning before presentation</h2>
       <div g="3-2">
-        <article x="2-1">...</article>
+        <article c="2-1">...</article>
         <aside data-accent="secondary">...</aside>
       </div>
     </div>

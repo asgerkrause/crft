@@ -6,7 +6,7 @@ import placeholder from "../assets/placehold.svg";
 ---
 
 <Section {...sections.motion}>
-  <p t="mu" slot="summary">Opt-in motion keeps a complete static result and respects reduced-motion preferences.</p>
+  <p slot="summary" class="sg-note">Opt-in motion keeps a complete static result and respects reduced-motion preferences.</p>
 
   <Specimen id="disclosure" title="Disclosure">
     <details open data-fixture="progressive-disclosure">
@@ -16,36 +16,36 @@ import placeholder from "../assets/placehold.svg";
   </Specimen>
 
   <Specimen id="motion-roles" title="Motion roles">
-    <div class="sg-motion-groups" s data-fixture="reduced-motion">
+    <div class="s sg-motion-groups" data-fixture="reduced-motion">
       <fieldset class="sg-motion-speed">
         <legend>Preview duration</legend>
         <div>
-          <label><input class="sr" type="radio" name="motion-speed" value="shortest">Shortest <code>--m-td-sf</code></label>
-          <label><input class="sr" type="radio" name="motion-speed" value="fast">Fast <code>--m-td-f</code></label>
-          <label><input class="sr" type="radio" name="motion-speed" value="default">Default <code>--m-td</code></label>
-          <label><input class="sr" type="radio" name="motion-speed" value="slow">Slow <code>--m-td-s</code></label>
-          <label><input class="sr" type="radio" name="motion-speed" value="slowest" checked>Slowest <code>--m-td-ss</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="shortest">Shortest <code>--duration-xs</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="fast">Fast <code>--duration-sm</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="default">Default <code>--duration</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="slow">Slow <code>--duration-lg</code></label>
+          <label><input class="sr" type="radio" name="motion-speed" value="slowest" checked>Slowest <code>--duration-xl</code></label>
         </div>
       </fieldset>
       <div class="sg-motion-list">
-        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-i)">
-          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In</span><code>--m-tf-i</code>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-in)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In</span><code>--ease-in</code>
         </div>
-        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-io)">
-          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In-out</span><code>--m-tf-io</code>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-in-out)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In-out</span><code>--ease-in-out</code>
         </div>
-        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-o)">
-          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Out</span><code>--m-tf-o</code>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-out)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Out</span><code>--ease-out</code>
         </div>
-        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-g)">
-          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Glide</span><code>--m-tf-g</code>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-glide)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Glide</span><code>--ease-glide</code>
         </div>
-        <div class="sg-motion-demo" style="--sg-motion-ease:var(--m-tf-s)">
-          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Spring</span><code>--m-tf-s</code>
+        <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-spring)">
+          <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>Spring</span><code>--ease-spring</code>
         </div>
       </div>
     </div>
-    <p t="sm">Reduced motion resolves these roles to a near-instant linear path.</p>
+    <p class="small">Reduced motion resolves these roles to a near-instant linear path.</p>
   </Specimen>
 
   <Specimen id="scroll-linked-motion" title="Scroll-linked motion">
@@ -62,6 +62,6 @@ import placeholder from "../assets/placehold.svg";
   </Specimen>
 
   <Specimen id="view-transitions" title="View transitions">
-    <p>Supported browsers animate same-origin navigation of <code>main</code> with <code>--m-vt-*</code>. Header and footer keep their names. Reduced motion removes the animation.</p>
+    <p>Supported browsers animate same-origin navigation of <code>main</code> with <code>--transition-*</code>. Header and footer keep their names. Reduced motion removes the animation.</p>
   </Specimen>
 </Section>

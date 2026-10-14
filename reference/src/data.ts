@@ -6,11 +6,11 @@ interface Section {
 }
 
 export const sections = {
-  colors: { id: "colors", title: "Colors", api: "--c-*", nav: "Color" },
-  type: { id: "typography", title: "Typography", api: "t · l", nav: "Type" },
-  sizes: { id: "sizes", title: "Sizes", api: "--l-* · --s-* · --g-* · --p-* · --r-*", nav: "Sizes" },
-  layout: { id: "layout", title: "Layout", api: "c · s", nav: "Layout" },
-  grid: { id: "grid", title: "Grid", api: "g · x · y · o" },
+  colors: { id: "colors", title: "Colors", api: "semantic colors", nav: "Color" },
+  type: { id: "typography", title: "Typography", api: "roles · l", nav: "Type" },
+  sizes: { id: "sizes", title: "Sizes", api: "space · gap · padding · radius", nav: "Sizes" },
+  layout: { id: "layout", title: "Layout", api: ".c · .s", nav: "Layout" },
+  grid: { id: "grid", title: "Grid", api: "g · c · r · o" },
   skins: { id: "skins", title: "Skins", api: "data-skin", nav: "Skins" },
   native: { id: "native", title: "Native", api: "elements first", nav: "Defaults" },
   forms: { id: "forms", title: "Forms", api: "form · label · input · select · textarea", nav: "Forms" },
@@ -20,7 +20,7 @@ export const sections = {
   tokens: { id: "tokens", title: "Tokens", api: "public names" },
 } as const satisfies Record<string, Section>;
 
-export const navigation = Object.values(sections).filter((section) => section.nav);
+export const navigation = Object.values(sections).filter((section) => "nav" in section);
 
 export const modes = [
   { value: "light", label: "Light" },

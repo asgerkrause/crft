@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { markupErrors } from "../../scripts/check-markup.mjs";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
@@ -18,21 +19,21 @@ const requiredSections = [
   "motion", "utilities", "architecture", "tokens",
 ];
 const requiredMarkup = [
-  't="h0"', 't="h1"', 't="h2"', 't="h3"', 't="h4"', 't="h5"', 't="h6"',
-  't="lg"', 't="bd"', 't="sm"',
-  't="lt"', 't="rg"', 't="bo"', 't="sa"', 't="se"', 't="mo"', 't="fb"', 't="dp"',
-  'class="sr focusable"',
-  'g="8-4"', 'x="4-2"', 'x="0"', 'y="2-1"', 'o="f-a-l"',
-  's="sm"',
-  'g="a-sm"', 'g="a"', 'g="a-lg"', 'g="sg"',
+  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"].map((role) => `class="${role}"`),
+  'class="sr focusable"', 'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
+  ...["fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"].map((mode) => `g="${mode}"`),
   'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="invert"',
-  'data-skin="accent" data-accent="secondary"', 'data-skin="accent" data-accent="tertiary"',
   'class="img-w" data-scrub', 'data-scrub="reverse"', 'l="2"', 'id="grid-no-container"',
   'id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
+const gridErrors = markupErrors(html);
+if (gridErrors.length) throw new Error(gridErrors.join("\n"));
+const brands = readFileSync(new URL("brands/index.html", dist), "utf8");
+if (markupErrors(brands).length) throw new Error(markupErrors(brands).join("\n"));
+for (const profile of ["fluid", "static", "mixed"]) if (!brands.includes(`data-fixture="${profile}"`)) throw new Error(`Missing ${profile} brand proof`);
 const internalProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
-  "--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl",
+  "--_fluid",
 ];
 const requiredFixtures = [
   "grid-boundary-sm", "grid-boundary-default", "grid-boundary-lg", "grid-boundary-nested", "grid-boundary-nested-inner", "grid-no-container",
@@ -77,10 +78,10 @@ for (const property of internalProperties) {
   if (html.includes(property)) throw new Error(`Built reference markup exposes private property ${property}.`);
 }
 
-const tokensCss = readFileSync(new URL("styles/layers/tokens.css", systemRoot), "utf8");
+const tokensCss = readFileSync(new URL("styles/tokens.css", systemRoot), "utf8");
 const publicTokens = [...new Set([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]))];
 if (!sameValues(accentRoutes(html), accentRoutes(tokensCss))) {
-  throw new Error(`Built reference data-accent routes differ from styles/layers/tokens.css: ${accentRoutes(html).join(", ") || "none"}`);
+  throw new Error(`Built reference data-accent routes differ from styles/tokens.css: ${accentRoutes(html).join(", ") || "none"}`);
 }
 for (const route of accentRoutes(tokensCss)) {
   if (!html.includes(`<code>${route}</code>`)) throw new Error(`Built reference guidance omits data-accent route ${route}.`);
@@ -111,7 +112,7 @@ const css = existsSync(assetDir)
   : "";
 
 for (const signal of [
-  "--c-bg-base", ".sg-swatch", "section[data-scrub]:has(.sg-heading-wrap)",
+  "--canvas-base", ".sg-swatch", "section[data-scrub]:has(.sg-heading-wrap)",
   "animation-range:entry 100% exit 50%", "width:calc(100% * var(--m-src-to))",
 ]) {
   if (!css.includes(signal)) throw new Error(`Built CSS is missing ${signal}.`);

@@ -16,13 +16,13 @@
   <body>
     <a class="sr focusable" href="#main">Skip to content</a>
 
-    <!-- Header [c] remains intrinsic because it is not a section query boundary. -->
+    <!-- Header .c remains intrinsic because it is not a section query boundary. -->
     <header>
-      <div c>
-        <div s="h sb ct">
+      <div class="c">
+        <div class="s">
           <strong><a href="/">CRFT foundations</a></strong>
           <nav aria-label="Primary">
-            <ul s="h">
+            <ul class="s">
               <li><a href="#orientation">Overview</a></li>
               <li><a href="#proof">Proof</a></li>
               <li><a href="#faq">FAQ</a></li>
@@ -35,13 +35,13 @@
     <main id="main">
       <!-- This section ID is the Overview navigation target. -->
       <section id="orientation">
-        <div c>
-          <div s>
-            <p t="sm mu">Primer</p>
-            <h1 t="bo">Compose with ownership, not a kit.</h1>
-            <p t="lg">
+        <div class="c">
+          <div class="s">
+            <p class="small">Primer</p>
+            <h1>Compose with ownership, not a kit.</h1>
+            <p class="lead">
               Semantic HTML first, public CRFT API second, distinctive chrome
-              in project-owned CSS. This specimen uses <code t="mo">@layer project</code>,
+              in project-owned CSS. This specimen uses <code>@layer project</code>,
               but CRFT does not require that owner. This page is teaching
               material—not public API.
             </p>
@@ -54,36 +54,36 @@
 
       <!--
         This section ID is the Proof navigation target. The grid remains below
-        section > [c]. data-accent routes tokens; project CSS paints the tile.
+        section > .c. data-accent routes tokens; project CSS paints the tile.
       -->
       <section id="proof" data-skin="tone">
-        <div c>
+        <div class="c">
           <div g="3-2">
-            <header s x="0">
+            <header c="0" class="s">
               <h2>What stays public</h2>
-              <p t="lg">
+              <p class="lead">
                 Three durable seams. Color alone never carries the meaning.
               </p>
             </header>
 
-            <article class="proof-tile" s>
+            <article class="s proof-tile">
               <h3>Structure</h3>
               <p>
                 Landmarks, one clear outline, and
-                <code>section &gt; [c]</code> as the layout query boundary.
+                <code>section &gt; .c</code> as the layout query boundary.
               </p>
             </article>
 
-            <article class="proof-tile" s>
+            <article class="s proof-tile">
               <h3>Grammar</h3>
               <p>
                 Type roles, stacks, and
-                <code>g</code>/<code>x</code>/<code>y</code>/<code>o</code>
+                <code>g</code>/<code>c</code>/<code>r</code>/<code>o</code>
                 resolved as large, medium, then small.
               </p>
             </article>
 
-            <article class="proof-tile" s data-accent="success">
+            <article class="s proof-tile" data-accent="success">
               <h3>Verified path</h3>
               <p>
                 Skins and accent routes stay semantic; product paint stays
@@ -96,8 +96,8 @@
 
       <!-- This section ID is the FAQ navigation target. -->
       <section id="faq">
-        <div c="sm">
-          <div s>
+        <div class="c sm">
+          <div class="s">
             <h2>FAQ</h2>
             <details>
               <summary>Is this example canonical?</summary>
@@ -118,8 +118,7 @@
             <details>
               <summary>May I use <code>data-theme</code>?</summary>
               <p>
-                Not in CRFT. Use <code>data-skin</code> for canvas context and
-                document color-scheme strategy per product guidance.
+                Use supplied <code>data-theme="light|dark"</code> schemes. <code>data-skin</code> selects a local canvas from that approved scheme.
               </p>
             </details>
           </div>
@@ -128,13 +127,13 @@
     </main>
 
     <footer>
-      <div c>
-        <div s>
-          <p t="sm mu">
+      <div class="c">
+        <div class="s">
+          <p class="small">
             Non-canonical specimen. Private properties and invented tokens are
             out of scope.
           </p>
-          <p t="sm">
+          <p class="small">
             <a href="/docs/verification">Verification baseline</a>
           </p>
         </div>

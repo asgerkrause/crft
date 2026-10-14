@@ -7,7 +7,7 @@ read_when: Adding motion, image scrub, view transitions, reduced-motion behavior
 
 # Motion
 
-Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. `styles/layers/motion.css` owns opt-in scrub and view transitions. Native disclosure animation and squircle corners live in `base.css`; see [`html.md`](html.md). CSS owns live timing and reduced-motion substitutions.
+Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. `styles/crft.css` owns opt-in scrub and view transitions. Native disclosure, dialog, and popover animation and squircle corners live in the base layer of `crft.css`; see [`html.md`](html.md). CSS owns live timing and reduced-motion substitutions.
 
 ## Decision
 
@@ -31,7 +31,49 @@ Use duration and timing tokens by semantic job. The duration family moves from s
 
 Project motion uses public tokens in project CSS. Add a local property for a component relationship that no shared role owns.
 
-Reduced motion remaps the shared timing roles and durations in `tokens.css`. Position or parallax motion must still be removed or bypassed when the resulting tiny duration is not a complete reduced-motion experience.
+Reduced motion remaps the shared timing roles and durations in `tokens.css`. Position or parallax motion must still be removed or bypassed when the resulting tiny duration is not a complete reduced-motion experience. Reduced transparency sets `--transition-blur` to zero, so blur never carries a required state.
+
+## Native overlays
+
+`dialog` and `[popover]` fade and lift in by `--lift` over `--duration` when opened, and out when closed, through `@starting-style` and discrete `display` and `overlay` transitions. The modal backdrop fades with them. Without support the overlay appears and disappears instantly. Project CSS may retune the tokens; do not add a second overlay entrance.
+
+## Header elevation
+
+A sticky header that separates from content once content passes under it is a project decision, not a reference default. The complete recipe, all from public tokens:
+
+```css
+@layer project {
+  html {
+    scroll-padding-top: var(--header);
+  }
+
+  body > header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    min-height: var(--header);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes header-elevate {
+        to {
+          background: color-mix(in srgb, var(--canvas) 85%, transparent);
+          border-bottom: var(--border-width) solid var(--border);
+        }
+      }
+
+      body > header {
+        animation: header-elevate linear both;
+        animation-timeline: scroll();
+        animation-range: 0 var(--header);
+      }
+    }
+  }
+}
+```
+
+`scroll-padding-top` keeps anchors and focused controls below the header. Set `inset` explicitly when the project positions the header elsewhere. Add backdrop blur only behind a reduced-transparency gate.
 
 ## Image scrub
 
@@ -51,7 +93,7 @@ Do not scrub proof that must remain fully visible, interactive media, text, or c
 
 ## View transitions
 
-When view transitions are supported, same-origin navigations cross-fade `main` using the public `--m-vt-*` tokens. Header and footer keep their names so chrome can stay stable. Reduced motion removes the animation. Without support, navigation is instantaneous.
+When view transitions are supported, same-origin navigations cross-fade `main` using the public `--transition-*` tokens. Header and footer keep their names so chrome can stay stable. Reduced motion removes every view-transition animation, including the root cross-fade. Without support, navigation is instantaneous.
 
 Project CSS may retune the public view-transition tokens. Do not invent a second navigation motion language.
 
@@ -64,7 +106,7 @@ A repeated project composition can use `sibling-index()` when source order is th
   @supports (animation-delay: calc(1ms * sibling-index())) {
     @media (prefers-reduced-motion: no-preference) {
       .issue {
-        animation-delay: calc((sibling-index() - 1) * var(--m-td-f));
+        animation-delay: calc((sibling-index() - 1) * var(--duration-sm));
       }
     }
   }

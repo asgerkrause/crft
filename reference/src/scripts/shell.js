@@ -33,6 +33,8 @@ function setRadio(form, name, value) {
 
 function applyPreferences(root, form, preferences) {
   root.setAttribute("data-mode", preferences.mode);
+  if (preferences.mode === "system") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", preferences.mode);
   root.setAttribute("data-preset", preferences.preset);
   setRadio(form, "mode", preferences.mode);
   setRadio(form, "preset", preferences.preset);

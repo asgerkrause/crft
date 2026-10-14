@@ -1,4 +1,9 @@
 @layer project {
+  body > header .c > .s,
+  body > footer .c > .s { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  nav ul { display: flex; flex-wrap: wrap; gap: var(--gap); }
+  header > .small, footer .small { color: var(--muted); }
+  form > .s:has(> button) { flex-direction: row; flex-wrap: wrap; }
   /*
     Non-canonical product chrome for an invitations screen.
     Native elements own form structure; stable product roles own classes.
@@ -8,39 +13,39 @@
     --invites-control-min-size: 2.75rem;
 
     > header {
-      padding-block: var(--p-sm);
-      color: var(--c-fg);
-      background-color: var(--c-sf);
-      border-bottom: var(--b-wd) solid var(--c-bc);
+      padding-block: var(--padding-sm);
+      color: var(--text);
+      background-color: var(--surface);
+      border-bottom: var(--border-width) solid var(--border);
 
       ul {
         list-style: none;
         margin: 0;
         padding: 0;
-        gap: var(--g);
+        gap: var(--gap);
       }
 
       a {
-        color: var(--c-fg);
+        color: var(--text);
 
         &:hover {
-          color: var(--c-ac);
+          color: var(--accent);
         }
 
         &:focus-visible {
-          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline: max(2px, var(--border-width)) solid var(--accent);
           outline-offset: 2px;
         }
       }
     }
 
     .panel {
-      padding-block: var(--p-lg);
-      padding-inline: var(--p-lg);
-      color: var(--c-fg);
-      background-color: var(--c-sf);
-      border: var(--b-wd) solid var(--c-bc);
-      border-radius: var(--r);
+      padding-block: var(--padding-lg);
+      padding-inline: var(--padding-lg);
+      color: var(--text);
+      background-color: var(--surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius);
     }
 
     form {
@@ -48,7 +53,7 @@
       fieldset {
         display: flex;
         flex-direction: column;
-        gap: var(--g-xs);
+        gap: var(--gap-xs);
         margin: 0;
       }
 
@@ -61,15 +66,15 @@
       label,
       legend {
         font-size: .8em;
-        line-height: var(--t-sm-lh);
-        color: var(--c-fg);
+        line-height: var(--small-leading);
+        color: var(--text);
       }
 
       :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
         width: 100%;
 
         &:focus-visible {
-          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline: max(2px, var(--border-width)) solid var(--accent);
           outline-offset: 2px;
         }
       }
@@ -80,15 +85,15 @@
       }
 
       [role="alert"] {
-        color: var(--c-fb-dn);
+        color: var(--danger);
         font-size: .8em;
-        line-height: var(--t-sm-lh);
+        line-height: var(--small-leading);
       }
 
       label:has(> input:is([type="checkbox"], [type="radio"])) {
         display: flex;
         align-items: center;
-        gap: var(--g-sm);
+        gap: var(--gap-sm);
         min-height: var(--invites-control-min-size);
       }
     }
@@ -98,22 +103,22 @@
       align-items: center;
       justify-content: center;
       min-height: var(--invites-control-min-size);
-      padding-block: var(--p-sm);
-      padding-inline: var(--p);
-      color: var(--c-ac-co);
-      background-color: var(--c-ac);
-      border: var(--b-wd) solid var(--c-ac-bc);
-      border-radius: var(--r-sm);
+      padding-block: var(--padding-sm);
+      padding-inline: var(--padding);
+      color: var(--on-accent);
+      background-color: var(--accent);
+      border: var(--border-width) solid var(--accent-border);
+      border-radius: var(--radius-sm);
       text-decoration: none;
       cursor: pointer;
 
       &:hover {
-        color: var(--c-ac-fg);
-        background-color: var(--c-ac-bg);
+        color: var(--accent-text);
+        background-color: var(--accent-surface);
       }
 
       &:focus-visible {
-        outline: max(2px, var(--b-wd)) solid var(--c-ac);
+        outline: max(2px, var(--border-width)) solid var(--accent);
         outline-offset: 2px;
       }
 
@@ -124,38 +129,38 @@
       }
 
       &.action-secondary {
-        color: var(--c-fg);
-        background-color: var(--c-bg);
-        border-color: var(--c-bc);
+        color: var(--text);
+        background-color: var(--canvas);
+        border-color: var(--border);
 
         &:hover {
-          color: var(--c-ac-fg);
-          background-color: var(--c-ac-bg);
-          border-color: var(--c-ac-bc);
+          color: var(--accent-text);
+          background-color: var(--accent-surface);
+          border-color: var(--accent-border);
         }
       }
     }
 
     .banner {
       margin: 0;
-      padding-block: var(--p);
-      padding-inline: var(--p);
-      color: var(--c-fg);
-      background-color: var(--c-sf);
-      border: var(--b-wd) solid var(--c-bc);
-      border-radius: var(--r-sm);
+      padding-block: var(--padding);
+      padding-inline: var(--padding);
+      color: var(--text);
+      background-color: var(--surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-sm);
     }
 
     .panel[data-accent] .banner {
-      color: var(--c-ac-fg);
-      background-color: var(--c-ac-bg);
-      border-color: var(--c-ac-bc);
+      color: var(--accent-text);
+      background-color: var(--accent-surface);
+      border-color: var(--accent-border);
     }
 
     .skeleton {
-      min-height: calc(var(--s-xl) * 3);
-      background-color: color-mix(in oklab, var(--c-mu) 18%, var(--c-sf));
-      border-radius: var(--r-sm);
+      min-height: calc(var(--space-xl) * 3);
+      background-color: color-mix(in oklab, var(--muted) 18%, var(--surface));
+      border-radius: var(--radius-sm);
     }
 
     table {
@@ -164,33 +169,33 @@
 
       th,
       td {
-        padding-block: var(--p-sm);
-        padding-inline: var(--p-sm);
+        padding-block: var(--padding-sm);
+        padding-inline: var(--padding-sm);
         text-align: left;
-        border-bottom: var(--b-wd) solid var(--c-bc);
+        border-bottom: var(--border-width) solid var(--border);
       }
 
       th {
         font-size: .8em;
-        color: var(--c-mu);
+        color: var(--muted);
       }
     }
 
     .pill {
       display: inline-block;
-      padding-block: var(--p-xs);
-      padding-inline: var(--p-sm);
-      color: var(--c-fg);
-      background-color: var(--c-bg);
-      border: var(--b-wd) solid var(--c-bc);
-      border-radius: var(--r-xl);
+      padding-block: var(--padding-xs);
+      padding-inline: var(--padding-sm);
+      color: var(--text);
+      background-color: var(--canvas);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-xl);
       font-size: .8em;
-      line-height: var(--t-sm-lh);
+      line-height: var(--small-leading);
 
       &[data-accent] {
-        color: var(--c-ac-fg);
-        background-color: var(--c-ac-bg);
-        border-color: var(--c-ac-bc);
+        color: var(--accent-text);
+        background-color: var(--accent-surface);
+        border-color: var(--accent-border);
       }
     }
   }

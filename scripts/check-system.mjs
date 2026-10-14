@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolveAdoptRequest } from "./copy-system.mjs";
+import { markupErrors } from "./check-markup.mjs";
 import { staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -29,15 +30,7 @@ const cssLayerBlock = (css, name) => {
   return "";
 };
 const assertWeightVariationPair = (css, path) => {
-  const active = stripCssComments(css);
-  for (const match of active.matchAll(/font-weight:\s*([^;]+);/g)) {
-    const value = match[1].trim();
-    if (/^\d+\s+\d+$/.test(value)) continue;
-    const window = active.slice(match.index, match.index + match[0].length + 120);
-    if (!hasCssSignal(window, `font-variation-settings: "wght" ${value}`)) {
-      fail(`${path} font-weight ${value} must pair font-variation-settings "wght"`);
-    }
-  }
+  if (/font-variation-settings:\s*["']wght["']/.test(stripCssComments(css))) fail(`${path} explicit wght overrides ordinary font-weight`);
 };
 const markedCodeNames = (document, marker, pattern) => {
   const block = document.match(new RegExp(`<!-- ${marker}:start -->([\\s\\S]*?)<!-- ${marker}:end -->`));
@@ -46,10 +39,7 @@ const markedCodeNames = (document, marker, pattern) => {
 };
 
 const preludeLayers = ["reset", "base", "tokens", "type", "layout", "grid", "motion", "utility"];
-const layerFiles = ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
-const extraLayerFiles = ["fonts"];
-const sourceImportOrder = ["base", "tokens", "fonts", "type", "layout", "grid", "motion", "utility"];
-const files = [...layerFiles, ...extraLayerFiles].map((layer) => `styles/layers/${layer}.css`);
+const files = ["styles/tokens.css", "styles/crft.css"];
 const topicNames = [
   "brief", "composition", "html", "components", "forms", "tokens", "color", "type",
   "layout", "grid", "utilities", "motion", "adopt", "accessibility", "performance", "verify",
@@ -60,19 +50,9 @@ const retiredTopicPattern = /craft\/(?:strategy|design|structure|css|quality)\.m
 const canonicalDocs = ["README.md", "AGENTS.md", "CRAFT.md", ...topicDocs, "skills/crft/SKILL.md"];
 const privateProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
-  "--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl",
+  "--_fluid",
 ];
-const typeRoles = ["h0", "h1", "h2", "h3", "h4", "h5", "h6", "lg", "bd", "sm"];
-const typeColors = ["fg", "mu", "ac", "sc"];
-const typeTransforms = ["uc", "lc", "cp", "no"];
-const typeWeightFlags = ["lt", "rg", "bo"];
-const typeFamilyFlags = ["sa", "se", "mo", "fb", "dp"];
-const typeMeasureRoles = [...typeRoles];
-const stackFlags = ["h", "w", "ct", "sb"];
-const stackGaps = ["xs", "sm", "lg", "xl"];
-const containerMeasures = ["sm", "lg"];
-const containerFlags = ["ct"];
-const clampValues = ["", "1", "2", "3", "4"];
+const typeRoles = ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"];
 const supportedAccentRoutes = ["danger", "secondary", "success", "tertiary", "warning"];
 const supportedSkins = ["accent", "invert", "tone"];
 
@@ -89,8 +69,7 @@ for (const path of retiredTopicDocs) {
 }
 
 if (existsSync(new URL("tooling/", root))) fail("tooling/ remains; CRFT has no product CLI or analyzer");
-if (existsSync(new URL("styles/layers/primitive.css", root))) fail("styles/layers/primitive.css is outside the canonical CSS contract");
-if (existsSync(new URL("styles/layers/features.css", root))) fail("styles/layers/features.css remains; base and motion now own those jobs");
+if (existsSync(new URL("styles/layers/", root))) fail("styles/layers/ remains; shared CSS has three physical owners");
 if (existsSync(new URL("styles/sans.ttf", root)) || existsSync(new URL("styles/mono.ttf", root))) {
   fail("TrueType fonts remain; WOFF is the copied font format");
 }
@@ -142,41 +121,18 @@ const adoptionModeRows = [...(adoptionModeBlock ?? "").matchAll(/^\| ([^|]+) \| 
   .map((match) => match.slice(1).map((cell) => cell.trim()))
   .filter(([name]) => name !== "Mode" && !/^-+$/.test(name));
 const adoptionModes = adoptionModeRows.map(([name]) => name);
-const expectedAdoptionModes = ["Strategy only", "Local extraction", "Selected complete layers", "Explicit full adoption"];
+const expectedAdoptionModes = ["Strategy only", "Local extraction", "Tokens only", "Explicit full adoption"];
 if (adoptionModes.join("|") !== expectedAdoptionModes.join("|")) fail("craft/adopt.md adoption modes differ from the canonical four-mode contract");
 for (const mode of ["Strategy only", "Local extraction"]) {
   if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`craft/adopt.md ${mode} must expose no CRFT hooks`);
 }
-if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Selected complete layers")?.[2] ?? "")) {
-  fail("craft/adopt.md selected layers must expose retained live hooks only");
+if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tokens only")?.[2] ?? "")) {
+  fail("craft/adopt.md tokens-only adoption must expose retained live hooks only");
 }
 if (!craft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
   fail("CRAFT.md does not record the retired tooling boundary");
 }
-for (const migration of [
-  "styles/layers/{base,tokens,type,layout,grid,motion,utility}.css",
-  "styles/layers/features.css",
-  "motion.css",
-  "t=\"h0\"",
-  "c=\"sm\"",
-  "[x]",
-  "[y]",
-  "--t-fs-min",
-  "--t-ff-*",
-  "--t-fw-*",
-  "--c-fb-su",
-  "data-skin=\"accent\"",
-  "No CRFT replacement",
-  "provides no aliases",
-  "--layers",
-  "Do not default to the full tree on an existing site",
-  "does not copy `global.css`",
-  "Observed",
-  "--t-h1-fs",
-  "--fonts",
-  "lt`, `rg`, `bo",
-  "sa`, `se`, `mo",
-]) {
+for (const migration of ["contractVersion 2", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
   if (!adoption.includes(migration)) fail(`craft/adopt.md is missing breaking migration guidance: ${migration}`);
 }
 const routeBlock = craft.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
@@ -205,7 +161,7 @@ const skillWork = skill.match(/## Work\n([\s\S]*?)\n## Stop/)?.[1] ?? "";
 for (const mode of expectedAdoptionModes) {
   if (!skillAsk.toLowerCase().includes(mode.toLowerCase())) fail(`skills/crft/SKILL.md Ask is missing adoption mode: ${mode}`);
 }
-if (!/local extraction[^.\n]*selected complete layers[^.\n]*coexist/i.test(skillAsk) || !/extraction itself grants no CRFT hooks/i.test(skillAsk)) {
+if (!/local extraction[^.\n]*tokens-only adoption[^.\n]*coexist/i.test(skillAsk) || !/extraction itself grants no CRFT hooks/i.test(skillAsk)) {
   fail("skills/crft/SKILL.md Ask must allow mixed subsystem modes without granting extraction hooks");
 }
 if (!/copier[^.\n]*optional[^.\n]*whole-layer/i.test(skillCopy)) {
@@ -226,15 +182,12 @@ for (const component of [".btn", ".crd", ".lnk"]) {
   }
 }
 const documentedHooks = {
-  "craft/type.md": ["t", "l"],
-  "craft/layout.md": [
-    "c", "c=\"sm\"", "c=\"lg\"", "c=\"ct\"", "s", "s=\"h\"", "s=\"w\"", "s=\"ct\"", "s=\"sb\"",
-    "s=\"xs\"", "s=\"sm\"", "s=\"lg\"", "s=\"xl\"", "container", ".img-w",
-  ],
-  "craft/grid.md": ["g", "x", "y", "o", "a-sm", "a", "a-lg", "sg"],
+  "craft/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", "l"],
+  "craft/layout.md": [".c", ".c.sm", ".c.lg", ".s", "container", ".img-w"],
+  "craft/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable"],
   "craft/motion.md": [".img-w", "data-scrub"],
-  "craft/color.md": ["data-skin", "data-accent"],
+  "craft/color.md": ["data-theme", "data-skin", "data-accent"],
 };
 for (const [path, hooks] of Object.entries(documentedHooks)) {
   for (const hook of hooks) {
@@ -275,66 +228,57 @@ if (!docsByPath["craft/layout.md"].includes("*-block-start")) fail("craft/layout
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
 const allCss = files.map((file) => source[file]).join("\n");
-const tokensCss = source["styles/layers/tokens.css"];
-const typeCss = source["styles/layers/type.css"];
-const fontsCss = source["styles/layers/fonts.css"];
-const layoutCss = source["styles/layers/layout.css"];
-const gridCss = source["styles/layers/grid.css"];
-const motionCss = source["styles/layers/motion.css"];
-const baseCss = source["styles/layers/base.css"];
-const utilityCss = source["styles/layers/utility.css"];
+const tokensCss = source["styles/tokens.css"];
+const frameworkCss = source["styles/crft.css"];
+const typeCss = cssLayerBlock(frameworkCss, "type");
+const fontsCss = tokensCss;
+const layoutCss = cssLayerBlock(frameworkCss, "layout");
+const gridCss = cssLayerBlock(frameworkCss, "grid");
+const motionCss = cssLayerBlock(frameworkCss, "motion");
+const baseCss = frameworkCss;
+const utilityCss = cssLayerBlock(frameworkCss, "utility");
 
-const expectedImports = sourceImportOrder.map((layer) => `layers/${layer}.css`);
 const expectedGlobal = [
   `@layer ${preludeLayers.join(", ")};`,
   "",
-  ...expectedImports.map((file) => `@import "./${file}";`),
+  '@import "./tokens.css";',
+  '@import "./crft.css";',
 ].join("\n");
-if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and eight imports");
-
-const actualCssFiles = readdirSync(new URL("styles/layers/", root))
-  .filter((name) => name.endsWith(".css"))
-  .map((name) => `styles/layers/${name}`)
-  .sort();
-if (actualCssFiles.join("|") !== [...files].sort().join("|")) fail("styles/layers/ differs from the canonical owner map");
-files.forEach((file) => {
+if (globalCss.trim() !== expectedGlobal.trim()) fail("styles/global.css must contain only the layer prelude and two imports");
+const actualCssFiles = readdirSync(new URL("styles/", root)).filter((name) => name.endsWith(".css")).sort();
+if (actualCssFiles.join("|") !== "crft.css|global.css|tokens.css") fail("styles/ differs from the three-file owner map");
+for (const [file, expected] of [["styles/tokens.css", ["tokens", "type"]], ["styles/crft.css", ["reset", "base", "type", "layout", "grid", "motion", "utility"]]]) {
   const openings = [...source[file].matchAll(/@layer\s+([a-z-]+)\s*\{/g)].map((match) => match[1]);
-  const seenLayers = new Set();
+  const seen = new Set();
   for (const name of openings) {
-    if (seenLayers.has(name)) fail(`duplicate @layer ${name} block in ${file.slice("styles/layers/".length)}`);
-    seenLayers.add(name);
+    if (seen.has(name)) fail(`duplicate @layer ${name} block in ${file.slice("styles/".length)}`);
+    seen.add(name);
   }
-  const declared = unique(openings);
-  if (file.endsWith("base.css")) {
-    if (declared.join("|") !== "reset|base") fail(`${file} must own @layer reset then @layer base`);
-    return;
-  }
-  if (file.endsWith("fonts.css")) {
-    if (declared.join("|") !== "type") fail(`${file} must own @layer type`);
-    return;
-  }
-  const expected = file.match(/layers\/([a-z]+)\.css$/)?.[1];
-  if (declared.length !== 1 || declared[0] !== expected) fail(`${file} must own only @layer ${expected}`);
-});
+  if (openings.join("|") !== expected.join("|")) fail(`${file} must own layers ${expected.join(", ")}`);
+}
+if (!read("styles/tokens.css").includes("/* Optional bundled fonts. */")) fail("tokens.css must mark optional bundled fonts");
 
 const copyScript = read("scripts/copy-system.mjs");
 if (/skill|inject|seess/i.test(copyScript)) fail("copy-system.mjs retains removed skill, inject, or product identifiers");
 const tokensOnly = resolveAdoptRequest({ layers: "tokens" });
-if (tokensOnly.manifest.join("|") !== "layers/tokens.css") fail("copy-system.mjs tokens profile is not tokens.css only");
+if (tokensOnly.manifest.join("|") !== "tokens.css") fail("copy-system.mjs tokens profile is not tokens.css only");
 if (/global\.css/.test(tokensOnly.entryBlock)) fail("copy-system.mjs entry block still names global.css");
 const fullCopy = resolveAdoptRequest({ layers: "full" });
-if (fullCopy.manifest.includes("global.css") || fullCopy.manifest.includes("layers/fonts.css") || fullCopy.manifest.some((file) => file.endsWith(".woff"))) {
+if (fullCopy.manifest.includes("global.css") || fullCopy.manifest.includes("fonts.css") || fullCopy.manifest.some((file) => file.endsWith(".woff"))) {
   fail("copy-system.mjs full profile copies global.css, fonts, or woffs");
 }
 try {
   resolveAdoptRequest({ layers: "grid" });
   fail("copy-system.mjs allows grid without layout");
 } catch (error) {
-  if (!/requires/.test(error.message)) fail(`copy-system.mjs grid refusal is unclear: ${error.message}`);
+  if (!/Unsupported layer selection/.test(error.message)) fail(`copy-system.mjs grid refusal is unclear: ${error.message}`);
 }
 
 const publicTokens = unique([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
 const publicTokenSet = new Set(publicTokens);
+for (const token of publicTokens) {
+  if (/^--[lsgprbctm](?:-|$)/.test(token)) fail(`${token} uses a retired token family`);
+}
 const tokenDocument = docsByPath["craft/tokens.md"];
 const tokenIndexBlock = tokenDocument.match(/<!-- public-token-index:start -->([\s\S]*?)<!-- public-token-index:end -->/)?.[1];
 const documentedTokens = markedCodeNames(tokenDocument, "public-token-index", /`(--[a-z0-9-]+)`/g);
@@ -360,8 +304,8 @@ else {
   if (missingTokens.length) fail(`craft/tokens.md is missing public tokens: ${missingTokens.join(", ")}`);
   if (staleTokens.length) fail(`craft/tokens.md contains stale public tokens: ${staleTokens.join(", ")}`);
 }
-if (!tokenDocument.includes("styles/layers/tokens.css") || !/sole catalog and authority/i.test(tokenDocument)) {
-  fail("craft/tokens.md must route live token values and formulas to styles/layers/tokens.css");
+if (!tokenDocument.includes("styles/tokens.css") || !/sole catalog and authority/i.test(tokenDocument)) {
+  fail("craft/tokens.md must route live token values and formulas to styles/tokens.css");
 }
 for (const signal of [
   "A section needs no ID by default.",
@@ -379,81 +323,50 @@ else {
   if (!nativeBaseSection.includes("@layer base")) fail("craft/html.md Native base guarantees is missing @layer base");
 }
 
-for (const role of typeMeasureRoles) {
-  const token = `--t-${role}-mw`;
-  if (!hasCssSignal(tokensCss, `${token}: 70ch`)) fail(`tokens.css must default ${token} to 70ch`);
-  if ((typeCss.match(new RegExp(`var\\(${token}\\)`, "g")) || []).length !== 1) {
-    fail(`type.css must consume ${token} exactly once`);
+for (const role of typeRoles) {
+  if (!hasCssSignal(typeCss, `.${role} {`)) fail(`type.css is missing documented role ${role}`);
+  for (const property of ["font", "size", "weight", "leading", "tracking", "measure", "case", "features", "axes", "optical-sizing"]) {
+    if (!publicTokenSet.has(`--${role}-${property}`) || !typeCss.includes(`var(--${role}-${property})`)) fail(`type.css is missing role property ${role}-${property}`);
   }
 }
-if (/body\s*\{[^}]*max-width/s.test(typeCss)) fail("type.css must keep body unconstrained");
-assertWeightVariationPair(typeCss, "styles/layers/type.css");
-assertWeightVariationPair(baseCss, "styles/layers/base.css");
-if (!hasCssSignal(typeCss, 'font-variation-settings: "wght" var(--t-fw-bd)')) {
-  fail("type.css must pair registered font-weight with the wght axis");
-}
-if (!docsByPath["craft/type.md"].includes('font-variation-settings: "wght"') || !docsByPath["AGENTS.md"].includes('font-variation-settings: "wght"')) {
-  fail("type guidance must keep font-weight paired with font-variation-settings wght");
-}
-if (/@font-face/i.test(typeCss)) fail("type.css must not register faces; fonts.css owns @font-face");
+if (/body[^}]*max-width/s.test(typeCss.slice(0, typeCss.indexOf("  :where(h1)")))) fail("type.css must keep body unconstrained");
+assertWeightVariationPair(typeCss, "styles/crft.css");
+assertWeightVariationPair(baseCss, "styles/crft.css");
+if (/@font-face/i.test(frameworkCss)) fail("crft.css must not register faces; tokens.css owns @font-face");
 for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff"]]) {
   const face = [...fontsCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
-  if (!face || !face.includes(`src: url("../${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) {
-    fail(`${family} must load ../${file} with a registered 100 900 font-weight range`);
-  }
+  if (!face || !face.includes(`src: url("./${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) fail(`${family} must load ./${file} with a registered 100 900 font-weight range`);
 }
-if (!hasCssSignal(typeCss, ':where(body, h1, h2, h3, h4, h5, h6, [t]) {')) {
-  fail("type.css is missing the bounded fluid type calculation boundary");
+for (const signal of [":where(h1)", ":where(h2)", ":where(h3, h4, h5, h6)", ":where(small)", ":where(label)", ":where(figcaption)", ":where([data-theme])"]) {
+  if (!hasCssSignal(typeCss, signal)) fail(`type.css is missing native/context mapping ${signal}`);
 }
+if (!hasCssSignal(tokensCss, "--_fluid: clamp(")) fail("tokens.css is missing fluid font-size clamping");
+if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :root, [data-theme] {")) fail("type recipes require a pow feature gate and context rebinding");
 for (const role of typeRoles) {
-  if (!hasCssSignal(typeCss, `[t~="${role}"]`)) fail(`type.css is missing documented t value ${role}`);
+  if (!new RegExp(`--${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
 }
-for (const heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
-  if (!hasCssSignal(typeCss, `${heading}, [t~="${heading}"] {`)) fail(`type.css is missing native ${heading} mapping`);
-}
-for (const flag of typeColors) {
-  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t color flag ${flag}`);
-}
-for (const flag of typeTransforms) {
-  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t transform flag ${flag}`);
-}
-for (const flag of typeWeightFlags) {
-  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t weight flag ${flag}`);
-}
-for (const flag of typeFamilyFlags) {
-  if (!hasCssSignal(typeCss, `[t~="${flag}"]`)) fail(`type.css is missing documented t family flag ${flag}`);
-}
-if (!hasCssSignal(typeCss, '[t~="bo"] { font-weight: var(--t-fw-bd); font-variation-settings: "wght" var(--t-fw-bd)')) {
-  fail("type.css t flag bo must consume --t-fw-bd");
-}
-if (!hasCssSignal(typeCss, '[t~="fb"] { font-family: var(--t-ff-bd)')) {
-  fail("type.css t flag fb must consume --t-ff-bd");
-}
-for (const property of ["--t-st", "--t-fs-lo", "--t-fs-hi", "--t-fs-sl"]) {
-  if (!typeCss.includes(property)) fail(`type.css is missing private fluid property ${property}`);
-}
-if (!hasCssSignal(typeCss, "font-size: clamp(")) fail("type.css is missing fluid font-size clamping");
 const cssNumber = (css, name) => {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = css.match(new RegExp(`${escaped}\\s*:\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))\\s*;`));
   return match ? Number(match[1]) : Number.NaN;
 };
-const fluidTokenNames = ["--t-fs-min", "--t-fs-max", "--t-rt-min", "--t-rt-max", "--l-vp-min", "--l-vp-max"];
+const fluidTokenNames = ["--type-min", "--type-max", "--type-ratio-min", "--type-ratio-max", "--fluid-min", "--fluid-max"];
 const fluidTokens = Object.fromEntries(fluidTokenNames.map((name) => [name, cssNumber(tokensCss, name)]));
 const unparsedFluidTokens = fluidTokenNames.filter((name) => !Number.isFinite(fluidTokens[name]));
 if (unparsedFluidTokens.length) {
   fail(`fluid type tokens are not finite numbers: ${unparsedFluidTokens.join(", ")}`);
 } else {
-  const fsMin = fluidTokens["--t-fs-min"];
-  const fsMax = fluidTokens["--t-fs-max"];
-  const rtMin = fluidTokens["--t-rt-min"];
-  const rtMax = fluidTokens["--t-rt-max"];
-  const vpMin = fluidTokens["--l-vp-min"];
-  const vpMax = fluidTokens["--l-vp-max"];
+  const fsMin = fluidTokens["--type-min"];
+  const fsMax = fluidTokens["--type-max"];
+  const rtMin = fluidTokens["--type-ratio-min"];
+  const rtMax = fluidTokens["--type-ratio-max"];
+  const vpMin = fluidTokens["--fluid-min"];
+  const vpMax = fluidTokens["--fluid-max"];
+  if (Object.values(fluidTokens).some((value) => value <= 0) || vpMax <= vpMin) fail("fluid foundations must be positive and range strictly increasing");
   const fluidSteps = unique(
-    [...typeCss.matchAll(/--t-st\s*:\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*;/g)].map((match) => Number(match[1])),
+    [...tokensCss.matchAll(/--[a-z0-9]+-step\s*:\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*;/g)].map((match) => Number(match[1])),
   );
-  if (!fluidSteps.length) fail("type.css has no --t-st step declarations");
+  if (!fluidSteps.length) fail("tokens.css has no role-step declarations");
   for (const step of fluidSteps) {
     const lo = fsMin * rtMin ** step;
     const hi = fsMax * rtMax ** step;
@@ -465,49 +378,36 @@ if (unparsedFluidTokens.length) {
     }
   }
 }
-if (/\.(?:h[0-6]|t-(?:lg|bd|sm))(?:[\s,:.{#]|$)/i.test(allCss)) {
-  fail("canonical CSS retains a retired class-based type role");
-}
-
-const layoutHookSignals = {
-  c: "[c] {", "c=\"sm\"": '&[c~="sm"] {', "c=\"lg\"": '&[c~="lg"] {',
-  "c=\"ct\"": '&[c~="ct"] {',
-  s: "[s] {", "s=\"h\"": '&[s~="h"] {', "s=\"w\"": '&[s~="w"] {',
-  "s=\"ct\"": '&[s~="ct"] {', "s=\"sb\"": '&[s~="sb"] {',
-  "s=\"xs\"": '&[s~="xs"] {', "s=\"sm\"": '&[s~="sm"] {',
-  "s=\"lg\"": '&[s~="lg"] {', "s=\"xl\"": '&[s~="xl"] {',
-  container: "section>[c] { container: container / inline-size",
-  ".img-w": ".img-w {",
-};
+const layoutHookSignals = { ".c": ".c {", ".c.sm": "&.sm {", ".c.lg": "&.lg {", ".s": ".s {", container: "section > .c { container: container / inline-size", ".img-w": ".img-w {" };
 for (const [hook, signal] of Object.entries(layoutHookSignals)) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing documented hook ${hook}`);
 }
 for (const signal of [
-  ">header, >main>section, >footer { padding: var(--l-bl-y) var(--l-bl-x)",
-  ">header { padding-block: var(--p)", ">footer { padding-bottom: var(--p)",
+  ">header, >main>section, >footer { padding: var(--bleed-y) var(--bleed-x)",
+  ">header { padding-block: var(--padding)", ">footer { padding-bottom: var(--padding)",
   "view-transition-name: header", "view-transition-name: main", "view-transition-name: footer",
-  "max-width: var(--l-cw)", "max-width: calc(var(--l-cw) / 3 * 2)",
-  "max-width: calc(var(--l-cw) / 3 * 4)",
+  "max-width: var(--content-max)", "max-width: calc(var(--content-max) / 3 * 2)",
+  "max-width: calc(var(--content-max) / 3 * 4)",
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing viewport-derived container behavior: ${signal}`);
 }
 const gridHookSignals = {
-  g: "[g] {", x: "[g]>[x", y: "[g]>[y", o: "[g]>[o", "a-sm": '[g="a-sm"]',
-  a: '[g="a"]', "a-lg": '[g="a-lg"]', sg: '[g="sg"]',
+  g: "[g] {", c: "[g]>[c", r: "[g]>[r", o: "[g]>[o", "fill-sm": '[g="fill-sm"]',
+  fill: '[g="fill"]', "fill-lg": '[g="fill-lg"]', fit: '[g="fit"]', "fit-sm": '[g="fit-sm"]', "fit-lg": '[g="fit-lg"]', sg: '[g="sg"]',
 };
 for (const [hook, signal] of Object.entries(gridHookSignals)) {
   if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing documented grid hook ${hook}`);
 }
 for (let position = 1; position <= 12; position += 1) {
-  for (const signal of [`[g$="${position}"]`, `[g^="${position}"]`, `[g]>[x$="${position}"]`, `[g]>[x^="${position}"]`]) {
+  for (const signal of [`[g$="${position}"]`, `[g^="${position}"]`, `[g]>[c$="${position}"]`, `[g]>[c^="${position}"]`]) {
     if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing numeric grid rule ${signal}`);
   }
 }
-for (const signal of ['[g]>[x$="0"]', '[g]>[x^="0"]']) {
+for (const signal of ['[g]>[c$="0"]', '[g]>[c^="0"]']) {
   if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing full-row grid rule ${signal}`);
 }
 for (let position = 1; position <= 4; position += 1) {
-  for (const signal of [`[g]>[y$="${position}"]`, `[g]>[y^="${position}"]`]) {
+  for (const signal of [`[g]>[r$="${position}"]`, `[g]>[r^="${position}"]`]) {
     if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing row-span grid rule ${signal}`);
   }
 }
@@ -523,7 +423,7 @@ const expectedUtilityHooks = documentedHooks["craft/utilities.md"].filter((hook)
 const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s*\{/gm)].map((match) => `.${match[1]}`)).sort();
 if (actualUtilityHooks.join("|") !== expectedUtilityHooks.join("|")) fail("utility.css selectors differ from the documented finite utility surface");
 if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is missing documented hook .sr.focusable");
-if (!hasCssSignal(tokensCss, ":root, [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
+if (!hasCssSignal(tokensCss, ":root, [data-theme], [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
   fail("tokens.css is missing a documented skin or accent boundary");
 }
 const resetCss = cssLayerBlock(baseCss, "reset");
@@ -534,12 +434,12 @@ if (/var\(\s*--/i.test(resetCss)) fail("reset must not consume custom properties
 for (const signal of [
   "@supports selector(details::details-content)", "corner-shape: squircle",
   ':where(a) {', ':where(a, button, label) {',
-  "transition-property: color, background, border, transform, opacity, font-variation-settings",
-  'transition-duration: var(--m-td)',
+  "transition-property: color, background, border, transform, opacity, font-weight",
+  'transition-duration: var(--duration)',
   '[aria-current="page"]',
   "list-style-position: outside",
-  "border: var(--b-wd) solid var(--c-bc)",
-  "border-color: var(--c-fb-dn)",
+  "border: var(--border-width) solid var(--border)",
+  "border-color: var(--danger)",
 ]) {
   if (!hasCssSignal(baseLayerCss, signal)) fail(`base layer is missing native enhancement: ${signal}`);
 }
@@ -564,23 +464,23 @@ if (!hasCssSignal(motionCss, "@supports (view-transition-name: none)") || !hasCs
 }
 
 for (const signal of [
-  "section>[c] { container: container / inline-size", "display: flex", "flex-direction: column",
+  "section > .c { container: container / inline-size", "display: flex", "flex-direction: column",
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing invariant: ${signal}`);
 }
-const containerQueryMd = tokensCss.match(/--l-cq-md\s*:\s*([^;]+);/)?.[1].trim();
-const containerQueryLg = tokensCss.match(/--l-cq-lg\s*:\s*([^;]+);/)?.[1].trim();
+const containerQueryMd = tokensCss.match(/--query-md\s*:\s*([^;]+);/)?.[1].trim();
+const containerQueryLg = tokensCss.match(/--query-lg\s*:\s*([^;]+);/)?.[1].trim();
 if (!containerQueryMd || !containerQueryLg) fail("tokens.css is missing named container-query thresholds");
 for (const signal of [
   `@container container (width >=${containerQueryMd})`,
   `@container container (width >=${containerQueryLg})`,
-  "grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr))", '[g]> :is([x="0"], [x$="-0"])',
-  '[g]> :is([x="0"], [x^="0-"])', '[g]>[o*="-a-"]', '[g]>[o^="a"]',
+  "grid-template-columns: repeat(var(--l-gc), minmax(0, 1fr))", '[g]> :is([c="0"], [c$="-0"])',
+  '[g]> :is([c="0"], [c^="0-"])', '[g]>[o*="-a-"]', '[g]>[o^="a"]',
 ]) {
   if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing invariant: ${signal}`);
 }
 if (/@media\s*\(\s*width\b/.test(gridCss)) fail("grid.css must use container queries for grid states");
-if (/(?:^|})\s*\[c\]\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > [c] may establish the query boundary");
+if (/(?:^|})\s*(?:\.c|\[c\])\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > .c may establish the query boundary");
 
 const accentRoutes = unique([...tokensCss.matchAll(/\[data-accent\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 const skinRoutes = unique([...tokensCss.matchAll(/\[data-skin\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
@@ -594,24 +494,15 @@ if (!motionCss.includes("&[data-scrub='reverse']>img")) fail("motion.css is miss
 if (/\.(?:btn|crd|lnk|card)(?:[\s,:.{#]|$)/i.test(allCss)) fail("canonical CSS styles a project component naming convention");
 
 for (const property of privateProperties) {
-  if (!tokenDocument.includes(property) || !docsByPath["AGENTS.md"].includes(property)) fail(`${property} is not documented as private`);
+  if ((!tokenDocument.includes(property) || !docsByPath["AGENTS.md"].includes(property)) && !property.startsWith("--_")) fail(`${property} is not documented as private`);
   if (documentedTokens?.includes(property)) fail(`${property} appears in the public token index`);
 }
-if (/data-theme/i.test(allCss)) fail("canonical CSS uses data-theme instead of data-skin");
+if (/\[(?:t|s|x|y)[~=$*^\]]/.test(allCss)) fail("canonical CSS retains legacy hooks");
 
 const privatePattern = new RegExp(`(?:${privateProperties.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?![a-z0-9-])`, "i");
 const attributeValues = (html, name) => unique(
   [...html.matchAll(new RegExp(`\\s${name}\\s*=\\s*([\"'])([^\"']*)\\1`, "gi"))].map((match) => match[2]),
 );
-const validGridNumber = (value, maximum, allowZero = false) => {
-  if (!/^\d+$/.test(value)) return false;
-  const number = Number(value);
-  return (allowZero && number === 0) || (number >= 1 && number <= maximum);
-};
-const validResponsiveNumber = (value, maximum, allowZero = false) => {
-  const values = value.split("-");
-  return values.length <= 2 && values.every((part) => validGridNumber(part, maximum, allowZero));
-};
 const idReferenceAttributes = [
   "for", "aria-labelledby", "aria-describedby", "aria-controls", "aria-owns",
   "aria-activedescendant", "aria-details", "aria-errormessage",
@@ -619,7 +510,7 @@ const idReferenceAttributes = [
 const allowedExampleClasses = new Set([
   "action", "action-secondary", "banner", "board-frame", "btn", "chip", "crd", "focusable",
   "img-w", "index", "invites", "issue", "issue-summary", "lnk", "northline", "panel", "pill",
-  "proof-tile", "signal", "skeleton", "sr",
+  "proof-tile", "signal", "skeleton", "sr", "c", "s", "sm", "lg", ...typeRoles,
 ]);
 const validateIdentifiers = (html, path) => {
   const active = html.replace(/<!--[\s\S]*?-->/g, "");
@@ -663,70 +554,8 @@ const validateExampleMarkup = (html, path) => {
   for (const value of attributeValues(active, "data-accent")) {
     if (!supportedAccentRoutes.includes(value)) fail(`${path} uses unsupported data-accent ${value}`);
   }
-  for (const value of attributeValues(active, "t")) {
-    const tokens = value.trim().split(/\s+/).filter(Boolean);
-    let roles = 0;
-    let colors = 0;
-    let transforms = 0;
-    let weights = 0;
-    let families = 0;
-    for (const token of tokens) {
-      if (typeRoles.includes(token)) roles += 1;
-      else if (typeColors.includes(token)) colors += 1;
-      else if (typeTransforms.includes(token)) transforms += 1;
-      else if (typeWeightFlags.includes(token)) weights += 1;
-      else if (typeFamilyFlags.includes(token)) families += 1;
-      else fail(`${path} uses unsupported t token ${token}`);
-    }
-    if (roles > 1) fail(`${path} uses more than one t role`);
-    if (colors > 1) fail(`${path} uses more than one t color`);
-    if (transforms > 1) fail(`${path} uses more than one t transform`);
-    if (weights > 1) fail(`${path} uses more than one t weight`);
-    if (families > 1) fail(`${path} uses more than one t family`);
-  }
-  if (attributeValues(active, "w").length) fail(`${path} uses retired w attribute; put lt, rg, or bo on t`);
-  if (attributeValues(active, "f").length) fail(`${path} uses retired f attribute; put sa, se, mo, fb, or dp on t`);
-  for (const value of attributeValues(active, "g")) {
-    if (!["", "a", "a-sm", "a-lg", "sg"].includes(value) && !validResponsiveNumber(value, 12)) {
-      fail(`${path} uses invalid g value ${value}`);
-    }
-  }
-  for (const value of attributeValues(active, "c")) {
-    const tokens = value.trim().split(/\s+/).filter(Boolean);
-    let measures = 0;
-    const seen = new Set();
-    for (const token of tokens) {
-      if (containerMeasures.includes(token)) measures += 1;
-      else if (!containerFlags.includes(token)) fail(`${path} uses invalid c token ${token}`);
-      if (seen.has(token)) fail(`${path} repeats c token ${token}`);
-      seen.add(token);
-    }
-    if (measures > 1) fail(`${path} uses more than one c measure`);
-  }
-  for (const value of attributeValues(active, "s")) {
-    const tokens = value.trim().split(/\s+/).filter(Boolean);
-    const seen = new Set();
-    let gaps = 0;
-    for (const token of tokens) {
-      if (stackGaps.includes(token)) gaps += 1;
-      else if (!stackFlags.includes(token)) fail(`${path} uses invalid s flag ${token}`);
-      if (seen.has(token)) fail(`${path} repeats s flag ${token}`);
-      seen.add(token);
-    }
-    if (gaps > 1) fail(`${path} uses more than one s gap`);
-  }
-  for (const value of attributeValues(active, "x")) {
-    if (!value || !validResponsiveNumber(value, 12, true)) fail(`${path} uses invalid x value ${value || "(empty)"}`);
-  }
-  for (const value of attributeValues(active, "y")) {
-    if (!value || !validResponsiveNumber(value, 4)) fail(`${path} uses invalid y value ${value || "(empty)"}`);
-  }
-  for (const value of attributeValues(active, "l")) {
-    if (!clampValues.includes(value)) fail(`${path} uses invalid l value ${value || "(empty)"}`);
-  }
-  for (const value of attributeValues(active, "o")) {
-    if (!/^[fal]-[fal]-[fal]$/.test(value)) fail(`${path} uses invalid o value ${value}`);
-  }
+  for (const error of markupErrors(active)) fail(`${path} ${error}`);
+
 };
 const validateExampleCss = (css, path) => {
   const active = stripCssComments(css);
@@ -777,11 +606,9 @@ if (existsSync(exampleRoot)) {
       const active = path.endsWith(".css") ? stripCssComments(text) : text.replace(/<!--[\s\S]*?-->/g, "");
       if (privatePattern.test(active)) fail(`${path} uses a private implementation property`);
       if (path.endsWith(".css")) {
-        if (/data-theme/i.test(active)) fail(`${path} uses data-theme`);
         validateExampleCss(text, path);
       }
       if (path.endsWith(".html")) {
-        if (/<[^>]*\bdata-theme\b[^>]*>/i.test(active)) fail(`${path} uses data-theme`);
         validateExampleMarkup(text, path);
       }
     }

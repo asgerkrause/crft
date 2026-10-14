@@ -12,10 +12,10 @@ Northline Press needs display-led type, signal color, sharp radii, and an asymme
 
 ## Demonstrates
 
-- base brand values owned by copied `styles/layers/tokens.css`;
+- base brand values owned by copied `styles/tokens.css`;
 - campaign-only accent and radius overrides scoped to `.northline`;
 - narrow type-measure overrides through matching role tokens;
-- `section > [c="lg"]`, public grid spans, nested skins, and accent routing;
+- `section > .c.lg`, public grid spans, nested skins, and accent routing;
 - project-owned hairlines, index marks, board frame, action presentation, and progressively enhanced issue stagger.
 
 Read [`markup.html`](markup.html) and [`example.css`](example.css).

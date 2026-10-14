@@ -37,7 +37,7 @@ A button or prominent link needs:
 Use one primary action group per decision area. Secondary actions must remain available without competing with the primary action. A destructive action names its effect and must not rely on danger color alone.
 
 ```html
-<div s="h w">
+<div class="s">
   <a class="lnk" href="/guide">Read the guide</a>
   <button class="btn" type="button">Save draft</button>
 </div>
@@ -50,16 +50,16 @@ Use one primary action group per decision area. Secondary actions must remain av
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--g-sm);
-    min-height: 2.75rem;
-    padding: var(--p-sm) var(--p);
-    border: var(--b-wd) solid var(--c-ac);
-    border-radius: var(--r);
+    gap: var(--gap-sm);
+    min-height: var(--control);
+    padding: var(--padding-sm) var(--padding);
+    border: var(--border-width) solid var(--accent);
+    border-radius: var(--radius);
   }
 
   .btn {
-    color: var(--c-ac-co);
-    background: var(--c-ac);
+    color: var(--on-accent);
+    background: var(--accent);
   }
 }
 ```
@@ -84,8 +84,8 @@ A card defines:
 - behavior when content grows or actions wrap.
 
 ```html
-<article class="crd" s>
-  <p t="sm mu">Release</p>
+<article class="crd s">
+  <p class="small">Release</p>
   <h3>CRFT documentation</h3>
   <p>Sixteen focused owners with one task router.</p>
   <a class="lnk" href="/releases/crft">Review release</a>

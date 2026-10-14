@@ -17,11 +17,11 @@
     <a class="sr focusable" href="#invites-main">Skip to invitations</a>
 
     <header>
-      <div c>
-        <div s="h sb ct">
-          <p t="sm mu">Northline Workspace</p>
+      <div class="c">
+        <div class="s">
+          <p class="small">Northline Workspace</p>
           <nav aria-label="Account">
-            <ul s="h">
+            <ul class="s">
               <li><a href="/settings">Settings</a></li>
               <li><a href="/support">Support</a></li>
             </ul>
@@ -33,19 +33,19 @@
     <main id="invites-main">
       <!-- The section ID is the Compose fragment target used by the empty state. -->
       <section id="invite-compose" data-skin="tone">
-        <div c>
-          <header s>
+        <div class="c">
+          <header class="s">
             <h1>Workspace invitations</h1>
-            <p t="lg">
+            <p class="lead">
               Invite teammates with native controls, truthful states, and
               project-owned chrome—without a CRFT component kit.
             </p>
           </header>
 
           <div g="12-6">
-            <aside class="panel" x="4-2">
-              <form s method="get" action="/invitations">
-                <h2 t="sm">Filters</h2>
+            <aside class="panel" c="4-2">
+              <form method="get" action="/invitations" class="s">
+                <h2 class="small">Filters</h2>
 
                 <p>
                   <label for="filter-query">Search</label>
@@ -61,7 +61,7 @@
 
                 <fieldset>
                   <legend>Status</legend>
-                  <div s>
+                  <div class="s">
                     <label><input type="radio" name="status" value="all" checked /> All</label>
                     <label><input type="radio" name="status" value="pending" /> Pending</label>
                     <label><input type="radio" name="status" value="accepted" /> Accepted</label>
@@ -70,7 +70,7 @@
 
                 <fieldset>
                   <legend>Role</legend>
-                  <div s>
+                  <div class="s">
                     <label><input type="checkbox" name="role" value="admin" /> Admin</label>
                     <label><input type="checkbox" name="role" value="editor" checked /> Editor</label>
                     <label><input type="checkbox" name="role" value="viewer" checked /> Viewer</label>
@@ -82,7 +82,7 @@
             </aside>
 
             <!-- Error specimen: invalid email with a connected explanation. -->
-            <form class="panel" s x="8-4" method="post" action="/invitations">
+            <form class="s panel" c="8-4" method="post" action="/invitations">
               <h2>Invite a teammate</h2>
 
               <p>
@@ -121,7 +121,7 @@
                 Send email notification
               </label>
 
-              <div s="h w">
+              <div class="s">
                 <button type="submit" class="action">Send invite</button>
                 <button type="button" class="action action-secondary" disabled>
                   Invite quota reached
@@ -135,18 +135,18 @@
 
       <!-- In production one results region swaps content; all states remain visible here as evidence. -->
       <section>
-        <div c>
-          <div class="panel" s aria-busy="true">
+        <div class="c">
+          <div class="s panel" aria-busy="true">
             <h2>Results — loading</h2>
-            <p t="sm mu" role="status">Loading invitations…</p>
+            <p role="status" class="small">Loading invitations…</p>
             <p class="skeleton" aria-hidden="true">Placeholder rows</p>
           </div>
         </div>
       </section>
 
       <section>
-        <div c>
-          <div class="panel" s>
+        <div class="c">
+          <div class="s panel">
             <h2>Results — empty</h2>
             <p role="status">
               No invitations match these filters. Adjust filters or invite someone new.
@@ -159,8 +159,8 @@
       </section>
 
       <section>
-        <div c>
-          <div class="panel" s data-accent="danger">
+        <div class="c">
+          <div class="s panel" data-accent="danger">
             <h2>Results — error</h2>
             <p class="banner" role="alert">
               Invitations could not be loaded. Check your connection, then try again.
@@ -171,8 +171,8 @@
       </section>
 
       <section>
-        <div c>
-          <div class="panel" s data-accent="success">
+        <div class="c">
+          <div class="s panel" data-accent="success">
             <h2>Results — success</h2>
             <p class="banner" role="status">
               Invite sent to jordan@northline.example as Editor.

@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Example: branded extension (non-canonical)</title>
     <!--
-      After copy:
-        @import "./styles/global.css";
+      In the project-owned entry after full adoption:
+        @layer reset, base, tokens, type, layout, grid, motion, utility, project;
+        @import "./styles/tokens.css";
+        @import "./styles/crft.css";
         @import "./example.css"; /* project-owned CSS */
-      Base brand values belong in copied layers/tokens.css.
+      Base brand values belong in copied tokens.css.
       Campaign-only variations live in example.css under .northline.
     -->
     <link rel="stylesheet" href="/styles/global.css" />
@@ -18,11 +20,11 @@
     <a class="sr focusable" href="#campaign-board">Skip to campaign board</a>
 
     <header>
-      <div c>
-        <div s="h sb ct">
-          <p t="sm uc">Northline Press</p>
+      <div class="c">
+        <div class="s">
+          <p class="small">Northline Press</p>
           <nav aria-label="Campaign">
-            <ul s="h">
+            <ul class="s">
               <li><a href="#issues">Issues</a></li>
               <li><a href="/subscribe">Subscribe</a></li>
             </ul>
@@ -34,12 +36,12 @@
     <main>
       <!-- The section ID is the skip-link target. -->
       <section id="campaign-board" data-skin="tone">
-        <div c="lg">
+        <div class="c lg">
           <div class="board-frame" g="12-6">
-            <header s x="5-3">
-              <p t="sm mu uc">Volume 12 · Field edition</p>
+            <header c="5-3" class="s">
+              <p class="small">Volume 12 · Field edition</p>
               <h1>Systems with a point of view.</h1>
-              <p t="lg">
+              <p class="lead">
                 Northline keeps CRFT intact and pushes personality through
                 scoped tokens and project composition—not a forked foundation.
               </p>
@@ -48,15 +50,15 @@
               </p>
             </header>
 
-            <aside s x="7-3" data-skin="accent">
-              <h2 t="sm uc">Editor’s folio</h2>
+            <aside c="7-3" data-skin="accent" class="s">
+              <h2 class="small">Editor’s folio</h2>
               <blockquote>
-                <p t="lg">
+                <p class="lead">
                   Ambition belongs in the product layer. The shared system
                   stays small enough to trust.
                 </p>
               </blockquote>
-              <p t="sm">
+              <p class="small">
                 <span class="chip" data-accent="secondary">Member edition</span>
               </p>
             </aside>
@@ -66,16 +68,16 @@
 
       <!-- The section ID is the Issues navigation target. -->
       <section id="issues">
-        <div c>
-          <div s>
-            <header class="issue-summary" s="h sb ct">
+        <div class="c">
+          <div class="s">
+            <header class="s issue-summary">
               <h2>Current issues</h2>
-              <p t="sm mu">Three active briefs</p>
+              <p class="small">Three active briefs</p>
             </header>
 
             <div g="3-2">
-              <article class="issue" s>
-                <p t="sm" class="index" aria-hidden="true">01</p>
+              <article class="s issue">
+                <p class="small index" aria-hidden="true">01</p>
                 <h3>Readable measure</h3>
                 <p>
                   Type roles keep measure via tokens. Brand trims display
@@ -84,22 +86,22 @@
                 <p><a href="/issues/measure">Read the brief</a></p>
               </article>
 
-              <article class="issue" s>
-                <p t="sm" class="index" aria-hidden="true">02</p>
+              <article class="s issue">
+                <p class="small index" aria-hidden="true">02</p>
                 <h3>Scoped accent</h3>
                 <p>
-                  <code>--c-ac</code> and <code>--c-ac-co</code> flip together
+                  <code>--accent</code> and <code>--on-accent</code> flip together
                   under <code>.northline</code>, not inside adopted CSS.
                 </p>
                 <p><a href="/issues/accent">Read the brief</a></p>
               </article>
 
-              <article class="issue" s>
-                <p t="sm" class="index" aria-hidden="true">03</p>
+              <article class="s issue">
+                <p class="small index" aria-hidden="true">03</p>
                 <h3>Grid without theater</h3>
                 <p>
                   Large, medium, and small still resolve from
-                  <code>section &gt; [c]</code>. Brand frames the cells; it does
+                  <code>section &gt; .c</code>. Brand frames the cells; it does
                   not invent breakpoints.
                 </p>
                 <p><a href="/issues/grid">Read the brief</a></p>
@@ -111,11 +113,11 @@
     </main>
 
     <footer>
-      <div c>
-        <div s="h sb ct">
-          <p t="sm mu">© Northline Press · Non-canonical specimen</p>
+      <div class="c">
+        <div class="s">
+          <p class="small">© Northline Press · Non-canonical specimen</p>
           <nav aria-label="Colophon">
-            <ul s="h">
+            <ul class="s">
               <li><a href="/privacy">Privacy</a></li>
               <li><a href="/colophon">Colophon</a></li>
             </ul>

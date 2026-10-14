@@ -22,7 +22,7 @@ test("container grids resolve independently and no-container grids retain fallba
 
   await fixture(page, "grid-boundary-lg").evaluate((boundary) => {
     boundary.style.width = "1100px";
-    const container = boundary.querySelector(":scope > [c]");
+    const container = boundary.querySelector(":scope > .c");
     container.style.width = "100%";
     container.style.maxWidth = "none";
   });
@@ -48,7 +48,7 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
   };
   expect(minimum.body).toBeCloseTo(14, 1);
   expect(minimum.inherited).toBeCloseTo(minimum.body, 2);
-  expect(minimum.semantic).toBeCloseTo(16.1, 1);
+  expect(minimum.semantic).toBeCloseTo(18.515, 1);
   expect(minimum.override).toBeCloseTo(24.486, 1);
 
   await page.setViewportSize({ width: 1000, height: 900 });
@@ -91,7 +91,8 @@ test("fluid type doubles with root font size at the clamp ends", async ({ page }
   await zoomRoot();
   const atMaxZoomed = await readSizes();
   expect(atMaxZoomed.body / atMax.body).toBeGreaterThanOrEqual(1.3);
-  expect(atMaxZoomed.heading / atMax.heading).toBeGreaterThanOrEqual(1.3);
+  // h4 now uses h3 (step 2); assert its actual rem-bound interpolation.
+  expect(atMaxZoomed.heading).toBeCloseTo((18.515 + (39.2 - 18.515) / 3) * 2, 2);
 
   await resetRoot();
   await page.setViewportSize({ width: 1000, height: 900 });
@@ -106,7 +107,7 @@ test("keyboard order follows source order despite visual reordering", async ({ p
   await page.goto("/#visual-order-focus");
   const grid = fixture(page, "visual-order-focus");
   await grid.evaluate((element) => {
-    const container = element.closest("section")?.querySelector(":scope > [c]") ?? element.closest("[c]");
+    const container = element.closest("section")?.querySelector(":scope > .c") ?? element.closest(".c");
     container.style.width = "1100px";
     container.style.maxWidth = "none";
   });
@@ -146,7 +147,7 @@ test("reduced-motion preference resolves public motion durations to near zero", 
   await page.goto("/#motion-roles");
   const durations = await fixture(page, "reduced-motion").evaluate((element) => {
     const style = getComputedStyle(element);
-    return ["--m-td-sf", "--m-td-f", "--m-td", "--m-td-s", "--m-td-ss"].map((token) => style.getPropertyValue(token).trim());
+    return ["--duration-xs", "--duration-sm", "--duration", "--duration-lg", "--duration-xl"].map((token) => style.getPropertyValue(token).trim());
   });
   expect(durations.map((duration) => Number.parseFloat(duration))).toEqual([0.001, 0.001, 0.001, 0.001, 0.001]);
 });
@@ -195,16 +196,17 @@ test("accent skin follows every active route across presets and schemes", async 
   await page.goto("/#accent-skins");
   const root = page.locator("html");
   const routes = [
-    ["skin-accent-primary", "--c-ac"],
-    ["skin-accent-secondary", "--c-sc"],
-    ["skin-accent-tertiary", "--c-tr"],
-    ["skin-accent-success", "--c-fb-su"],
-    ["skin-accent-warning", "--c-fb-wn"],
-    ["skin-accent-danger", "--c-fb-dn"],
+    ["skin-accent-primary", "--accent"],
+    ["skin-accent-secondary", "--secondary"],
+    ["skin-accent-tertiary", "--tertiary"],
+    ["skin-accent-success", "--success"],
+    ["skin-accent-warning", "--warning"],
+    ["skin-accent-danger", "--danger"],
   ];
   for (const preset of ["core", "claude", "openai", "github", "supabase"]) {
     for (const mode of ["light", "dark"]) {
       await root.evaluate((element, values) => {
+        element.setAttribute("data-theme", values.mode);
         element.setAttribute("data-mode", values.mode);
         element.setAttribute("data-preset", values.preset);
       }, { mode, preset });
@@ -212,7 +214,7 @@ test("accent skin follows every active route across presets and schemes", async 
         const colors = await fixture(page, name).evaluate((element, expectedToken) => {
           const routed = document.createElement("i");
           const expected = document.createElement("i");
-          routed.style.backgroundColor = "var(--c-ac)";
+          routed.style.backgroundColor = "var(--accent)";
           expected.style.backgroundColor = `var(${expectedToken})`;
           element.append(routed, expected);
           const result = [getComputedStyle(routed).backgroundColor, getComputedStyle(expected).backgroundColor];
@@ -243,12 +245,13 @@ test("muted text stays a quieter tone than foreground across skins", async ({ pa
   for (const preset of ["core", "claude", "openai", "github", "supabase"]) {
     for (const mode of ["light", "dark"]) {
       await root.evaluate((element, values) => {
+        element.setAttribute("data-theme", values.mode);
         element.setAttribute("data-mode", values.mode);
         element.setAttribute("data-preset", values.preset);
       }, { mode, preset });
       const colors = await cards.evaluateAll((elements) => elements.map((element) => {
         const muted = document.createElement("span");
-        muted.setAttribute("t", "mu");
+        muted.style.color = "var(--muted)";
         muted.textContent = "Muted";
         const body = document.createElement("span");
         body.textContent = "Body";
@@ -276,6 +279,7 @@ test("muted text stays a quieter tone than foreground across skins", async ({ pa
       }));
       for (const color of colors) {
         const label = `${preset} ${mode} ${JSON.stringify(color)}`;
+        expect(contrastRatio(color.muted.foreground, color.muted.background), label).toBeGreaterThanOrEqual(4.5);
         expect(color.muted.foreground, label).not.toBe(color.body.foreground);
         expect(color.muted.foreground, label).not.toBe(color.muted.background);
         expect(
