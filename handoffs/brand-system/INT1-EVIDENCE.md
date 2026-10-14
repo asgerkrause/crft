@@ -1,12 +1,12 @@
 # Brand-system local integration evidence
 
-P0/CR1/BO1/AK1 integration of the frozen [shared contract](contract.md). This record describes local uncommitted artifacts, not a release or human design/accessibility acceptance. Repository implementations remain owned by their respective units.
+P0/CR1/BO1/AK1 integration of the frozen [shared contract](contract.md). This historical checkpoint describes the local artifacts consumed during integration, before repository delivery. It is not release or human design/accessibility acceptance. Current CRFT guidance/test corrections are recorded in [CORE3-EVIDENCE.md](CORE3-EVIDENCE.md); shared CSS and contract versions remain unchanged. Repository implementations remain owned by their respective units.
 
 ## Exact artifacts
 
 | Unit | Artifact | Evidence |
 | --- | --- | --- |
-| CRFT CR1 | `brand-system-1-core3-fix1-21751765f960b96c` | [CORE3-EVIDENCE.md](CORE3-EVIDENCE.md), [CORE3-SHA256.json](CORE3-SHA256.json) |
+| CRFT CR1 | `brand-system-1-core3-fix1-21751765f960b96c` | [CORE3-EVIDENCE.md](CORE3-EVIDENCE.md), [snapshot hashes](https://github.com/sanitizestudio/crft/blob/c57d6ee6d7898e66f7dec88b8d421871aba2d744/handoffs/brand-system/CORE3-SHA256.json) |
 | Brand OS BO1 | `brand-system-1-bo1-fix1-d1ac13fe6c5481c1` | Team `bo1-fix1-report.md`, `bo1-source-sha256.json`, `bo1-packages-sha256.json` |
 | AK AK1 | `brand-system-1-ak1-860d25e0f82b1134` | Team `ak1-implement-report.md`, `ak1-source-inventory.json`, `ak1-output-sha256.json` |
 

@@ -1,7 +1,7 @@
 # CRFT implementation handoff — CR1
 
 Repository: `/Users/krause/dev/repos/crft`.
-Read [README](README.md) and [contract](contract.md) first. Status: CR1 implemented locally under P0 `brand-system-1`; integrated checks pass. See current [three-file evidence and limits](CORE3-EVIDENCE.md); [CR1 evidence](CR1-EVIDENCE.md) is historical. No commit or release created.
+Read [README](README.md) and [contract](contract.md) first. Status: CR1 implemented locally under P0 `brand-system-1`; integrated checks pass. See current [three-file evidence and limits](CORE3-EVIDENCE.md); [CR1 evidence](CR1-EVIDENCE.md) is historical. Delivery status is tracked in [PR #7](https://github.com/sanitizestudio/crft/pull/7).
 
 ## Outcome
 
@@ -77,4 +77,4 @@ Rendered acceptance must include:
 
 Record exact revision, final public role/selector inventory, unit conventions, two synthetic recipe inputs, expected endpoint/static outputs, permitted scope overrides, migration table, and support targets. Separate source checks from rendered facts and human design acceptance. Report deviations from `contract.md` to the coordinator before changing downstream expectations.
 
-CR1 is implemented and verified locally; it has not landed. Use [current three-file evidence](CORE3-EVIDENCE.md) and its exact hashes to identify this handoff, and preserve its verification limits.
+CR1 is implemented and verified; PR #7 records its delivery status. Use [current three-file evidence](CORE3-EVIDENCE.md) and its exact hashes to identify this handoff, and preserve its verification limits.

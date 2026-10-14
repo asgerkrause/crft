@@ -93,7 +93,7 @@ Do not scrub proof that must remain fully visible, interactive media, text, or c
 
 ## View transitions
 
-When view transitions are supported, same-origin navigations cross-fade `main` using the public `--m-vt-*` tokens. Header and footer keep their names so chrome can stay stable. Reduced motion removes every view-transition animation, including the root cross-fade. Without support, navigation is instantaneous.
+When view transitions are supported, same-origin navigations cross-fade `main` using the public `--transition-*` tokens. Header and footer keep their names so chrome can stay stable. Reduced motion removes every view-transition animation, including the root cross-fade. Without support, navigation is instantaneous.
 
 Project CSS may retune the public view-transition tokens. Do not invent a second navigation motion language.
 

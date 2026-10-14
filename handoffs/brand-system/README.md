@@ -13,7 +13,7 @@ Read [the shared contract](contract.md), then the relevant repository handoff:
 - [Brand OS](brand-os.md): approved brand data, scale recipes, CSS and static exports, versioned context.
 - [AK](ak.md): shared brand adapter, UI guidance, Paper, Slides, Figure, and later consumers.
 
-P0 is frozen and CR1 is now implemented in the local working tree. Read current [three-file evidence](CORE3-EVIDENCE.md) and [exact file hashes](CORE3-SHA256.json) before downstream work. [CR1 evidence](CR1-EVIDENCE.md) and [CR1 hashes](CR1-SHA256.json) are historical and identify the preserved pre-packaging baseline. BO1/AK1 are separate dispatched units; their completion is not established here. CRFT has not been committed or released. Current `AGENTS.md`, `CRAFT.md`, skills, and source describe the implemented CRFT contract. Reinspect source and working-tree changes at the beginning of each session. Do not overwrite unrelated work.
+P0 is frozen and CR1 is now implemented in the local working tree. Read current [three-file evidence](CORE3-EVIDENCE.md) and [exact file hashes](CORE3-SHA256.json) before downstream work. [CR1 evidence](CR1-EVIDENCE.md) and [CR1 hashes](CR1-SHA256.json) are historical and identify the preserved pre-packaging baseline. [Local integration evidence](INT1-EVIDENCE.md) records the completed BO1/AK1 implementation snapshots and their limits. CRFT delivery is tracked in [PR #7](https://github.com/sanitizestudio/crft/pull/7); downstream repositories own their separate delivery. Current `AGENTS.md`, `CRAFT.md`, skills, and source describe the implemented CRFT contract. Reinspect source and working-tree changes at the beginning of each session. Do not overwrite unrelated work.
 
 ## Decision
 

@@ -1,6 +1,6 @@
 # CRFT three-file migration evidence
 
-Unit: CR1 packaging follow-up, dispatch crft-core3-implement, worker crft-core3. Checkout: `/Users/krause/dev/repos/crft`, branch `launch-polish`, base revision `7358c7ef477a0b1890951bc8f967b2bea00f28b1`. This is an uncommitted local artifact, not a release. Current file hashes and artifact identity are recorded in [CORE3-SHA256.json](CORE3-SHA256.json).
+Unit: CR1 packaging follow-up, dispatch crft-core3-implement, worker crft-core3. Checkout: `/Users/krause/dev/repos/crft`, branch `launch-polish`, base revision `7358c7ef477a0b1890951bc8f967b2bea00f28b1`. The implementation snapshot was committed as c57d6ee6d7898e66f7dec88b8d421871aba2d744. Delivery corrections below update guidance and test coverage without changing the shared CSS. Current file hashes and artifact identity are recorded in [CORE3-SHA256.json](CORE3-SHA256.json); [PR #7](https://github.com/sanitizestudio/crft/pull/7) records delivery status.
 
 ## Result and adoption
 
@@ -57,6 +57,14 @@ The coordinator reproduced a legacy compatibility regression after the initial i
 One regression covers full legacy layout with project-owned root tokens.css, both recorded and manual, plus explicit flat-framework/manifest rejection. The exact reproduction using the preserved legacy copier now passes with `1 files, 221 tokens verified`. Focused checker tests pass (20); all unit tests pass (112); source contract and diff checks pass. Current emitted contract still matches the saved fixture. All three CSS files and both font assets retain their prior hashes, so browser/build tests were not repeated; the 23-test Chromium evidence above remains applicable to unchanged CSS.
 
 Fix log: `/tmp/crft-core3-fix1-tests.log`. Fix report: `/Users/krause/.local/state/ak/team/brand-system-bo1-ak1/crft-core3-fix1-report.md`. The initial crft-core3-implement-report.md is preserved as historical first-pass evidence.
+
+## Committed delivery review correction
+
+Fresh review of c57d6ee found that the reference axe test set data-theme while leaving data-mode="system". The project layer therefore retained color-scheme: light dark. A new computed-style assertion reproduced this gap before correction. The test now synchronizes both attributes and asserts the effective scheme. It waits for finite CSS transitions to finish before scanning; infinite motion examples continue normally. The intermediate contrast failures were observed during the existing 200 ms color transition, not in settled schemes. The corrected focused light/dark audit passes without exclusions or CSS changes.
+
+Remaining motion/container guidance and two example comments now use the shipped --transition-* tokens and .c container classes. Legacy spellings remain only in explicit migration guidance, apart from the current c grid-span attribute. All three shared CSS files, font assets, contract versions and adoption behavior are byte-identical to the artifact consumed by BO1/AK1. Their existing CSS compatibility proof and static profiles remain applicable.
+
+Delivery logs and the exact-head receipt are in /Users/krause/.local/state/ak/team/crft-delivery/. The fresh committed review and post-commit checks are posted on PR #7. The earlier 23-test run did not prove separate light/dark axe coverage; the corrected audit supersedes that claim. Historical artifact brand-system-1-core3-fix1-21751765f960b96c remains recoverable from commit c57d6ee6d7898e66f7dec88b8d421871aba2d744.
 
 ## Historical evidence and limits
 

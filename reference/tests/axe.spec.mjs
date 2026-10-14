@@ -5,7 +5,14 @@ const scan = (page) => new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "
 test("reference has no WCAG A/AA violations in supplied light/dark schemes", async ({ page }) => {
   await page.goto("/");
   for (const mode of ["light", "dark"]) {
-    await page.locator("html").evaluate((element, value) => element.setAttribute("data-theme", value), mode);
+    await page.locator("html").evaluate((element, value) => {
+      element.setAttribute("data-theme", value);
+      element.setAttribute("data-mode", value);
+    }, mode);
+    await expect(page.locator("html")).toHaveCSS("color-scheme", mode);
+    await page.evaluate(() => Promise.all(document.getAnimations()
+      .filter((animation) => animation instanceof CSSTransition)
+      .map((animation) => animation.finished)));
     const results = await scan(page).analyze();
     expect(results.violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) })), mode).toEqual([]);
   }
