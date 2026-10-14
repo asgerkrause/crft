@@ -14,7 +14,7 @@ Input: large and small captures of an editorial hero. The large view places narr
 
 - observed, inferred, and unknown claims kept separate;
 - copy-first DOM and keyboard order;
-- `section > [c]` with `g="12-6"` and project-owned spans;
+- `section > .c` with `g="12-6"` and project-owned spans;
 - local image ratio, crop, focal position, and action presentation;
 - optional public image scrub with a complete static and reduced-motion result.
 

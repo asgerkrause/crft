@@ -25,8 +25,8 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 
   <main>
     <section>
-      <div c>
-        <div s>
+      <div class="c">
+        <div class="s">
           <h2>Proof</h2>
           <div g="3-2">...</div>
         </div>
@@ -42,7 +42,7 @@ Use one visible primary `main`. Use `section` for a thematic grouping and give i
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 
-Place `c` only inside page landmarks. The exact `section > [c]` relationship establishes CRFT’s named responsive container. A responsive grid is a descendant of that boundary, not the `[c]` element.
+Place `.c` only inside page landmarks. The exact `section > .c` relationship establishes CRFT’s named responsive container. A responsive grid is a descendant of that boundary, not the `.c` element.
 
 ## Element and selector ownership
 
@@ -64,7 +64,7 @@ A skip link justifies a target ID on `main`. An explicit `label[for]` justifies 
 
 ## Native base guarantees
 
-`styles/layers/base.css` owns `@layer reset` then `@layer base`. Reset only neutralizes the user agent and consumes no tokens. Base supplies native defaults that may use public tokens.
+`styles/crft.css` owns `@layer reset` then `@layer base`. Reset only neutralizes the user agent and consumes no tokens. Base supplies native defaults that may use public tokens.
 
 Reset:
 
@@ -83,7 +83,7 @@ Base:
 | Document | Minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, hanging punctuation, and font smoothing |
 | Active canvas | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors |
 | Controls | Native button appearance, start-aligned control text, no hanging punctuation on controls, no text selection on `button`, minimal field and button chrome, invalid border color, muted disabled text, content-driven textarea field sizing, and touch manipulation |
-| Lists and links | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-variation-settings` transitions, and `aria-current="page"` is visible without color alone |
+| Lists and links | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-weight` transitions, and `aria-current="page"` is visible without color alone |
 | Interaction | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, and target scroll offset |
 | Hidden and disabled | Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
 | Dialog | Inherited color and a semantic dark backdrop |
@@ -128,7 +128,7 @@ Do not use JavaScript for responsive layout, derivable visual state, static sect
 - An ID with no fragment, relationship, behavior, integration, or stable identity job.
 - `aria-labelledby` on every section, which creates unnecessary region landmarks.
 - `aria-label` or `aria-labelledby` on a generic wrapper that cannot use an author-provided name.
-- `g` placed on the same element as the section `[c]` boundary.
+- `g` placed on the same element as the section `.c` boundary.
 - A clickable `div` replacing a link or button.
 - ARIA state that disagrees with visible or application state.
 - CSS visual order used to repair source order.

@@ -19,6 +19,7 @@ const fixturePaths = [
   "reference/src/layouts/Shell.astro",
   "reference/src/scripts/shell.js",
   "scripts/check-system.mjs",
+  "scripts/check-markup.mjs",
   "scripts/copy-system.mjs",
   "scripts/emit-contract.mjs",
   "styles",
@@ -58,7 +59,7 @@ test("current repository contract passes", () => {
 
 test("a new public token requires a documented job", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");
+  replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing public tokens: --fixture-token/);
@@ -66,15 +67,15 @@ test("a new public token requires a documented job", (t) => {
 
 test("a removed public token cannot remain documented", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    --l-hh: 4rem;\n", "");
+  replace(root, "styles/tokens.css", "    --header: 4rem;\n", "");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /stale public tokens: --l-hh/);
+  assert.match(result.stderr, /stale public tokens: --header/);
 });
 
 test("a public token value change needs no duplicate documentation value", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    --l-hh: 4rem;", "    --l-hh: 5rem;");
+  replace(root, "styles/tokens.css", "    --header: 4rem;", "    --header: 5rem;");
   const result = runCheck(root);
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
@@ -149,10 +150,10 @@ test("local extraction grants no CRFT hooks", (t) => {
 
 test("selected layers expose retained live hooks only", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "Only retained live hooks from copied layers", "Every documented hook");
+  replace(root, "craft/adopt.md", "Only retained live hooks from tokens.css", "Every documented hook");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /selected layers must expose retained live hooks only/);
+  assert.match(result.stderr, /tokens-only adoption must expose retained live hooks only/);
 });
 
 test("fluid type remains optional for projects", (t) => {
@@ -178,7 +179,7 @@ test("direct CRFT guidance rejects product authority", (t) => {
 
 test("the public token index rejects duplicate names", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--l-hh` |", "| `--l-hh`, `--l-hh` |");
+  replace(root, "craft/tokens.md", "| `--header` |", "| `--header`, `--header` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /documents a public token more than once/);
@@ -186,7 +187,7 @@ test("the public token index rejects duplicate names", (t) => {
 
 test("the public token index rejects copied live values", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--l-ch` | Native control height for buttons, inputs, selects, and textareas |", "| `--l-ch` | Native control height set to `2.75rem` |");
+  replace(root, "craft/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | Native control height set to `2.75rem` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /duplicates a live value or formula/);
@@ -194,10 +195,10 @@ test("the public token index rejects copied live values", (t) => {
 
 test("every indexed public token requires a non-empty job", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--l-ch` | Native control height for buttons, inputs, selects, and textareas |", "| `--l-ch` | |");
+  replace(root, "craft/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /has an empty job for: --l-ch/);
+  assert.match(result.stderr, /has an empty job for: --control/);
 });
 
 test("the HTML owner states the purpose-based identifier contract", (t) => {
@@ -210,10 +211,10 @@ test("the HTML owner states the purpose-based identifier contract", (t) => {
 
 test("canonical examples reject names on generic wrappers", (t) => {
   const root = makeFixture(t);
-  replace(root, "README.md", "  <div c>", "  <div c aria-label=\"Content\">");
+  replace(root, "README.md", "  <div class=\"c\">", "  <div class=\"c\" aria-label=\"Content\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /names a generic div wrapper/);
+  assert.ok(result.stderr.includes("names a generic div wrapper"), result.stderr);
 });
 
 test("canonical examples reject dangling ARIA id references", (t) => {
@@ -260,7 +261,7 @@ test("a project component selector in canonical CSS fails", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "styles/layers/base.css",
+    "styles/crft.css",
     ":where(dialog) {",
     ":where(.btn, dialog) {",
   );
@@ -278,23 +279,23 @@ test("project examples may style project component conventions", (t) => {
 
 test("documented type roles remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/type.css", "  [t~=\"h0\"] {\n", "  [t~=\"display\"] {\n");
+  replace(root, "styles/crft.css", "  .display {", "  .fixture {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /type\.css is missing documented t value h0/);
+  assert.ok(result.stderr.includes("missing documented role display"), result.stderr);
 });
 
 test("fluid type calculation remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/type.css", "    font-size: clamp(", "    font-size: min(");
+  replace(root, "styles/tokens.css", "--_fluid: clamp(", "--_fluid: min(");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /type\.css is missing fluid font-size clamping/);
+  assert.ok(result.stderr.includes("missing fluid font-size clamping"), result.stderr);
 });
 
 test("native first-paint remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/base.css", ":where(a, button, label) {", ":where(a, button) {");
+  replace(root, "styles/crft.css", ":where(a, button, label) {", ":where(a, button) {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /base layer is missing native enhancement: :where\(a, button, label\) \{/);
@@ -304,9 +305,9 @@ test("reset must not consume tokens", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "styles/layers/base.css",
+    "styles/crft.css",
     "    box-sizing: border-box;",
-    "    box-sizing: border-box;\n    color: var(--c-fg);",
+    "    box-sizing: border-box;\n    color: var(--text);",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -317,9 +318,9 @@ test("reset token use with space inside var() is caught", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "styles/layers/base.css",
+    "styles/crft.css",
     "    box-sizing: border-box;",
-    "    box-sizing: border-box;\n    color: var( --c-fg);",
+    "    box-sizing: border-box;\n    color: var( --text);",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -328,23 +329,23 @@ test("reset token use with space inside var() is caught", (t) => {
 
 test("duplicate layer blocks in one file fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/base.css", "@layer reset {", "@layer reset {\n}\n@layer reset {");
+  replace(root, "styles/crft.css", "@layer reset {", "@layer reset {\n}\n@layer reset {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /duplicate @layer reset block in base\.css/);
+  assert.match(result.stderr, /duplicate @layer reset block in crft\.css/);
 });
 
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "    &[c~=\"sm\"] {\n", "    &[c~=\"narrow\"] {\n");
+  replace(root, "styles/crft.css", "&.sm {", "&.narrow {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /layout\.css is missing documented hook c="sm"/);
+  assert.ok(result.stderr.includes("missing documented hook .c.sm"), result.stderr);
 });
 
 test("derived container ratios remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/layout.css", "max-width: calc(var(--l-cw) / 3 * 2)", "max-width: calc(var(--l-cw) * .75)");
+  replace(root, "styles/crft.css", "max-width: calc(var(--content-max) / 3 * 2)", "max-width: calc(var(--content-max) * .75)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /layout\.css is missing viewport-derived container behavior/);
@@ -352,23 +353,23 @@ test("derived container ratios remain source-backed", (t) => {
 
 test("documented grid modes remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/grid.css", "&[g=\"a-sm\"]", "&[g=\"fixture\"]");
+  replace(root, "styles/crft.css", "[g=\"fill-sm\"]", "[g=\"fixture\"]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /grid\.css is missing documented grid hook a-sm/);
+  assert.ok(result.stderr.includes("missing documented grid hook fill-sm"), result.stderr);
 });
 
 test("every documented numeric grid position remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/grid.css", "[g]>[y$=\"4\"]", "[g]>[y$=\"5\"]");
+  replace(root, "styles/crft.css", "[g]>[r$=\"4\"]", "[g]>[r$=\"5\"]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing row-span grid rule/);
+  assert.ok(result.stderr.includes("missing row-span grid rule"), result.stderr);
 });
 
 test("the finite utility surface remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/utility.css", "  .sr {\n", "  .visually-hidden {\n");
+  replace(root, "styles/crft.css", "  .sr {\n", "  .visually-hidden {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /utility\.css selectors differ/);
@@ -376,15 +377,15 @@ test("the finite utility surface remains source-backed", (t) => {
 
 test("documented color boundaries remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", ":root,\n  [data-skin] {", ":root,\n  [data-context] {");
+  replace(root, "styles/tokens.css", ":root,\n  [data-theme],\n  [data-skin] {", ":root,\n  [data-theme],\n  [data-context] {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing a documented skin or accent boundary/);
+  assert.ok(result.stderr.includes("missing a documented skin or accent boundary"), result.stderr);
 });
 
 test("documented motion hooks remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/motion.css", ".img-w[data-scrub]", ".media[data-scrub]");
+  replace(root, "styles/crft.css", ".img-w[data-scrub]", ".media[data-scrub]");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /motion\.css is missing documented motion hook/);
@@ -392,7 +393,7 @@ test("documented motion hooks remain source-backed", (t) => {
 
 test("the generic scrub progress rule remains source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/motion.css", "      [data-scrub] {\n", "      [data-progress] {\n");
+  replace(root, "styles/crft.css", "      [data-scrub] {\n", "      [data-progress] {\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing the generic scrub progress rule/);
@@ -400,7 +401,7 @@ test("the generic scrub progress rule remains source-backed", (t) => {
 
 test("image scrub remains inside its feature gate", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/motion.css", "@supports (animation-timeline: view())", "@supports (display: grid)");
+  replace(root, "styles/crft.css", "@supports (animation-timeline: view())", "@supports (display: grid)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
@@ -408,7 +409,7 @@ test("image scrub remains inside its feature gate", (t) => {
 
 test("image scrub remains inside its reduced-motion gate", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/motion.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
+  replace(root, "styles/crft.css", "@media (prefers-reduced-motion: no-preference)", "@media (prefers-reduced-motion: reduce)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /scrub must remain inside feature and reduced-motion gates/);
@@ -416,31 +417,31 @@ test("image scrub remains inside its reduced-motion gate", (t) => {
 
 test("an unsupported type role fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", 't="sm mu"', 't="xs"');
+  replace(root, "examples/foundations/markup.html", "class=\"small\"", "class=\"unsupported\"");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses unsupported t token xs/);
+  assert.ok(result.stderr.includes("uses unlisted example class"), result.stderr);
 });
 
-test("an unsupported s flag fails", (t) => {
+test("legacy stack flags fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h tight"');
+  replace(root, "examples/foundations/markup.html", "class=\"s\"", "s=\"h\"");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses invalid s flag tight/);
+  assert.ok(result.stderr.includes("retired s attribute"), result.stderr);
 });
 
-test("more than one s gap fails", (t) => {
+test("three-position numeric grids fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", 's="h sb ct"', 's="h sm lg"');
+  replace(root, "examples/foundations/markup.html", "g=\"3-2\"", "g=\"3-2-1\"");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses more than one s gap/);
+  assert.ok(result.stderr.includes("invalid g value"), result.stderr);
 });
 
 test("named container-query tokens must match grid literals", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "--l-cq-md: 30rem;", "--l-cq-md: 32rem;");
+  replace(root, "styles/tokens.css", "--query-md: 30rem;", "--query-md: 32rem;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /grid\.css is missing invariant/);
@@ -448,7 +449,7 @@ test("named container-query tokens must match grid literals", (t) => {
 
 test("an unsupported accent route fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "[data-accent='danger']", "[data-accent='accent']");
+  replace(root, "styles/tokens.css", "[data-accent='danger']", "[data-accent='accent']");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /explicit data-accent routes differ/);
@@ -456,7 +457,7 @@ test("an unsupported accent route fails", (t) => {
 
 test("removed color-specific skin routes fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "  [data-skin='tone'] {", "  [data-skin='secondary'] {\n    --c-bg: var(--c-bg-base);\n  }\n\n  [data-skin='tone'] {");
+  replace(root, "styles/tokens.css", "  [data-skin='tone'] {", "  [data-skin='secondary'] {\n    --canvas: var(--canvas-base);\n  }\n\n  [data-skin='tone'] {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /explicit data-skin routes differ/);
@@ -520,10 +521,10 @@ test("the router records the retired tooling boundary", (t) => {
 
 test("adoption keeps the breaking migration record", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "t=\"h0\"", "t=\"display\"");
+  replace(root, "craft/adopt.md", "contractVersion 2", "contractVersion future");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing breaking migration guidance/);
+  assert.ok(result.stderr.includes("missing breaking migration guidance"), result.stderr);
 });
 
 test("retired doctrine references fail", (t) => {
@@ -583,35 +584,25 @@ test("adoption documents overlay copy", (t) => {
   assert.match(result.stderr, /missing breaking migration guidance: Do not default to the full tree on an existing site/);
 });
 
-test("type.css font-weight must pair the wght axis", (t) => {
+test("canonical axes must not override ordinary font-weight", (t) => {
   const root = makeFixture(t);
-  replace(
-    root,
-    "styles/layers/type.css",
-    "    font-weight: var(--t-bd-fw);\n    font-variation-settings: \"wght\" var(--t-bd-fw);",
-    "    font-weight: var(--t-bd-fw);",
-  );
+  replace(root, "styles/crft.css", "font-variation-settings: var(--body-axes);", "font-variation-settings: \"wght\" 400;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /must pair font-variation-settings "wght"/);
+  assert.ok(result.stderr.includes("explicit wght overrides ordinary font-weight"), result.stderr);
 });
 
-test("link transitions must include font-variation-settings", (t) => {
+test("native transitions preserve ordinary weight interpolation", (t) => {
   const root = makeFixture(t);
-  replace(
-    root,
-    "styles/layers/base.css",
-    "transition-property: color, background, border, transform, opacity, font-variation-settings;",
-    "transition-property: color, background, border, transform, opacity;",
-  );
+  replace(root, "styles/crft.css", "transition-property: color, background, border, transform, opacity, font-weight;", "transition-property: color, background, border, transform, opacity;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /base layer is missing native enhancement: transition-property: color, background, border, transform, opacity, font-variation-settings/);
+  assert.ok(result.stderr.includes("base layer is missing native enhancement: transition-property"), result.stderr);
 });
 
-test("type.css must not keep @font-face after the fonts extract", (t) => {
+test("crft.css must not register brand faces", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/type.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
+  replace(root, "styles/crft.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /must not register faces/);
@@ -625,44 +616,44 @@ test("example markup rejects class on section", (t) => {
   assert.match(result.stderr, /puts a class on a section/);
 });
 
-test("an unsupported t weight flag fails", (t) => {
+test("legacy type flags fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 t=\"bold\">");
+  replace(root, "examples/foundations/markup.html", "<h1>", "<h1 t=\"bo\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses unsupported t token bold/);
+  assert.ok(result.stderr.includes("retired t attribute"), result.stderr);
 });
 
-test("an unsupported t family flag fails", (t) => {
+test("legacy family flags fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", "<code t=\"mo\">", "<code t=\"comic\">");
+  replace(root, "examples/foundations/markup.html", "<code>", "<code f=\"mo\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses unsupported t token comic/);
+  assert.ok(result.stderr.includes("retired f attribute"), result.stderr);
 });
 
 test("retired w attribute fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/markup.html", "<h1 t=\"bo\">", "<h1 w=\"bd\">");
+  replace(root, "examples/foundations/markup.html", "<h1>", "<h1 w=\"bd\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /uses retired w attribute/);
+  assert.ok(result.stderr.includes("retired w attribute"), result.stderr);
 });
 
 test("fluid text steps cannot exceed the 2x zoom budget", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    --t-fs-max: 20;\n", "    --t-fs-max: 32;\n");
+  replace(root, "styles/tokens.css", "    --type-max: 1.25;", "    --type-max: 2;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /fluid text step 1 exceeds the 2x zoom budget: hi \/ lo must stay at or below 2.5/);
+  assert.ok(result.stderr.includes("fluid text step 1 exceeds the 2x zoom budget"), result.stderr);
 });
 
 test("fluid type steps cannot lose zoom growth", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    --l-vp-min: 400;\n", "    --l-vp-min: 1400;\n");
+  replace(root, "styles/tokens.css", "    --fluid-min: 25;", "    --fluid-min: 87.5;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /fluid type step \S+ loses zoom growth: lo \* vp-max must exceed hi \* vp-min/);
+  assert.ok(result.stderr.includes("loses zoom growth"), result.stderr);
 });
 
 test("the router ban index must stay present", (t) => {
@@ -674,10 +665,10 @@ test("the router ban index must stay present", (t) => {
   assert.match(result.stderr, /CRAFT.md is missing the ban index/);
 });
 
-test("a size abbreviation in an unsized family fails", (t) => {
+test("retired public token families fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/layers/tokens.css", "    --l-ch: 2.75rem;", "    --l-ch: 2.75rem;\n    --c-sm: red;");
+  replace(root, "styles/tokens.css", "    --control: 2.75rem;", "    --control: 2.75rem;\n    --c-sm: red;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /--c-sm uses a size or ratio abbreviation/);
+  assert.ok(result.stderr.includes("uses a retired token family"), result.stderr);
 });

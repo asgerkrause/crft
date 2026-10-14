@@ -1,0 +1,267 @@
+{
+  "contractVersion": 1,
+  "id": "fluid",
+  "description": "Synthetic editorial sans with endpoint interpolation.",
+  "foundations": {
+    "fluid-min": {
+      "value": 25,
+      "unit": "rem"
+    },
+    "fluid-max": {
+      "value": 100,
+      "unit": "rem"
+    },
+    "type-min": {
+      "value": 0.875,
+      "unit": "rem"
+    },
+    "type-max": {
+      "value": 1.25,
+      "unit": "rem"
+    },
+    "type-ratio-min": 1.15,
+    "type-ratio-max": 1.4
+  },
+  "roles": {
+    "display": {
+      "step": 5,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "h1": {
+      "step": 4,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "h2": {
+      "step": 3,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "h3": {
+      "step": 2,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "lead": {
+      "step": 1,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "body": {
+      "step": 0,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "small": {
+      "step": -1,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "label": {
+      "step": -1,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    },
+    "caption": {
+      "step": -1,
+      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto"
+    }
+  },
+  "scales": {
+    "space": {
+      "size": {
+        "value": 5,
+        "unit": "rem"
+      },
+      "ratio": 2
+    },
+    "gap": {
+      "size": {
+        "value": 1.25,
+        "unit": "rem"
+      },
+      "ratio": 2
+    },
+    "padding": {
+      "size": {
+        "value": 1.25,
+        "unit": "rem"
+      },
+      "ratio": 2
+    },
+    "radius": {
+      "size": {
+        "value": 0.75,
+        "unit": "rem"
+      },
+      "ratio": 1.5
+    }
+  },
+  "colors": {
+    "palette-light": "#fbfbfa",
+    "palette-dark": "#121416",
+    "accent": "#0066ee",
+    "on-accent": "#ffffff"
+  },
+  "fonts": {
+    "font": "\"SNZ Sans\", system-ui, sans-serif",
+    "font-display": "\"SNZ Sans\", system-ui, sans-serif"
+  },
+  "expected": {
+    "display": {
+      "minRem": 1.7599375390624994,
+      "maxRem": 6.722799999999998
+    },
+    "h1": {
+      "minRem": 1.5303804687499996,
+      "maxRem": 4.801999999999999
+    },
+    "h2": {
+      "minRem": 1.3307656249999997,
+      "maxRem": 3.4299999999999993
+    },
+    "h3": {
+      "minRem": 1.1571874999999998,
+      "maxRem": 2.4499999999999997
+    },
+    "lead": {
+      "minRem": 1.0062499999999999,
+      "maxRem": 1.75
+    },
+    "body": {
+      "minRem": 0.875,
+      "maxRem": 1.25
+    },
+    "small": {
+      "minRem": 0.7608695652173914,
+      "maxRem": 0.8928571428571429
+    },
+    "label": {
+      "minRem": 0.7608695652173914,
+      "maxRem": 0.8928571428571429
+    },
+    "caption": {
+      "minRem": 0.7608695652173914,
+      "maxRem": 0.8928571428571429
+    }
+  }
+}

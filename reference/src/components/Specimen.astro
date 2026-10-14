@@ -10,7 +10,7 @@ const { id, title, class: className } = Astro.props;
 
 <article id={id} class:list={["s", className]}>
   <div class="sg-heading-wrap">
-    <h3 t="lg">{title}</h3>
+    <h3 class="lead">{title}</h3>
   </div>
   <slot />
 </article>

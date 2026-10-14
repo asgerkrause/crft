@@ -18,12 +18,12 @@ interface Props {
 const { label, items, accent } = Astro.props;
 ---
 
-<ul class="sg-swatch-grid" g="a-sm" aria-label={label} data-accent={accent}>
+<ul class="sg-swatch-grid" g="fill-sm" aria-label={label} data-accent={accent}>
   {items.map((item) => (
-    <li r={item.featured ? "2" : undefined} c={item.featured ? "2" : undefined}>
+    <li>
       <figure class="sg-swatch" data-accent={item.accent}>
         <div style={`--sg-color:var(${item.color ?? item.token})${item.ink ? `;--sg-ink:var(${item.ink});color:var(--sg-ink)` : ""}`}>
-          {item.ink && <span t="h2" aria-hidden="true">Aa</span>}
+          {item.ink && <span aria-hidden="true" class="h2">Aa</span>}
         </div>
         <figcaption>{item.label} {item.grouped ? <span><code>{item.token}</code></span> : <code>{item.token}</code>}</figcaption>
       </figure>

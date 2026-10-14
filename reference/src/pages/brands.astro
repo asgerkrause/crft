@@ -1,0 +1,37 @@
+---
+import "../styles/entry.css";
+import fluid from "../../fixtures/fluid.json";
+import staticBrand from "../../fixtures/static.json";
+import mixed from "../../fixtures/mixed.json";
+import { fixtureCss, roles } from "../../fixtures/recipes.mjs";
+const profiles = [fluid, staticBrand, mixed];
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Synthetic brand proof — CRFT</title><link rel="icon" href="data:,"><style>
+      main :is(h1, h4, p, label, figcaption) { overflow-wrap: anywhere; }
+      input { max-width: 100%; }
+    </style></head>
+  <body>
+    <header><nav><a href="/">CRFT reference</a></nav></header>
+    <main>
+      {profiles.map((profile) => (
+        <section data-theme="light" data-fixture={profile.id} style={fixtureCss(profile)}>
+          <div class="c">
+            <h1>{profile.description}</h1>
+            <p>One structure, distinct brand recipes. This is synthetic browser evidence, not an approved client brand.</p>
+            {Object.keys(roles).map((role) => <p class={role} data-role={role}>Readable systems / Læsbare systemer / Verständliche Gestaltung / 読みやすい設計</p>)}
+            <p data-fixture="inherited-body">Ordinary inherited text with <strong>strong emphasis</strong> and <b>bold emphasis</b>.</p>
+            <h4>Native supporting heading</h4><h1 class="small">Intentional small-role heading</h1>
+            <label>Readable label <input value="Native control"></label>
+            <figure><figcaption>Caption describes its figure.</figcaption></figure>
+            <div data-skin="invert"><p>Inverted context</p><div data-skin="tone"><p>Tone context</p></div></div>
+            <div data-skin="accent" data-accent="secondary"><p>Routed accent canvas</p></div>
+            <details><summary>Native disclosure</summary><p>Content remains available without enhancement support.</p></details>
+          </div>
+        </section>
+      ))}
+    </main>
+    <footer><p>Paper and slides require Brand OS approved format mappings.</p></footer>
+  </body>
+</html>

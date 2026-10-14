@@ -7,7 +7,7 @@ read_when: Choosing semantic colors, branding palettes, applying skins or accent
 
 # Color
 
-Use semantic color roles before palette sources. `styles/layers/tokens.css` owns live mappings for both color schemes.
+Use semantic color roles before palette sources. `styles/tokens.css` owns live mappings for both color schemes.
 
 ## Role model
 
@@ -19,7 +19,7 @@ Build color from outside inward:
 4. Semantic surface, border, muted, and accent roles style descendants.
 5. Project CSS applies those roles to a component or composition.
 
-Use `--c-bg`, `--c-fg`, `--c-sf`, `--c-bc`, and `--c-mu` for the active context. Use active accent roles for emphasis and component treatment. Use `--c-*-co` only for content on the matching solid source.
+Use `--canvas`, `--text`, `--surface`, `--border`, and `--muted` for the active context. Use active accent roles for emphasis and component treatment. Use `--on-accent`, `--on-secondary`, `--on-tertiary`, or the matching `--on-success`/`--on-warning`/`--on-danger` role only for content on the matching solid source.
 
 Do not apply palette swatches directly when a semantic role expresses the job.
 
@@ -39,8 +39,8 @@ Do not apply palette swatches directly when a semantic role expresses the job.
 
 ```html
 <section data-skin="accent" data-accent="secondary">
-  <div c>
-    <div s>
+  <div class="c">
+    <div class="s">
       <h2>Evidence</h2>
       <aside data-skin="tone">Nested context</aside>
     </div>
@@ -48,7 +48,7 @@ Do not apply palette swatches directly when a semantic role expresses the job.
 </section>
 ```
 
-A nested skin establishes a new semantic context. Descendants continue to consume the same semantic names. Use `data-skin`, never `data-theme`.
+A nested skin establishes a new semantic context. Descendants continue to consume the same semantic names. Use `data-theme` with `light` or `dark` for an approved overall scheme; data-skin selects a local canvas from that scheme. Skins are non-cumulative: invert inside invert remains inverted, and tone inside accent selects scheme tone. Dependent roles recompute against the resulting canvas and routed accent. Missing client dark data is a missing capability, never permission to invent an inversion.
 
 Skin chooses the canvas treatment. Accent chooses its active color route. Combine `data-skin="accent"` with a supported `data-accent` value when the canvas needs that route. The combined boundary also routes active accent roles for descendants. Use feedback routes only for a truthful success, warning, or danger context.
 
@@ -71,7 +71,7 @@ Apply a skin only at a meaningful canvas boundary. Do not recolor descendants on
 
 ```html
 <p data-accent="success">
-  <strong t="ac">Saved.</strong>
+  <strong>Saved.</strong>
   Your draft remains available.
 </p>
 ```
@@ -88,7 +88,7 @@ A solid feedback surface uses its matching contrast-companion role. A subtle tre
 
 ## Brand ownership
 
-Projects own copied palette and semantic mappings in `styles/layers/tokens.css`. Define both schemes, solid-content companions, muted content, borders, nested skins, and feedback pairs as one coherent system.
+Projects own copied palette and semantic mappings in `styles/tokens.css`. Define both schemes, solid-content companions, muted content, borders, nested skins, and feedback pairs as one coherent system.
 
 Campaign-only variation may override the same semantic roles at its narrowest project boundary. Do not introduce another token dialect.
 
@@ -96,19 +96,19 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 
 ## Common mistakes
 
-- Using `data-theme` instead of `data-skin`.
+- Inventing a dark client scheme when only light inputs were approved.
 - Using a color-specific skin instead of combining `data-skin="accent"` with `data-accent`.
 - Expecting `data-accent` to style a component.
 - Using a palette swatch where a semantic role exists.
 - Applying danger color to non-danger decoration.
 - Assuming one foreground works on every accent and scheme.
-- Using muted color as body text. `--c-mu` is a secondary tone and is not a WCAG AA body-text role.
+- Assuming a mix percentage proves contrast. Muted is opaque readable secondary text and must pass on canvas and surface.
 - Communicating state through color alone.
 
 ## Contrast preferences
 
-`prefers-contrast: more` raises `--c-mu` and `--c-bc` opacity on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
+`prefers-contrast: more` strengthens `--muted` and `--border` contrast on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
 
 ## Verify
 
-Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Do not treat `--c-mu` as an AA body-text pair.
+Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Verify muted against actual canvas and surface backgrounds without exemptions.

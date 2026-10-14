@@ -4,53 +4,19 @@ import Specimen from "../components/Specimen.astro";
 import { sections } from "../data";
 import placeholder from "../assets/placehold.svg";
 ---
-
 <Section {...sections.layout}>
-  <p t="mu" slot="summary">Containers establish reading boundaries. Stacks state direction, wrapping, alignment,
-    and distribution.</p>
-
+  <p slot="summary">Containers establish content measure. A stack groups one vertical flow; other arrangements belong to their local semantic owner.</p>
   <Specimen id="containers" title="Containers">
     <div class="sg-width-specimens">
-      <div c="sm"><span>Narrow container</span><code>c="sm"</code></div>
-      <div c><span>Default container</span><code>c</code></div>
-      <div c="lg"><span>Wide container</span><code>c="lg"</code></div>
-    </div>
-    <div class="sg-stack-sample" c="ct">
-      <span>Centered children</span>
-      <code>c="ct"</code>
+      <div class="c sm"><span>Narrow container</span><code>.c.sm</code></div>
+      <div class="c"><span>Default container</span><code>.c</code></div>
+      <div class="c lg"><span>Wide container</span><code>.c.lg</code></div>
     </div>
   </Specimen>
-
-  <Specimen id="stacks" title="Stacks">
-    <div class="sg-layout-grid">
-      <div>
-        <div class="sg-specimen-label"><code>s</code><span>vertical</span></div>
-        <div class="sg-stack-sample" s><span>One</span><span>Two</span><span>Three</span></div>
-      </div>
-      <div>
-        <div class="sg-specimen-label"><code>s="h"</code><span>horizontal</span></div>
-        <div class="sg-row-sample" s="h"><span>One</span><span>Two</span><span>Three</span></div>
-      </div>
-      <div>
-        <div class="sg-specimen-label"><code>s="h w"</code><span>wrapping row</span></div>
-        <div class="sg-row-sample" s="h w"><span>One</span><span>Two</span><span>Three</span><span>Four</span>
-        </div>
-      </div>
-      <div>
-        <div class="sg-specimen-label"><code>s="ct"</code><span>cross-axis center</span></div>
-        <div class="sg-stack-sample" s="ct"><span>One</span><span>Two</span></div>
-      </div>
-      <div>
-        <div class="sg-specimen-label"><code>s="sb"</code><span>space between</span></div>
-        <div class="sg-row-sample" s="h sb"><span>Start</span><span>End</span></div>
-      </div>
-      <div>
-        <div class="sg-specimen-label"><code>s="sm"</code><span>small gap</span></div>
-        <div class="sg-stack-sample" s="sm"><span>One</span><span>Two</span><span>Three</span></div>
-      </div>
-    </div>
+  <Specimen id="stacks" title="Stack">
+    <div class="sg-stack-sample s"><span>One</span><span>Two</span><span>Three</span></div>
+    <p><code>.s</code> consumes <code>--gap</code>. A project owns horizontal actions, alignment, and local spacing.</p>
   </Specimen>
-
   <Specimen id="image-frame" title="Image frame">
     <figure class="sg-scroll-example">
       <div class="img-w" data-fixture="layout-image-frame"><img alt="" width="1005" height="1005" src={placeholder.src}></div>

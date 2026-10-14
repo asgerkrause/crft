@@ -17,11 +17,11 @@
     <a class="sr focusable" href="#main">Skip to content</a>
 
     <header>
-      <div c>
-        <div s="h sb ct">
+      <div class="c">
+        <div class="s">
           <strong><a href="/">CRFT</a></strong>
           <nav aria-label="Primary">
-            <ul s="h">
+            <ul class="s">
               <li><a href="#proof">Why</a></li>
               <li><a href="#refuse">Boundaries</a></li>
               <li><a href="#adoption">Copy</a></li>
@@ -34,12 +34,12 @@
     <main id="main">
       <!-- Orientation + signature move 1: ownership ladder beside the primary path. -->
       <section>
-        <div c="lg">
+        <div class="c lg">
           <div g="12-6">
-            <header s x="7-6">
-              <p t="sm mu">For leads shipping the next site</p>
+            <header c="7-6" class="s">
+              <p class="small">For leads shipping the next site</p>
               <h1>Ship structure without a component tax.</h1>
-              <p t="lg">
+              <p class="lead">
                 CRFT is a finite CSS system—tokens, type, layout, skins—not a
                 library of product widgets. Copy once, keep ownership obvious,
                 migrate one visible slice at a time.
@@ -49,19 +49,19 @@
               </p>
             </header>
 
-            <aside s x="5-6">
-              <h2 t="h3">Ownership ladder</h2>
+            <aside c="5-6" class="s">
+              <h2 class="h3">Ownership ladder</h2>
               <ol>
                 <li>
-                  <span t="sm mu">First</span>
+                  <span class="small">First</span>
                   Native semantic HTML and browser behavior.
                 </li>
                 <li>
-                  <span t="sm mu">Second</span>
+                  <span class="small">Second</span>
                   Public CRFT API confirmed in the handbook and CSS.
                 </li>
                 <li>
-                  <span t="sm mu">Third</span>
+                  <span class="small">Third</span>
                   Distinctive chrome in project-owned CSS. This specimen uses
                   <code>@layer project</code>; CRFT does not require that owner.
                 </li>
@@ -73,16 +73,16 @@
 
       <!-- This section ID is the Why navigation target. -->
       <section id="proof" data-skin="tone">
-        <div c>
+        <div class="c">
           <div g="3-2">
-            <header s x="0">
+            <header c="0" class="s">
               <h2>What you can verify in the repo</h2>
-              <p t="lg">
+              <p class="lead">
                 Claims map to live owners—not a slide deck feature grid.
               </p>
             </header>
 
-            <article class="proof-tile" s>
+            <article class="s proof-tile">
               <h3>One entrypoint</h3>
               <p>
                 <code>global.css</code> sets layer order. Product presentation
@@ -91,15 +91,15 @@
               </p>
             </article>
 
-            <article class="proof-tile" s>
+            <article class="s proof-tile">
               <h3>Named container</h3>
               <p>
-                Page grids hang under <code>section &gt; [c]</code>. Large,
+                Page grids hang under <code>section &gt; .c</code>. Large,
                 medium, and small resolve from that boundary.
               </p>
             </article>
 
-            <article class="proof-tile" s data-accent="success">
+            <article class="s proof-tile" data-accent="success">
               <h3>Verified ownership</h3>
               <p>
                 Public tokens and attributes stay searchable. Private grid and
@@ -112,16 +112,16 @@
 
       <!-- This section ID is the Boundaries navigation target. -->
       <section id="refuse" data-skin="invert">
-        <div c>
-          <div s>
+        <div class="c">
+          <div class="s">
             <h2>What this page will not sell you</h2>
-            <p t="sm" data-accent="warning">
+            <p data-accent="warning" class="small">
               Warning: if a vendor pitch needs these, it is not CRFT.
             </p>
             <ul>
               <li>A component registry or “hero” primitive as shared API.</li>
               <li>
-                <code>data-theme</code> or palette names as
+                Invented dark schemes or palette names as
                 <code>data-accent</code> routes.
               </li>
               <li>Accidental unlayered utilities that silently outrank the system.</li>
@@ -132,8 +132,8 @@
       </section>
 
       <section>
-        <div c="sm">
-          <div s>
+        <div class="c sm">
+          <div class="s">
             <h2>Before you copy</h2>
             <details>
               <summary>Does copy overwrite our CSS?</summary>
@@ -163,10 +163,10 @@
 
       <!-- This section ID is the Copy navigation target. -->
       <section id="adoption">
-        <div c>
-          <div s>
+        <div class="c">
+          <div class="s">
             <h2>Start with one project root</h2>
-            <p t="lg">
+            <p class="lead">
               Run copy, own the snapshot, and put the first band’s chrome in
               project-owned CSS. Edit copied owners only for brand or intentional
               system behavior. Expand only after verification.
@@ -180,13 +180,13 @@
     </main>
 
     <footer>
-      <div c>
-        <div s>
-          <p t="sm mu">
+      <div class="c">
+        <div class="s">
+          <p class="small">
             Non-canonical page-from-brief specimen. The brief owns product
             intent, <code>CRAFT.md</code> routes documentation, and CSS owns live behavior.
           </p>
-          <p t="sm">
+          <p class="small">
             <a href="/docs">Handbook</a> · <a href="/docs/migration">Migration</a>
           </p>
         </div>

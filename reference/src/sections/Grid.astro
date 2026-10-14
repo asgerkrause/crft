@@ -5,8 +5,8 @@ import { sections } from "../data";
 ---
 
 <Section {...sections.grid}>
-  <p t="mu" slot="summary">Grid attributes apply to a grid and its direct children. On small screens every grid
-    becomes a flex column; source order must remain meaningful.</p>
+  <p slot="summary" class="sg-note">Grid attributes apply to a grid and its direct children. Without a named container numbered grids
+    remain a flex column; source order must remain meaningful.</p>
 
   <Specimen id="columns-and-spans" title="Columns and spans">
     <div class="sg-grid-list">
@@ -15,16 +15,16 @@ import { sections } from "../data";
         <div g><span>One</span><span>Two</span><span>Three</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>g="8-4" + x="4-2"</code><span>responsive span</span></div>
-        <div g="8-4"><span x="4-2">Featured</span><span>Default</span><span>Default</span></div>
+        <div class="sg-specimen-label"><code>g="8-4" + c="4-2"</code><span>responsive span</span></div>
+        <div g="8-4"><span c="4-2">Featured</span><span>Default</span><span>Default</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>x="0"</code><span>full row</span></div>
-        <div g="4-2"><span x="0">Full row</span><span>Two</span><span>Three</span></div>
+        <div class="sg-specimen-label"><code>c="0"</code><span>full row</span></div>
+        <div g="4-2"><span c="0">Full row</span><span>Two</span><span>Three</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>y="2-1"</code><span>controlled row span</span></div>
-        <div g="3"><span y="2-1">Row span</span><span>Two</span><span>Three</span><span>Four</span></div>
+        <div class="sg-specimen-label"><code>r="2-1"</code><span>controlled row span</span></div>
+        <div g="3"><span r="2-1">Row span</span><span>Two</span><span>Three</span><span>Four</span></div>
       </div>
     </div>
   </Specimen>
@@ -32,16 +32,16 @@ import { sections } from "../data";
   <Specimen id="container-boundaries" title="Container boundaries">
     <div class="sg-grid-list">
       <section data-fixture="grid-boundary-sm">
-        <div c="sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div class="c sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-default">
-        <div c><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div class="c"><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-lg">
-        <div c="lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
+        <div class="c lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-nested">
-        <div c><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div c><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
+        <div class="c"><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div class="c"><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
       </section>
     </div>
   </Specimen>
@@ -56,7 +56,7 @@ import { sections } from "../data";
   </Specimen>
 
   <Specimen id="visual-order-focus" title="Visual order and focus">
-    <p t="sm">Visual order changes presentation, never DOM or keyboard order.</p>
+    <p class="small">Visual order changes presentation, never DOM or keyboard order.</p>
     <div g="3" data-fixture="visual-order-focus">
       <a href="#visual-order-focus" data-fixture="visual-order-first" o="l-a-f">First in source</a>
       <a href="#visual-order-focus" data-fixture="visual-order-second" o="f-a-a">Second in source</a>
@@ -64,20 +64,28 @@ import { sections } from "../data";
     </div>
   </Specimen>
 
-  <Specimen id="auto-fit" title="Auto-fit">
+  <Specimen id="intrinsic-grid" title="Intrinsic fit and fill">
     <div class="sg-grid-list">
       <div>
-        <div class="sg-specimen-label"><code>g="a-sm"</code><span>compact auto-fit</span></div>
-        <div g="a-sm"><span>One</span><span>Two</span><span>Three</span><span>Four</span></div>
+        <div class="sg-specimen-label"><code>g="fill-sm"</code><span>compact auto-fill</span></div>
+        <div g="fill-sm"><span>One</span><span>Two</span><span>Three</span><span>Four</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>g="a"</code><span>general auto-fit</span></div>
-        <div g="a"><span>One</span><span>Two</span></div>
+        <div class="sg-specimen-label"><code>g="fill"</code><span>general auto-fill</span></div>
+        <div g="fill"><span>One</span><span>Two</span></div>
       </div>
       <div>
-        <div class="sg-specimen-label"><code>g="a-lg"</code><span>spacious auto-fit</span></div>
-        <div g="a-lg"><span>One</span><span>Two</span></div>
+        <div class="sg-specimen-label"><code>g="fill-lg"</code><span>spacious auto-fill</span></div>
+        <div g="fill-lg"><span>One</span><span>Two</span></div>
       </div>
+    </div>
+  </Specimen>
+
+  <Specimen id="fit-grids" title="Fit collapses empty tracks">
+    <div class="sg-grid-list">
+      <div g="fit-sm"><span>One</span><span>Two</span></div>
+      <div g="fit"><span>One</span></div>
+      <div g="fit-lg"><span>One</span><span c="0">Full row</span></div>
     </div>
   </Specimen>
 
@@ -85,13 +93,13 @@ import { sections } from "../data";
     <div class="sg-grid-list">
       <div>
         <div class="sg-specimen-label"><code>g="sg"</code><span>nested subgrid</span></div>
-        <div g="3"><span>One</span><span g="sg" x="2"><i>Nested one</i><i>Nested two</i></span></div>
+        <div g="3"><span>One</span><span g="sg" c="2"><i>Nested one</i><i>Nested two</i></span></div>
       </div>
     </div>
   </Specimen>
 </Section>
 
-<section id="grid-no-container" class="sg-section" data-fixture="grid-no-container">
+<section id="grid-no-container" data-fixture="grid-no-container">
   <div class="sg-grid-list">
     <div>
       <div class="sg-specimen-label"><code>g="3"</code><span>no container fallback</span></div>

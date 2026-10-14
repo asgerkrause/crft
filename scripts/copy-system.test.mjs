@@ -19,6 +19,7 @@ import {
   adoptSystem,
   copyableSourceFiles,
   resolveAdoptRequest,
+  tokensWithoutFonts,
 } from "./copy-system.mjs";
 
 const script = fileURLToPath(new URL("./copy-system.mjs", import.meta.url));
@@ -35,7 +36,7 @@ async function sourceFixture(root, omitted = []) {
     if (omitted.includes(file)) continue;
     const path = join(source, file);
     await mkdir(dirname(path), { recursive: true });
-    writeFileSync(path, `source:${file}`);
+    writeFileSync(path, `source:${file}\n`);
   }
   return source;
 }
@@ -55,16 +56,16 @@ test("tokens-only copies one layer file and no global.css or fonts", async (t) =
 
   const result = await adoptSystem({ sourceRoot: source, target, layers: "tokens" });
 
-  assert.deepEqual(result.manifest, ["layers/tokens.css"]);
-  assert.equal(readFileSync(join(target, "layers/tokens.css"), "utf8"), "source:layers/tokens.css");
+  assert.deepEqual(result.manifest, ["tokens.css"]);
+  assert.equal(readFileSync(join(target, "tokens.css"), "utf8"), "source:tokens.css\n");
   assert.equal(existsSync(join(target, "global.css")), false);
   assert.equal(existsSync(join(target, "sans.woff")), false);
   assert.match(result.entryBlock, /@layer reset, base, tokens, type, layout, grid, motion, utility, project;/);
-  assert.match(result.entryBlock, /@import "\.\/layers\/tokens\.css";/);
+  assert.match(result.entryBlock, /@import "\.\/tokens\.css";/);
   assert.doesNotMatch(result.entryBlock, /type\.css/);
 });
 
-test("full copies the seven behavior layers without fonts", async (t) => {
+test("full copies tokens and framework without fonts", async (t) => {
   const root = fixture(t);
   const source = await sourceFixture(root);
   const target = join(root, "adopted");
@@ -72,8 +73,7 @@ test("full copies the seven behavior layers without fonts", async (t) => {
   const result = await adoptSystem({ sourceRoot: source, target, layers: "full" });
 
   assert.deepEqual(result.manifest, [
-    "layers/base.css", "layers/tokens.css", "layers/type.css", "layers/layout.css",
-    "layers/grid.css", "layers/motion.css", "layers/utility.css",
+    "tokens.css", "crft.css",
   ]);
   assert.equal(existsSync(join(target, "layers/fonts.css")), false);
   assert.equal(existsSync(join(target, "sans.woff")), false);
@@ -86,20 +86,20 @@ test("fonts flag adds faces and woffs", async (t) => {
 
   const result = await adoptSystem({ sourceRoot: source, target, layers: "tokens", fonts: true });
 
-  assert.deepEqual(result.manifest, ["layers/tokens.css", "layers/fonts.css", "sans.woff", "mono.woff"]);
-  assert.match(result.entryBlock, /fonts\.css/);
+  assert.deepEqual(result.manifest, ["tokens.css", "sans.woff", "mono.woff"]);
+  assert.doesNotMatch(result.entryBlock, /fonts\.css/);
 });
 
 test("grid without layout is refused", () => {
-  assert.throws(() => resolveAdoptRequest({ layers: "grid" }), /requires tokens, layout/);
+  assert.throws(() => resolveAdoptRequest({ layers: "grid" }), /Unsupported layer selection/);
 });
 
 test("type without tokens is refused", () => {
-  assert.throws(() => resolveAdoptRequest({ layers: "type" }), /requires tokens/);
+  assert.throws(() => resolveAdoptRequest({ layers: "type" }), /Unsupported layer selection/);
 });
 
 test("motion without layout is refused", () => {
-  assert.throws(() => resolveAdoptRequest({ layers: "tokens,motion" }), /requires layout/);
+  assert.throws(() => resolveAdoptRequest({ layers: "tokens,motion" }), /Unsupported layer selection/);
 });
 
 test("missing --layers is refused", () => {
@@ -116,10 +116,10 @@ test("copies into an existing directory only when every destination is absent", 
   await mkdir(target);
 
   await adoptSystem({ sourceRoot: source, target, layers: "tokens" });
-  assert.equal(readFileSync(join(target, "layers/tokens.css"), "utf8"), "source:layers/tokens.css");
+  assert.equal(readFileSync(join(target, "tokens.css"), "utf8"), "source:tokens.css\n");
 
   await assert.rejects(adoptSystem({ sourceRoot: source, target, layers: "tokens" }), /Target already exists/);
-  assert.equal(readFileSync(join(target, "layers/tokens.css"), "utf8"), "source:layers/tokens.css");
+  assert.equal(readFileSync(join(target, "tokens.css"), "utf8"), "source:tokens.css\n");
 });
 
 test("dry-run validates without creating target or staging", async (t) => {
@@ -142,7 +142,7 @@ test("command dry-run prints the plan and entry block without creating target", 
   assert.match(result.stdout, /PLAN: copy 2 files/);
   assert.match(result.stdout, /crft-manifest\.json/);
   assert.match(result.stdout, /PLAN: project entry/);
-  assert.match(result.stdout, /@import "\.\/layers\/tokens\.css";/);
+  assert.match(result.stdout, /@import "\.\/tokens\.css";/);
   assert.match(result.stdout, /PLAN: no files created/);
   assert.equal(existsSync(target), false);
 });
@@ -171,8 +171,8 @@ test("refuses target and source symlinks", async (t) => {
   );
   assert.equal(readFileSync(protectedTarget, "utf8"), "preserve");
 
-  rmSync(join(source, "layers/tokens.css"));
-  symlinkSync(join(source, "sans.woff"), join(source, "layers/tokens.css"));
+  rmSync(join(source, "tokens.css"));
+  symlinkSync(join(source, "sans.woff"), join(source, "tokens.css"));
   await assert.rejects(
     adoptSystem({ sourceRoot: source, target: join(root, "other"), layers: "tokens" }),
     /not a regular file/,
@@ -208,15 +208,15 @@ test("real copy writes crft-manifest.json with layers and file hashes", async (t
   const source = await sourceFixture(root);
   const target = join(root, "adopted");
 
-  await adoptSystem({ sourceRoot: source, target, layers: "tokens,type" });
+  await adoptSystem({ sourceRoot: source, target, layers: "full" });
 
-  const manifest = JSON.parse(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"));
+  const manifest = JSON.parse(readFileSync(join(target, "crft-manifest.json"), "utf8"));
   assert.equal(manifest.source, "crft");
-  assert.deepEqual(manifest.layers, ["tokens", "type"]);
+  assert.deepEqual(manifest.layers, ["base", "tokens", "type", "layout", "grid", "motion", "utility"]);
   assert.equal(manifest.fonts, false);
-  assert.equal(manifest.files["layers/tokens.css"], digest("source:layers/tokens.css"));
-  assert.equal(manifest.files["layers/type.css"], digest("source:layers/type.css"));
-  assert.equal(manifest.files["layers/crft-manifest.json"], undefined);
+  assert.equal(manifest.files["tokens.css"], digest("source:tokens.css\n"));
+  assert.equal(manifest.files["crft.css"], digest("source:crft.css\n"));
+  assert.equal(manifest.files["crft-manifest.json"], undefined);
   assert.ok(Number.isFinite(Date.parse(manifest.copiedAt)));
 });
 
@@ -227,8 +227,8 @@ test("dry-run lists crft-manifest.json without writing it", async (t) => {
 
   const result = await adoptSystem({ sourceRoot: source, target, layers: "tokens", dryRun: true });
 
-  assert.deepEqual(result.destinations, ["layers/tokens.css", "layers/crft-manifest.json"]);
-  assert.equal(existsSync(join(target, "layers/crft-manifest.json")), false);
+  assert.deepEqual(result.destinations, ["tokens.css", "crft-manifest.json"]);
+  assert.equal(existsSync(join(target, "crft-manifest.json")), false);
   assert.equal(existsSync(target), false);
 });
 
@@ -237,11 +237,11 @@ test("existing crft-manifest.json refuses the whole publish", async (t) => {
   const source = await sourceFixture(root);
   const target = join(root, "adopted");
   await mkdir(join(target, "layers"), { recursive: true });
-  writeFileSync(join(target, "layers/crft-manifest.json"), "{}\n");
+  writeFileSync(join(target, "crft-manifest.json"), "{}\n");
 
   await assert.rejects(adoptSystem({ sourceRoot: source, target, layers: "tokens" }), /Target already exists/);
-  assert.equal(existsSync(join(target, "layers/tokens.css")), false);
-  assert.equal(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"), "{}\n");
+  assert.equal(existsSync(join(target, "tokens.css")), false);
+  assert.equal(readFileSync(join(target, "crft-manifest.json"), "utf8"), "{}\n");
 });
 
 test("manifest contract includes a known public token and private property", async (t) => {
@@ -251,7 +251,37 @@ test("manifest contract includes a known public token and private property", asy
 
   await adoptSystem({ sourceRoot, target, layers: "tokens" });
 
-  const manifest = JSON.parse(readFileSync(join(target, "layers/crft-manifest.json"), "utf8"));
-  assert.ok(manifest.contract.publicTokens.includes("--c-fg"));
+  const manifest = JSON.parse(readFileSync(join(target, "crft-manifest.json"), "utf8"));
+  assert.ok(manifest.contract.publicTokens.includes("--text"));
   assert.ok(manifest.contract.privateProperties.includes("--l-gc"));
+});
+
+
+test("optional faces, adjacent font URLs and manifest hashes match copied bytes", async (t) => {
+  const parent = fixture(t);
+  const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
+  const canonical = readFileSync(join(sourceRoot, "styles/tokens.css"), "utf8");
+  for (const fonts of [false, true]) {
+    const target = join(parent, String(fonts));
+    await adoptSystem({ sourceRoot, target, layers: "full", fonts });
+    const tokens = readFileSync(join(target, "tokens.css"), "utf8");
+    assert.equal(tokens, fonts ? canonical : tokensWithoutFonts(canonical));
+    assert.equal(tokens.includes("@font-face"), fonts);
+    assert.equal(existsSync(join(target, "sans.woff")), fonts);
+    if (fonts) for (const file of ["sans.woff", "mono.woff"]) assert.ok(tokens.includes(`url("./${file}")`));
+    const manifest = JSON.parse(readFileSync(join(target, "crft-manifest.json"), "utf8"));
+    assert.equal(manifest.packagingVersion, 1);
+    for (const [file, hash] of Object.entries(manifest.files)) assert.equal(digest(readFileSync(join(target, file))), hash);
+  }
+});
+
+test("copier refuses legacy packages without changing their files", async (t) => {
+  const parent = fixture(t);
+  const source = await sourceFixture(parent);
+  const target = join(parent, "adopted");
+  await mkdir(join(target, "layers"), { recursive: true });
+  writeFileSync(join(target, "layers/tokens.css"), "preserve");
+  await assert.rejects(adoptSystem({ sourceRoot: source, target, layers: "full" }), /Mixed flat and legacy/);
+  assert.equal(readFileSync(join(target, "layers/tokens.css"), "utf8"), "preserve");
+  assert.equal(existsSync(join(target, "tokens.css")), false);
 });

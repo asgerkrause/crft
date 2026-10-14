@@ -30,9 +30,9 @@ Within the canonical reference, CSS owns live values, formulas, breakpoints, sel
 | Native controls, labels, validation, async implementation, and recovery | [`craft/forms.md`](craft/forms.md) |
 | Token names, semantic jobs, scales, public and private boundaries | [`craft/tokens.md`](craft/tokens.md) |
 | Semantic color, schemes, skins, accents, feedback, contrast | [`craft/color.md`](craft/color.md) |
-| Fonts, roles, measure, hierarchy, wrapping, weight | [`craft/type.md`](craft/type.md) |
-| Page chrome, sections, `c` measure, `s` stacks, spacing | [`craft/layout.md`](craft/layout.md) |
-| Responsive `g` `x` `y` `o` attributes, container states, source order | [`craft/grid.md`](craft/grid.md) |
+| Fonts, semantic roles, measure, hierarchy, wrapping, weight | [`craft/type.md`](craft/type.md) |
+| Page chrome, sections, `.c` measure, `.s` stacks, spacing | [`craft/layout.md`](craft/layout.md) |
+| Responsive `g` `c` `r` `o` attributes, container states, source order | [`craft/grid.md`](craft/grid.md) |
 | Finite utility selectors and admission threshold | [`craft/utilities.md`](craft/utilities.md) |
 | Motion roles, reduced motion, scrub, view transitions | [`craft/motion.md`](craft/motion.md) |
 | Copying, CSS ownership, extension, migration, updates | [`craft/adopt.md`](craft/adopt.md) |
@@ -58,7 +58,7 @@ CRFT is the strategy and reference. `CRAFT.md` is this router. `craft/` holds to
 
 ## Decisions
 
-CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS reference, routed guidance, optional whole-layer copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption may use strategy only, local project extraction, selected complete layers, or explicit full adoption. Every result is project-owned and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
+CRFT is a breaking replacement for the earlier frontend package. It keeps the CSS reference, routed guidance, optional whole-layer copier, contract checker, examples, and rendered reference. It intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan. Deterministic contract tooling stays inside that boundary: `scripts/emit-contract.mjs` derives the machine-readable contract, the copier records an adoption manifest, and a consumer runs `scripts/check-project.mjs` explicitly against its own CSS. Adoption may use strategy only, local project extraction, tokens-only adoption, or explicit full adoption. Every result is project-owned and uses explicit comparison. [`craft/adopt.md`](craft/adopt.md) owns the replacement procedure and exact public-name migrations. There are no compatibility aliases.
 
 Use the extension order owned by [`craft/adopt.md`](craft/adopt.md): semantic HTML and existing owners before public CRFT API, public tokens before scoped overrides, and one direct project rule before any new shared API.
 
@@ -70,70 +70,59 @@ Keep product presentation project-owned. Prefer a semantic element, native attri
 
 ## Public hook grammar
 
-The public hook grammar describes the complete reference. A hook exists only when its owning layer is adopted and the live project copy still contains it; file presence alone is not proof after simplification. Local extraction grants no CRFT API. Attributes are the finite CRFT composition API. Classes are the override and use-case layer.
-
-| Kind | Owns |
-| --- | --- |
-| Attribute | Finite composition: `c`, `s`, `t`, `g`, `x`, `y`, `o`, `l` |
-| `data-*` | Inherited canvas or opt-in: `data-skin`, `data-accent`, `data-scrub` |
-| Class | Override, recovery, or product use case: `.img-w`, `.sr`, `.btn`, `.crd` |
-| Token | Scales used in CSS. Never a markup matrix |
-
-Positions use hyphens (`g="12-6"`, `x="5-3"`, `o="f-a-l"`). Flags use spaces (`t="sm mu bo se"`, `s="h sm ct"`, `c="sm ct"`). CSS matches flags with `~=`. Do not document substring operators. Do not add margin, padding, gap, radius, align, or justify attributes.
+Hooks require their owning complete layer and retained live selectors. Local extraction grants no CRFT API. Role classes provide intentional visual treatment. Attributes provide g/c/r/o grids and l clamp. Classes .c and .s own content measure and vertical flow. Do not add margin, padding, gap, radius, align, or justify attributes.
 
 <!-- public-hook-index:start -->
 
 | Hook | Owner | Job |
 | --- | --- | --- |
-| `c` | layout | Content measure |
-| `c="sm"` | layout | Narrow measure |
-| `c="lg"` | layout | Wide measure |
-| `c="ct"` | layout | Center container children |
-| `s` | layout | Stack |
-| `s="h"` | layout | Horizontal stack |
-| `s="w"` | layout | Wrapping stack |
-| `s="ct"` | layout | Cross-axis center |
-| `s="sb"` | layout | Space-between |
-| `s="xs"` | layout | Tight stack gap |
-| `s="sm"` | layout | Small stack gap |
-| `s="lg"` | layout | Large stack gap |
-| `s="xl"` | layout | Extra-large stack gap |
-| `s="sc"` | layout | Sticky children |
-| `s="st"` | layout | Progressive stagger |
-| `container` | layout | Named query context |
-| `.img-w` | layout | Media frame |
-| `t` | type | Role plus optional color, transform, weight, and family flags |
-| `l` | type | Line clamp |
-| `g` | grid | Parent column count |
-| `x` | grid | Child column span |
-| `y` | grid | Child row span |
-| `o` | grid | Child visual order |
-| `a-sm` | grid | Auto-fill narrow items |
-| `a` | grid | Auto-fill default items |
-| `a-lg` | grid | Auto-fill wide items |
-| `sg` | grid | Ancestor subgrid |
-| `data-skin` | color | Canvas boundary |
-| `data-accent` | color | Accent route |
-| `data-scrub` | motion | Image scrub |
-| `.sr` | utilities | Screen-reader content |
-| `.sr.focusable` | utilities | Restorable screen-reader content |
+| `.display` | type | Documented type role |
+| `.h1` | type | Documented type role |
+| `.h2` | type | Documented type role |
+| `.h3` | type | Documented type role |
+| `.lead` | type | Documented type role |
+| `.body` | type | Documented type role |
+| `.small` | type | Documented type role |
+| `.label` | type | Documented type role |
+| `.caption` | type | Documented type role |
+| `l` | type | Documented type role |
+| `.c` | layout | Documented layout role |
+| `.c.sm` | layout | Documented layout role |
+| `.c.lg` | layout | Documented layout role |
+| `.s` | layout | Documented layout role |
+| `container` | layout | Documented layout role |
+| `.img-w` | layout | Documented layout role |
+| `g` | grid | Documented grid role |
+| `c` | grid | Documented grid role |
+| `r` | grid | Documented grid role |
+| `o` | grid | Documented grid role |
+| `fit` | grid | Documented grid role |
+| `fit-sm` | grid | Documented grid role |
+| `fit-lg` | grid | Documented grid role |
+| `fill` | grid | Documented grid role |
+| `fill-sm` | grid | Documented grid role |
+| `fill-lg` | grid | Documented grid role |
+| `sg` | grid | Documented grid role |
+| `data-theme` | color | Documented color role |
+| `data-skin` | color | Documented color role |
+| `data-accent` | color | Documented color role |
+| `data-scrub` | motion | Documented motion role |
+| `.sr` | utilities | Documented utilities role |
+| `.sr.focusable` | utilities | Documented utilities role |
 
 <!-- public-hook-index:end -->
 
 ## Never
 
 <!-- ban-index:start -->
-never `*-block-start` or `*-inline-start` single-side longhands
-never a class on `section`
+never *-block-start or *-inline-start single-side longhands
+never a class on section
 never style through an ID selector
-never `data-theme`; canvas is `data-skin`
 never new spacing, alignment, or display utility matrices
 never substring attribute selectors in documentation
-never `w` or `f` attributes on `t`
-never `bd` as a weight flag; bold is `bo`
-never set `font-weight` without `font-variation-settings` wght or vice versa
-never heading max-width; override the role's `--t-*-mw` token
-Private properties never appear in product CSS; the list lives in the contract and [`craft/tokens.md`](craft/tokens.md).
+never explicit wght in canonical role axes; ordinary weight uses font-weight
+never heading max-width; override the role's --ROLE-measure token
+Private properties including --_ calculations never appear in product CSS.
 <!-- ban-index:end -->
 
 ## Evidence

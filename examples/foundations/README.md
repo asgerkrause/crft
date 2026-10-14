@@ -13,7 +13,7 @@ A minimal page shell with skip link, navigation, orientation, proof, native FAQ,
 ## Demonstrates
 
 - semantic landmarks and purposeful fragment IDs;
-- `section > [c]` query boundaries;
+- `section > .c` query boundaries;
 - `s`, `g="3-2"`, and small stacked fallback;
 - type roles, semantic skins, accent routing, and finite utilities;
 - native `details` with progressive enhancement;

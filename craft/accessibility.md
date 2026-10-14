@@ -67,7 +67,7 @@ The interface must remain usable with browser zoom, text resize, narrow width, l
 
 ## Links
 
-`base.css` removes link underlines globally so navigation and component links can own their affordance, and restores an underline for links inside `p`, `li`, `dd`, `td`, and `figcaption`, where a link sits in running text and color alone would not distinguish it. Keep that distinction when a project restyles inline links.
+The base layer in `crft.css` removes link underlines globally so navigation and component links can own their affordance, and restores an underline for links inside `p`, `li`, `dd`, `td`, and `figcaption`, where a link sits in running text and color alone would not distinguish it. Keep that distinction when a project restyles inline links.
 
 ## Screen-reader utility
 

@@ -17,7 +17,7 @@ CRFT exposes a finite utility surface for stable operations used by unrelated ma
 
 `.sr.focusable` is intended for skip links and other keyboard-restorable content. Do not apply `.sr` to content that must remain visible or to hide a focusable control without a restoration path.
 
-Color, transform, weight, and family flags live on `t` in [`type.md`](type.md). Line clamp is `l`. Measure is `c`. Grouping is `s`. Grid spans are `x` and `y`. Spacing, alignment, radius, and wrap stay on stacks, tokens, or project CSS. Do not add a utility matrix for those jobs.
+Semantic role classes live in [`type.md`](type.md). Line clamp is `l`. Measure is `.c`; grouping is `.s`. Grid spans are `c` and `r`. Other arrangements belong to project CSS. Do not add a utility matrix for those jobs.
 
 ## Admission threshold
 
@@ -25,7 +25,7 @@ Add a shared utility only when:
 
 1. unrelated markup needs the same stable operation;
 2. an existing public element, attribute, class, or token cannot express it;
-3. `styles/layers/utility.css` fully owns the operation;
+3. `styles/crft.css` fully owns the operation;
 4. accessibility can be verified;
 5. the selector has one stable meaning.
 
@@ -41,4 +41,4 @@ Keep one-off values, component details, responsive variants, state variants, ali
 
 ## Verify
 
-Confirm every documented selector exists in `styles/layers/utility.css` and no undocumented utility exists. Test `.sr.focusable` by keyboard.
+Confirm every documented selector exists in `styles/crft.css` and no undocumented utility exists. Test `.sr.focusable` by keyboard.

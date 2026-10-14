@@ -1,4 +1,8 @@
 @layer project {
+  body > header .c > .s,
+  body > footer .c > .s { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  nav ul { display: flex; flex-wrap: wrap; gap: var(--gap); }
+  header > .small, footer .small { color: var(--muted); }
   /*
     Non-canonical example — brief-specific product chrome only.
     Public token names only. No private properties.
@@ -6,11 +10,11 @@
 
   body {
     > header {
-      padding-block: var(--p);
-      border-block-end: var(--b-wd) solid var(--c-bc);
+      padding-block: var(--padding);
+      border-bottom: var(--border-width) solid var(--border);
 
       strong > a {
-        color: var(--c-fg);
+        color: var(--text);
         text-decoration: none;
       }
 
@@ -19,18 +23,18 @@
           list-style: none;
           margin: 0;
           padding: 0;
-          column-gap: var(--s);
+          column-gap: var(--space);
         }
 
         a {
-          color: var(--c-fg);
+          color: var(--text);
 
           &:hover {
-            color: var(--c-ac);
+            color: var(--accent);
           }
 
           &:focus-visible {
-            outline: max(2px, var(--b-wd)) solid var(--c-ac);
+            outline: max(2px, var(--border-width)) solid var(--accent);
             outline-offset: 2px;
           }
         }
@@ -38,14 +42,14 @@
     }
 
     > footer {
-      padding-block: var(--p-lg);
-      border-block-start: var(--b-wd) solid var(--c-bc);
+      padding-block: var(--padding-lg);
+      border-top: var(--border-width) solid var(--border);
 
       a {
-        color: var(--c-ac-fg);
+        color: var(--accent-text);
 
         &:focus-visible {
-          outline: max(2px, var(--b-wd)) solid var(--c-ac);
+          outline: max(2px, var(--border-width)) solid var(--accent);
           outline-offset: 2px;
         }
       }
@@ -54,90 +58,90 @@
 
   .action {
     display: inline-block;
-    padding-block: var(--p-sm);
-    padding-inline: var(--p);
-    color: var(--c-ac-co);
-    background-color: var(--c-ac);
-    border: var(--b-wd) solid var(--c-ac-bc);
-    border-radius: var(--r);
+    padding-block: var(--padding-sm);
+    padding-inline: var(--padding);
+    color: var(--on-accent);
+    background-color: var(--accent);
+    border: var(--border-width) solid var(--accent-border);
+    border-radius: var(--radius);
     text-decoration: none;
 
     &:hover {
-      color: var(--c-ac-fg);
-      background-color: var(--c-ac-bg);
+      color: var(--accent-text);
+      background-color: var(--accent-surface);
     }
 
     &:focus-visible {
-      outline: max(2px, var(--b-wd)) solid var(--c-ac);
+      outline: max(2px, var(--border-width)) solid var(--accent);
       outline-offset: 2px;
     }
   }
 
   main aside {
-    padding-block: var(--p);
-    padding-inline: var(--p);
-    background-color: var(--c-sf);
-    border: var(--b-wd) solid var(--c-bc);
-    border-radius: var(--r);
+    padding-block: var(--padding);
+    padding-inline: var(--padding);
+    background-color: var(--surface);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius);
 
     ol {
       margin: 0;
-      padding-inline-start: 1.25rem;
+      padding-left: 1.25rem;
 
       li + li {
-        margin-block-start: var(--s);
+        margin-top: var(--space);
       }
     }
   }
 
   .proof-tile {
     height: 100%;
-    padding-block: var(--p);
-    padding-inline: var(--p);
-    color: var(--c-fg);
-    background-color: var(--c-sf);
-    border: var(--b-wd) solid var(--c-bc);
-    border-radius: var(--r);
+    padding-block: var(--padding);
+    padding-inline: var(--padding);
+    color: var(--text);
+    background-color: var(--surface);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius);
 
     &[data-accent] {
-      color: var(--c-ac-fg);
-      background-color: var(--c-ac-bg);
-      border-color: var(--c-ac-bc);
+      color: var(--accent-text);
+      background-color: var(--accent-surface);
+      border-color: var(--accent-border);
     }
   }
 
   section[data-skin="invert"] {
     p[data-accent] {
       margin: 0;
-      padding-block: var(--p-sm);
-      padding-inline: var(--p);
-      color: var(--c-ac-fg);
-      background-color: var(--c-ac-bg);
-      border: var(--b-wd) solid var(--c-ac-bc);
-      border-radius: var(--r);
+      padding-block: var(--padding-sm);
+      padding-inline: var(--padding);
+      color: var(--accent-text);
+      background-color: var(--accent-surface);
+      border: var(--border-width) solid var(--accent-border);
+      border-radius: var(--radius);
     }
 
     ul {
       margin: 0;
-      padding-inline-start: 1.25rem;
+      padding-left: 1.25rem;
 
       li + li {
-        margin-block-start: var(--s-sm);
+        margin-top: var(--space-sm);
       }
     }
   }
 
   details {
-    padding-block: var(--p-sm);
-    border-block-end: var(--b-wd) solid var(--c-bc);
+    padding-block: var(--padding-sm);
+    border-bottom: var(--border-width) solid var(--border);
 
     summary {
       cursor: pointer;
-      font-weight: var(--t-fw-bd);
-      font-variation-settings: "wght" var(--t-fw-bd);
+      font-weight: var(--weight-bold);
+
 
       &:focus-visible {
-        outline: max(2px, var(--b-wd)) solid var(--c-ac);
+        outline: max(2px, var(--border-width)) solid var(--accent);
         outline-offset: 2px;
       }
     }

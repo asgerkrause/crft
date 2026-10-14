@@ -1,0 +1,312 @@
+{
+  "contractVersion": 1,
+  "id": "static",
+  "description": "Synthetic literary serif with a static modular scale.",
+  "foundations": {
+    "fluid-min": {
+      "value": 25,
+      "unit": "rem"
+    },
+    "fluid-max": {
+      "value": 100,
+      "unit": "rem"
+    },
+    "type-min": {
+      "value": 1.125,
+      "unit": "rem"
+    },
+    "type-max": {
+      "value": 1.125,
+      "unit": "rem"
+    },
+    "type-ratio-min": 1.2,
+    "type-ratio-max": 1.2
+  },
+  "roles": {
+    "display": {
+      "step": 5,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 2.799359999999999,
+        "unit": "rem"
+      }
+    },
+    "h1": {
+      "step": 4,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 2.3327999999999998,
+        "unit": "rem"
+      }
+    },
+    "h2": {
+      "step": 3,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 1.9439999999999997,
+        "unit": "rem"
+      }
+    },
+    "h3": {
+      "step": 2,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 1.6199999999999999,
+        "unit": "rem"
+      }
+    },
+    "lead": {
+      "step": 1,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 1.3499999999999999,
+        "unit": "rem"
+      }
+    },
+    "body": {
+      "step": 0,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 1.125,
+        "unit": "rem"
+      }
+    },
+    "small": {
+      "step": -1,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 0.9375,
+        "unit": "rem"
+      }
+    },
+    "label": {
+      "step": -1,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 0.9375,
+        "unit": "rem"
+      }
+    },
+    "caption": {
+      "step": -1,
+      "font": "Georgia, serif",
+      "weight": 500,
+      "leading": 1.5,
+      "tracking": {
+        "value": 0,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 70,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "normal",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 0.9375,
+        "unit": "rem"
+      }
+    }
+  },
+  "scales": {
+    "space": {
+      "size": {
+        "value": 3.75,
+        "unit": "rem"
+      },
+      "ratio": 2
+    },
+    "gap": {
+      "size": {
+        "value": 0.9375,
+        "unit": "rem"
+      },
+      "ratio": 1.4
+    },
+    "padding": {
+      "size": {
+        "value": 0.9375,
+        "unit": "rem"
+      },
+      "ratio": 1.8
+    },
+    "radius": {
+      "size": {
+        "value": 0.5625,
+        "unit": "rem"
+      },
+      "ratio": 1.5
+    }
+  },
+  "colors": {
+    "palette-light": "#faf5e9",
+    "palette-dark": "#18271f",
+    "accent": "#286342",
+    "on-accent": "#ffffff"
+  },
+  "fonts": {
+    "font": "Georgia, serif",
+    "font-display": "Georgia, serif"
+  },
+  "expected": {
+    "display": {
+      "minRem": 2.799359999999999,
+      "maxRem": 2.799359999999999,
+      "staticRem": 2.799359999999999
+    },
+    "h1": {
+      "minRem": 2.3327999999999998,
+      "maxRem": 2.3327999999999998,
+      "staticRem": 2.3327999999999998
+    },
+    "h2": {
+      "minRem": 1.9439999999999997,
+      "maxRem": 1.9439999999999997,
+      "staticRem": 1.9439999999999997
+    },
+    "h3": {
+      "minRem": 1.6199999999999999,
+      "maxRem": 1.6199999999999999,
+      "staticRem": 1.6199999999999999
+    },
+    "lead": {
+      "minRem": 1.3499999999999999,
+      "maxRem": 1.3499999999999999,
+      "staticRem": 1.3499999999999999
+    },
+    "body": {
+      "minRem": 1.125,
+      "maxRem": 1.125,
+      "staticRem": 1.125
+    },
+    "small": {
+      "minRem": 0.9375,
+      "maxRem": 0.9375,
+      "staticRem": 0.9375
+    },
+    "label": {
+      "minRem": 0.9375,
+      "maxRem": 0.9375,
+      "staticRem": 0.9375
+    },
+    "caption": {
+      "minRem": 0.9375,
+      "maxRem": 0.9375,
+      "staticRem": 0.9375
+    }
+  }
+}
