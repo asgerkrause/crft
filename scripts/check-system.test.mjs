@@ -335,6 +335,16 @@ test("duplicate layer blocks in one file fail", (t) => {
   assert.match(result.stderr, /duplicate @layer reset block in crft\.css/);
 });
 
+test("generic containers cannot establish the query boundary", (t) => {
+  for (const selector of [".c", "[c]"]) {
+    const root = makeFixture(t);
+    replace(root, "styles/crft.css", "@layer layout {", `@layer layout {\n  ${selector} { container: container / inline-size; }`);
+    const result = runCheck(root);
+    assert.equal(result.status, 1, selector);
+    assert.ok(result.stderr.includes("only section > .c may establish the query boundary"), result.stderr);
+  }
+});
+
 test("documented layout hooks remain source-backed", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/crft.css", "&.sm {", "&.narrow {");

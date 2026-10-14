@@ -480,7 +480,7 @@ for (const signal of [
   if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing invariant: ${signal}`);
 }
 if (/@media\s*\(\s*width\b/.test(gridCss)) fail("grid.css must use container queries for grid states");
-if (/(?:^|})\s*\[c\]\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > [c] may establish the query boundary");
+if (/(?:^|})\s*(?:\.c|\[c\])\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > .c may establish the query boundary");
 
 const accentRoutes = unique([...tokensCss.matchAll(/\[data-accent\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 const skinRoutes = unique([...tokensCss.matchAll(/\[data-skin\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
