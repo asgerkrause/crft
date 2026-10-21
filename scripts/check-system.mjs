@@ -630,7 +630,9 @@ try {
 } catch (error) {
   fail(`${contractFixture} is missing or invalid JSON: ${error.message}`);
 }
-if (savedContract) {
+if (savedContract !== undefined && (savedContract === null || typeof savedContract !== "object" || Array.isArray(savedContract))) {
+  fail(`${contractFixture} must contain a contract object`);
+} else if (savedContract) {
   const { revision, dirty, ...saved } = savedContract;
   const { revision: _revision, dirty: _dirty, ...emitted } = buildContract(root);
   if (!isDeepStrictEqual(saved, emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean commit`);

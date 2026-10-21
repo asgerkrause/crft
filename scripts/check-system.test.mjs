@@ -82,6 +82,14 @@ test("the committed public contract must record a commit-shaped revision", (t) =
   assert.match(result.stderr, /public-contract\.json must record dirty false and a 40-hex revision/);
 });
 
+test("a non-object public contract fails clearly", (t) => {
+  const root = makeFixture(t);
+  writeFileSync(join(root, "reference/fixtures/public-contract.json"), "null\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json must contain a contract object/);
+});
+
 test("a missing public contract fails clearly", (t) => {
   const root = makeFixture(t);
   rmSync(join(root, "reference/fixtures/public-contract.json"));
