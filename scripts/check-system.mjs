@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { resolveAdoptRequest } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
-import { buildContract, staticBans } from "./emit-contract.mjs";
+import { buildContract, hasExplicitWght, staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -31,7 +31,7 @@ const cssLayerBlock = (css, name) => {
   return "";
 };
 const assertWeightVariationPair = (css, path) => {
-  if (/font-variation-settings\s*:[^;}]*["']wght["']/.test(stripCssComments(css))) fail(`${path} explicit wght overrides ordinary font-weight`);
+  if (hasExplicitWght(css)) fail(`${path} explicit wght overrides ordinary font-weight`);
 };
 const markedCodeNames = (document, marker, pattern) => {
   const block = document.match(new RegExp(`<!-- ${marker}:start -->([\\s\\S]*?)<!-- ${marker}:end -->`));

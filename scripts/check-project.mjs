@@ -1,4 +1,4 @@
-import { buildContract, declaredProperties } from "./emit-contract.mjs";
+import { buildContract, declaredProperties, hasExplicitWght } from "./emit-contract.mjs";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -147,7 +147,7 @@ function checkProject(target) {
     const rel = relative(target, path);
     const active = stripCssComments(readFileSync(path, "utf8"));
     if (bannedPrivate?.test(active) || /--_[a-z0-9_-]+/.test(active)) fail(`${rel} uses a private implementation property`);
-    if (/font-variation-settings\s*:[^;}]*["']wght["']/.test(active)) fail(`${rel} sets wght in font-variation-settings; use font-weight`);
+    if (hasExplicitWght(active)) fail(`${rel} sets wght in font-variation-settings; use font-weight`);
     for (const property of bannedSpacing) {
       if (new RegExp(`(?:^|[;{}\\s])${property}\\s*:`).test(active)) {
         fail(`${rel} uses banned spacing longhand ${property}`);

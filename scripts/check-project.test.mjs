@@ -129,3 +129,11 @@ test("project CSS cannot set wght in font-variation-settings, even among other a
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /project\.css sets wght in font-variation-settings; use font-weight/);
 });
+
+test("wght text inside a content string is not a font-variation-settings declaration", (t) => {
+  const root = fixture(t);
+  fakeLayers(root);
+  write(join(root, "project.css"), `.x { content: "font-variation-settings: 'wght' 700"; }\n`);
+  const result = run(root);
+  assert.equal(result.status, 0, result.stderr);
+});

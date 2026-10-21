@@ -211,3 +211,9 @@ test("spaced attribute selectors still yield theme, skin, and accent values", (t
   assert.deepEqual(contract.skins, ["tone"]);
   assert.deepEqual(contract.accents, ["danger"]);
 });
+
+test("comments and strings are stripped in one pass", (t) => {
+  const target = temporary(t);
+  writeFileSync(join(target, "tokens.css"), '.x { content: "/*"; }\n:root { --real: 1; }\n/* x */\n.y { content: "a\\\n--ghost: 1"; }\n');
+  assert.deepEqual(buildContract(target).publicTokens, ["--real"]);
+});
