@@ -31,7 +31,7 @@ const cssLayerBlock = (css, name) => {
   return "";
 };
 const assertWeightVariationPair = (css, path) => {
-  if (/font-variation-settings:\s*["']wght["']/.test(stripCssComments(css))) fail(`${path} explicit wght overrides ordinary font-weight`);
+  if (/font-variation-settings\s*:[^;}]*["']wght["']/.test(stripCssComments(css))) fail(`${path} explicit wght overrides ordinary font-weight`);
 };
 const markedCodeNames = (document, marker, pattern) => {
   const block = document.match(new RegExp(`<!-- ${marker}:start -->([\\s\\S]*?)<!-- ${marker}:end -->`));

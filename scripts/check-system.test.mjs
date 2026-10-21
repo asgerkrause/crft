@@ -106,6 +106,14 @@ test("a missing public contract fails clearly", (t) => {
   assert.match(result.stderr, /public-contract\.json is missing or invalid JSON/);
 });
 
+test("explicit wght is rejected even after another axis", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/crft.css", "@layer type {", '@layer type {\n  .x { font-variation-settings: "opsz" 14, "wght" 700; }\n');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /explicit wght overrides ordinary font-weight/);
+});
+
 test("a new public token requires a documented job", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");

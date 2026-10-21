@@ -111,3 +111,21 @@ test("grid without layout fails", (t) => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /grid\.css requires layout/);
 });
+
+test("a custom property name inside a CSS string does not declare a local property", (t) => {
+  const root = fixture(t);
+  fakeLayers(root);
+  write(join(root, "project.css"), '.x { content: "--c-ghost: red"; }\np { color: var(--c-ghost); }\n');
+  const result = run(root);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /unknown CRFT token --c-ghost/);
+});
+
+test("project CSS cannot set wght in font-variation-settings, even among other axes", (t) => {
+  const root = fixture(t);
+  fakeLayers(root);
+  write(join(root, "project.css"), 'p { font-variation-settings: "opsz" 14, "wght" 700; }\n');
+  const result = run(root);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /project\.css sets wght in font-variation-settings; use font-weight/);
+});

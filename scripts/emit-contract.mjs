@@ -55,12 +55,15 @@ function findLayersDirectory(root) {
   return join(root, "layers");
 }
 
+// One pass so a quote inside a comment or a comment marker inside a string cannot desync the other.
+const stripCssCommentsAndStrings = (value) => value.replace(/\/\*[\s\S]*?\*\/|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'/g, (match) => (match.startsWith("/*") ? "" : '""'));
+
 function declaredProperties(css) {
-  return unique([...stripCssComments(css).matchAll(/(--[a-z0-9_-]+)\s*:/g)].map((match) => match[1])).sort();
+  return unique([...stripCssCommentsAndStrings(css).matchAll(/(--[a-z0-9_-]+)\s*:/g)].map((match) => match[1])).sort();
 }
 
 function quotedAttributeValues(css, attribute) {
-  const pattern = new RegExp(`\\[${attribute}=(['"])([^'"]+)\\1\\]`, "g");
+  const pattern = new RegExp(`\\[${attribute}\\s*=\\s*(['"])([^'"]+)\\1\\s*\\]`, "g");
   return unique([...stripCssComments(css).matchAll(pattern)].map((match) => match[2])).sort();
 }
 
@@ -176,6 +179,6 @@ function main() {
   }
 }
 
-export { buildContract, contractDigest, gitState, layerDependencies, staticBans };
+export { buildContract, contractDigest, declaredProperties, gitState, layerDependencies, staticBans };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
