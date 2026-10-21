@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { isDeepStrictEqual } from "node:util";
 import { resolveAdoptRequest } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
 import { buildContract, staticBans } from "./emit-contract.mjs";
@@ -623,13 +624,17 @@ if (existsSync(exampleRoot)) {
 
 // Brand OS reads this fixture as its custom-property allowlist; revision and dirty describe the emitting checkout.
 const contractFixture = "reference/fixtures/public-contract.json";
-if (existsSync(new URL(contractFixture, root))) {
-  const { revision, dirty, ...saved } = JSON.parse(read(contractFixture));
+let savedContract;
+try {
+  savedContract = JSON.parse(read(contractFixture));
+} catch (error) {
+  fail(`${contractFixture} is missing or invalid JSON: ${error.message}`);
+}
+if (savedContract) {
+  const { revision, dirty, ...saved } = savedContract;
   const { revision: _revision, dirty: _dirty, ...emitted } = buildContract(root);
-  if (JSON.stringify(saved) !== JSON.stringify(emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean commit`);
-  if (dirty !== false || !/^[0-9a-f]{40}$/.test(revision ?? "")) fail(`${contractFixture} must record a clean commit revision`);
-} else {
-  fail(`missing ${contractFixture}`);
+  if (!isDeepStrictEqual(saved, emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean commit`);
+  if (dirty !== false || !/^[0-9a-f]{40}$/.test(revision ?? "")) fail(`${contractFixture} must record dirty false and a 40-hex revision`);
 }
 
 if (!process.exitCode) {
