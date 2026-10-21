@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -66,20 +67,27 @@ test("the committed public contract must match emitted output", (t) => {
   assert.match(result.stderr, /public-contract\.json drifts from scripts\/emit-contract\.mjs output/);
 });
 
-test("the committed public contract must record a clean revision", (t) => {
+test("the committed public contract must record a clean checkout", (t) => {
   const root = makeFixture(t);
   replace(root, "reference/fixtures/public-contract.json", '"dirty": false', '"dirty": true');
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /public-contract\.json must record dirty false and a 40-hex revision/);
+  assert.match(result.stderr, /public-contract\.json must record dirty false/);
 });
 
-test("the committed public contract must record a commit-shaped revision", (t) => {
+test("the committed public contract is identified by digest, not revision", (t) => {
   const root = makeFixture(t);
-  replace(root, "reference/fixtures/public-contract.json", '"revision": "', '"revision": "x');
+  replace(root, "reference/fixtures/public-contract.json", '"dirty": false,', '"dirty": false,\n  "revision": "0000000000000000000000000000000000000000",');
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /public-contract\.json must record dirty false and a 40-hex revision/);
+  assert.match(result.stderr, /public-contract\.json must not record a revision/);
+});
+
+test("the contract digest is sha256 of the canonical consumer fields", () => {
+  const fixture = JSON.parse(readFileSync(join(sourceRoot, "reference/fixtures/public-contract.json"), "utf8"));
+  const { publicTokens, privateProperties, bans, hooks } = fixture;
+  const canonical = JSON.stringify({ publicTokens, privateProperties, bans, hooks: { attributes: hooks.attributes, classes: hooks.classes } });
+  assert.equal(fixture.digest, `sha256:${createHash("sha256").update(canonical).digest("hex")}`);
 });
 
 test("a non-object public contract fails clearly", (t) => {

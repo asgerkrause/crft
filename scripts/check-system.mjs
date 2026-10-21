@@ -622,7 +622,7 @@ if (existsSync(exampleRoot)) {
   }
 }
 
-// Brand OS reads this fixture as its custom-property allowlist; revision and dirty describe the emitting checkout.
+// Brand OS pins this fixture's digest; squash merges make a commit SHA unusable as its identity.
 const contractFixture = "reference/fixtures/public-contract.json";
 let savedContract;
 try {
@@ -633,10 +633,11 @@ try {
 if (savedContract !== undefined && (savedContract === null || typeof savedContract !== "object" || Array.isArray(savedContract))) {
   fail(`${contractFixture} must contain a contract object`);
 } else if (savedContract) {
-  const { revision, dirty, ...saved } = savedContract;
+  const { dirty, ...saved } = savedContract;
   const { revision: _revision, dirty: _dirty, ...emitted } = buildContract(root);
-  if (!isDeepStrictEqual(saved, emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean commit`);
-  if (dirty !== false || !/^[0-9a-f]{40}$/.test(revision ?? "")) fail(`${contractFixture} must record dirty false and a 40-hex revision`);
+  if (Object.hasOwn(saved, "revision")) fail(`${contractFixture} must not record a revision; its digest identifies the contract`);
+  else if (!isDeepStrictEqual(saved, emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean checkout`);
+  if (dirty !== false) fail(`${contractFixture} must record dirty false`);
 }
 
 if (!process.exitCode) {
