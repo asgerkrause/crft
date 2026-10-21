@@ -1,12 +1,16 @@
 # Changelog
 
-Adopters compare `layers/crft-manifest.json` `revision` in their copy against the entries here, newest first.
+Adopters compare the `revision` in their copied `crft-manifest.json` against the entries here, newest first.
 
 ## Unreleased
 
-- `base.css` splits into a token-free `@layer reset` and a token-consuming `@layer base`; the checker enforces the token-free reset. New base behavior: start-aligned control text, no text selection on buttons, no hanging punctuation on controls.
-- The copier writes `layers/crft-manifest.json` into every real copy: source revision, copied layers, file hashes, and a contract snapshot. An existing manifest aborts the publish like any other conflict.
-- New `scripts/emit-contract.mjs` derives the machine-readable contract (public tokens, private properties, skins, accents, layers, dependencies) from live CSS.
+- Bundled font families are renamed from `"SNZ Sans"` and `"SNZ Mono"` to `"sans"` and `"mono"` in `--font-sans`, `--font-mono`, and the optional `@font-face` rules. Project CSS that names the old families must switch to the new names or to the role tokens.
+- `reference/fixtures/public-contract.json` is the committed `emit-contract` output at a clean revision. Brand OS reads its `publicTokens` and `privateProperties` as the custom-property allowlist. `check-system` fails when the fixture drifts from the emitted contract or records an uncommitted revision.
+- The package is flat: `styles/global.css` (prelude and imports, never copied), `styles/tokens.css`, and `styles/crft.css`. The eight logical layers keep their order. Former `styles/layers/*.css` files are gone; `check-project` still validates legacy layer packages and rejects mixed layouts.
+- The copier accepts only `--layers tokens|full`; former per-layer selections fail with guidance. `--fonts` keeps the optional font faces in `tokens.css` and copies `sans.woff` and `mono.woff`.
+- `crft.css` opens with a token-free `@layer reset` and a token-consuming `@layer base`; the checker enforces the token-free reset. New base behavior: start-aligned control text, no text selection on buttons, no hanging punctuation on controls.
+- The copier writes `crft-manifest.json` beside the copied files in every real copy: semantic `contractVersion` 2, `packagingVersion` 1, source revision, copied layers, file hashes, and a contract snapshot. An existing manifest aborts the publish like any other conflict.
+- New `scripts/emit-contract.mjs` derives the machine-readable contract (public tokens, private properties, themes, skins, accents, layers, dependencies, hooks, bans) from live CSS.
 - New `scripts/check-project.mjs` verifies consumer CSS against the adopted contract: private properties, single-side logical longhands, unknown CRFT-family tokens, missing layer dependencies.
 - The contract checker pins owner structure instead of prose sentences, guards duplicate `@layer` blocks, hardens the reset token check, and replaces the retired-class blacklist with an example-class allowlist.
 - Spacing property-form doctrine consolidates in `craft/layout.md`, including the ban on `*-block-start` and `*-inline-start` single-side longhands. The skill routes to it.

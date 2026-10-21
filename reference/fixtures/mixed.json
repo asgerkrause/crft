@@ -25,7 +25,7 @@
   "roles": {
     "display": {
       "step": 5,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -51,7 +51,7 @@
     },
     "h1": {
       "step": 4,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -69,7 +69,7 @@
     },
     "h2": {
       "step": 3,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -87,7 +87,7 @@
     },
     "h3": {
       "step": 2,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -105,7 +105,7 @@
     },
     "lead": {
       "step": 1,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -123,7 +123,7 @@
     },
     "body": {
       "step": 0,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -145,7 +145,7 @@
     },
     "small": {
       "step": -1,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -163,7 +163,7 @@
     },
     "label": {
       "step": -1,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -181,7 +181,7 @@
     },
     "caption": {
       "step": -1,
-      "font": "\"SNZ Sans\", system-ui, sans-serif",
+      "font": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -235,8 +235,8 @@
     "on-accent": "#ffffff"
   },
   "fonts": {
-    "font": "\"SNZ Sans\", system-ui, sans-serif",
-    "font-display": "\"SNZ Sans\", system-ui, sans-serif"
+    "font": "\"sans\", system-ui, sans-serif",
+    "font-display": "\"sans\", system-ui, sans-serif"
   },
   "expected": {
     "display": {

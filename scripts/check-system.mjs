@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolveAdoptRequest } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
-import { staticBans } from "./emit-contract.mjs";
+import { buildContract, staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -333,7 +333,7 @@ if (/body[^}]*max-width/s.test(typeCss.slice(0, typeCss.indexOf("  :where(h1)"))
 assertWeightVariationPair(typeCss, "styles/crft.css");
 assertWeightVariationPair(baseCss, "styles/crft.css");
 if (/@font-face/i.test(frameworkCss)) fail("crft.css must not register faces; tokens.css owns @font-face");
-for (const [family, file] of [["SNZ Sans", "sans.woff"], ["SNZ Mono", "mono.woff"]]) {
+for (const [family, file] of [["sans", "sans.woff"], ["mono", "mono.woff"]]) {
   const face = [...fontsCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
   if (!face || !face.includes(`src: url("./${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) fail(`${family} must load ./${file} with a registered 100 900 font-weight range`);
 }
@@ -619,6 +619,17 @@ if (existsSync(exampleRoot)) {
       if (!text.includes("## Layout intent") || !text.includes("```text")) fail(`${path} is missing its ASCII layout intent`);
     }
   }
+}
+
+// Brand OS reads this fixture as its custom-property allowlist; revision and dirty describe the emitting checkout.
+const contractFixture = "reference/fixtures/public-contract.json";
+if (existsSync(new URL(contractFixture, root))) {
+  const { revision, dirty, ...saved } = JSON.parse(read(contractFixture));
+  const { revision: _revision, dirty: _dirty, ...emitted } = buildContract(root);
+  if (JSON.stringify(saved) !== JSON.stringify(emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean commit`);
+  if (dirty !== false || !/^[0-9a-f]{40}$/.test(revision ?? "")) fail(`${contractFixture} must record a clean commit revision`);
+} else {
+  fail(`missing ${contractFixture}`);
 }
 
 if (!process.exitCode) {

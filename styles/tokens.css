@@ -176,9 +176,9 @@
 
   /* Recipe inputs are unitless rem magnitudes; outputs are lengths. */
   :root {
-    --font-sans: "SNZ Sans", system-ui, sans-serif;
+    --font-sans: "sans", system-ui, sans-serif;
     --font-serif: serif;
-    --font-mono: "SNZ Mono", ui-monospace, monospace;
+    --font-mono: "mono", ui-monospace, monospace;
     --font: var(--font-sans);
     --font-display: var(--font-sans);
     --weight-light: 300;
@@ -403,7 +403,7 @@
 /* Optional bundled fonts. */
 @layer type {
   @font-face {
-    font-family: "SNZ Sans";
+    font-family: "sans";
     src: url("./sans.woff") format("woff");
     font-style: normal;
     font-weight: 100 900;
@@ -411,7 +411,7 @@
   }
 
   @font-face {
-    font-family: "SNZ Mono";
+    font-family: "mono";
     src: url("./mono.woff") format("woff");
     font-style: normal;
     font-weight: 100 900;

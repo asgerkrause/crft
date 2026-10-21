@@ -14,6 +14,7 @@ const fixturePaths = [
   "craft",
   "examples",
   "skills",
+  "reference/fixtures/public-contract.json",
   "reference/package.json",
   "reference/src/components/Header.astro",
   "reference/src/layouts/Shell.astro",
@@ -55,6 +56,22 @@ test("current repository contract passes", () => {
   const result = runCheck(sourceRoot);
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /PASS: CRFT contract — \d+ public tokens/);
+});
+
+test("the committed public contract must match emitted output", (t) => {
+  const root = makeFixture(t);
+  replace(root, "reference/fixtures/public-contract.json", '    "--accent-border",\n', "");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json drifts from scripts\/emit-contract\.mjs output/);
+});
+
+test("the committed public contract must record a clean revision", (t) => {
+  const root = makeFixture(t);
+  replace(root, "reference/fixtures/public-contract.json", '"dirty": false', '"dirty": true');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json must record a clean commit revision/);
 });
 
 test("a new public token requires a documented job", (t) => {
@@ -612,7 +629,7 @@ test("native transitions preserve ordinary weight interpolation", (t) => {
 
 test("crft.css must not register brand faces", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/crft.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
+  replace(root, "styles/crft.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"sans\"; }\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /must not register faces/);
