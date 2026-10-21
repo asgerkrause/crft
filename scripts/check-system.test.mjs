@@ -83,10 +83,10 @@ test("the committed public contract is identified by digest, not revision", (t) 
   assert.match(result.stderr, /public-contract\.json must not record a revision/);
 });
 
-test("the contract digest is sha256 of the canonical consumer fields", () => {
+test("the contract digest is sha256 of the canonical name fields", () => {
   const fixture = JSON.parse(readFileSync(join(sourceRoot, "reference/fixtures/public-contract.json"), "utf8"));
-  const { publicTokens, privateProperties, bans, hooks } = fixture;
-  const canonical = JSON.stringify({ publicTokens, privateProperties, bans, hooks: { attributes: hooks.attributes, classes: hooks.classes } });
+  const { contractVersion, publicTokens, privateProperties } = fixture;
+  const canonical = JSON.stringify({ contractVersion, publicTokens, privateProperties });
   assert.equal(fixture.digest, `sha256:${createHash("sha256").update(canonical).digest("hex")}`);
 });
 

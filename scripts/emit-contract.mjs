@@ -87,8 +87,8 @@ function gitState(cwd) {
 }
 
 // Consumers pin this: sha256 of UTF-8 JSON.stringify output (no whitespace, non-ASCII unescaped) with exactly these keys, in this order.
-function contractDigest({ publicTokens, privateProperties, bans, hooks }) {
-  const canonical = JSON.stringify({ publicTokens, privateProperties, bans, hooks: { attributes: hooks.attributes, classes: hooks.classes } });
+function contractDigest({ contractVersion, publicTokens, privateProperties }) {
+  const canonical = JSON.stringify({ contractVersion, publicTokens, privateProperties });
   return `sha256:${createHash("sha256").update(canonical).digest("hex")}`;
 }
 
@@ -118,14 +118,16 @@ function buildContract(rootUrl) {
     ...staticBans,
   ];
 
+  const contractVersion = 2;
+
   return {
-    contractVersion: 2,
+    contractVersion,
     ...(flat ? { packagingVersion: 1 } : {}),
     revision: git.revision,
     dirty: git.dirty,
     publicTokens,
     privateProperties,
-    digest: contractDigest({ publicTokens, privateProperties, bans, hooks }),
+    digest: contractDigest({ contractVersion, publicTokens, privateProperties }),
     bans,
     themes: quotedAttributeValues(tokensCss, "data-theme"),
     skins: quotedAttributeValues(tokensCss, "data-skin"),

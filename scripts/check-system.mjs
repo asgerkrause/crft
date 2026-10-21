@@ -635,7 +635,7 @@ if (savedContract !== undefined && (savedContract === null || typeof savedContra
 } else if (savedContract) {
   const { dirty, ...saved } = savedContract;
   const { revision: _revision, dirty: _dirty, ...emitted } = buildContract(root);
-  if (Object.hasOwn(saved, "revision")) fail(`${contractFixture} must not record a revision; its digest of publicTokens, privateProperties, bans and hooks identifies the name contract`);
+  if (Object.hasOwn(saved, "revision")) fail(`${contractFixture} must not record a revision; its digest of contractVersion, publicTokens and privateProperties identifies the name contract`);
   else if (!isDeepStrictEqual(saved, emitted)) fail(`${contractFixture} drifts from scripts/emit-contract.mjs output; regenerate it from a clean checkout`);
   if (dirty !== false) fail(`${contractFixture} must record dirty false`);
 }

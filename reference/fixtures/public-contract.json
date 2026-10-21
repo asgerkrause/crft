@@ -235,7 +235,7 @@
     "--m-src-to",
     "--or"
   ],
-  "digest": "sha256:83abcd497535972889fe9fb2769a7d94e9a16d91a3477241b02a586fe6eca9c0",
+  "digest": "sha256:aeb9525e9185cb9b1fd613acffc6021f0f113e08fe0fddaf2b0089418b7c5cc5",
   "bans": [
     "never use --_fluid in product CSS or examples",
     "never use --l-cs in product CSS or examples",
