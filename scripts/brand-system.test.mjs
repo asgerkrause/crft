@@ -194,3 +194,26 @@ test("legacy v2 package permits project-owned root tokens but rejects flat packa
     }
   }
 });
+
+test("a custom property name inside a CSS string is not a declared token", (t) => {
+  const target = temporary(t);
+  writeFileSync(join(target, "tokens.css"), ':root { --real: 1; }\n.x { content: "--ghost: red"; }\n.y { content: \'--ghost-single: red\'; }\n');
+  const contract = buildContract(target);
+  assert.deepEqual(contract.publicTokens, ["--real"]);
+  assert.deepEqual(contract.privateProperties, []);
+});
+
+test("spaced attribute selectors still yield theme, skin, and accent values", (t) => {
+  const target = temporary(t);
+  writeFileSync(join(target, "tokens.css"), '[data-theme = "dark"] { --a: 1; }\n[data-skin= \'tone\'] { --b: 1; }\n[data-accent ="danger" ] { --c: 1; }\n');
+  const contract = buildContract(target);
+  assert.deepEqual(contract.themes, ["dark"]);
+  assert.deepEqual(contract.skins, ["tone"]);
+  assert.deepEqual(contract.accents, ["danger"]);
+});
+
+test("comments and strings are stripped in one pass", (t) => {
+  const target = temporary(t);
+  writeFileSync(join(target, "tokens.css"), '.x { content: "/*"; }\n:root { --real: 1; }\n/* x */\n.y { content: "a\\\n--ghost: 1"; }\n');
+  assert.deepEqual(buildContract(target).publicTokens, ["--real"]);
+});

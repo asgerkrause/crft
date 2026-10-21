@@ -99,7 +99,7 @@ Project CSS may retune the public view-transition tokens. Do not invent a second
 
 ## Progressive stagger
 
-A repeated project composition can use `sibling-index()` when source order is the intended sequence. The function is not Baseline, so the complete result remains static and the motion stays inside both feature and reduced-motion gates:
+A repeated project composition can use `sibling-index()` when source order is the intended sequence. The function is Baseline newly available, not yet widely available, so the complete result remains static and the motion stays inside both feature and reduced-motion gates:
 
 ```css
 @layer project {
