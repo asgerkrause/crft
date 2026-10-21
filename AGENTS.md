@@ -105,3 +105,18 @@ For every change:
 7. Report evidence, limits, and remaining uncertainty.
 
 Never commit, push, publish, deploy, rename a repository, or change production configuration without explicit current-user authority.
+
+## Cursor Cloud specific instructions
+
+Two independent surfaces live here:
+
+- **Root system** (`scripts/`, `styles/`, `craft/`, docs): pure Node with zero dependencies. Nothing to install. Verify with `node scripts/check-system.mjs` and `node --test` (run from repo root).
+- **`reference/`**: an Astro static reference site whose lockfile is `bun.lock`, so it uses **bun**, not npm/pnpm. `bun` is preinstalled at `~/.bun/bin/bun`; if it is not on `PATH` in a fresh non-login shell, call it by that absolute path or run `source ~/.bashrc`. The update script runs `bun install` in `reference/` on startup.
+
+Run reference commands from `reference/` (see `reference/package.json` for the full script list):
+
+- `bun run dev` — dev server on `http://127.0.0.1:4321` (bind with `--host 127.0.0.1`).
+- `bun run test` — `astro build` + `scripts/check-reference.mjs` static contract check.
+- `bun run test:rendered` — Playwright rendered tests. Uses Chromium only; browser binaries are cached under `~/.cache/ms-playwright` in the snapshot. If a Playwright upgrade complains about a missing browser, re-run `bunx playwright install chromium`. The Playwright `webServer` runs its own `astro build && astro preview`, so no manually started dev server is needed for it.
+
+The reference build is fully static (`output: "static"`, no hydrated Astro islands); interactive theming (dark mode, brand presets) and the native dialog are driven by `reference/src/scripts/shell.js` and native HTML, verified against the running dev server.
