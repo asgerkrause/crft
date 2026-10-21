@@ -86,7 +86,7 @@ function gitState(cwd) {
   };
 }
 
-// Consumers pin this: sha256 of compact JSON with exactly these keys, in this order.
+// Consumers pin this: sha256 of UTF-8 JSON.stringify output (no whitespace, non-ASCII unescaped) with exactly these keys, in this order.
 function contractDigest({ publicTokens, privateProperties, bans, hooks }) {
   const canonical = JSON.stringify({ publicTokens, privateProperties, bans, hooks: { attributes: hooks.attributes, classes: hooks.classes } });
   return `sha256:${createHash("sha256").update(canonical).digest("hex")}`;
