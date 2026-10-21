@@ -1,8 +1,8 @@
 {
   "contractVersion": 2,
   "packagingVersion": 1,
-  "revision": "7358c7ef477a0b1890951bc8f967b2bea00f28b1",
-  "dirty": true,
+  "revision": "8f09faf9275a2e223c88a8de3cedd6d6602139e0",
+  "dirty": false,
   "publicTokens": [
     "--accent",
     "--accent-border",
