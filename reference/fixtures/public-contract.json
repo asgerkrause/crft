@@ -1,7 +1,6 @@
 {
   "contractVersion": 2,
   "packagingVersion": 1,
-  "revision": "8f09faf9275a2e223c88a8de3cedd6d6602139e0",
   "dirty": false,
   "publicTokens": [
     "--accent",
@@ -236,6 +235,7 @@
     "--m-src-to",
     "--or"
   ],
+  "digest": "sha256:83abcd497535972889fe9fb2769a7d94e9a16d91a3477241b02a586fe6eca9c0",
   "bans": [
     "never use --_fluid in product CSS or examples",
     "never use --l-cs in product CSS or examples",
