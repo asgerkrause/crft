@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,6 +15,7 @@ const fixturePaths = [
   "craft",
   "examples",
   "skills",
+  "reference/fixtures/public-contract.json",
   "reference/package.json",
   "reference/src/components/Header.astro",
   "reference/src/layouts/Shell.astro",
@@ -55,6 +57,53 @@ test("current repository contract passes", () => {
   const result = runCheck(sourceRoot);
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /PASS: CRFT contract — \d+ public tokens/);
+});
+
+test("the committed public contract must match emitted output", (t) => {
+  const root = makeFixture(t);
+  replace(root, "reference/fixtures/public-contract.json", '    "--accent-border",\n', "");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json drifts from scripts\/emit-contract\.mjs output/);
+});
+
+test("the committed public contract must record a clean checkout", (t) => {
+  const root = makeFixture(t);
+  replace(root, "reference/fixtures/public-contract.json", '"dirty": false', '"dirty": true');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json must record dirty false/);
+});
+
+test("the committed public contract is identified by digest, not revision", (t) => {
+  const root = makeFixture(t);
+  replace(root, "reference/fixtures/public-contract.json", '"dirty": false,', '"dirty": false,\n  "revision": "0000000000000000000000000000000000000000",');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json must not record a revision/);
+});
+
+test("the contract digest is sha256 of the canonical name fields", () => {
+  const fixture = JSON.parse(readFileSync(join(sourceRoot, "reference/fixtures/public-contract.json"), "utf8"));
+  const { contractVersion, publicTokens, privateProperties } = fixture;
+  const canonical = JSON.stringify({ contractVersion, publicTokens, privateProperties });
+  assert.equal(fixture.digest, `sha256:${createHash("sha256").update(canonical).digest("hex")}`);
+});
+
+test("a non-object public contract fails clearly", (t) => {
+  const root = makeFixture(t);
+  writeFileSync(join(root, "reference/fixtures/public-contract.json"), "null\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json must contain a contract object/);
+});
+
+test("a missing public contract fails clearly", (t) => {
+  const root = makeFixture(t);
+  rmSync(join(root, "reference/fixtures/public-contract.json"));
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /public-contract\.json is missing or invalid JSON/);
 });
 
 test("a new public token requires a documented job", (t) => {
@@ -612,7 +661,7 @@ test("native transitions preserve ordinary weight interpolation", (t) => {
 
 test("crft.css must not register brand faces", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/crft.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"SNZ Sans\"; }\n");
+  replace(root, "styles/crft.css", "@layer type {", "@layer type {\n  @font-face { font-family: \"sans\"; }\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /must not register faces/);

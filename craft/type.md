@@ -50,7 +50,7 @@ Theme font inputs are `--font`, `--font-display`, `--font-mono` and weight found
 
 Use ordinary `font-weight`. Canonical axes must not contain wght: an inherited low-level weight axis can neutralize nested strong/b. Explicit font-specific wght outside the reference must synchronize weight and preserve all other axes. Role axes and features map to font-variation-settings and font-feature-settings; optical-sizing maps to font-optical-sizing. Case uses native text-transform syntax.
 
-Optional bundled SNZ faces live in tokens.css with their actual 100–900 weight ranges. SNZ Sans also supports opsz 14–32. Verify loaded fonts, intermediate weights, nested emphasis, static fallback, and supported axes. A computed axis list alone is not proof of a loaded supporting face. Native code/pre and blockquote keep their meanings; x-mono/x-quote are project extensions, not canonical size roles.
+Optional bundled sans and mono faces live in tokens.css with their actual 100–900 weight ranges. sans also supports opsz 14–32. `sans` and `mono` are not CSS generic keywords, so quoted and unquoted names select the same bundled face; the generic fallbacks remain `sans-serif` and `monospace`. Verify loaded fonts, intermediate weights, nested emphasis, static fallback, and supported axes. A computed axis list alone is not proof of a loaded supporting face. Native code/pre and blockquote keep their meanings; x-mono/x-quote are project extensions, not canonical size roles.
 
 ## Cap trim and clamp
 

@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const usage = "Usage: node scripts/emit-contract.mjs [--out <path>]";
+// --out writes the committed fixture, which cannot name its own merged commit, so it omits revision.
 const layerDependencies = {
   tokens: [],
   type: ["tokens"],
@@ -84,6 +86,12 @@ function gitState(cwd) {
   };
 }
 
+// Consumers pin this: sha256 of UTF-8 JSON.stringify output (no whitespace, non-ASCII unescaped) with exactly these keys, in this order.
+function contractDigest({ contractVersion, publicTokens, privateProperties }) {
+  const canonical = JSON.stringify({ contractVersion, publicTokens, privateProperties });
+  return `sha256:${createHash("sha256").update(canonical).digest("hex")}`;
+}
+
 function buildContract(rootUrl) {
   const root = resolveRoot(rootUrl);
   const layersDir = findLayersDirectory(root);
@@ -105,17 +113,22 @@ function buildContract(rootUrl) {
     .sort();
   const git = gitState(root);
 
+  const bans = [
+    ...privateProperties.map((name) => `never use ${name} in product CSS or examples`),
+    ...staticBans,
+  ];
+
+  const contractVersion = 2;
+
   return {
-    contractVersion: 2,
+    contractVersion,
     ...(flat ? { packagingVersion: 1 } : {}),
     revision: git.revision,
     dirty: git.dirty,
     publicTokens,
     privateProperties,
-    bans: [
-      ...privateProperties.map((name) => `never use ${name} in product CSS or examples`),
-      ...staticBans,
-    ],
+    digest: contractDigest({ contractVersion, publicTokens, privateProperties }),
+    bans,
     themes: quotedAttributeValues(tokensCss, "data-theme"),
     skins: quotedAttributeValues(tokensCss, "data-skin"),
     accents: quotedAttributeValues(tokensCss, "data-accent"),
@@ -151,14 +164,18 @@ function parseArguments(arguments_) {
 function main() {
   try {
     const { out } = parseArguments(process.argv.slice(2));
-    const json = `${JSON.stringify(buildContract(new URL("../", import.meta.url)), null, 2)}\n`;
+    const contract = buildContract(new URL("../", import.meta.url));
+    const json = `${JSON.stringify(contract, null, 2)}\n`;
     process.stdout.write(json);
-    if (out) writeFileSync(out, json);
+    if (out) {
+      const { revision: _revision, ...fixture } = contract;
+      writeFileSync(out, `${JSON.stringify(fixture, null, 2)}\n`);
+    }
   } catch (error) {
     fail(error.message);
   }
 }
 
-export { buildContract, gitState, layerDependencies, staticBans };
+export { buildContract, contractDigest, gitState, layerDependencies, staticBans };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

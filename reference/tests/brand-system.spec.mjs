@@ -70,10 +70,10 @@ test("loaded variable faces preserve opsz and nested emphasis; static fallback w
   const fonts = [];
   page.on("response", (response) => { if (/\.woff(?:\?|$)/.test(response.url())) fonts.push(response); });
   await page.goto("/brands/");
-  await page.evaluate(async () => { await document.fonts.load('550 24px "SNZ Sans"'); await document.fonts.load('550 24px "SNZ Mono"'); await document.fonts.ready; });
+  await page.evaluate(async () => { await document.fonts.load('550 24px "sans"'); await document.fonts.load('550 24px "mono"'); await document.fonts.ready; });
   expect(fonts.length).toBeGreaterThanOrEqual(2);
   for (const response of fonts) expect(response.ok()).toBe(true);
-  expect(await page.evaluate(() => [...document.fonts].filter((face) => face.status === "loaded").map((face) => face.family))).toEqual(expect.arrayContaining(["SNZ Sans", "SNZ Mono"]));
+  expect(await page.evaluate(() => [...document.fonts].filter((face) => face.status === "loaded").map((face) => face.family))).toEqual(expect.arrayContaining(["sans", "mono"]));
   const paragraph = page.locator('[data-fixture="fluid"] [data-fixture="inherited-body"]');
   await paragraph.evaluate((element) => { element.style.fontWeight = "550"; element.style.fontVariationSettings = '"opsz" 32'; });
   await expect(paragraph).toHaveCSS("font-weight", "550");

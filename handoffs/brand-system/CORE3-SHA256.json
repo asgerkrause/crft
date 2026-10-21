@@ -5,6 +5,7 @@
   "packagingVersion": 1,
   "baseRevision": "7358c7ef477a0b1890951bc8f967b2bea00f28b1",
   "state": "CR1 and three-file implementation with committed delivery-review corrections to guidance and scheme audit; shared CSS unchanged",
+  "note": "Historical snapshot. These hashes identify the PR #7 delivery (merged as be443e3). Later commits change listed files, including styles/tokens.css for the sans/mono font-family rename; use git history, not these hashes, to identify current source.",
   "algorithm": "sha256",
   "files": {
     ".github/workflows/ci.yml": "409ef5bc6ebac5520cd48adeb0350a3c174e7a741115e36d52fd0f599cf12d9a",
