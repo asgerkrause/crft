@@ -109,6 +109,7 @@ Hooks require their owning complete layer and retained live selectors. Local ext
 | `data-scrub` | motion | Documented motion role |
 | `.sr` | utilities | Documented utilities role |
 | `.sr.focusable` | utilities | Documented utilities role |
+| `.squircle` | utilities | Documented utilities role |
 
 <!-- public-hook-index:end -->
 

@@ -18,7 +18,7 @@ const layerDependencies = {
 // Public composition hooks. Keep aligned with CRAFT.md public-hook-index.
 const hooks = {
   attributes: ["g", "c", "r", "o", "l", "data-theme", "data-skin", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
-  classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable"],
+  classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable", ".squircle"],
 };
 const staticBans = [
   "never *-block-start or *-inline-start single-side longhands",

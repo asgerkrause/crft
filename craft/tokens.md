@@ -197,17 +197,12 @@ The names between the index markers must exactly match declarations in `styles/t
 | `--padding-xl` | padding xl scale member |
 | `--padding-xs` | padding xs scale member |
 | `--palette-blue` | Blue palette input; no feedback approval implied |
-| `--palette-cyan` | Cyan palette input; no feedback approval implied |
 | `--palette-dark` | Dark palette input; no feedback approval implied |
 | `--palette-green` | Green palette input; no feedback approval implied |
 | `--palette-light` | Light palette input; no feedback approval implied |
-| `--palette-lime` | Lime palette input; no feedback approval implied |
-| `--palette-magenta` | Magenta palette input; no feedback approval implied |
 | `--palette-orange` | Orange palette input; no feedback approval implied |
-| `--palette-pink` | Pink palette input; no feedback approval implied |
 | `--palette-purple` | Purple palette input; no feedback approval implied |
 | `--palette-red` | Red palette input; no feedback approval implied |
-| `--palette-sky` | Sky palette input; no feedback approval implied |
 | `--palette-yellow` | Yellow palette input; no feedback approval implied |
 | `--query-lg` | Large container threshold |
 | `--query-md` | Medium container threshold |

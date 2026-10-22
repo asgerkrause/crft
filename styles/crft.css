@@ -366,14 +366,6 @@
       user-select: none;
     }
   }
-
-  @supports (corner-shape: squircle) {
-    *,
-    *::before,
-    *::after {
-      corner-shape: squircle;
-    }
-  }
 }
 
 /* Type: native defaults and intentional visual roles. */
@@ -1214,4 +1206,5 @@
     }
   }
 
+  .squircle { corner-shape: squircle; }
 }

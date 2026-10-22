@@ -14,8 +14,9 @@ CRFT exposes a finite utility surface for stable operations used by unrelated ma
 | Purpose | Selectors | Operation |
 | --- | --- | --- |
 | Screen-reader content | `.sr`, `.sr.focusable` | Visually hide content; restore focusable content when keyboard-focused |
+| Corner shape | `.squircle` | Opt one element into `corner-shape: squircle`; browsers without support ignore it; visible only where it has a radius |
 
-`.sr.focusable` is intended for skip links and other keyboard-restorable content. Do not apply `.sr` to content that must remain visible or to hide a focusable control without a restoration path.
+`.squircle` is opt-in per element and never applies to descendants; without `corner-shape` support the ordinary radius remains. It is the one admitted exception to criterion 1 below: it replaces a former global base default, so the system owner admitted it without a second consumer to keep an opt-in path for existing adopters. `.sr.focusable` is intended for skip links and other keyboard-restorable content. Do not apply `.sr` to content that must remain visible or to hide a focusable control without a restoration path.
 
 Semantic role classes live in [`type.md`](type.md). Line clamp is `l`. Measure is `.c`; grouping is `.s`. Grid spans are `c` and `r`. Other arrangements belong to project CSS. Do not add a utility matrix for those jobs.
 
