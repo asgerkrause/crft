@@ -290,7 +290,7 @@ Container queries are required for a responsive grid. Match `--query-md` and `--
 
 In the complete reference, `--bleed-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
 
-Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional.
+Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional. The base layer no longer sets `corner-shape`. Add `.squircle` per element, or keep the former global look with one project rule: `*, *::before, *::after { corner-shape: squircle; }`.
 
 When adopting the routed accent-canvas contract, replace removed color-specific skins explicitly:
 

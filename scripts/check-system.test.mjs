@@ -122,6 +122,14 @@ test("corner shape stays opt-in through .squircle", (t) => {
   assert.match(result.stderr, /base must not set corner-shape; corners stay opt-in through \.squircle/);
 });
 
+test("the opt-in .squircle utility must exist", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/crft.css", "  .squircle { corner-shape: squircle; }\n", "");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /utility\.css is missing documented hook \.squircle/);
+});
+
 test("a new public token requires a documented job", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");

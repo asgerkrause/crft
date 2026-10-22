@@ -424,7 +424,7 @@ const expectedUtilityHooks = documentedHooks["craft/utilities.md"].filter((hook)
 const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s*\{/gm)].map((match) => `.${match[1]}`)).sort();
 if (actualUtilityHooks.join("|") !== expectedUtilityHooks.join("|")) fail("utility.css selectors differ from the documented finite utility surface");
 if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is missing documented hook .sr.focusable");
-if (!hasCssSignal(utilityCss, ".squircle { @supports (corner-shape: squircle) { corner-shape: squircle; } }")) fail("utility.css must gate .squircle behind corner-shape support");
+if (!hasCssSignal(utilityCss, ".squircle { corner-shape: squircle; }")) fail("utility.css is missing documented hook .squircle");
 if (!hasCssSignal(tokensCss, ":root, [data-theme], [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
   fail("tokens.css is missing a documented skin or accent boundary");
 }

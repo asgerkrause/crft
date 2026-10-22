@@ -1206,9 +1206,5 @@
     }
   }
 
-  .squircle {
-    @supports (corner-shape: squircle) {
-      corner-shape: squircle;
-    }
-  }
+  .squircle { corner-shape: squircle; }
 }
