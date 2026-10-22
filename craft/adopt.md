@@ -290,7 +290,7 @@ Container queries are required for a responsive grid. Match `--query-md` and `--
 
 In the complete reference, `--bleed-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
 
-Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional. The base layer no longer sets `corner-shape`. Explicit full adopters add `.squircle` per element. Strategy-only, local-extraction, and tokens-only projects have no CRFT hook, so they use a project rule; the former global look is `*, *::before, *::after { corner-shape: squircle; }`.
+Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional. The base layer no longer sets `corner-shape`. Explicit full adopters add `.squircle` per element. Strategy-only, local-extraction, and tokens-only projects have no `.squircle` hook, so they use a project rule; the former global look is `*, *::before, *::after { corner-shape: squircle; }`.
 
 When adopting the routed accent-canvas contract, replace removed color-specific skins explicitly:
 
