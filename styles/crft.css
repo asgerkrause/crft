@@ -383,84 +383,6 @@
     font-optical-sizing: var(--body-optical-sizing);
   }
 
-  :where(h1) {
-    font-family: var(--h1-font);
-    font-size: var(--h1-size);
-    font-weight: var(--h1-weight);
-    line-height: var(--h1-leading);
-    letter-spacing: var(--h1-tracking);
-    text-transform: var(--h1-case);
-    font-feature-settings: var(--h1-features);
-    font-variation-settings: var(--h1-axes);
-    font-optical-sizing: var(--h1-optical-sizing);
-    max-width: var(--h1-measure);
-  }
-
-  :where(h2) {
-    font-family: var(--h2-font);
-    font-size: var(--h2-size);
-    font-weight: var(--h2-weight);
-    line-height: var(--h2-leading);
-    letter-spacing: var(--h2-tracking);
-    text-transform: var(--h2-case);
-    font-feature-settings: var(--h2-features);
-    font-variation-settings: var(--h2-axes);
-    font-optical-sizing: var(--h2-optical-sizing);
-    max-width: var(--h2-measure);
-  }
-
-  :where(h3, h4, h5, h6) {
-    font-family: var(--h3-font);
-    font-size: var(--h3-size);
-    font-weight: var(--h3-weight);
-    line-height: var(--h3-leading);
-    letter-spacing: var(--h3-tracking);
-    text-transform: var(--h3-case);
-    font-feature-settings: var(--h3-features);
-    font-variation-settings: var(--h3-axes);
-    font-optical-sizing: var(--h3-optical-sizing);
-    max-width: var(--h3-measure);
-  }
-
-  :where(small) {
-    font-family: var(--small-font);
-    font-size: var(--small-size);
-    font-weight: var(--small-weight);
-    line-height: var(--small-leading);
-    letter-spacing: var(--small-tracking);
-    text-transform: var(--small-case);
-    font-feature-settings: var(--small-features);
-    font-variation-settings: var(--small-axes);
-    font-optical-sizing: var(--small-optical-sizing);
-    max-width: var(--small-measure);
-  }
-
-  :where(label) {
-    font-family: var(--label-font);
-    font-size: var(--label-size);
-    font-weight: var(--label-weight);
-    line-height: var(--label-leading);
-    letter-spacing: var(--label-tracking);
-    text-transform: var(--label-case);
-    font-feature-settings: var(--label-features);
-    font-variation-settings: var(--label-axes);
-    font-optical-sizing: var(--label-optical-sizing);
-    max-width: var(--label-measure);
-  }
-
-  :where(figcaption) {
-    font-family: var(--caption-font);
-    font-size: var(--caption-size);
-    font-weight: var(--caption-weight);
-    line-height: var(--caption-leading);
-    letter-spacing: var(--caption-tracking);
-    text-transform: var(--caption-case);
-    font-feature-settings: var(--caption-features);
-    font-variation-settings: var(--caption-axes);
-    font-optical-sizing: var(--caption-optical-sizing);
-    max-width: var(--caption-measure);
-  }
-
   p { max-width: var(--body-measure); }
 
   .display {
@@ -476,6 +398,7 @@
     max-width: var(--display-measure);
   }
 
+  :where(h1),
   .h1 {
     font-family: var(--h1-font);
     font-size: var(--h1-size);
@@ -489,6 +412,7 @@
     max-width: var(--h1-measure);
   }
 
+  :where(h2),
   .h2 {
     font-family: var(--h2-font);
     font-size: var(--h2-size);
@@ -502,6 +426,7 @@
     max-width: var(--h2-measure);
   }
 
+  :where(h3, h4, h5, h6),
   .h3 {
     font-family: var(--h3-font);
     font-size: var(--h3-size);
@@ -541,6 +466,7 @@
     max-width: var(--body-measure);
   }
 
+  :where(small),
   .small {
     font-family: var(--small-font);
     font-size: var(--small-size);
@@ -554,6 +480,7 @@
     max-width: var(--small-measure);
   }
 
+  :where(label),
   .label {
     font-family: var(--label-font);
     font-size: var(--label-size);
@@ -567,6 +494,7 @@
     max-width: var(--label-measure);
   }
 
+  :where(figcaption),
   .caption {
     font-family: var(--caption-font);
     font-size: var(--caption-size);
