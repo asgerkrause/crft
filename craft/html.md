@@ -88,7 +88,6 @@ Base:
 | Hidden and disabled | Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |
 | Dialog | Inherited color and a semantic dark backdrop |
 | Disclosure | Native `details` remains operable. When `::details-content` is supported, closed content animates with motion roles |
-| Corners | When `corner-shape` is supported, every box uses a squircle. The shape is visible only where radius exists |
 | Text details | Strong weight, small text role, monospace code elements, code treatment, abbreviation underline metrics, and placeholder color |
 
 Page-landmark overflow and view-transition names belong to [`layout.md`](layout.md).

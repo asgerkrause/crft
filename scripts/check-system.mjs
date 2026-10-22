@@ -186,7 +186,7 @@ const documentedHooks = {
   "craft/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", "l"],
   "craft/layout.md": [".c", ".c.sm", ".c.lg", ".s", "container", ".img-w"],
   "craft/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
-  "craft/utilities.md": [".sr", ".sr.focusable"],
+  "craft/utilities.md": [".sr", ".sr.focusable", ".squircle"],
   "craft/motion.md": [".img-w", "data-scrub"],
   "craft/color.md": ["data-theme", "data-skin", "data-accent"],
 };
@@ -424,6 +424,7 @@ const expectedUtilityHooks = documentedHooks["craft/utilities.md"].filter((hook)
 const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s*\{/gm)].map((match) => `.${match[1]}`)).sort();
 if (actualUtilityHooks.join("|") !== expectedUtilityHooks.join("|")) fail("utility.css selectors differ from the documented finite utility surface");
 if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is missing documented hook .sr.focusable");
+if (!hasCssSignal(utilityCss, ".squircle { @supports (corner-shape: squircle) { corner-shape: squircle; } }")) fail("utility.css must gate .squircle behind corner-shape support");
 if (!hasCssSignal(tokensCss, ":root, [data-theme], [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
   fail("tokens.css is missing a documented skin or accent boundary");
 }
@@ -431,9 +432,10 @@ const resetCss = cssLayerBlock(baseCss, "reset");
 const baseLayerCss = cssLayerBlock(baseCss, "base");
 if (!resetCss) fail("base.css is missing an @layer reset block");
 if (!baseLayerCss) fail("base.css is missing an @layer base block");
+if (/corner-shape/.test(baseLayerCss)) fail("base must not set corner-shape; corners stay opt-in through .squircle");
 if (/var\(\s*--/i.test(resetCss)) fail("reset must not consume custom properties");
 for (const signal of [
-  "@supports selector(details::details-content)", "corner-shape: squircle",
+  "@supports selector(details::details-content)",
   ':where(a) {', ':where(a, button, label) {',
   "transition-property: color, background, border, transform, opacity, font-weight",
   'transition-duration: var(--duration)',

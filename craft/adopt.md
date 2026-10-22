@@ -141,17 +141,17 @@ CRFT contractVersion 2 is a breaking replacement. Recorded manifests without a v
 | `--c-sc-fg` | `--secondary-text` | Map |
 | `--c-sf` | `--surface` | Map |
 | `--c-sw-blu` | `--palette-blue` | Map |
-| `--c-sw-cya` | `--palette-cyan` | Map |
+| `--c-sw-cya` | none | Remove; keep a project-local `--x-*` swatch if the brand still needs it |
 | `--c-sw-da` | `--palette-dark` | Map |
 | `--c-sw-gre` | `--palette-green` | Map |
 | `--c-sw-li` | `--palette-light` | Map |
-| `--c-sw-lim` | `--palette-lime` | Map |
-| `--c-sw-mag` | `--palette-magenta` | Map |
+| `--c-sw-lim` | none | Remove; keep a project-local `--x-*` swatch if the brand still needs it |
+| `--c-sw-mag` | none | Remove; keep a project-local `--x-*` swatch if the brand still needs it |
 | `--c-sw-ora` | `--palette-orange` | Map |
-| `--c-sw-pin` | `--palette-pink` | Map |
+| `--c-sw-pin` | none | Remove; keep a project-local `--x-*` swatch if the brand still needs it |
 | `--c-sw-pur` | `--palette-purple` | Map |
 | `--c-sw-red` | `--palette-red` | Map |
-| `--c-sw-sky` | `--palette-sky` | Map |
+| `--c-sw-sky` | none | Remove; keep a project-local `--x-*` swatch if the brand still needs it |
 | `--c-sw-yel` | `--palette-yellow` | Map |
 | `--c-tr` | `--tertiary` | Map |
 | `--c-tr-bc` | `--tertiary-border` | Map |
@@ -290,7 +290,7 @@ Container queries are required for a responsive grid. Match `--query-md` and `--
 
 In the complete reference, `--bleed-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
 
-Scrub, view transitions, squircle corners, and disclosure animation stay optional.
+Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional.
 
 When adopting the routed accent-canvas contract, replace removed color-specific skins explicitly:
 

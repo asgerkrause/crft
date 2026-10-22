@@ -7,7 +7,7 @@ read_when: Adding motion, image scrub, view transitions, reduced-motion behavior
 
 # Motion
 
-Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. `styles/crft.css` owns opt-in scrub and view transitions. Native disclosure, dialog, and popover animation and squircle corners live in the base layer of `crft.css`; see [`html.md`](html.md). CSS owns live timing and reduced-motion substitutions.
+Motion must explain state, hierarchy, navigation, affordance, or atmosphere. A complete static result comes first. `styles/crft.css` owns opt-in scrub and view transitions. Native disclosure, dialog, and popover animation live in the base layer of `crft.css`; see [`html.md`](html.md). CSS owns live timing and reduced-motion substitutions.
 
 ## Decision
 
