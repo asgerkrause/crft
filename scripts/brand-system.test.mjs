@@ -185,7 +185,7 @@ test("legacy v2 package permits project-owned root tokens but rejects flat packa
     if (!recorded) rmSync(manifest);
     const result = check(target);
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /PASS: 1 files, 221 tokens verified/);
+    assert.match(result.stdout, new RegExp(`PASS: 1 files, ${contract.publicTokens.length} tokens verified`));
     assert.equal(buildContract(target).packagingVersion, undefined);
     for (const file of ["crft.css", "crft-manifest.json"]) {
       writeFileSync(join(target, file), "{}");
