@@ -29,7 +29,7 @@ Projects own copied token values and local extracts. A copied complete `tokens.c
 
 Public names describe jobs: canvas, text, body-size, bleed-x, gap, padding, radius, duration. Font, size, weight, leading, tracking, measure, case, features, axes, and optical-sizing are role metadata. Scale ratios are independent. Fluid arithmetic inputs are unitless rem magnitudes; final sizes are lengths.
 
-Recipes rebind at :root and data-theme boundaries. Skin/accent boundaries rebind color dependencies only. Local final role overrides are supported; arbitrary descendant foundation overrides are not. Private calculation names begin --_; existing grid/motion private names remain private even when a declaration appears in tokens.css.
+Recipes rebind at :root and data-theme boundaries. The `--on-*` companions resolve at :root only; a source retuned at a theme or other descendant boundary redeclares its companion there. Skin/accent boundaries rebind color dependencies only. Local final role overrides are supported; arbitrary descendant foundation overrides are not. Private calculation names begin --_; existing grid/motion private names remain private even when a declaration appears in tokens.css.
 
 A public token lands in tokens.css, this exact index, the live reference catalog, and meaningful contract checks. CSS owns values. Product extensions use explicit --x-* or locally declared properties.
 

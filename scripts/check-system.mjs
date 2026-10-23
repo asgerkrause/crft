@@ -346,6 +346,16 @@ if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :r
 for (const role of typeRoles) {
   if (!new RegExp(`--${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
 }
+const onColorGates = [
+  "@supports (color: color(from red xyz-d65 clamp(0, (0.1791 - y) * 1e6, 1) y z)) { :root {",
+  "@supports (color: contrast-color(red)) { :root {",
+];
+for (const gate of onColorGates) if (!hasCssSignal(tokensCss, gate)) fail(`on-color derivation requires the gate ${gate}`);
+for (const role of ["accent", ...supportedAccentRoutes]) {
+  if (!hasCssSignal(tokensCss, `--on-${role}: color(from var(--${role}) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505)`) || !hasCssSignal(tokensCss, `--on-${role}: contrast-color(var(--${role}))`)) {
+    fail(`--on-${role} must derive from --${role}`);
+  }
+}
 const cssNumber = (css, name) => {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = css.match(new RegExp(`${escaped}\\s*:\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))\\s*;`));

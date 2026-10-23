@@ -366,6 +366,24 @@ test("fluid type calculation remains source-backed", (t) => {
   assert.ok(result.stderr.includes("missing fluid font-size clamping"), result.stderr);
 });
 
+test("on-color companions derive from their source", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--on-warning: contrast-color(var(--warning))", "--on-warning: #000");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.ok(result.stderr.includes("--on-warning must derive from --warning"), result.stderr);
+});
+
+test("on-color derivations keep their feature gates", (t) => {
+  for (const gate of ["@supports (color: contrast-color(red))", "@supports (color: color(from red xyz-d65"]) {
+    const root = makeFixture(t);
+    replace(root, "styles/tokens.css", gate, "@supports (color: red");
+    const result = runCheck(root);
+    assert.equal(result.status, 1);
+    assert.ok(result.stderr.includes("on-color derivation requires the gate"), result.stderr);
+  }
+});
+
 test("native first-paint remains source-backed", (t) => {
   const root = makeFixture(t);
   replace(root, "styles/crft.css", ":where(a, button, label) {", ":where(a, button) {");

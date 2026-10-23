@@ -69,7 +69,7 @@
   }
 
   :root {
-    /* Semantic Colors */
+    /* Semantic Colors; these --on-* values remain only without contrast-color() and relative color. */
     --accent: var(--palette-blue);
     --secondary: var(--palette-purple);
     --tertiary: var(--palette-orange);
@@ -83,6 +83,30 @@
     --on-success: var(--palette-dark);
     --on-warning: var(--palette-dark);
     --on-danger: var(--palette-dark);
+  }
+
+  /* Companions follow their :root source: xyz-d65 y is WCAG luminance, and 0.1791 is where black and white tie. Clamps cap at D65 white. */
+  @supports (color: color(from red xyz-d65 clamp(0, (0.1791 - y) * 1e6, 1) y z)) {
+    :root {
+      --on-accent: color(from var(--accent) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --on-secondary: color(from var(--secondary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --on-tertiary: color(from var(--tertiary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --on-success: color(from var(--success) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --on-warning: color(from var(--warning) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --on-danger: color(from var(--danger) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+    }
+  }
+
+  /* Native pick where supported; the algorithm is UA-defined with a 3:1 floor. */
+  @supports (color: contrast-color(red)) {
+    :root {
+      --on-accent: contrast-color(var(--accent));
+      --on-secondary: contrast-color(var(--secondary));
+      --on-tertiary: contrast-color(var(--tertiary));
+      --on-success: contrast-color(var(--success));
+      --on-warning: contrast-color(var(--warning));
+      --on-danger: contrast-color(var(--danger));
+    }
   }
 
   [data-theme="light"] { color-scheme: light; }
