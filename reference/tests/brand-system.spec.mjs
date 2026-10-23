@@ -214,4 +214,6 @@ test("on-color companions keep the static pair without either feature and yield 
   expect(colors.slice(0, 6)).toEqual([light, light, dark, dark, dark, dark]);
   await page.setContent(`<style>${css}</style><style>:root { --on-success: rgb(1 2 3); }</style><div data-theme="dark"><p data-accent="success" style="color:var(--on-accent)">Saved</p></div>`);
   await expect(page.locator("p")).toHaveCSS("color", "rgb(1, 2, 3)");
+  await page.setContent(`<style>${css}</style><style>:root { --on-accent: rgb(4 5 6); --on-secondary: rgb(7 8 9); }</style><div data-theme="dark"><p style="color:var(--on-accent)">Plain</p><p data-accent="secondary" style="color:var(--on-accent)">Routed</p></div>`);
+  expect(await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color))).toEqual(["rgb(4, 5, 6)", "rgb(7, 8, 9)"]);
 });
