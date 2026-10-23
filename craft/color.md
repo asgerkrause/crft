@@ -86,9 +86,13 @@ Use success, warning, and danger for truthful states. Pair color with text, icon
 
 A solid feedback surface uses its matching contrast-companion role. A subtle treatment uses the routed active accent roles within the current canvas.
 
+## Solid-content companions
+
+Each `--on-*` companion follows its source live: black or white, whichever has the higher WCAG contrast against the solid color. `contrast-color()` makes the pick where supported. Elsewhere, a relative color flips at XYZ luminance 0.1791, where black and white tie. A static brand pair remains where relative color is unsupported. Retuning `--accent` or `--success` retunes its companion, and `data-accent` routes carry it. The worst case over every sRGB source is 4.58:1. Pure black and white are deliberate: CSS cannot turn a source's lightness into a choice between two brand colors. Override an `--on-*` token in project CSS when the brand needs a specific pair, then verify the rendered contrast.
+
 ## Brand ownership
 
-Projects own copied palette and semantic mappings in `styles/tokens.css`. Define both schemes, solid-content companions, muted content, borders, nested skins, and feedback pairs as one coherent system.
+Projects own copied palette and semantic mappings in `styles/tokens.css`. Define both schemes, muted content, borders, nested skins, and feedback pairs as one coherent system; solid-content companions derive unless overridden.
 
 Campaign-only variation may override the same semantic roles at its narrowest project boundary. Do not introduce another token dialect.
 

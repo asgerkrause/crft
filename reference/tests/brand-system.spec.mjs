@@ -179,3 +179,28 @@ test("contrast preference rebinds muted and borders at theme-only boundaries", a
     expect(colors[0]).toEqual(colors[1]);
   }
 });
+
+test("on-color companions follow a retuned source through routes in both derivation tiers", async ({ page }) => {
+  for (const sheet of [css, css.replace("@supports (color: contrast-color(red))", "@supports (unsupported: unsupported)")]) {
+    await page.setContent(`<style>${sheet}</style><p data-accent="success" style="background:var(--accent);color:var(--on-accent)">Saved</p>`);
+    const result = await page.evaluate(() => {
+      const context = new OffscreenCanvas(1, 1).getContext("2d", { willReadFrequently: true });
+      const paint = (color) => { context.fillStyle = color; context.fillRect(0, 0, 1, 1); return [...context.getImageData(0, 0, 1, 1).data.slice(0, 3)]; };
+      const luminance = (rgb) => rgb.map((c) => c / 255).map((c) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4).reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+      const p = document.querySelector("p");
+      let worst = Infinity;
+      const inks = new Set();
+      for (let r = 0; r < 256; r += 17) for (let g = 0; g < 256; g += 17) for (let b = 0; b < 256; b += 17) {
+        document.documentElement.style.setProperty("--success", `rgb(${r} ${g} ${b})`);
+        const style = getComputedStyle(p);
+        const ink = paint(style.color);
+        const [y1, y2] = [luminance(paint(style.backgroundColor)), luminance(ink)];
+        inks.add(ink.join());
+        worst = Math.min(worst, (Math.max(y1, y2) + 0.05) / (Math.min(y1, y2) + 0.05));
+      }
+      return { worst, inks: [...inks].sort() };
+    });
+    expect(result.inks).toEqual(["0,0,0", "255,255,255"]);
+    expect(result.worst).toBeGreaterThanOrEqual(4.5);
+  }
+});
