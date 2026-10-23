@@ -88,7 +88,7 @@ A solid feedback surface uses its matching contrast-companion role. A subtle tre
 
 ## Solid-content companions
 
-Each `--on-*` companion follows its source live: black or white, whichever has the higher WCAG contrast against the solid color. `contrast-color()` makes the pick where supported. Elsewhere, a relative color flips at XYZ luminance 0.1791, where black and white tie. A static brand pair remains where relative color is unsupported. Retuning `--accent` or `--success` retunes its companion, and `data-accent` routes carry it. The worst case over every sRGB source is 4.58:1. Pure black and white are deliberate: CSS cannot turn a source's lightness into a choice between two brand colors. Override an `--on-*` token in project CSS when the brand needs a specific pair, then verify the rendered contrast.
+Each `--on-*` companion resolves at `:root` to black or white from its source. Where supported, `contrast-color()` picks; its algorithm is UA-defined and the specification guarantees only 3:1. Elsewhere, a relative color flips at XYZ luminance 0.1791, where black and white reach equal WCAG contrast; its worst case over every sRGB source is 4.58:1. The static brand pair remains only where neither feature is supported. Retuning `--accent` or `--success` at `:root` retunes its companion, and `data-accent` routes carry it. A source retuned on a descendant boundary must redeclare its `--on-*` there. Resolving only at `:root` lets a project override of an `--on-*` token win everywhere. Pure black and white are deliberate: CSS cannot turn a source's lightness into a choice between two brand colors. Override an `--on-*` token in project CSS when the brand needs a specific pair, then verify the rendered contrast.
 
 ## Brand ownership
 

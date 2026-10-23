@@ -204,3 +204,14 @@ test("on-color companions follow a retuned source through routes in both derivat
     expect(result.worst).toBeGreaterThanOrEqual(4.5);
   }
 });
+
+test("on-color companions keep the static pair without either feature and yield to a root project override", async ({ page }) => {
+  const neither = css.replace("@supports (color: contrast-color(red))", "@supports (unsupported: unsupported)").replace("@supports (color: color(from red xyz-d65", "@supports (unsupported: unsupported) or (unsupported: color(from red xyz-d65");
+  const roles = ["accent", "secondary", "tertiary", "success", "warning", "danger"];
+  await page.setContent(`<style>${neither}</style>${roles.map((role) => `<p style="color:var(--on-${role})"></p>`).join("")}<p style="color:var(--palette-light)"></p><p style="color:var(--palette-dark)"></p>`);
+  const colors = await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color));
+  const [light, dark] = colors.slice(-2);
+  expect(colors.slice(0, 6)).toEqual([light, light, dark, dark, dark, dark]);
+  await page.setContent(`<style>${css}</style><style>:root { --on-success: rgb(1 2 3); }</style><div data-theme="dark"><p data-accent="success" style="color:var(--on-accent)">Saved</p></div>`);
+  await expect(page.locator("p")).toHaveCSS("color", "rgb(1, 2, 3)");
+});

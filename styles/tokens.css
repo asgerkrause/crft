@@ -69,7 +69,7 @@
   }
 
   :root {
-    /* Semantic Colors; these --on-* values remain only where relative color is unsupported. */
+    /* Semantic Colors; these --on-* values remain only without contrast-color() and relative color. */
     --accent: var(--palette-blue);
     --secondary: var(--palette-purple);
     --tertiary: var(--palette-orange);
@@ -85,7 +85,7 @@
     --on-danger: var(--palette-dark);
   }
 
-  /* Companions follow their source: xyz-d65 y is WCAG luminance, and 0.1791 is where black and white tie. Clamps cap at D65 white. */
+  /* Companions follow their :root source: xyz-d65 y is WCAG luminance, and 0.1791 is where black and white tie. Clamps cap at D65 white. */
   @supports (color: color(from red xyz-d65 clamp(0, (0.1791 - y) * 1e6, 1) y z)) {
     :root {
       --on-accent: color(from var(--accent) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
@@ -97,7 +97,7 @@
     }
   }
 
-  /* Native pick: same result in sRGB, and it reads the painted color for sources outside sRGB. */
+  /* Native pick where supported; the algorithm is UA-defined with a 3:1 floor. */
   @supports (color: contrast-color(red)) {
     :root {
       --on-accent: contrast-color(var(--accent));
