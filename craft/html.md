@@ -26,10 +26,8 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
   <main>
     <section>
       <div class="c">
-        <div class="s">
-          <h2>Proof</h2>
-          <div g="3-2">...</div>
-        </div>
+        <h1>Proof</h1>
+        <p>Evidence that supports the page's claim.</p>
       </div>
     </section>
   </main>
@@ -38,11 +36,26 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 </body>
 ```
 
+## Landmarks and regions
+
+Page landmarks identify document areas for navigation: the page `header` is a `banner`, `nav` is `navigation`, `main` is `main`, and the page `footer` is `contentinfo`. A `header` or `footer` inside an `article` or `section` describes that local content; it is not the page banner or contentinfo landmark.
+
 Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default. Do not put a class on `section`. Section identity is `id` when it has a fragment, native or ARIA relationship, behavior, integration, or stable external identity job. `data-skin` and `data-accent` remain canvas hooks.
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 
-Place `.c` only inside page landmarks. The exact `section > .c` relationship establishes CRFT’s named responsive container. A responsive grid is a descendant of that boundary, not the `.c` element.
+```html
+<section aria-labelledby="evidence-title">
+  <h2 id="evidence-title">Evidence</h2>
+  <p>Results worth finding through region navigation.</p>
+</section>
+```
+
+The heading ID above serves the ARIA relationship. Add an ID to the section itself only if it has its own job, such as a fragment link. Without an accessible name, a section does not become a `region` landmark merely because it has a heading or ID.
+
+Containers (`.c`), stacks (`.s`), and grids (`[g]`) are layout roles. They create no ARIA landmark or region semantics. A generic `div` with one of these hooks remains generic; an `article` with `.s` keeps its article semantics. Choose the element for meaning, then apply the layout role where allowed.
+
+[`layout.md`](layout.md) owns placement, nesting, spacing, alignment, and the exact `section > .c` query boundary. [`grid.md`](grid.md) owns responsive attributes and a complete nested stack/grid example.
 
 ## Element and selector ownership
 

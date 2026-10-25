@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Example: product interface (non-canonical)</title>
     <!--
-      After copy:
-        @import "./styles/global.css";
-        @import "./example.css"; /* project-owned CSS */
-      Paths are host placeholders, not this repo’s tree.
+      Repository specimen: /styles/global.css is the CRFT entry, loaded once.
+      Consumer: explicitly adopt the full framework; do not copy global.css.
+      Put the layer prelude and tokens.css/crft.css imports in the project's
+      existing CSS entry and replace the CRFT link below with that entry.
+      Keep example.css presentation in the project's normal CSS owner.
     -->
     <link rel="stylesheet" href="/styles/global.css" />
     <link rel="stylesheet" href="./example.css" />
