@@ -524,6 +524,17 @@ test("an unsupported type role fails", (t) => {
   assert.ok(result.stderr.includes("uses unlisted example class"), result.stderr);
 });
 
+test("layout recipe class admission remains finite even with local CSS", (t) => {
+  const root = makeFixture(t);
+  const accepted = runCheck(root);
+  assert.equal(accepted.status, 0, accepted.stderr || accepted.stdout);
+  replace(root, "examples/layout-centered/markup.html", 'class="lnks"', 'class="lnks-wide"');
+  replace(root, "examples/layout-centered/example.css", ".lnks", ".lnks-wide");
+  const rejected = runCheck(root);
+  assert.equal(rejected.status, 1);
+  assert.match(rejected.stderr, /uses unlisted example class \.lnks-wide/);
+});
+
 test("legacy stack flags fail", (t) => {
   const root = makeFixture(t);
   replace(root, "examples/foundations/markup.html", "class=\"s\"", "s=\"h\"");

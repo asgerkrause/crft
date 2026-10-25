@@ -1,0 +1,5 @@
+@layer project {
+  main > section [g] { align-items: center; }
+
+  figure > img { width: 100%; }
+}

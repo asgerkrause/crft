@@ -9,7 +9,7 @@ read_when: Designing or reviewing buttons, links, cards, component boundaries, v
 
 CRFT is not a component library. This file defines how project components use the stack without promoting their presentation into shared CRFT API.
 
-`.btn`, `.crd`, and `.lnk` are project naming conventions for button, card, and link presentation. Projects own their CSS, markup contract, variants, behavior, and framework components.
+`.btn`, `.crd`, and `.lnk` are project naming conventions for button, card, and link presentation. Optional `.btns` and `.lnks` name wrappers for action groups and link groups. Projects own their CSS, markup contract, variants, behavior, and framework components; these conventions add no canonical CRFT API.
 
 ## Component threshold
 
@@ -37,7 +37,7 @@ A button or prominent link needs:
 Use one primary action group per decision area. Secondary actions must remain available without competing with the primary action. A destructive action names its effect and must not rely on danger color alone.
 
 ```html
-<div class="s">
+<div class="btns">
   <a class="lnk" href="/guide">Read the guide</a>
   <button class="btn" type="button">Save draft</button>
 </div>
@@ -45,6 +45,13 @@ Use one primary action group per decision area. Secondary actions must remain av
 
 ```css
 @layer project {
+  .btns,
+  .lnks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+  }
+
   .btn,
   .lnk {
     display: inline-flex;
@@ -61,12 +68,18 @@ Use one primary action group per decision area. Secondary actions must remain av
     color: var(--on-accent);
     background: var(--accent);
   }
+
+  .btn:focus-visible {
+    outline-color: var(--text);
+  }
 }
 ```
 
 This is project CSS, not a CRFT component recipe. Change its dimensions and treatment from product evidence.
 
-Inline links must remain identifiable in surrounding prose. Base removes the default underline and inherits color. Project CSS must add an underline or another verified non-color cue unless placement and context make the link unambiguous.
+The filled button's focus ring uses the surrounding canvas's text color instead of its on-accent foreground. Base retains outline width and offset; verify the ring against each actual canvas in both schemes.
+
+Inline links must remain identifiable in surrounding prose. Base inherits link color and removes the default underline, then restores it inside `p`, `li`, `dd`, `td`, and `figcaption`. Project overrides must preserve the underline or another verified non-color cue. Elsewhere, add a verified non-color cue unless placement and context make links unambiguous.
 
 ## Cards
 

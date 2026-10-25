@@ -1,0 +1,7 @@
+@layer project {
+  main [g] > :is(article, aside) {
+    padding: var(--padding);
+    border: var(--border-width) dashed var(--text);
+    background: var(--surface);
+  }
+}

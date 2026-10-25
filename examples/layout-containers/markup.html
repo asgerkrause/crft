@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: container measures (non-canonical)</title>
+    <link rel="stylesheet" href="../../styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="c sm">
+          <header class="s">
+            <h1>Container measures</h1>
+            <h2>Narrow: .c.sm</h2>
+            <p>Two-thirds of the default maximum. The dashed outline marks the container edge; paragraph measure can stop before that edge.</p>
+          </header>
+        </div>
+      </section>
+      <section>
+        <div class="c">
+          <header class="s">
+            <h2>Default: .c</h2>
+            <p>The default maximum comes from the current content-max token. Automatic inline margins center the box without centering its text.</p>
+          </header>
+        </div>
+      </section>
+      <section>
+        <div class="c lg">
+          <header class="s">
+            <h2>Wide: .c.lg</h2>
+            <p>Four-thirds of the default maximum. All three boxes share the same available width until there is enough room for a maximum to take effect.</p>
+          </header>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

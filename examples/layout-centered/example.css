@@ -1,0 +1,51 @@
+@layer project {
+  main > section > .c {
+    outline: var(--border-width) dashed var(--text);
+    outline-offset: var(--padding-sm);
+  }
+
+  /* align-items does not inherit into either nested .s. */
+  .centered,
+  .centered > header,
+  .centered > .s {
+    align-items: center;
+  }
+
+  .centered { text-align: center; }
+
+  .btns,
+  .lnks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .centered .btns,
+  .centered .lnks {
+    justify-content: center;
+  }
+
+  .btn,
+  .lnk {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--control);
+    padding: var(--padding-sm) var(--padding);
+  }
+
+  .btn {
+    color: var(--on-accent);
+    background: var(--accent);
+    border: var(--border-width) solid var(--accent);
+    border-radius: var(--radius);
+  }
+
+  .btn:hover,
+  .btn:active,
+  .lnk { text-decoration: underline; }
+
+  /* The fill's foreground is not the surrounding canvas's focus color. */
+  .btn:focus-visible { outline-color: var(--text); }
+}

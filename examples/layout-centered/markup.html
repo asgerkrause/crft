@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: centered content (non-canonical)</title>
+    <link rel="stylesheet" href="../../styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="c">
+          <header class="s">
+            <h1>Center the box, then its content</h1>
+            <p>This container has automatic inline margins. Its text and action group still start at the left edge.</p>
+            <div class="btns">
+              <a class="btn" href="#centered-content">Compare centered content</a>
+              <a class="lnk" href="../layout-containers/markup.html">Inspect container measures</a>
+            </div>
+          </header>
+        </div>
+      </section>
+      <section id="centered-content" data-skin="accent">
+        <div class="c">
+          <div class="s centered">
+            <header class="s">
+              <h2>Center each nested stack deliberately</h2>
+              <p>Text alignment inherits. Flex alignment does not: this header and the nested stack below each need their own align-items rule.</p>
+            </header>
+            <div class="s">
+              <p>These longer action names wrap within their group or inside a link when space runs out.</p>
+              <div class="btns">
+                <a class="btn" href="../layout-split/markup.html">Explore text and media splits</a>
+                <a class="lnk" href="../layout-grid/markup.html">Inspect featured grid spans</a>
+              </div>
+            </div>
+            <nav class="lnks" aria-label="Related layout recipes">
+              <a class="lnk" href="../layout-containers/markup.html">Container measures</a>
+              <a class="lnk" href="../layout-split/markup.html">Copy-first splits</a>
+              <a class="lnk" href="../layout-grid/markup.html">Responsive grids</a>
+            </nav>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

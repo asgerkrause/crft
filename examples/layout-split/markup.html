@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: copy-first splits (non-canonical)</title>
+    <link rel="stylesheet" href="../../styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="c lg">
+          <h1>Copy-first splits</h1>
+          <div g="2">
+            <header class="s">
+              <h2>Equal room for explanation and media</h2>
+              <p>Read the explanation before its supporting figure. Two equal tracks appear only when this section's container is at least 30rem wide.</p>
+            </header>
+            <figure class="s">
+              <img src="../../reference/src/assets/placehold.svg" alt="" width="1005" height="1005" decoding="async" />
+              <figcaption>Equal split: a decorative local placeholder stands in for supporting media.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="c lg">
+          <div g="12-6">
+            <header class="s" c="5-3">
+              <h2>Give supporting media more room</h2>
+              <p>Copy uses five of twelve large tracks; media uses seven. At medium size both use three of six. Below 30rem, copy still comes first in a single column.</p>
+            </header>
+            <figure class="s" c="7-3">
+              <img src="../../reference/src/assets/placehold.svg" alt="" width="1005" height="1005" loading="lazy" decoding="async" />
+              <figcaption>Asymmetric split: the same placeholder makes the change in available media width visible.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

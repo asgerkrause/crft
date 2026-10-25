@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Example: responsive grid spans (non-canonical)</title>
+    <link rel="stylesheet" href="../../styles/global.css" />
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body>
+    <main>
+      <section>
+        <div class="c lg">
+          <header class="s">
+            <h1>Grid spans</h1>
+            <p>The dashed item boundaries reveal three large tracks, two medium tracks, and a small single-column flow.</p>
+          </header>
+          <div g="3-2">
+            <article class="s" c="2-1">
+              <h2>Featured field note</h2>
+              <p>This item spans two of three tracks at large size and one of two at medium size. Its position in the reading order stays first.</p>
+            </article>
+            <article class="s">
+              <h2>Supporting field note</h2>
+              <p>This direct child uses one track in either grid state. No span exceeds the tracks of its direct parent.</p>
+            </article>
+            <aside class="s" c="0">
+              <h2>Full-row note</h2>
+              <p>A zero column span starts a fresh row and fills every explicit track. Below 30rem it follows the two articles in the same stacked source order.</p>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

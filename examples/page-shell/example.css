@@ -1,0 +1,15 @@
+@layer project {
+  body > main > section {
+    padding-block: var(--space);
+  }
+
+  body > footer {
+    padding-block: var(--padding);
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+}

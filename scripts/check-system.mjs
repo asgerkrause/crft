@@ -521,8 +521,8 @@ const idReferenceAttributes = [
   "aria-activedescendant", "aria-details", "aria-errormessage",
 ];
 const allowedExampleClasses = new Set([
-  "action", "action-secondary", "banner", "board-frame", "btn", "chip", "crd", "focusable",
-  "img-w", "index", "invites", "issue", "issue-summary", "lnk", "northline", "panel", "pill",
+  "action", "action-secondary", "banner", "board-frame", "btn", "btns", "centered", "chip", "crd", "focusable",
+  "img-w", "index", "invites", "issue", "issue-summary", "lnk", "lnks", "northline", "panel", "pill",
   "proof-tile", "signal", "skeleton", "sr", "c", "s", "sm", "lg", ...typeRoles,
 ]);
 const validateIdentifiers = (html, path) => {
