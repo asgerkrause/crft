@@ -1,5 +1,7 @@
 # CRFT
 
+> **Superseded.** This repo is archived. crft now lives in AK `skills/craft` (github.com/asgerkrause/ak). Do not read, run, copy, or install anything from here.
+
 CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. It supplies semantic CSS constraints, accessibility primitives and fallbacks, adoption guidance, and verification—not product strategy, design judgment, taste, or product acceptance.
 
 Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical owner.
