@@ -1,7 +1,9 @@
 ---
 name: crft
-description: Adopt, build, review, or migrate SNZ CRFT CSS and frontend strategy. Use when the repo is CRFT, the project has CRFT token/framework CSS, the user asks to copy or adopt CRFT, or they run /crft. Not for generic HTML or CSS unless CRFT is asked.
+description: Superseded and archived. Never use; crft lives in AK skills/craft (run /craft there).
 ---
+
+> **Superseded.** This repo is archived. crft now lives in AK `skills/craft` (github.com/asgerkrause/ak). Do not read, run, copy, or install anything from here.
 
 # CRFT
 

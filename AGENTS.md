@@ -1,5 +1,7 @@
 # CRFT agent contract
 
+> **Superseded.** This repo is archived. crft now lives in AK `skills/craft` (github.com/asgerkrause/ak). Do not read, run, copy, or install anything from here.
+
 ## Scope
 
 CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRAFT.md`, then only the owners required by its route.
