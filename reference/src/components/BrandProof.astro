@@ -1,0 +1,47 @@
+---
+import "../../../styles/global.css";
+import fluid from "../../fixtures/fluid.json";
+import staticBrand from "../../fixtures/static.json";
+import mixed from "../../fixtures/mixed.json";
+import { fixtureCss, roles } from "../../fixtures/recipes.mjs";
+const profiles = [fluid, staticBrand, mixed];
+const profile = profiles.find((item) => item.id === Astro.props.profile) ?? fluid;
+---
+<!doctype html>
+<html lang="en" style={fixtureCss(profile)}>
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{profile.id} recipe — crft</title><link rel="icon" href="data:,"></head>
+  <body>
+    <header><nav aria-label="Recipes"><a href="/">crft reference</a> · {profiles.map((item) => <a href={`/brands/${item.id}/`} aria-current={item.id === profile.id ? "page" : undefined}>{item.id} </a>)}</nav></header>
+    <main>
+      <section id="brand-recipe" data-fixture={profile.id}>
+        <div class="c">
+          <h1>{profile.description}</h1>
+          <p>Each recipe owns document-root typography and spacing. These synthetic fixtures demonstrate the role API.</p>
+          <dl>
+            <dt>Static</dt><dd>Assign final <code>--h1-size</code> and other role sizes in rem.</dd>
+            <dt>Fluid</dt><dd>Assign root range, base sizes, ratios, and role steps. Roles interpolate between endpoints.</dd>
+            <dt>Mixed</dt><dd>Keep selected final role sizes static while other roles remain fluid.</dd>
+          </dl>
+          {Object.keys(roles).map((role) => <div class="role-sample"><span class="small">{role}</span><p class={role} data-role={role}>Readable systems / Læsbare systemer / Verständliche Gestaltung / 読みやすい設計</p></div>)}
+          <p data-fixture="inherited-body">Ordinary inherited text with <strong>strong emphasis</strong> and <b>bold emphasis</b>.</p>
+          <h4>Native supporting heading</h4><h2 class="small">Intentional small-role heading</h2>
+          <label>Readable label <input value="Native control"></label>
+          <figure><figcaption>Caption describes its figure.</figcaption></figure>
+          <div class="theme-sample" data-theme="invert"><p>Inverted colors; inherited type and spacing.</p><div class="theme-sample" data-theme="tone"><p>Nested tone colors.</p></div></div>
+          <div class="theme-sample" data-theme="accent" data-accent="secondary"><p>Routed accent canvas</p></div>
+          <details><summary>Native disclosure</summary><p>Content remains available without enhancement support.</p></details>
+        </div>
+      </section>
+    </main>
+    <footer><p>Paper and slides require Brand OS approved format mappings.</p></footer>
+  </body>
+</html>
+<style>
+  header, footer { padding: var(--padding); }
+  nav { display: flex; flex-wrap: wrap; gap: var(--gap); }
+  main :is(h1, h4, p, label, figcaption) { overflow-wrap: anywhere; }
+  input { max-width: 100%; }
+  .role-sample { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--gap); }
+  .role-sample > span { color: var(--muted); }
+  .theme-sample { padding: var(--padding); }
+</style>

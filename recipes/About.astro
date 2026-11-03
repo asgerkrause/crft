@@ -1,0 +1,65 @@
+---
+interface Fact {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  paragraphs: string[];
+  facts: Fact[];
+  image: { src: string; alt: string };
+}
+
+const { id, heading, paragraphs, facts, image } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c">
+    <div g="12" class="about">
+      <div class="s" c="7">
+        <h2 class="h1">{heading}</h2>
+        {paragraphs.map((text) => <p class="body">{text}</p>)}
+        <dl g="3" class="facts">
+          {facts.map((fact) => (
+            <div class="s">
+              <dt class="small">{fact.label}</dt>
+              <dd class="h3">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <figure c="5">
+        <img src={image.src} alt={image.alt} width="1200" height="900" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .about {
+      align-items: center;
+
+      figure { margin: 0; }
+
+      img {
+        display: block;
+        inline-size: 100%;
+        block-size: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: var(--radius);
+      }
+    }
+
+    .facts {
+      padding-top: var(--padding);
+      border-top: var(--border-width) solid var(--border);
+
+      dt,
+      dd { margin: 0; }
+    }
+  }
+</style>

@@ -3,8 +3,28 @@ import source from "../../../styles/tokens.css?raw";
 import Section from "../components/Section.astro";
 import { sections } from "../data";
 const names = [...new Set([...source.matchAll(/(--[a-z][a-z0-9-]*)\s*:/g)].map((match) => match[1]))].sort();
+const families = [
+  { id: "foundations", title: "Type foundations", prefixes: ["font", "weight", "type", "fluid"] },
+  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"].map((role) => ({ id: role, title: role, prefixes: [role] })),
+  { id: "palette", title: "Palette", prefixes: ["palette"] },
+  { id: "colors", title: "Semantic colors", prefixes: ["canvas", "surface", "text", "muted", "border", "accent", "secondary", "tertiary", "success", "warning", "danger", "on"] },
+  { id: "layout", title: "Layout", prefixes: ["bleed", "content", "control", "header", "query"] },
+  { id: "spacing", title: "Spacing and radius", prefixes: ["space", "gap", "padding", "radius"] },
+  { id: "motion", title: "Motion", prefixes: ["duration", "ease", "lift", "transition"] },
+].map((family) => ({ ...family, names: names.filter((name) => family.prefixes.some((prefix) => name === `--${prefix}` || name.startsWith(`--${prefix}-`))) }));
+if (families.flatMap((family) => family.names).length !== names.length) throw new Error("Token index families must cover every public name exactly once.");
 ---
 <Section {...sections.tokens}>
   <p slot="summary">Exact public names from the live owner. The handbook documents every job; CSS owns values and recipes.</p>
-  <ul class="sg-token-index">{names.map((name) => <li><code>{name}</code></li>)}</ul>
+  <nav class="sg-token-families" aria-label="Token families">
+    {families.map((family) => <a href={`#tokens-${family.id}`}>{family.title}</a>)}
+  </nav>
+  <div class="sg-token-groups">
+    {families.map((family) => (
+      <section id={`tokens-${family.id}`}>
+        <h3>{family.title}</h3>
+        <ul class="sg-token-index">{family.names.map((name) => <li><code>{name}</code></li>)}</ul>
+      </section>
+    ))}
+  </div>
 </Section>

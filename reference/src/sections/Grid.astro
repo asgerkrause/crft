@@ -8,7 +8,10 @@ import { sections } from "../data";
   <p slot="summary" class="sg-note">Grid attributes apply to a grid and its direct children. Without a named container numbered grids
     remain a flex column; source order must remain meaningful.</p>
 
+  <section>
+  <div class="c s">
   <Specimen id="columns-and-spans" title="Columns and spans">
+    <p class="small">These grids query this specimen column's width: stacked below 30rem, medium from 30rem, large from 60rem. Resize to compare.</p>
     <div class="sg-grid-list">
       <div>
         <div class="sg-specimen-label"><code>g</code><span>default grid</span></div>
@@ -30,17 +33,22 @@ import { sections } from "../data";
   </Specimen>
 
   <Specimen id="container-boundaries" title="Container boundaries">
-    <div class="sg-grid-list">
+    <p class="small">Each grid queries its own <code>section &gt; .c</code>. This comparison sets <code>--content-max: 36rem</code>.</p>
+    <div class="sg-grid-list sg-grid-boundaries">
       <section data-fixture="grid-boundary-sm">
+        <p class="sg-specimen-label"><code>.c.sm</code> · 24rem cap · below the grid threshold</p>
         <div class="c sm"><div g="3" data-fixture="grid-sm"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-default">
+        <p class="sg-specimen-label"><code>.c</code> · 36rem cap</p>
         <div class="c"><div g="3" data-fixture="grid-default"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-lg">
+        <p class="sg-specimen-label"><code>.c.lg</code> · 48rem cap</p>
         <div class="c lg"><div g="3" data-fixture="grid-lg"><span>One</span><span>Two</span><span>Three</span></div></div>
       </section>
       <section data-fixture="grid-boundary-nested">
+        <p class="sg-specimen-label">Nested grid · the inner container decides independently</p>
         <div class="c"><div g="2" data-fixture="grid-nested-outer"><span>Outer</span><section data-fixture="grid-boundary-nested-inner"><div class="c"><div g="2" data-fixture="grid-nested-inner"><span>Inner one</span><span>Inner two</span></div></div></section></div></div>
       </section>
     </div>
@@ -65,27 +73,37 @@ import { sections } from "../data";
   </Specimen>
 
   <Specimen id="intrinsic-grid" title="Intrinsic fit and fill">
+    <p class="small">One item in each grid. Fill retains empty tracks when room permits; compare the same minimum track sizes with fit below.</p>
     <div class="sg-grid-list">
       <div>
         <div class="sg-specimen-label"><code>g="fill-sm"</code><span>compact auto-fill</span></div>
-        <div g="fill-sm"><span>One</span><span>Two</span><span>Three</span><span>Four</span></div>
+        <div g="fill-sm"><span>One item</span></div>
       </div>
       <div>
         <div class="sg-specimen-label"><code>g="fill"</code><span>general auto-fill</span></div>
-        <div g="fill"><span>One</span><span>Two</span></div>
+        <div g="fill"><span>One item</span></div>
       </div>
       <div>
         <div class="sg-specimen-label"><code>g="fill-lg"</code><span>spacious auto-fill</span></div>
-        <div g="fill-lg"><span>One</span><span>Two</span></div>
+        <div g="fill-lg"><span>One item</span></div>
       </div>
     </div>
   </Specimen>
 
   <Specimen id="fit-grids" title="Fit collapses empty tracks">
     <div class="sg-grid-list">
-      <div g="fit-sm"><span>One</span><span>Two</span></div>
-      <div g="fit"><span>One</span></div>
-      <div g="fit-lg"><span>One</span><span c="0">Full row</span></div>
+      <div>
+        <div class="sg-specimen-label"><code>g="fit-sm"</code><span>compact auto-fit</span></div>
+        <div g="fit-sm"><span>One item</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>g="fit"</code><span>general auto-fit</span></div>
+        <div g="fit"><span>One item</span></div>
+      </div>
+      <div>
+        <div class="sg-specimen-label"><code>g="fit-lg"</code><span>spacious auto-fit</span></div>
+        <div g="fit-lg"><span>One item</span></div>
+      </div>
     </div>
   </Specimen>
 
@@ -97,6 +115,8 @@ import { sections } from "../data";
       </div>
     </div>
   </Specimen>
+  </div>
+  </section>
 </Section>
 
 <section id="grid-no-container" data-fixture="grid-no-container">

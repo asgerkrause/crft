@@ -19,10 +19,11 @@ const variants = ["xs", "sm", "", "lg", "xl"] as const;
     <article id={family.id} class="s sg-scale-family">
       <header>
         <div class="sg-heading-wrap">
-          <h3 class="lead">{family.title}</h3>
+          <h3>{family.title}</h3>
         </div>
         <p><code>{family.ratio}</code> ratio · <code>{family.anchor}</code> anchor</p>
       </header>
+      {family.id === "spacing" && <p class="small">Bars show actual lengths on one shared scale. Scroll the comparison if the longest bar exceeds the available width.</p>}
       <div class="sg-measure-ramp">
         {variants.map((variant) => {
           const token = `--${family.prefix}${variant ? `-${variant}` : ""}`;

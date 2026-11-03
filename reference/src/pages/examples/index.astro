@@ -1,0 +1,7 @@
+---
+import "../../../../styles/global.css";
+const examples = ["foundations", "page-from-brief", "page-from-reference", "product-interface", "branded-extension"];
+---
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Examples — crft</title></head>
+<body><main><section id="examples"><div class="c"><h1>crft examples</h1><p>Page, article, and workspace compositions with project-owned CSS.</p><ul>{examples.map((name) => <li><a href={`/examples/${name}/`}>{name}</a></li>)}</ul><p><a href="/brands/">Static, fluid, and mixed recipes</a> · <a href="/">CSS reference</a></p></div></section></main></body></html>

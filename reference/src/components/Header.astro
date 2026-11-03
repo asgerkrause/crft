@@ -4,13 +4,16 @@ import { modes, navigation, presets } from "../data";
 
 <header class="sg-header">
   <div class="c">
-    <a class="sg-logo" href="#overview">CRFT</a>
+    <a class="sg-logo" href="#overview">crft</a>
   </div>
 
   <div class="c">
-    <nav class="sg-rail-nav" aria-label="Reference sections">
-      {navigation.map((item) => <a href={`#${item.id}`}>{item.nav}</a>)}
-    </nav>
+    <details class="sg-section-index">
+      <summary>Sections</summary>
+      <nav class="sg-rail-nav" aria-label="Reference sections">
+        {navigation.map((item) => <a href={`#${item.id}`}>{item.title}</a>)}
+      </nav>
+    </details>
   </div>
 
   <div class="c">
@@ -28,7 +31,7 @@ import { modes, navigation, presets } from "../data";
       </div>
     </fieldset>
     <fieldset class="sg-config-group">
-      <legend>Skin</legend>
+      <legend>Palette study</legend>
       <div class="sg-config-options">
         {presets.map((preset) => (
           <label><input class="sr" type="radio" name="preset" value={preset.value} checked={preset.value === "core"}> {preset.label}</label>

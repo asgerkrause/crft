@@ -2,25 +2,25 @@ interface Section {
   id: string;
   title: string;
   api: string;
-  nav?: string;
 }
 
 export const sections = {
-  colors: { id: "colors", title: "Colors", api: "semantic colors", nav: "Color" },
-  type: { id: "typography", title: "Typography", api: "roles · l", nav: "Type" },
-  sizes: { id: "sizes", title: "Sizes", api: "space · gap · padding · radius", nav: "Sizes" },
-  layout: { id: "layout", title: "Layout", api: ".c · .s", nav: "Layout" },
+  colors: { id: "colors", title: "Colors", api: "semantic colors" },
+  type: { id: "typography", title: "Typography", api: "roles · l" },
+  sizes: { id: "sizes", title: "Sizes", api: "space · gap · padding · radius" },
+  layout: { id: "layout", title: "Layout", api: ".c · .s" },
   grid: { id: "grid", title: "Grid", api: "g · c · r · o" },
-  skins: { id: "skins", title: "Skins", api: "data-skin", nav: "Skins" },
-  native: { id: "native", title: "Native", api: "elements first", nav: "Defaults" },
-  forms: { id: "forms", title: "Forms", api: "form · label · input · select · textarea", nav: "Forms" },
+  gridFallback: { id: "grid-no-container", title: "Grid fallback", api: "g without a container" },
+  skins: { id: "skins", title: "Themes", api: "data-theme" },
+  native: { id: "native", title: "Native", api: "elements first" },
+  forms: { id: "forms", title: "Forms", api: "form · label · input · select · textarea" },
   motion: { id: "motion", title: "Motion", api: "data-scrub · view transitions" },
   utilities: { id: "utilities", title: "Utilities", api: ".sr" },
   architecture: { id: "architecture", title: "Architecture", api: "@layer" },
   tokens: { id: "tokens", title: "Tokens", api: "public names" },
 } as const satisfies Record<string, Section>;
 
-export const navigation = Object.values(sections).filter((section) => "nav" in section);
+export const navigation = [{ id: "overview", title: "Overview" }, ...Object.values(sections)];
 
 export const modes = [
   { value: "light", label: "Light" },

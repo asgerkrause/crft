@@ -1,27 +1,25 @@
-# CRFT agent contract
-
-> **Superseded.** This repo is archived. crft now lives in AK `skills/craft` (github.com/asgerkrause/ak). Do not read, run, copy, or install anything from here.
+# crft agent contract
 
 ## Scope
 
-CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRAFT.md`, then only the owners required by its route.
+crft is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRAFT.md`, then only the owners required by its route.
 
-CRFT owns its canonical reference CSS and documented contract. It does not own product strategy, design judgment, taste, brand, content, or product accessibility acceptance.
+crft owns its canonical reference CSS and documented contract. It does not own product strategy, design judgment, taste, brand, content, or product accessibility acceptance.
 
-Within the reference, CSS owns live values, formulas, breakpoints, selectors, skins, and reduced-motion behavior. Documentation explains decisions and use. Examples are evidence, not API.
+Within the reference, CSS owns live values, formulas, breakpoints, selectors, themes, and reduced-motion behavior. Documentation explains decisions and use. Examples are evidence, not API.
 
-CRFT is not a component library. `.btn`, `.crd`, and `.lnk` are project conventions. CRFT may document their project use, but must not add canonical styling, variants, tokens, markup contracts, or behavior.
+crft is not a component library. `.btn`, `.crd`, and `.lnk` are project conventions. crft may document their project use, but must not add canonical styling, variants, tokens, markup contracts, or behavior.
 
 ## CSS ownership
 
-This repository loads `styles/global.css` once. For each affected subsystem, consumers may use guidance only, extract project-owned parts into an existing stylesheet, adopt tokens only, or explicitly adopt the full reference. Local extraction and tokens-only adoption may coexist; extraction itself grants no CRFT hooks. The copier supports the whole-layer modes only. Consumers do not copy `global.css`.
+This repository loads `styles/global.css` once. For each affected subsystem, consumers may use guidance only, extract project-owned parts into an existing stylesheet, adopt tokens only, or explicitly adopt the full reference. Local extraction and tokens-only adoption may coexist; extraction itself grants no crft hooks. The copier supports the whole-layer modes only. Consumers do not copy `global.css`.
 
 ```css
 @layer reset, base, tokens, type, layout, grid, motion, utility;
 ```
 
 - `global.css`: cascade prelude and imports of `tokens.css` and `crft.css`.
-- `tokens.css`: editable brand foundations, derived recipes, role values, semantic colors, themes/skins, reduced motion, and optional brand `@font-face` rules.
+- `tokens.css`: editable brand foundations, derived recipes, role values, semantic colors, themes/themes, reduced motion, and optional brand `@font-face` rules.
 - `crft.css`: framework behavior in `reset`, `base`, `type`, `layout`, `grid`, `motion`, and `utility` layers. Reset uses no tokens; base preserves native defaults/focus; type applies roles; layout owns landmarks/containers/stacks; grid owns g/c/r/o; motion owns scrub/transitions; utility owns `.sr` recovery.
 
 Put a shared rule in the first owner that fully explains it. Consumers own every result. Brand in a copied complete `tokens.css` or the project’s existing token owner. Keep product CSS in the project’s normal owner.
@@ -46,7 +44,7 @@ Use the first complete option:
 
 1. Existing project owner.
 2. Semantic HTML and native behavior.
-3. Existing public CRFT API.
+3. Existing public crft API.
 4. Public token in project CSS.
 5. Scoped token override.
 6. One direct project rule.
@@ -58,7 +56,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 ## HTML and CSS
 
 - Use `body > header` with navigation, `body > main > section`, and `body > footer` unless project truth requires another coherent structure.
-- Add an `id` only for a fragment, native or ARIA relationship, behavior, integration, or stable external identity. Keep every ID unique and non-empty.
+- Give direct `main > section` a meaningful, nonempty, unique `id`. Nested section IDs need a fragment, relationship, or behavior purpose.
 - Give a section a useful heading when its content has one. Add `aria-labelledby` only when the section should become a useful named region. Do not put a class on `section`.
 - Place `.c` only inside page landmarks. `section > .c` establishes the named query context.
 - Keep DOM, reading, heading, and keyboard order meaningful without CSS.
@@ -81,7 +79,7 @@ A responsive `[g]` is a descendant of `section > .c`, not the boundary itself. W
 
 Visual order does not change source order.
 
-Use data-theme for approved light/dark schemes and data-skin for local canvas context. Use `data-accent` to route `secondary`, `tertiary`, `success`, `warning`, or `danger`. Color and motion never carry meaning alone.
+Use `data-theme="invert|tone|accent"` for color-only canvas context. Set document `color-scheme` on `:root`. Use `data-accent` to route `secondary`, `tertiary`, `success`, `warning`, or `danger`. Color and motion never carry meaning alone.
 
 ## Adoption and quality
 
@@ -90,7 +88,7 @@ node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
 node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-Choose the least complete mode for each affected subsystem before asking whether to copy tokens or the full framework. The copier is optional whole-layer convenience. It accepts only `--layers tokens|full` and writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json` (semantic contractVersion 2, packagingVersion 1, revision, hashes, contract snapshot) and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
+Choose the least complete mode for each affected subsystem before athemeg whether to copy tokens or the full framework. The copier is optional whole-layer convenience. It accepts only `--layers tokens|full` and writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json` (semantic contractVersion 3, packagingVersion 1, revision, hashes, contract snapshot) and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
 
 For local extraction, keep only observed semantic jobs and useful relationships in the project’s existing owners. Remove unused token families, ratios, formulas, private state, selectors, and dependencies. Static role outputs use literal lengths without viewport dependence.
 

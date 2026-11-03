@@ -5,58 +5,128 @@ const source = (name) => readFileSync(new URL(`../../styles/${name}.css`, import
 const css = source("global").split("@import")[0] + source("tokens") + source("crft");
 const size = (locator) => locator.evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
 
+test("heading roles fill cards and disclosure rows while editorial measures stay local", async ({ page }) => {
+  await page.setContent(`<style>${css}
+    main { width: 100%; padding: 1rem; }
+    summary { display: flex; justify-content: space-between; gap: 1rem; overflow-wrap: anywhere; }
+    summary::after { content: "+"; flex-shrink: 0; }
+    .editorial { --h1-measure: 12ch; }
+  </style><main>
+    <article><h3>A card heading uses the card's available width</h3></article>
+    <details><summary class="h3">How long does a commission take?</summary><p>Four to six months.</p></details>
+    <div class="editorial"><h1>A local editorial measure stays optional</h1></div>
+    <h1>A normal heading fills its layout</h1><p>Paragraph measure stays independent.</p>
+  </main>`);
+  const card = page.locator("article h3");
+  const summary = page.locator("summary");
+  for (const width of [1440, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const root of [16, 32]) {
+      await page.locator("html").evaluate((element, value) => { element.style.fontSize = `${value}px`; }, root);
+      for (const element of [card, summary, page.locator("main > h1")]) {
+        const bounds = await element.evaluate((node) => {
+          const parent = getComputedStyle(node.parentElement);
+          return { width: node.clientWidth, available: node.parentElement.clientWidth - parseFloat(parent.paddingLeft) - parseFloat(parent.paddingRight) };
+        });
+        await expect(element).toHaveCSS("max-width", "none");
+        expect(bounds.width).toBe(bounds.available);
+      }
+      expect(await summary.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true);
+    }
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const measured = await page.locator(".editorial h1").evaluate((node) => ({ width: node.getBoundingClientRect().width, parent: node.parentElement.clientWidth }));
+  expect(measured.width).toBeLessThan(measured.parent);
+  const paragraph = await page.locator("main > p").evaluate((node) => getComputedStyle(node).maxWidth);
+  expect(paragraph).not.toBe("none");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("details")).toHaveAttribute("open", "");
+});
+
 test("all steps match endpoint interpolation across bounds and user root sizes", async ({ page, browser }) => {
   console.log(`Brand proof browser: ${browser.browserType().name()} ${browser.version()}`);
-  await page.goto("/brands/");
-  for (const rootSize of [16, 20, 32]) {
-    await page.locator("html").evaluate((element, value) => { element.style.fontSize = `${value}px`; }, rootSize);
-    for (const width of [240, 400, 1000, 1600, 4000]) {
-      await page.setViewportSize({ width, height: 900 });
-      for (const profile of profiles) {
+  for (const profile of profiles) {
+    await page.goto(`/brands/${profile.id}/`);
+    for (const rootSize of [16, 20, 32]) {
+      await page.locator("html").evaluate((element, value) => { element.style.fontSize = `${value}px`; }, rootSize);
+      for (const width of [240, 400, 1000, 1600, 4000]) {
+        await page.setViewportSize({ width, height: 900 });
         const f = profile.foundations;
         const progress = Math.max(0, Math.min(1, (width / rootSize - f["fluid-min"].value) / (f["fluid-max"].value - f["fluid-min"].value)));
         for (const [role, values] of Object.entries(profile.expected)) {
           const expected = (values.staticRem ?? values.minRem + (values.maxRem - values.minRem) * progress) * rootSize;
-          expect(await size(page.locator(`[data-fixture="${profile.id}"] [data-role="${role}"]`)), `${profile.id}/${role} root=${rootSize} width=${width}`).toBeCloseTo(expected, 2);
+          expect(await size(page.locator(`[data-role="${role}"]`)), `${profile.id}/${role} root=${rootSize} width=${width}`).toBeCloseTo(expected, 2);
         }
       }
     }
   }
 });
 
-test("theme foundations rebind, local final overrides win, literal metadata inherits", async ({ page }) => {
-  await page.setContent(`<style>${css}</style><main><section><div class="c"><div data-theme="dark"><h1>Theme</h1><p>Inherited <strong>strong</strong></p></div><h1 class="small">Override</h1></div></section></main>`);
-  await page.locator("html").evaluate((element) => {
-    element.style.setProperty("--h1-leading", "0.9");
-    element.style.setProperty("--h1-axes", '"opsz" 32');
-  });
+test("themes change colors only, root recipes inherit, and local final overrides work", async ({ page }) => {
+  await page.setContent(`<style>${css}</style><main><section id="color-proof"><div class="c"><div class="lead" style="font-family:serif;font-weight:500;line-height:1.8;letter-spacing:2px"><div data-theme="invert"><h1>Theme</h1><p>Inherited <strong>strong</strong></p><input value="Native"></div></div></div></section></main>`);
   const theme = page.locator("[data-theme]");
+  const measure = () => theme.evaluate((element) => {
+    const properties = ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "fontVariationSettings"];
+    return [element, ...element.querySelectorAll("h1,p,input")].map((node) => {
+      const style = getComputedStyle(node);
+      return properties.map((property) => style[property]);
+    });
+  });
+  const before = await measure();
+  const colors = [];
+  for (const value of ["invert", "tone", "accent"]) {
+    await theme.evaluate((element, value) => { element.dataset.theme = value; }, value);
+    expect(await measure()).toEqual(before);
+    colors.push(await theme.evaluate((element) => getComputedStyle(element).backgroundColor));
+  }
+  expect(new Set(colors).size).toBe(3);
   await theme.evaluate((element) => {
     for (const name of ["type-min", "type-max"]) element.style.setProperty(`--${name}`, "2");
-    for (const name of ["type-ratio-min", "type-ratio-max"]) element.style.setProperty(`--${name}`, "1");
-    element.style.setProperty("--font", "serif"); element.style.setProperty("--font-display", "monospace");
+    element.style.setProperty("--font-display", "monospace");
     element.style.setProperty("--gap", "10px"); element.style.setProperty("--gap-ratio", "3");
+    element.style.setProperty("--radius", "10px"); element.style.setProperty("--radius-ratio", "3");
   });
-  expect(await size(theme.locator("h1"))).toBe(32);
-  expect(await size(theme.locator("p"))).toBe(32);
-  await expect(theme.locator("h1")).toHaveCSS("font-family", "monospace");
-  await expect(theme.locator("p")).toHaveCSS("font-family", "serif");
-  await expect(theme.locator("h1")).toHaveCSS("line-height", "28.8px");
-  await expect(theme.locator("h1")).toHaveCSS("font-variation-settings", '"opsz" 32');
-  await theme.locator("h1").evaluate((element) => { element.style.setProperty("--h1-size", "3rem"); });
+  expect(await measure()).toEqual(before);
+  const scales = await theme.evaluate((element) => {
+    const probe = document.createElement("i"); probe.style.padding = "var(--gap-lg)"; probe.style.borderRadius = "var(--radius-lg)"; element.append(probe);
+    const style = getComputedStyle(probe); return [style.paddingTop, style.borderTopLeftRadius];
+  });
+  expect(scales).toEqual(["40px", "18px"]);
+  await theme.evaluate((element) => {
+    element.style.setProperty("--h1-size", "3rem"); element.style.setProperty("--h1-font", "monospace");
+    element.style.setProperty("--h1-leading", "0.9"); element.style.setProperty("--h1-axes", '"opsz" 32');
+  });
   expect(await size(theme.locator("h1"))).toBe(48);
-  expect(await size(page.locator("h1.small"))).toBeLessThan(20);
-  const gap = await theme.evaluate((element) => { const child = document.createElement("div"); child.style.padding = "var(--gap-lg)"; element.append(child); return getComputedStyle(child).paddingTop; });
-  expect(gap).toBe("30px");
+  await expect(theme.locator("h1")).toHaveCSS("font-family", "monospace");
+  await expect(theme.locator("h1")).toHaveCSS("line-height", "43.2px");
+  await expect(theme.locator("h1")).toHaveCSS("font-variation-settings", '"opsz" 32');
+});
+
+test("document schemes follow OS and explicit overrides, including native controls", async ({ page }) => {
+  await page.setContent(`<style>${css}</style><div data-theme="invert"><input value="Native"><p>Color</p></div>`);
+  const state = () => page.locator("input").evaluate((element) => {
+    const style = getComputedStyle(element); return [style.colorScheme, style.backgroundColor];
+  });
+  await page.emulateMedia({ colorScheme: "light" }); const light = await state();
+  await page.emulateMedia({ colorScheme: "dark" }); const dark = await state();
+  expect(light[0]).toBe("light dark"); expect(dark[0]).toBe("light dark"); expect(light[1]).not.toBe(dark[1]);
+  await page.evaluate(() => { document.documentElement.style.colorScheme = "light"; });
+  expect(await state()).toEqual(["light", light[1]]);
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.evaluate(() => { document.documentElement.style.colorScheme = "dark"; });
+  expect(await state()).toEqual(["dark", dark[1]]);
+  await page.evaluate(() => { document.documentElement.style.colorScheme = ""; });
+  expect(await state()).toEqual(light);
 });
 
 test("independent scales and equal-foundation static modular scale", async ({ page }) => {
-  await page.goto("/brands/");
+  await page.goto("/brands/static/");
   const staticBrand = page.locator('[data-fixture="static"]');
   const sizes = await staticBrand.evaluate((element) => {
     const values = {};
     for (const name of ["gap-lg", "padding-lg", "radius-lg"]) { const probe = document.createElement("i"); probe.style.paddingTop = `var(--${name})`; element.append(probe); values[name] = parseFloat(getComputedStyle(probe).paddingTop); probe.remove(); }
-    for (const role of ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"]) element.style.removeProperty(`--${role}-size`);
+    for (const role of ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"]) document.documentElement.style.removeProperty(`--${role}-size`);
     return values;
   });
   expect(sizes).toEqual({ "gap-lg": 21, "padding-lg": 27, "radius-lg": 13.5 });
@@ -125,22 +195,25 @@ test("unsupported pow keeps readable static text", async ({ page }) => {
   expect(await size(page.locator("p"))).toBe(14);
 });
 
-test("200% text enlargement and narrow multilingual reflow preserve content", async ({ page }) => {
+test("200% text enlargement and narrow multilingual reflow preserve every profile", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
-  await page.goto("/brands/");
-  const before = await size(page.locator('[data-fixture="fluid"] [data-role="body"]'));
-  await page.locator("html").evaluate((element) => { element.style.fontSize = "200%"; });
-  expect(await size(page.locator('[data-fixture="fluid"] [data-role="body"]'))).toBeCloseTo(before * 2, 2);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  for (const role of await page.locator("[data-role]").all()) {
-    expect(await role.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
-    expect(await role.textContent()).toContain("読みやすい設計");
+  for (const profile of profiles) {
+    await page.goto(`/brands/${profile.id}/`);
+    const before = await size(page.locator('[data-role="body"]'));
+    await page.locator("html").evaluate((element) => { element.style.fontSize = "200%"; });
+    expect(await size(page.locator('[data-role="body"]'))).toBeCloseTo(before * 2, 2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    for (const role of await page.locator("[data-role]").all()) {
+      expect(await role.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+      expect(await role.textContent()).toContain("読みやすい設計");
+    }
   }
   const session = await page.context().newCDPSession(page);
   await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
   expect(await page.evaluate(() => visualViewport.scale)).toBe(2);
   await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1 });
 });
+
 
 test("custom disclosure state stays truthful and keyboard-operable", async ({ page }) => {
   await page.goto("/");
@@ -170,8 +243,8 @@ test("full-span subgrid and fallback inherit tracks without a variable cycle", a
 });
 
 test("contrast preference rebinds muted and borders at theme-only boundaries", async ({ page }) => {
-  for (const contrast of ["more", "no-preference"]) for (const theme of ["light", "dark"]) {
-    await page.emulateMedia({ contrast });
+  for (const contrast of ["more", "no-preference"]) for (const scheme of ["light", "dark"]) for (const theme of ["invert", "tone", "accent"]) {
+    await page.emulateMedia({ contrast, colorScheme: scheme });
     const muted = contrast === "more" ? 90 : 78;
     const border = contrast === "more" ? 50 : 25;
     await page.setContent(`<style>${css}</style><div data-theme="${theme}"><p style="color:var(--muted);border-color:var(--border)">Actual</p><p style="color:color-mix(in srgb,var(--text) ${muted}%,var(--canvas));border-color:color-mix(in srgb,var(--text) ${border}%,transparent)">Expected</p></div>`);
@@ -212,8 +285,8 @@ test("on-color companions keep the static pair without either feature and yield 
   const colors = await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color));
   const [light, dark] = colors.slice(-2);
   expect(colors.slice(0, 6)).toEqual([light, light, dark, dark, dark, dark]);
-  await page.setContent(`<style>${css}</style><style>:root { --on-success: rgb(1 2 3); }</style><div data-theme="dark"><p data-accent="success" style="color:var(--on-accent)">Saved</p></div>`);
+  await page.setContent(`<style>${css}</style><style>:root { --on-success: rgb(1 2 3); }</style><div data-theme="invert"><p data-accent="success" style="color:var(--on-accent)">Saved</p></div>`);
   await expect(page.locator("p")).toHaveCSS("color", "rgb(1, 2, 3)");
-  await page.setContent(`<style>${css}</style><style>:root { --on-accent: rgb(4 5 6); --on-secondary: rgb(7 8 9); }</style><div data-theme="dark"><p style="color:var(--on-accent)">Plain</p><p data-accent="secondary" style="color:var(--on-accent)">Routed</p></div>`);
+  await page.setContent(`<style>${css}</style><style>:root { --on-accent: rgb(4 5 6); --on-secondary: rgb(7 8 9); }</style><div data-theme="invert"><p style="color:var(--on-accent)">Plain</p><p data-accent="secondary" style="color:var(--on-accent)">Routed</p></div>`);
   expect(await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color))).toEqual(["rgb(4, 5, 6)", "rgb(7, 8, 9)"]);
 });

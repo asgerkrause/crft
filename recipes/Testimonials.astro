@@ -1,0 +1,51 @@
+---
+import Card from "./Card.astro";
+
+interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  testimonials: Testimonial[];
+}
+
+const { id, heading, testimonials } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c">
+    <h2 class="h1">{heading}</h2>
+    <div g="2">
+      {testimonials.map((testimonial, index) => (
+        <Card c={index === 0 ? "2" : undefined}>
+          <blockquote class="s">
+            <p class={index === 0 ? "h2" : "body"}>{testimonial.quote}</p>
+            <footer>
+              <p class="small"><strong>{testimonial.name}</strong>, {testimonial.role}</p>
+            </footer>
+          </blockquote>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    blockquote {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: var(--gap);
+      margin: 0;
+    }
+
+    blockquote > footer { margin-top: auto; }
+
+    footer p { margin: 0; }
+  }
+</style>

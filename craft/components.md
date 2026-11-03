@@ -1,5 +1,5 @@
 ---
-title: CRFT components
+title: crft components
 status: canonical
 owner: components
 read_when: Designing or reviewing buttons, links, cards, component boundaries, variants, states, or project-owned component CSS.
@@ -7,15 +7,15 @@ read_when: Designing or reviewing buttons, links, cards, component boundaries, v
 
 # Components
 
-CRFT is not a component library. This file defines how project components use the stack without promoting their presentation into shared CRFT API.
+crft is not a component library. This file defines how project components use the stack without promoting their presentation into shared crft API.
 
-`.btn`, `.crd`, and `.lnk` are project naming conventions for button, card, and link presentation. Optional `.btns` and `.lnks` name wrappers for action groups and link groups. Projects own their CSS, markup contract, variants, behavior, and framework components; these conventions add no canonical CRFT API.
+`.btn`, `.crd`, and `.lnk` are project naming conventions for button, card, and link presentation. Optional `.btns` and `.lnks` name wrappers for action groups and link groups. Projects own their CSS, markup contract, variants, behavior, and framework components; these conventions add no canonical crft API.
 
 ## Component threshold
 
 Start with semantic HTML and local composition. Extract a framework component when reuse, state, complexity, or authoring clarity earns it.
 
-A framework component does not become CRFT API. Propose shared CRFT API only after unrelated consumers prove one stable role that an existing element, attribute, class, or token cannot express.
+A framework component does not become crft API. Propose shared crft API only after unrelated consumers prove one stable role that an existing element, attribute, class, or token cannot express.
 
 Use public tokens by semantic job in project CSS. Keep component-only relationships in local custom properties or direct declarations.
 
@@ -32,7 +32,7 @@ A button or prominent link needs:
 - text wrapping or a proven no-wrap constraint;
 - default, hover where supported, active, focus, disabled or unavailable, and pending treatment when applicable;
 - a non-motion response under reduced motion;
-- sufficient contrast in each skin and state.
+- sufficient contrast in each theme and state.
 
 Use one primary action group per decision area. Secondary actions must remain available without competing with the primary action. A destructive action names its effect and must not rely on danger color alone.
 
@@ -75,7 +75,7 @@ Use one primary action group per decision area. Secondary actions must remain av
 }
 ```
 
-This is project CSS, not a CRFT component recipe. Change its dimensions and treatment from product evidence.
+This is project CSS, not a crft component recipe. Change its dimensions and treatment from product evidence.
 
 The filled button's focus ring uses the surrounding canvas's text color instead of its on-accent foreground. Base retains outline width and offset; verify the ring against each actual canvas in both schemes.
 
@@ -99,7 +99,7 @@ A card defines:
 ```html
 <article class="crd s">
   <p class="small">Release</p>
-  <h3>CRFT documentation</h3>
+  <h3>crft documentation</h3>
   <p>Sixteen focused owners with one task router.</p>
   <a class="lnk" href="/releases/crft">Review release</a>
 </article>
@@ -126,9 +126,9 @@ Pending actions retain a stable accessible name, expose progress where useful, p
 - Disabling a button before users can discover validation errors.
 - A card boundary with no grouping or interaction job.
 - A clickable card containing another link or button.
-- Creating CRFT component tokens or variants from one project.
+- Creating crft component tokens or variants from one project.
 - Copying the example CSS as a fixed component contract.
 
 ## Verify
 
-Test semantics, names, keyboard path, focus, pointer and touch targets, every applicable state, long and translated labels, icons, nested controls, both color schemes, reduced motion, and project ownership. Confirm canonical CRFT CSS contains no `.btn`, `.crd`, or `.lnk` rules.
+Test semantics, names, keyboard path, focus, pointer and touch targets, every applicable state, long and translated labels, icons, nested controls, both color schemes, reduced motion, and project ownership. Confirm canonical crft CSS contains no `.btn`, `.crd`, or `.lnk` rules.

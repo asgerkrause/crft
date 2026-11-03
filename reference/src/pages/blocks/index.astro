@@ -1,0 +1,101 @@
+---
+import "../../../../styles/global.css";
+import SiteHeader from "../../../../../craft/recipes/SiteHeader.astro";
+import Hero from "../../../../../craft/recipes/Hero.astro";
+import About from "../../../../../craft/recipes/About.astro";
+import CallToAction from "../../../../../craft/recipes/CallToAction.astro";
+import Services from "../../../../../craft/recipes/Services.astro";
+import Team from "../../../../../craft/recipes/Team.astro";
+import Testimonials from "../../../../../craft/recipes/Testimonials.astro";
+import SelectedWork from "../../../../../craft/recipes/SelectedWork.astro";
+import PortfolioIndex from "../../../../../craft/recipes/PortfolioIndex.astro";
+import CaseStudy from "../../../../../craft/recipes/CaseStudy.astro";
+import Faq from "../../../../../craft/recipes/Faq.astro";
+import LogoRow from "../../../../../craft/recipes/LogoRow.astro";
+import Gallery from "../../../../../craft/recipes/Gallery.astro";
+import SiteFooter from "../../../../../craft/recipes/SiteFooter.astro";
+import { about, caseStudy, clients, cta, faq, footer, gallery, header, hero, portfolio, selectedWork, services, team, testimonials } from "../../../fixtures/blocks.mjs";
+
+const index = [
+  { group: "Start", links: [["Hero", "hero"], ["Logo row", "clients"], ["About", "about"]] },
+  { group: "Work", links: [["Selected work", "selected-work"], ["Portfolio index", "portfolio-index"], ["Case study", "case-study"], ["Gallery", "gallery"]] },
+  { group: "Services and people", links: [["Services", "services"], ["Team", "team"], ["Testimonials", "testimonials"]] },
+  { group: "Answers and next step", links: [["FAQ", "faq"], ["Call to action", "start"]] },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A gallery of copyable crft blocks with fictional sample content." />
+    <title>Block gallery · crft</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <SiteHeader {...header} />
+    <main>
+      <section id="top">
+        <div class="c s">
+          <h1 class="display">Block gallery</h1>
+          <p class="lead">Copyable Astro blocks for crft pages. Each block renders its sample from <code>fixtures/blocks.mjs</code>; links point only to blocks in this gallery.</p>
+          <p class="small">Names, places, numbers, quotes, and images in this gallery are fictional sample content.</p>
+          <nav aria-label="Block index">
+            <div g="2" class="index">
+              {index.map((group) => (
+                <div class="s">
+                  <h2 class="h3">{group.group}</h2>
+                  <ul>
+                    {group.links.map(([label, target]) => <li><a href={`#${target}`}>{label}</a></li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </section>
+      <Hero {...hero} />
+      <LogoRow {...clients} />
+      <About {...about} />
+      <SelectedWork {...selectedWork} />
+      <PortfolioIndex {...portfolio} />
+      <Services {...services} />
+      <CaseStudy {...caseStudy} />
+      <Gallery {...gallery} />
+      <Team {...team} />
+      <Faq {...faq} />
+      <Testimonials {...testimonials} />
+      <CallToAction {...cta} />
+    </main>
+    <SiteFooter {...footer} />
+  </body>
+</html>
+
+<style>
+  @layer project {
+    :root {
+      --palette-light: #f7f2e8;
+      --palette-dark: #1f1c18;
+      --accent: #9a4a2e;
+      --on-accent: #fbf6ee;
+      --bleed-y: var(--space);
+      --content-max: 74rem;
+    }
+
+    main { overflow: visible; }
+
+    .index ul {
+      display: grid;
+      gap: var(--gap-xs);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .index a {
+      color: inherit;
+      text-underline-offset: .18em;
+    }
+  }
+</style>

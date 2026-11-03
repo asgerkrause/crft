@@ -1,0 +1,21 @@
+---
+import { readFileSync, existsSync } from "node:fs";
+import "../../../../styles/global.css";
+import argumentUrl from "../../../../examples/page-from-reference/argument.svg?url";
+export function getStaticPaths() {
+  return ["foundations", "page-from-brief", "page-from-reference", "product-interface", "branded-extension"].map((example) => ({ params: { example } }));
+}
+const directory = new URL(`../../../../examples/${Astro.params.example}/`, import.meta.url);
+const markup = readFileSync(new URL("markup.html", directory), "utf8").replace("./argument.svg", argumentUrl);
+const css = readFileSync(new URL("example.css", directory), "utf8");
+const scriptPath = new URL("example.js", directory);
+const script = existsSync(scriptPath) ? readFileSync(scriptPath, "utf8") : "";
+const body = /<body[^>]*>([\s\S]*?)<\/body>/.exec(markup)?.[1]?.replace(/<script src="\.\/example\.js"><\/script>/, "");
+const bodyClass = /<body class="([^"]*)"/.exec(markup)?.[1];
+const title = /<title>(.*?)<\/title>/.exec(markup)?.[1];
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{title}</title><link rel="icon" href="data:,"><style is:inline>@layer reset, base, tokens, type, layout, grid, motion, utility, project;</style><style is:inline set:html={css} /></head>
+  <body class={bodyClass}><Fragment set:html={body} /><script is:inline set:html={script} /></body>
+</html>

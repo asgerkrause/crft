@@ -32,9 +32,7 @@ function setRadio(form, name, value) {
 }
 
 function applyPreferences(root, form, preferences) {
-  root.setAttribute("data-mode", preferences.mode);
-  if (preferences.mode === "system") root.removeAttribute("data-theme");
-  else root.setAttribute("data-theme", preferences.mode);
+  root.style.colorScheme = preferences.mode === "system" ? "" : preferences.mode;
   root.setAttribute("data-preset", preferences.preset);
   setRadio(form, "mode", preferences.mode);
   setRadio(form, "preset", preferences.preset);
@@ -62,19 +60,12 @@ function installSectionNavigation() {
   if (!pairs.length) return;
 
   function setCurrent(section) {
-    let currentLink;
-    let changed = false;
     for (const pair of pairs) {
       if (pair.section === section) {
-        currentLink = pair.link;
-        changed = pair.link.getAttribute("aria-current") !== "location";
         pair.link.setAttribute("aria-current", "location");
       } else {
         pair.link.removeAttribute("aria-current");
       }
-    }
-    if (changed && currentLink.closest(".sg-rail-nav")) {
-      currentLink.scrollIntoView({ block: "nearest", inline: "nearest" });
     }
   }
 
@@ -97,6 +88,23 @@ function installSectionNavigation() {
 
   window.addEventListener("hashchange", syncCurrent);
   window.addEventListener("resize", syncCurrent);
+  const index = document.querySelector(".sg-section-index");
+  if (index) {
+    index.addEventListener("click", (event) => {
+      const pair = pairs.find(({ link }) => link === event.target.closest("a"));
+      if (pair) {
+        index.open = false;
+        pair.section.tabIndex = -1;
+        pair.section.focus({ preventScroll: true });
+      }
+    });
+    index.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        index.open = false;
+        index.querySelector("summary").focus();
+      }
+    });
+  }
   syncCurrent();
 }
 
@@ -131,7 +139,7 @@ function init() {
   const modeValues = values(form, "mode");
   const presetValues = values(form, "preset");
   const preferences = {
-    mode: allowed(modeValues, stored.mode || root.getAttribute("data-mode"), "system"),
+    mode: allowed(modeValues, stored.mode, "system"),
     preset: allowed(presetValues, stored.preset || root.getAttribute("data-preset"), "core"),
   };
 

@@ -29,7 +29,7 @@ Narrow: groups wrap; each link's text may also wrap.
 This runnable specimen loads the complete reference through `../../styles/global.css`. Consumers need explicit full adoption for the shared hooks and own their CSS entry; they do not copy `global.css`.
 
 - Shared: `.c` centers the container with automatic inline margins; `.s` supplies vertical flow. Native headings, type measures, base focus geometry, semantic colors, accent skin, and motion preferences remain shared.
-- Project: `.centered` is this specimen's bounded composition role. `.btns` and `.lnks` wrap related navigation choices. `.btn` and `.lnk` own link presentation, hit areas, and states. None is public CRFT API.
+- Project: `.centered` is this specimen's bounded composition role. `.btns` and `.lnks` wrap related navigation choices. `.btn` and `.lnk` own link presentation, hit areas, and states. None is public crft API.
 - Boundary: both `.c` elements are direct children of their sections, establishing the named `container` context. The only ID is the real comparison fragment target; the related links use local recipe destinations.
 
 ## Centering and focus decisions

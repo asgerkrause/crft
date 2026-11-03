@@ -1,5 +1,5 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 3,
   "id": "static",
   "description": "Synthetic literary serif with a static modular scale.",
   "foundations": {

@@ -1,5 +1,5 @@
 ---
-title: CRFT Type
+title: crft Type
 status: canonical
 owner: type
 read_when: Choosing semantic roles, native typography, fonts, weight, measure, or static and fluid recipes.
@@ -27,6 +27,10 @@ Native h1/h2/h3 match their roles. Native h4/h5/h6 use h3 without changing docum
 
 Every role exposes font, size, weight, leading, tracking, measure, case, features, axes, and optical-sizing tokens. Override `--ROLE-measure`, not heading max-width. Body is unconstrained; paragraphs use body measure. Roles consume final tokens at the element so local final-size and metadata overrides work.
 
+Heading measures default to `none`, so headings and role-styled controls use their layout's available width.
+Set an optional heading measure on its hero or editorial owner; keep content caps and fluid bounds separate.
+Disclosure rows own label wrapping and icon layout, including emergency word breaks when enlarged text cannot fit.
+
 ```html
 <section>
   <div class="c">
@@ -40,11 +44,13 @@ Every role exposes font, size, weight, leading, tracking, measure, case, feature
 
 `tokens.css` owns role steps, endpoint calculations, and final sizes. Minimum = type-min × type-ratio-min raised to the role step; maximum uses the corresponding maximum inputs. Interpolate endpoints, not the base or ratio. Fluid bounds and endpoint inputs are unitless rem magnitudes; final size is a length. Explicit final size wins, then explicit endpoints, then derived step endpoints.
 
-Recipes rebind at `:root` and `[data-theme]`. Change foundations there. Arbitrary descendant foundation overrides are unsupported because inherited custom-property outputs are already resolved. Local final role-size or metadata overrides are supported. The pow enhancement is feature-gated; readable static sizes remain without it. Static recipes supply literal lengths with no viewport dependency. Equal bases and ratios also produce a constant modular result.
+Type, spacing, and radius recipes resolve at `:root` only. Change foundations there. Arbitrary descendant foundation overrides are unsupported because inherited custom-property outputs are already resolved. Local final role-size or metadata overrides belong on separate semantic owners, never theme selectors. The pow enhancement is feature-gated; readable static sizes remain without it. Static recipes supply literal lengths with no viewport dependency. Equal bases and ratios also produce a constant modular result.
 
 Keep independent approved leading, tracking, case, features, and measure. Positive rem terms and ratio limits are source checks, not proof of accessible enlargement. Test every used step at/below/inside/above bounds, user root sizes, browser zoom, 200% enlargement, narrow reflow, and multilingual content.
 
-Theme font inputs are `--font`, `--font-display`, `--font-mono` and weight foundations. Raw sans/serif convenience aliases resolve at root. Derived role font/weight aliases rebind at themes; reapply root final role font/weight exceptions at that boundary or below it. Literal leading/tracking/measure/case/features/axes/optical-sizing metadata inherits through themes. Theme colors use semantic colors and `--palette-light`/`--palette-dark` scheme bases; arbitrary palette changes do not automatically reroute semantic colors.
+Font and weight foundations resolve at root. Final role sizes and metadata inherit through themes without rebinding.
+Separate semantic owners support local final role overrides. The v3 change removes theme-local foundation recipes.
+Brand OS v2 context exports are incompatible; migrate explicitly before applying them.
 
 ## Fonts and weight
 
@@ -58,4 +64,4 @@ Where supported, headings and role classes trim to cap height and alphabetic bas
 
 ## Verify
 
-Check native/class precedence, body inheritance, supported context rebinding and local final overrides, role measure, loaded fonts, axes, emphasis, wrap, root-size changes, zoom and fallbacks. Reference fixtures are synthetic browser evidence; product authority owns design and accessibility acceptance.
+Check native/class precedence, body inheritance, root-only recipes and local final overrides, role measure, loaded fonts, axes, emphasis, wrap, root-size changes, zoom and fallbacks. Reference fixtures are synthetic browser evidence; product authority owns design and accessibility acceptance.

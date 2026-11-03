@@ -1,0 +1,63 @@
+---
+import "../../../../styles/global.css";
+import Hero from "../../../../../craft/recipes/Hero.astro";
+
+const content = {
+  heading: "Repair a chair worth keeping.",
+  summary: "A hands-on workshop for the chair you cannot quite give up. Learn to find the loose joint and plan a lasting repair.",
+  actionLabel: "Read the workshop plan",
+  actionHref: "#workshop-plan",
+  detailHeading: "Bring one wooden chair.",
+  detail: "Choose a chair with a loose joint and a story. We will inspect it together before choosing tools or taking anything apart.",
+};
+const longContent = {
+  heading: "Repair the much-loved wooden chair that has traveled between kitchens, homes, and generations.",
+  summary: "Bring the chair you have been meaning to repair, even if you do not know which joint needs attention. We will look at its construction together and explain what can be practiced safely before you choose a next step.",
+  actionLabel: "Read the complete workshop plan and preparation notes before bringing your chair",
+  actionHref: "#workshop-plan",
+  detailHeading: "Keep the chair and its full history together.",
+  detail: "Record its workshop reference without shortening it: ChairRepairWorkshopPreparationNotesForTheLongRememberedKitchenChair. Include earlier repairs, loose parts, and anything you want to preserve.",
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A synthetic chair-repair workshop demonstrating one optional Taste hero recipe." />
+    <title>Chair repair workshop · Synthetic hero</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <main>
+      <Hero {...content} />
+      <section id="workshop-plan" tabindex="-1" data-theme="tone">
+        <div class="c s">
+          <h2>The workshop plan</h2>
+          <p>Inspect your chair, identify the loose joint, and write down the repair sequence before picking up a tool.</p>
+          <p>This is a fictional workshop. No booking is made.</p>
+        </div>
+      </section>
+    </main>
+    <footer><div class="c"><p class="small">Synthetic example · Optional Taste recipe</p></div></footer>
+    <template id="long-content"><Hero {...longContent} /></template>
+    {Object.keys(content).map((field) => (
+      <template data-missing={field}><Hero {...content} {...{ [field]: " " }} /></template>
+    ))}
+    <template id="invalid-destination"><Hero {...content} actionHref="javascript:alert(1)" /></template>
+    <template id="escaped-content"><Hero {...content} heading={'A chair <img src=x onerror="alert(1)"> worth keeping'} /></template>
+  </body>
+</html>
+
+<style>
+  @layer project {
+    :root {
+      --content-max: 80rem;
+      --bleed-y: var(--space);
+    }
+
+    main { overflow: visible; }
+    footer { color: var(--muted); }
+  }
+</style>

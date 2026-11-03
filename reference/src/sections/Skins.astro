@@ -4,7 +4,6 @@ import Specimen from "../components/Specimen.astro";
 import { sections } from "../data";
 
 const canvasSkins = [
-  { skin: "", label: "Base reset" },
   { skin: "tone", label: "Tone boundary" },
   { skin: "invert", label: "Inverted boundary" },
 ] as const;
@@ -20,25 +19,24 @@ const accentSkins = [
 ---
 
 <Section {...sections.skins}>
-  <p slot="summary" class="sg-note">Apply a skin at the outer semantic boundary. The header’s Skin study is
-    styleguide-only; it is not a <code>data-skin</code> value.</p>
+  <p slot="summary" class="sg-note">Themes change colors only. Choose light or dark with root <code>color-scheme</code>; leave it unset for system preference.</p>
 
-  <Specimen id="canvas-skins" title="Canvas skins">
+  <Specimen id="canvas-skins" title="Canvas themes">
     <div class="sg-skin-grid">
       {canvasSkins.map(({ skin, label }) => (
-        <article class="sg-skin-card" data-skin={skin}>
-          <p>{label}</p><code>{`data-skin="${skin}"`}</code>
+        <article class="sg-skin-card" data-theme={skin}>
+          <p>{label}</p><code>{`data-theme="${skin}"`}</code>
         </article>
       ))}
     </div>
   </Specimen>
 
-  <Specimen id="accent-skins" title="Accent skins">
+  <Specimen id="accent-skins" title="Accent themes">
     <div class="sg-skin-grid">
       {accentSkins.map(({ accent, label, fixture }) => (
-        <article class="sg-skin-card" data-skin="accent" data-accent={accent} data-fixture={fixture}>
+        <article class="sg-skin-card" data-theme="accent" data-accent={accent} data-fixture={fixture}>
           <p>{label}</p>
-          <code>{accent ? `data-skin="accent" data-accent="${accent}"` : `data-skin="accent"`}</code>
+          <code>{accent ? `data-theme="accent" data-accent="${accent}"` : `data-theme="accent"`}</code>
         </article>
       ))}
     </div>
@@ -46,10 +44,10 @@ const accentSkins = [
 
   <Specimen id="nested-boundaries" title="Nested boundaries">
     <div class="sg-skin-grid">
-      <article class="sg-skin-card" data-fixture="skin-nested-outer" data-skin="accent">
+      <article class="sg-skin-card" data-fixture="skin-nested-outer" data-theme="accent">
         <p>Outer accent boundary</p>
-        <div class="sg-skin-card" data-fixture="skin-nested-inner" data-skin="">
-          <p>Nested reset</p><code>data-skin=""</code>
+        <div class="sg-skin-card" data-fixture="skin-nested-inner" data-theme="tone">
+          <p>Nested tone</p><code>data-theme="tone"</code>
         </div>
       </article>
     </div>

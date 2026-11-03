@@ -1,5 +1,5 @@
 ---
-title: CRFT verification
+title: crft verification
 status: canonical
 owner: verify
 read_when: Planning acceptance, reviewing a frontend, running checks, comparing a reference, or reporting completion and uncertainty.
@@ -36,7 +36,7 @@ Project or design authority reviews:
 - responsive decisions and intentional departures;
 - code and interface economy.
 
-CRFT supplies prompts and implementation evidence, not the verdict. State the evidence and named authority for each material judgment. Do not turn CRFT preference into a defect.
+crft supplies prompts and implementation evidence, not the verdict. State the evidence and named authority for each material judgment. Do not turn crft preference into a defect.
 
 ### Rendered
 
@@ -47,7 +47,7 @@ Use a real browser. Verify relevant:
 - default, hover, active, focus, selected, expanded, disabled, pending, loading, success, error, empty, offline, and unavailable states;
 - long, short, and translated content;
 - keyboard path and overlays;
-- color schemes, skins, accents, contrast, and focus;
+- color schemes, themes, accents, contrast, and focus;
 - zoom, text resize, wrapping, targets, and overflow;
 - reduced motion and unsupported-feature fallbacks;
 - media crop, loading, layout stability, console, and network;
@@ -57,11 +57,11 @@ Use a real browser. Verify relevant:
 cd reference && bun run test:rendered
 ```
 
-The reference proves selected CRFT behavior. Product acceptance requires the product’s own routes, content, states, browsers, and assistive technologies.
+The reference proves selected crft behavior. Product acceptance requires the product’s own routes, content, states, browsers, and assistive technologies.
 
 ## Responsive and state matrix
 
-Choose test sizes from content and supported behavior. For CRFT grid work, include `.c.sm`, `.c`, `.c.lg`, nested section boundaries, intrinsic header/footer containers, and the no-container stacked fallback.
+Choose test sizes from content and supported behavior. For crft grid work, include `.c.sm`, `.c`, `.c.lg`, nested section boundaries, intrinsic header/footer containers, and the no-container stacked fallback.
 
 Exercise every state that can occur. Do not mark a state not applicable because the fixture omits it when the product can produce it.
 
@@ -117,4 +117,4 @@ Lead with a failure, blocker, or material limit. Do not hide it after passing ch
 
 ## Completion
 
-Project authority decides when a frontend is complete. CRFT verification can report completion of its applicable implementation checks only when each has explicit evidence and no unresolved failure blocks the task path, adopted public contract, semantic behavior, accessibility primitive, or supported fallback.
+Project authority decides when a frontend is complete. crft verification can report completion of its applicable implementation checks only when each has explicit evidence and no unresolved failure blocks the task path, adopted public contract, semantic behavior, accessibility primitive, or supported fallback.

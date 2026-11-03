@@ -1,0 +1,47 @@
+---
+interface Props {
+  id: string;
+  heading: string;
+  summary: string;
+  actionLabel: string;
+  actionHref: string;
+}
+
+const { id, heading, summary, actionLabel, actionHref } = Astro.props;
+---
+
+<section id={id} data-theme="accent">
+  <div class="c sm">
+    <div class="s cta">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{summary}</p>
+      <p><a href={actionHref}>{actionLabel}</a></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .cta {
+      padding-block: var(--space);
+      text-align: start;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: var(--control);
+        max-inline-size: 100%;
+        padding: var(--padding-sm) var(--padding);
+        border: var(--border-width) solid var(--text);
+        border-radius: var(--radius-sm);
+        background: var(--text);
+        color: var(--canvas);
+
+        text-decoration: none;
+
+        &:hover { background: var(--accent); color: var(--on-accent); }
+        &:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+      }
+    }
+  }
+</style>

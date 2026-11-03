@@ -1,5 +1,5 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 3,
   "id": "mixed",
   "description": "Editorial fluid scale with a literal body and explicit display endpoints.",
   "foundations": {

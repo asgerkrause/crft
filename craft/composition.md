@@ -1,5 +1,5 @@
 ---
-title: CRFT composition
+title: crft composition
 status: canonical
 owner: composition
 read_when: Applying supplied visual direction through hierarchy, rhythm, density, boundaries, media placement, or responsive composition.
@@ -7,11 +7,13 @@ read_when: Applying supplied visual direction through hierarchy, rhythm, density
 
 # Composition
 
+General frontend craft and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
+
 Composition translates project-approved direction and semantic structure into visible relationships. This owner records implementation constraints and evidence; it does not own visual judgment or taste.
 
 ## Direction
 
-If project or design authority has not supplied direction, mark it blocked rather than deriving taste from CRFT. Describe supplied direction with implementable relationships:
+If project or design authority has not supplied direction, mark it blocked rather than deriving taste from crft. Describe supplied direction with implementable relationships:
 
 - calm or dense;
 - restrained or expressive;
@@ -37,7 +39,7 @@ Squint at the rendered page. The thesis, primary action, section groups, and sup
 
 ## Rhythm and density
 
-Use CRFT spacing roles by relationship:
+Use crft spacing roles by relationship:
 
 - section rhythm separates page jobs;
 - stack rhythm groups one flow;
@@ -103,6 +105,6 @@ Hold a composition until its content stops fitting. Change the relationship, not
 
 ## Verify
 
-Project or design authority decides whether a composition passes. CRFT review can verify that hierarchy matches the supplied brief, groups remain clear, type and media work with real content, responsive changes preserve meaning, and local art direction remains project-owned.
+Project or design authority decides whether a composition passes. crft review can verify that hierarchy matches the supplied brief, groups remain clear, type and media work with real content, responsive changes preserve meaning, and local art direction remains project-owned.
 
 Review [`examples/page-from-brief/`](../examples/page-from-brief/) and [`examples/branded-extension/`](../examples/branded-extension/) for complete compositions, not reusable patterns.

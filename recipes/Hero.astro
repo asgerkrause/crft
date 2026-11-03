@@ -1,0 +1,94 @@
+---
+interface Props {
+  heading: string;
+  summary: string;
+  actionLabel: string;
+  actionHref: string;
+  detailHeading: string;
+  detail: string;
+}
+
+const { heading, summary, actionLabel, actionHref, detailHeading, detail } = Astro.props;
+const content = { heading, summary, actionLabel, actionHref, detailHeading, detail };
+const missing = Object.entries(content)
+  .filter(([, value]) => typeof value !== "string" || !value.trim())
+  .map(([field]) => field);
+const invalidDestination = typeof actionHref !== "string" || !/^#[A-Za-z][\w:-]*$/.test(actionHref);
+---
+
+<section id="hero">
+  <div class="c">
+    <div class="hero">
+      {missing.length || invalidDestination ? (
+        <div class="s">
+          <h1>Hero content needs attention</h1>
+          <p>{missing.length ? `Provide nonempty values for: ${missing.join(", ")}.` : "Provide a local fragment for actionHref."}</p>
+        </div>
+      ) : (
+        <>
+          <div class="s">
+            <h1 class="display">{heading}</h1>
+            <p class="lead">{summary}</p>
+            <a href={actionHref}>{actionLabel}</a>
+          </div>
+          <aside class="s">
+            <h2 class="h3">{detailHeading}</h2>
+            <p>{detail}</p>
+          </aside>
+        </>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .hero {
+      display: grid;
+      gap: var(--space);
+      align-items: end;
+      overflow-wrap: anywhere;
+      --display-font: var(--font-serif);
+      --display-size: 3rem;
+
+      > div {
+        align-items: start;
+        gap: var(--gap-lg);
+      }
+
+      > div > h1 {
+        hyphens: auto;
+        overflow-wrap: break-word;
+      }
+
+      > div > a {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: var(--control);
+        max-inline-size: 100%;
+        padding: var(--padding-sm) var(--padding);
+        border: var(--border-width) solid var(--text);
+        border-radius: var(--radius-sm);
+        background: var(--text);
+        color: var(--canvas);
+
+        &:focus-visible { outline-color: var(--text); }
+        &:active { text-decoration: underline; }
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover { text-decoration: underline; }
+        }
+      }
+
+      > aside {
+        padding-top: var(--padding);
+        border-top: var(--border-width) solid var(--border);
+      }
+
+      @container container (width >= 48rem) {
+        grid-template-columns: 3fr 2fr;
+        --display-size: 4rem;
+      }
+    }
+  }
+</style>

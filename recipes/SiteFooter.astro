@@ -1,0 +1,77 @@
+---
+interface Link {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  address: string;
+  email: string;
+  links: Link[];
+}
+
+const { id, name, address, email, links } = Astro.props;
+---
+
+<footer id={id}>
+  <div class="foot s">
+    <div class="s">
+      <p class="brand">{name}</p>
+      <address>{address}<br /><a href={`mailto:${email}`}>{email}</a></address>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        {links.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <p class="small">© 2026 {name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  @layer project {
+    .foot {
+      max-inline-size: var(--content-max);
+      margin-inline: auto;
+      padding-block: var(--space);
+      border-top: var(--border-width) solid var(--border);
+    }
+
+    .brand {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: var(--h2-size);
+    }
+
+    address {
+      font-style: normal;
+      color: var(--muted);
+      line-height: var(--body-leading);
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--gap-xs) var(--gap);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: var(--control);
+      color: inherit;
+      text-underline-offset: .18em;
+
+      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    }
+
+    .small { margin: 0; color: var(--muted); }
+  }
+</style>

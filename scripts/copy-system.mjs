@@ -321,7 +321,7 @@ async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
     files[file] = sha256(await readFile(join(staging, file)));
   }
   const body = {
-    contractVersion: 2,
+    contractVersion: contract.contractVersion,
     packagingVersion: 1,
     source: "crft",
     revision: contract.revision,
@@ -331,13 +331,13 @@ async function writeAdoptionManifest(staging, sourceRoot, adopted, manifest) {
     fonts: adopted.fonts,
     files,
     contract: {
-      contractVersion: 2,
+      contractVersion: contract.contractVersion,
       packagingVersion: 1,
       themes: contract.themes,
       hooks: contract.hooks,
       publicTokens: contract.publicTokens,
       privateProperties: contract.privateProperties,
-      skins: contract.skins,
+      ...(contract.contractVersion === 2 ? { skins: contract.skins } : {}),
       accents: contract.accents,
       layerDependencies: contract.layerDependencies,
     },

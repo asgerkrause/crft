@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Example: page from brief (non-canonical)</title>
     <!--
-      Repository specimen: /styles/global.css is the CRFT entry, loaded once.
+      Repository specimen: /styles/global.css is the crft entry, loaded once.
       Consumer: explicitly adopt the full framework; do not copy global.css.
       Put the layer prelude and tokens.css/crft.css imports in the project's
-      existing CSS entry and replace the CRFT link below with that entry.
+      existing CSS entry and replace the crft link below with that entry.
       Keep example.css presentation in the project's normal CSS owner.
     -->
     <link rel="stylesheet" href="/styles/global.css" />
@@ -20,12 +20,12 @@
     <header>
       <div class="c">
         <div class="s">
-          <strong><a href="/">CRFT</a></strong>
+          <strong><a href="/">crft</a></strong>
           <nav aria-label="Primary">
             <ul class="s">
               <li><a href="#proof">Why</a></li>
               <li><a href="#refuse">Boundaries</a></li>
-              <li><a href="#adoption">Copy</a></li>
+              <li><a href="#questions">Questions</a></li>
             </ul>
           </nav>
         </div>
@@ -34,19 +34,18 @@
 
     <main id="main">
       <!-- Orientation + signature move 1: ownership ladder beside the primary path. -->
-      <section>
+      <section id="introduction">
         <div class="c lg">
           <div g="12-6">
             <header c="7-6" class="s">
-              <p class="small">For leads shipping the next site</p>
               <h1>Ship structure without a component tax.</h1>
               <p class="lead">
-                CRFT is a finite CSS system—tokens, type, layout, skins—not a
+                crft is a finite CSS system—tokens, type, layout, themes—not a
                 library of product widgets. Copy once, keep ownership obvious,
                 migrate one visible slice at a time.
               </p>
               <p>
-                <a class="action" href="/docs/adoption">Copy CRFT in one project</a>
+                <a class="action" href="/#architecture">Read adoption structure</a>
               </p>
             </header>
 
@@ -59,12 +58,12 @@
                 </li>
                 <li>
                   <span class="small">Second</span>
-                  Public CRFT API confirmed in the handbook and CSS.
+                  Public crft API confirmed in the handbook and CSS.
                 </li>
                 <li>
                   <span class="small">Third</span>
                   Distinctive chrome in project-owned CSS. This specimen uses
-                  <code>@layer project</code>; CRFT does not require that owner.
+                  <code>@layer project</code>; crft does not require that owner.
                 </li>
               </ol>
             </aside>
@@ -73,7 +72,7 @@
       </section>
 
       <!-- This section ID is the Why navigation target. -->
-      <section id="proof" data-skin="tone">
+      <section id="proof" data-theme="tone">
         <div class="c">
           <div g="3-2">
             <header c="0" class="s">
@@ -112,12 +111,12 @@
       </section>
 
       <!-- This section ID is the Boundaries navigation target. -->
-      <section id="refuse" data-skin="invert">
+      <section id="refuse" data-theme="invert">
         <div class="c">
           <div class="s">
             <h2>What this page will not sell you</h2>
-            <p data-accent="warning" class="small">
-              Warning: if a vendor pitch needs these, it is not CRFT.
+            <p data-accent="warning" class="small notice">
+              Warning: if a vendor pitch needs these, it is not crft.
             </p>
             <ul>
               <li>A component registry or “hero” primitive as shared API.</li>
@@ -132,7 +131,7 @@
         </div>
       </section>
 
-      <section>
+      <section id="questions">
         <div class="c sm">
           <div class="s">
             <h2>Before you copy</h2>
@@ -148,7 +147,7 @@
               <p>
                 In product markup and project-owned CSS. <code>.btn</code>,
                 <code>.crd</code>, and <code>.lnk</code> are project component
-                naming conventions. CRFT does not style them.
+                naming conventions. crft does not style them.
               </p>
             </details>
             <details>
@@ -162,22 +161,6 @@
         </div>
       </section>
 
-      <!-- This section ID is the Copy navigation target. -->
-      <section id="adoption">
-        <div class="c">
-          <div class="s">
-            <h2>Start with one project root</h2>
-            <p class="lead">
-              Run copy, own the snapshot, and put the first band’s chrome in
-              project-owned CSS. Edit copied owners only for brand or intentional
-              system behavior. Expand only after verification.
-            </p>
-            <p>
-              <a class="action" href="/docs/adoption">Copy CRFT in one project</a>
-            </p>
-          </div>
-        </div>
-      </section>
     </main>
 
     <footer>
@@ -188,7 +171,7 @@
             intent, <code>CRAFT.md</code> routes documentation, and CSS owns live behavior.
           </p>
           <p class="small">
-            <a href="/docs">Handbook</a> · <a href="/docs/migration">Migration</a>
+            <a href="/">Handbook</a> · <a href="/#architecture">Migration</a>
           </p>
         </div>
       </div>

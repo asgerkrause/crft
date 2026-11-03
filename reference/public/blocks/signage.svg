@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-hidden="true">
+  <rect width="1200" height="900" fill="#f7f2e8"/>
+  <rect x="180" y="150" width="840" height="130" rx="8" fill="#1f1c18"/>
+  <g fill="#f7f2e8">
+    <rect x="230" y="190" width="300" height="20" rx="4"/>
+    <rect x="230" y="226" width="180" height="14" rx="3" opacity=".7"/>
+  </g>
+  <g fill="#9a4a2e">
+    <path d="M180 360h840v56H180z"/>
+  </g>
+  <g fill="#f7f2e8">
+    <rect x="230" y="376" width="260" height="14" rx="3"/>
+  </g>
+  <g fill="#8a9a7b">
+    <rect x="180" y="500" width="260" height="210" rx="8"/>
+    <rect x="470" y="500" width="260" height="210" rx="8" fill="#d9c7a7"/>
+    <rect x="760" y="500" width="260" height="210" rx="8" fill="#1f1c18"/>
+  </g>
+  <g fill="#f7f2e8">
+    <circle cx="310" cy="605" r="36"/>
+    <circle cx="600" cy="605" r="36" fill="#1f1c18"/>
+  </g>
+</svg>

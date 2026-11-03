@@ -2,11 +2,8 @@
 interface Swatch {
   label: string;
   token: string;
-  color?: string;
   ink?: string;
   accent?: "accent" | "secondary" | "tertiary" | "success" | "warning" | "danger";
-  featured?: boolean;
-  grouped?: boolean;
 }
 
 interface Props {
@@ -18,14 +15,15 @@ interface Props {
 const { label, items, accent } = Astro.props;
 ---
 
-<ul class="sg-swatch-grid" g="fill-sm" aria-label={label} data-accent={accent}>
+<ul class="sg-swatch-grid" aria-label={label} data-accent={accent}>
   {items.map((item) => (
     <li>
       <figure class="sg-swatch" data-accent={item.accent}>
-        <div style={`--sg-color:var(${item.color ?? item.token})${item.ink ? `;--sg-ink:var(${item.ink});color:var(--sg-ink)` : ""}`}>
-          {item.ink && <span aria-hidden="true" class="h2">Aa</span>}
+        <div data-swatch={item.token.endsWith("border") ? "border" : item.token.endsWith("text") || item.token === "--muted" ? "text" : "fill"}
+          style={`--sg-color:var(${item.token})${item.ink ? `;--sg-ink:var(${item.ink})` : ""}`}>
+          {(item.ink || item.token.endsWith("text") || item.token === "--muted") && <span aria-hidden="true">Aa</span>}
         </div>
-        <figcaption>{item.label} {item.grouped ? <span><code>{item.token}</code></span> : <code>{item.token}</code>}</figcaption>
+        <figcaption>{item.label}<code>{item.token}</code></figcaption>
       </figure>
     </li>
   ))}

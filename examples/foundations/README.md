@@ -1,7 +1,7 @@
 ---
 status: example
 canonical: false
-use_when: Teaching or auditing the minimum durable composition of semantic HTML, public CRFT API, and thin project-owned CSS.
+use_when: Teaching or auditing the minimum durable composition of semantic HTML, public crft API, and thin project-owned CSS.
 not_for: Treating this specimen as public API, a component kit, or a substitute for canonical source.
 crft_api: confirmed
 ---
@@ -15,7 +15,7 @@ A minimal page shell with skip link, navigation, orientation, proof, native FAQ,
 - semantic landmarks and purposeful fragment IDs;
 - `section > .c` query boundaries;
 - `s`, `g="3-2"`, and small stacked fallback;
-- type roles, semantic skins, accent routing, and finite utilities;
+- type roles, semantic themes, accent routing, and finite utilities;
 - native `details` with progressive enhancement;
 - project-owned action and proof-tile presentation.
 
@@ -46,7 +46,7 @@ Source order is header, orientation, proof, FAQ, then footer at every size.
 
 ## Decisions
 
-Header and footer `.c` groups remain intrinsic because they are not section query boundaries. Proof tiles use project CSS because CRFT is not a card system. The FAQ remains useful without animation or JavaScript.
+Header and footer `.c` groups remain intrinsic because they are not section query boundaries. Proof tiles use project CSS because crft is not a card system. The FAQ remains useful without animation or JavaScript.
 
 ## Verify
 

@@ -1,5 +1,5 @@
 ---
-title: CRFT performance
+title: crft performance
 status: canonical
 owner: performance
 read_when: Planning media, font loading, client runtime, layout stability, third-party work, performance budgets, or measured acceptance.
@@ -24,7 +24,7 @@ Third-party owners:
 Measurement environment:
 ```
 
-A budget must name the measured route, state, device class, network, and threshold. CRFT does not supply a universal product budget.
+A budget must name the measured route, state, device class, network, and threshold. crft does not supply a universal product budget.
 
 ## Media
 
@@ -44,7 +44,7 @@ Media composition belongs to [`composition.md`](composition.md). This file owns 
 
 ## Fonts
 
-CRFT’s copied source registers two variable WOFF files with swap behavior. A project may replace the copied files or loading strategy after it verifies license, format, required glyphs and weights, fallback metrics, preload cost, and layout shift.
+crft’s copied source registers two variable WOFF files with swap behavior. A project may replace the copied files or loading strategy after it verifies license, format, required glyphs and weights, fallback metrics, preload cost, and layout shift.
 
 Load only families, weights, styles, and subsets the rendered product needs. A preload is useful only when the resource is required early and the browser would otherwise discover it late.
 

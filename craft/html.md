@@ -1,5 +1,5 @@
 ---
-title: CRFT HTML
+title: crft HTML
 status: canonical
 owner: html
 read_when: Structuring landmarks, sections, source order, navigation, state, native elements, selectors, or JavaScript behavior.
@@ -24,7 +24,7 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
   </header>
 
   <main>
-    <section>
+    <section id="proof">
       <div class="c">
         <h1>Proof</h1>
         <p>Evidence that supports the page's claim.</p>
@@ -40,7 +40,7 @@ Use native HTML for meaning and behavior. Add ARIA only where native semantics e
 
 Page landmarks identify document areas for navigation: the page `header` is a `banner`, `nav` is `navigation`, `main` is `main`, and the page `footer` is `contentinfo`. A `header` or `footer` inside an `article` or `section` describes that local content; it is not the page banner or contentinfo landmark.
 
-Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A section needs no ID by default. Do not put a class on `section`. Section identity is `id` when it has a fragment, native or ARIA relationship, behavior, integration, or stable external identity job. `data-skin` and `data-accent` remain canvas hooks.
+Use one visible primary `main`. Use `section` for a thematic grouping and give it a useful visible heading when the content has one. A direct `main > section` requires a meaningful, nonempty, unique `id`. Do not put a class on `section`. Nested sections receive IDs only for fragments, relationships, behavior, integration, or stable external identity. `data-theme` and `data-accent` remain canvas hooks.
 
 Add `aria-labelledby` only when the section should become a useful named `region` landmark. Reference its visible heading. Do not turn every page section into a region because excessive landmarks reduce navigation value.
 
@@ -51,9 +51,9 @@ Add `aria-labelledby` only when the section should become a useful named `region
 </section>
 ```
 
-The heading ID above serves the ARIA relationship. Add an ID to the section itself only if it has its own job, such as a fragment link. Without an accessible name, a section does not become a `region` landmark merely because it has a heading or ID.
+The heading ID above serves the ARIA relationship. Without an accessible name, a section does not become a `region` landmark merely because it has a heading or ID.
 
-Containers (`.c`), stacks (`.s`), and grids (`[g]`) are layout roles. They create no ARIA landmark or region semantics. A generic `div` with one of these hooks remains generic; an `article` with `.s` keeps its article semantics. Choose the element for meaning, then apply the layout role where allowed.
+Place `.c` only inside page landmarks. Containers (`.c`), stacks (`.s`), and grids (`[g]`) are layout roles. They create no ARIA landmark or region semantics. A generic `div` with one of these hooks remains generic; an `article` with `.s` keeps its article semantics. Choose the element for meaning, then apply the layout role where allowed.
 
 [`layout.md`](layout.md) owns placement, nesting, spacing, alignment, and the exact `section > .c` query boundary. [`grid.md`](grid.md) owns responsive attributes and a complete nested stack/grid example.
 
@@ -66,10 +66,10 @@ Containers (`.c`), stacks (`.s`), and grids (`[g]`) are layout roles. They creat
 - `dialog` owns modal or non-modal dialog semantics when supported by the product behavior.
 - Native controls, labels, fieldsets, legends, and submit buttons own forms.
 - Elements own semantics and safe defaults.
-- Classes own stable components, page scopes, behavior, or visual roles that semantic elements, native attributes, public CRFT hooks, and bounded structure cannot safely own.
+- Classes own stable components, page scopes, behavior, or visual roles that semantic elements, native attributes, public crft hooks, and bounded structure cannot safely own.
 - IDs own fragments, native label relations, ARIA ID references, behavior, integration, or stable external identity. Every ID is unique and non-empty. Do not style through IDs.
 - Native and ARIA attributes own truthful state.
-- `data-*` owns application data, behavior, or a documented CRFT boundary.
+- `data-*` owns application data, behavior, or a documented crft boundary.
 
 Prefer semantic attributes, ARIA state, `:has()`, and bounded local structure before classes. Do not replace a useful class with a deep, positional, or content-dependent selector. Remove wrappers without semantic, layout, query, state, behavior, or integration ownership.
 
@@ -94,7 +94,7 @@ Base:
 | Area | Guarantee |
 | --- | --- |
 | Document | Minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, hanging punctuation, and font smoothing |
-| Active canvas | Root, body, document controls, selections, marks, and `[data-skin]` consume active semantic colors |
+| Active canvas | Root, body, document controls, selections, marks, and `[data-theme]` consume active semantic colors |
 | Controls | Native button appearance, start-aligned control text, no hanging punctuation on controls, no text selection on `button`, minimal field and button chrome, invalid border color, muted disabled text, content-driven textarea field sizing, and touch manipulation |
 | Lists and links | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-weight` transitions, and `aria-current="page"` is visible without color alone |
 | Interaction | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, and target scroll offset |
@@ -109,7 +109,7 @@ Unsupported properties are ignored by the browser while the native element remai
 
 ## Order and state
 
-DOM order owns reading, heading, and keyboard order. CRFT’s `o` attribute changes presentation only.
+DOM order owns reading, heading, and keyboard order. crft’s `o` attribute changes presentation only.
 
 Keep state in HTML:
 

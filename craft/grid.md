@@ -1,5 +1,5 @@
 ---
-title: CRFT Grid
+title: crft Grid
 status: canonical
 owner: grid
 read_when: Using g/c/r/o, intrinsic fit/fill, subgrid, or container fallbacks.

@@ -1,0 +1,91 @@
+---
+interface Project {
+  title: string;
+  href: string;
+  type: string;
+  location: string;
+  year: string;
+  image: { src: string; alt: string };
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  projects: Project[];
+}
+
+const { id, heading, intro, projects } = Astro.props;
+---
+
+<section id={id} data-theme="tone">
+  <div class="c">
+    <div class="s">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{intro}</p>
+    </div>
+    <ul class="index">
+      {projects.map((project) => (
+        <li>
+          <img src={project.image.src} alt={project.image.alt} width="1200" height="900" />
+          <div class="s">
+            <h3 class="h3"><a href={project.href}>{project.title}</a></h3>
+            <p class="small">{project.type} · {project.location}</p>
+          </div>
+          <p class="small year">{project.year}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .index {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: grid;
+        grid-template-columns: minmax(0, 7rem) minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--gap);
+        padding-block: var(--padding);
+        border-bottom: var(--border-width) solid var(--border);
+
+        &:first-child { border-top: var(--border-width) solid var(--border); }
+      }
+
+      img {
+        display: block;
+        inline-size: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+      }
+
+      h3 a {
+        color: inherit;
+        text-underline-offset: .18em;
+
+        &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      }
+
+      .year {
+        margin: 0;
+        white-space: nowrap;
+      }
+    }
+
+    @container container (width < 30rem) {
+      .index li {
+        grid-template-columns: minmax(0, 5.5rem) minmax(0, 1fr);
+
+        .year {
+          grid-column: 2;
+        }
+      }
+    }
+  }
+</style>

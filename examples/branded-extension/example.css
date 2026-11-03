@@ -9,10 +9,11 @@
     token owner. Campaign variation and motion remain scoped to .northline.
   */
 
+  :root { --radius: .25rem; }
+
   .northline {
     --accent: var(--palette-red);
     --on-accent: var(--palette-dark);
-    --radius: .25rem;
     --northline-frame: color-mix(in oklab, var(--text) 88%, var(--accent));
 
     color: var(--text);
@@ -38,11 +39,11 @@
         text-underline-offset: 0.2em;
 
         &:hover {
-          color: var(--accent);
+          text-decoration-line: underline;
         }
 
         &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--accent);
+          outline: max(2px, var(--border-width)) solid var(--text);
           outline-offset: 3px;
         }
       }
@@ -52,7 +53,7 @@
       border-bottom: var(--border-width) solid var(--northline-frame);
 
       p {
-        letter-spacing: 0.14em;
+        letter-spacing: 0;
         color: var(--text);
         font-weight: var(--weight-bold);
 
@@ -119,9 +120,8 @@
       font-family: var(--font);
       font-weight: var(--weight-bold);
 
-      letter-spacing: 0.04em;
+      letter-spacing: 0;
       text-decoration: none;
-      text-transform: uppercase;
 
       &:hover {
         color: var(--text);
@@ -129,23 +129,9 @@
       }
 
       &:focus-visible {
-        outline: max(2px, var(--border-width)) solid var(--accent);
+        outline: max(2px, var(--border-width)) solid var(--text);
         outline-offset: 3px;
       }
-    }
-
-    .chip {
-      display: inline-block;
-      padding-block: var(--padding-xs);
-      padding-inline: var(--padding-sm);
-      color: var(--accent-text);
-      background-color: var(--accent-surface);
-      border: var(--border-width) solid var(--accent-border);
-      border-radius: var(--radius-xl);
-      font-size: .8em;
-      line-height: var(--small-leading);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
 
     .issue-summary {
@@ -165,14 +151,14 @@
       border-top: calc(var(--border-width) * 2) solid var(--accent);
 
       a {
-        color: var(--accent);
+        color: var(--text);
         font-weight: var(--weight-bold);
 
         text-decoration-thickness: 1px;
         text-underline-offset: 0.18em;
 
         &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--accent);
+          outline: max(2px, var(--border-width)) solid var(--text);
           outline-offset: 2px;
         }
       }
@@ -182,7 +168,7 @@
       margin: 0;
       color: var(--accent);
       font-family: var(--font-mono);
-      letter-spacing: 0.12em;
+      letter-spacing: 0;
     }
   }
 

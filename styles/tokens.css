@@ -1,3 +1,5 @@
+/* Craft semantic contract: 3. */
+/* crft by Asger Krause and SANITIZE Studio. MIT License. */
 /* Brand: editable foundations, role metadata, recipes, schemes, and motion preferences. */
 @layer tokens {
   :root {
@@ -47,9 +49,8 @@
 
   }
 
-  /* Derived spacing: re-evaluate at supported brand boundaries. */
-  :root,
-  [data-theme] {
+  /* Derived spacing: resolve once at the document root. */
+  :root {
     --space-xs: calc(var(--space) / var(--space-ratio) / var(--space-ratio));
     --space-sm: calc(var(--space) / var(--space-ratio));
     --space-lg: calc(var(--space) * var(--space-ratio));
@@ -109,13 +110,9 @@
     }
   }
 
-  [data-theme="light"] { color-scheme: light; }
-  [data-theme="dark"] { color-scheme: dark; }
-
   /* Supplied synthetic schemes; clients must supply their own approved schemes. */
   :root,
-  [data-theme],
-  [data-skin] {
+  [data-theme] {
     --canvas-base: light-dark(var(--palette-light), var(--palette-dark));
     --text-base: light-dark(var(--palette-dark), var(--palette-light));
 
@@ -138,24 +135,23 @@
     --tertiary-border: color-mix(in srgb, var(--tertiary) 25%, transparent);
   }
 
-  [data-skin='invert'] {
+  [data-theme='invert'] {
     --canvas: var(--text-base);
     --text: var(--canvas-base);
   }
 
-  [data-skin='accent'] {
+  [data-theme='accent'] {
     --canvas: color-mix(in srgb, var(--accent) 10%, var(--canvas-base));
     --text: color-mix(in srgb, var(--accent) 20%, var(--text-base));
   }
 
-  [data-skin='tone'] {
+  [data-theme='tone'] {
     --canvas: color-mix(in srgb, var(--canvas-base), var(--text-base) 5%);
     --surface: var(--canvas-base);
   }
 
   @media (prefers-contrast: more) {
     [data-theme],
-    [data-skin],
     :root {
       --muted: color-mix(in srgb, var(--text) 90%, var(--canvas));
       --border: color-mix(in srgb, var(--text) 50%, transparent);
@@ -222,7 +218,7 @@
   :root {
     --display-leading: 1.1;
     --display-tracking: -0.01em;
-    --display-measure: 24ch;
+    --display-measure: none;
     --display-case: none;
     --display-features: normal;
     --display-axes: normal;
@@ -232,7 +228,7 @@
     --display-size: 1.759937539rem;
     --h1-leading: 1.1;
     --h1-tracking: -0.01em;
-    --h1-measure: 24ch;
+    --h1-measure: none;
     --h1-case: none;
     --h1-features: normal;
     --h1-axes: normal;
@@ -242,7 +238,7 @@
     --h1-size: 1.530380469rem;
     --h2-leading: 1.1;
     --h2-tracking: -0.01em;
-    --h2-measure: 24ch;
+    --h2-measure: none;
     --h2-case: none;
     --h2-features: normal;
     --h2-axes: normal;
@@ -252,7 +248,7 @@
     --h2-size: 1.330765625rem;
     --h3-leading: 1.1;
     --h3-tracking: -0.01em;
-    --h3-measure: 24ch;
+    --h3-measure: none;
     --h3-case: none;
     --h3-features: normal;
     --h3-axes: normal;
@@ -312,8 +308,7 @@
     --caption-size: 0.7608695652rem;
   }
 
-  :root,
-  [data-theme] {
+  :root {
     --display-font: var(--font-display);
     --display-weight: var(--weight);
     --h1-font: var(--font-display);
@@ -336,8 +331,7 @@
 
   /* Derived type recipes; final role overrides may replace these outputs. */
   @supports (font-size: calc(1rem * pow(2, 1))) {
-    :root,
-    [data-theme] {
+    :root {
       --_fluid: clamp(0rem, (100vi - var(--fluid-min) * 1rem) / (var(--fluid-max) - var(--fluid-min)), 1rem);
       --display-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--display-step)));
       --display-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--display-step)));
