@@ -17,7 +17,7 @@ const layerDependencies = {
 };
 // Public composition hooks. Keep aligned with CRAFT.md public-hook-index.
 const hooks = {
-  attributes: ["g", "c", "r", "o", "l", "data-theme", "data-skin", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
+  attributes: ["g", "c", "r", "o", "l", "data-theme", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
   classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable", ".squircle"],
 };
 const staticBans = [
@@ -126,7 +126,11 @@ function buildContract(rootUrl) {
     ...staticBans,
   ];
 
-  const contractVersion = 2;
+  const marker = "/* Craft semantic contract: 3. */";
+  const contractVersion = tokensCss.includes(marker) ? 3 : 2;
+  if (files.some((name) => name !== "tokens.css" && sources[name].includes(marker) !== (contractVersion === 3))) {
+    throw new Error("Incompatible token/framework semantic versions; explicit v2/v3 migration required");
+  }
 
   return {
     contractVersion,
@@ -138,12 +142,133 @@ function buildContract(rootUrl) {
     digest: contractDigest({ contractVersion, publicTokens, privateProperties }),
     bans,
     themes: quotedAttributeValues(tokensCss, "data-theme"),
-    skins: quotedAttributeValues(tokensCss, "data-skin"),
+    ...(contractVersion === 2 ? { skins: quotedAttributeValues(tokensCss, "data-skin") } : {}),
     accents: quotedAttributeValues(tokensCss, "data-accent"),
     layers: Object.fromEntries(files.map((name) => [name, declaredLayers(sources[name])])),
     layerDependencies: snapshotDependencies(),
-    hooks,
+    hooks: contractVersion === 3 ? hooks : { ...hooks, attributes: [...hooks.attributes, "data-skin"] },
   };
+}
+
+const cssUnescape = (value) => value.replace(/\\([0-9a-f]{1,6}\s?|[^\r\n])/gi, (_, escaped) => {
+  if (!/^[0-9a-f]/i.test(escaped)) return escaped;
+  const point = parseInt(escaped.trim(), 16);
+  return String.fromCodePoint(point === 0 || point > 0x10ffff ? 0xfffd : point);
+});
+
+// Walk statement boundaries, retaining selector ancestry through nested rules and at-rules.
+// Strings, escapes, comments and component-value blocks cannot create rule boundaries.
+function walkCss(css, rule, declaration) {
+  let buffer = "";
+  let quote = "";
+  const components = [];
+  const scopes = [{ theme: false, root: false }];
+  const flush = () => {
+    const match = buffer.trim().match(/^([^:]+):\s*([\s\S]*)$/);
+    if (match) declaration(cssUnescape(match[1].trim()), match[2], scopes.at(-1));
+    buffer = "";
+  };
+  for (let i = 0; i < css.length; i += 1) {
+    const char = css[i];
+    if (char === "\\") {
+      buffer += char + (css[++i] ?? "");
+    } else if (quote) {
+      buffer += char;
+      if (char === quote) quote = "";
+    } else if (char === '"' || char === "'") {
+      quote = char;
+      buffer += char;
+    } else if (char === "/" && css[i + 1] === "*") {
+      const end = css.indexOf("*/", i + 2);
+      i = end < 0 ? css.length : end + 1;
+    } else if (char === "(" || char === "[" || (char === "{" && (components.length || /^\s*--[\w-]+\s*:/.test(buffer)))) {
+      components.push(char === "(" ? ")" : char === "[" ? "]" : "}");
+      buffer += char;
+    } else if (components.length) {
+      if (char === components.at(-1)) components.pop();
+      buffer += char;
+    } else if (char === "{") {
+      const selector = buffer.trim();
+      const parent = scopes.at(-1);
+      scopes.push(rule(selector, parent));
+      buffer = "";
+    } else if (char === ";" || char === "}") {
+      flush();
+      if (char === "}" && scopes.length > 1) scopes.pop();
+    } else {
+      buffer += char;
+    }
+  }
+}
+
+// Color tokens are a closed public family; unknown custom properties cannot prove color-only scope.
+const colorToken = /^--(?:palette-[a-z-]+|canvas(?:-base)?|text(?:-base)?|surface|border|muted|(?:accent|secondary|tertiary)(?:-surface|-text|-border)?|success|warning|danger|on-(?:accent|secondary|tertiary|success|warning|danger))$/;
+const colorProperty = /^(?:color|background-color|(?:border(?:-(?:top|right|bottom|left|block|inline)(?:-start|-end)?)?|outline|text-decoration|text-emphasis|column-rule|caret|accent|stop|flood|lighting)-color|fill|stroke)$/;
+const colorValue = /^(?:[a-z]+|#[a-f0-9]+|(?:var|light-dark|color|color-mix|contrast-color|rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch)\([\s\S]*\))\s*(?:!important)?$/i;
+
+function isColorBackground(value) {
+  const active = stripCssCommentsAndStrings(value).trim().replace(/\s*!important$/i, "");
+  if (!colorValue.test(active) || /(?:url|(?:repeating-)?(?:linear|radial|conic)-gradient)\(/i.test(active)) return false;
+  let depth = 0;
+  for (let i = 0; i < active.length; i += 1) {
+    if (active[i] === "(") depth += 1;
+    if (active[i] === ")" && (--depth === 0 && i !== active.length - 1)) return false;
+  }
+  return depth === 0;
+}
+
+function isRootSelector(selector, parentRoot) {
+  const parts = [];
+  let start = 0;
+  let depth = 0;
+  let quote = "";
+  for (let i = 0; i <= selector.length; i += 1) {
+    const char = selector[i];
+    if (char === "\\") { if (!depth && !quote) return false; i += 1; continue; }
+    if (quote) { if (char === quote) quote = ""; continue; }
+    if (char === '"' || char === "'") { quote = char; continue; }
+    if (char === "(" || char === "[") depth += 1;
+    else if (char === ")" || char === "]") depth -= 1;
+    else if (!depth && (char === "," || char === undefined)) {
+      parts.push(selector.slice(start, i).trim());
+      start = i + 1;
+    } else if (!depth) {
+      if (/[>+~|]/.test(char) || /^::|^:(?:before|after|first-line|first-letter)(?![\w-])/i.test(selector.slice(i))) return false;
+      const rest = selector.slice(i).trimStart();
+      if (/\s/.test(char) && selector.slice(start, i).trim() && rest !== "" && !rest.startsWith(",")) return false;
+    }
+  }
+  return parts.length > 0 && parts.every((part) => {
+    const anchor = part.startsWith(":root") ? ":root" : part.startsWith("html") ? "html" : parentRoot && part.startsWith("&") ? "&" : "";
+    return anchor !== "" && (part.length === anchor.length || ".#[:".includes(part[anchor.length]));
+  });
+}
+
+// Check the v3-only boundary in canonical and adopted CSS; final role/layout outputs remain local.
+function v3CssErrors(css) {
+  const errors = [];
+  const foundation = /^--(?:fluid-(?:min|max)|type-(?:min|max|ratio-min|ratio-max)|font(?:-sans|-serif|-mono|-display)?|weight(?:-light|-bold)?|(?:space|gap|padding|radius)-ratio|(?:display|h[1-3]|lead|body|small|label|caption)-(?:step|min|max))$/;
+  walkCss(css, (selector, parent) => {
+    let theme = parent.theme;
+    // Match whole attributes so quoted values of unrelated attributes stay opaque.
+    for (const [rawAttribute] of selector.matchAll(/\[(?:[^\]"'\\]|\\[\s\S]|"(?:[^"\\]|\\[\s\S])*"|'(?:[^'\\]|\\[\s\S])*')*\]/g)) {
+      const attribute = cssUnescape(rawAttribute);
+      if (/^\[\s*data-(?:skin|scheme)(?=[\s~|^$*!=\]])/i.test(attribute)) errors.push("v3 rejects data-skin and scheme attributes");
+      if (!/^\[\s*data-theme(?=[\s~|^$*!=\]])/i.test(attribute)) continue;
+      theme = true;
+      if (!/^\[\s*data-theme\s*(?:=\s*(?:(["'])(?:invert|tone|accent)\1|invert|tone|accent)\s*)?\]$/i.test(attribute)) errors.push("v3 data-theme accepts invert, tone, accent only");
+    }
+    return { theme, root: !theme && (selector.startsWith("@") ? parent.root : isRootSelector(selector, parent.root)) };
+  }, (property, value, scope) => {
+    const name = property.startsWith("--") ? property : property.toLowerCase();
+    if (scope.theme && !colorToken.test(name) && !colorProperty.test(name) && !(name === "background" && isColorBackground(value))) errors.push("v3 themes must change color only");
+    if (name === "color-scheme" && !scope.root) errors.push("v3 document color-scheme requires :root");
+    if (scope.root) return;
+    if (foundation.test(name)) errors.push("v3 foundations and recipes require :root");
+    if (/^--(?:display|h[1-3]|lead|body|small|label|caption)-size$/.test(name) && /pow\(|var\(\s*--(?:_fluid|type-|fluid-|(?:display|h[1-3]|lead|body|small|label|caption)-(?:min|max))/.test(value)) errors.push("v3 type recipes require :root");
+    if (/^--(?:space|gap|padding|radius)(?:-xs|-sm|-lg|-xl)?$/.test(name) && /var\(\s*--(?:space|gap|padding|radius)-ratio/.test(value)) errors.push("v3 spacing and radius recipes require :root");
+  });
+  return [...new Set(errors)];
 }
 
 function parseArguments(arguments_) {
@@ -184,6 +309,6 @@ function main() {
   }
 }
 
-export { buildContract, contractDigest, declaredProperties, gitState, hasExplicitWght, layerDependencies, staticBans };
+export { v3CssErrors, buildContract, contractDigest, declaredProperties, gitState, hasExplicitWght, layerDependencies, staticBans };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

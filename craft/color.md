@@ -1,8 +1,8 @@
 ---
-title: CRFT color
+title: crft color
 status: canonical
 owner: color
-read_when: Choosing semantic colors, branding palettes, applying skins or accents, representing feedback, or checking contrast.
+read_when: Choosing semantic colors, branding palettes, applying themes or accents, representing feedback, or checking contrast.
 ---
 
 # Color
@@ -15,7 +15,7 @@ Build color from outside inward:
 
 1. Palette sources define available brand color.
 2. Accent and feedback sources assign purpose.
-3. A skin establishes the active canvas and foreground.
+3. A theme establishes the active canvas and foreground.
 4. Semantic surface, border, muted, and accent roles style descendants.
 5. Project CSS applies those roles to a component or composition.
 
@@ -23,36 +23,42 @@ Use `--canvas`, `--text`, `--surface`, `--border`, and `--muted` for the active 
 
 Do not apply palette swatches directly when a semantic role expresses the job.
 
-## Skins
+## Themes
 
-`data-skin` establishes a canvas boundary:
+`data-theme` establishes a canvas boundary:
 
 | Value | Context |
 | --- | --- |
 | omitted | Inherit the current semantic context |
-| empty | Reset to the base semantic context |
-<!-- skin-value-index:start -->
+<!-- theme-value-index:start -->
 | `tone` | Restrained tonal canvas |
 | `invert` | Inverted base canvas |
 | `accent` | Active-accent-tinted canvas |
-<!-- skin-value-index:end -->
+<!-- theme-value-index:end -->
 
 ```html
-<section data-skin="accent" data-accent="secondary">
+<section data-theme="accent" data-accent="secondary">
   <div class="c">
     <div class="s">
       <h2>Evidence</h2>
-      <aside data-skin="tone">Nested context</aside>
+      <aside data-theme="tone">Nested context</aside>
     </div>
   </div>
 </section>
 ```
 
-A nested skin establishes a new semantic context. Descendants continue to consume the same semantic names. Use `data-theme` with `light` or `dark` for an approved overall scheme; data-skin selects a local canvas from that scheme. Skins are non-cumulative: invert inside invert remains inverted, and tone inside accent selects scheme tone. Dependent roles recompute against the resulting canvas and routed accent. Missing client dark data is a missing capability, never permission to invent an inversion.
+A nested theme establishes a new semantic context. Descendants continue to consume the same semantic names. Set `color-scheme: light dark` on `:root` to preserve OS preference.
+Use `color-scheme: light` or `dark` on `:root` for explicit document choices.
+The manual switch sets `document.documentElement.style.colorScheme`; clearing it restores the stylesheet preference.
+No scheme attribute exists. Native controls inherit the document scheme.
+`data-theme` accepts only `invert`, `tone`, or `accent` and changes color only. Themes are non-cumulative: invert inside invert remains inverted, and tone inside accent selects scheme tone. Dependent roles recompute against the resulting canvas and routed accent. Missing client dark data is a missing capability, never permission to invent an inversion.
 
-Skin chooses the canvas treatment. Accent chooses its active color route. Combine `data-skin="accent"` with a supported `data-accent` value when the canvas needs that route. The combined boundary also routes active accent roles for descendants. Use feedback routes only for a truthful success, warning, or danger context.
+Theme chooses the canvas treatment. Accent chooses its active color route. Combine `data-theme="accent"` with a supported `data-accent` value when the canvas needs that route. The combined boundary also routes active accent roles for descendants. Use feedback routes only for a truthful success, warning, or danger context.
 
-Apply a skin only at a meaningful canvas boundary. Do not recolor descendants one by one.
+Theme selectors and their nested rules may change only color properties and public color tokens.
+Put typography and layout overrides on separate semantic owners, including final role and spacing values.
+
+Apply a theme only at a meaningful canvas boundary. Do not recolor descendants one by one.
 
 ## Accent routing
 
@@ -92,7 +98,7 @@ Each `--on-*` companion resolves at `:root` to black or white from its source. W
 
 ## Brand ownership
 
-Projects own copied palette and semantic mappings in `styles/tokens.css`. Define both schemes, muted content, borders, nested skins, and feedback pairs as one coherent system; solid-content companions derive unless overridden.
+Projects own copied palette and semantic mappings in `styles/tokens.css`. Define both schemes, muted content, borders, nested themes, and feedback pairs as one coherent system; solid-content companions derive unless overridden.
 
 Campaign-only variation may override the same semantic roles at its narrowest project boundary. Do not introduce another token dialect.
 
@@ -101,7 +107,7 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 ## Common mistakes
 
 - Inventing a dark client scheme when only light inputs were approved.
-- Using a color-specific skin instead of combining `data-skin="accent"` with `data-accent`.
+- Using a color-specific theme instead of combining `data-theme="accent"` with `data-accent`.
 - Expecting `data-accent` to style a component.
 - Using a palette swatch where a semantic role exists.
 - Applying danger color to non-danger decoration.
@@ -115,4 +121,4 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 
 ## Verify
 
-Render every skin in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Verify muted against actual canvas and surface backgrounds without exemptions.
+Render every theme in both schemes, including nested boundaries. Check active accent routes, solid-content companions, text and control contrast, focus indicators, disabled and feedback states, selection, placeholders, and meaning without color. Use rendered foreground and background pairs. Token names alone do not prove contrast. Verify muted against actual canvas and surface backgrounds without exemptions.

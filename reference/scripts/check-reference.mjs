@@ -22,7 +22,7 @@ const requiredMarkup = [
   ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"].map((role) => `class="${role}"`),
   'class="sr focusable"', 'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
   ...["fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"].map((mode) => `g="${mode}"`),
-  'data-skin=""', 'data-skin="tone"', 'data-skin="accent"', 'data-skin="invert"',
+  'data-theme="tone"', 'data-theme="accent"', 'data-theme="invert"',
   'class="img-w" data-scrub', 'data-scrub="reverse"', 'l="2"', 'id="grid-no-container"',
   'id="native-invalid" name="invalid" aria-invalid="true" aria-describedby="native-invalid-error"',
 ];
@@ -30,7 +30,24 @@ const gridErrors = markupErrors(html);
 if (gridErrors.length) throw new Error(gridErrors.join("\n"));
 const brands = readFileSync(new URL("brands/index.html", dist), "utf8");
 if (markupErrors(brands).length) throw new Error(markupErrors(brands).join("\n"));
-for (const profile of ["fluid", "static", "mixed"]) if (!brands.includes(`data-fixture="${profile}"`)) throw new Error(`Missing ${profile} brand proof`);
+for (const profile of ["fluid", "static", "mixed"]) {
+  const proof = readFileSync(new URL(`brands/${profile}/index.html`, dist), "utf8");
+  if (!proof.includes(`data-fixture="${profile}"`)) throw new Error(`Missing ${profile} brand proof`);
+  if (markupErrors(proof).length) throw new Error(markupErrors(proof).join("\n"));
+}
+for (const name of ["foundations", "page-from-brief", "page-from-reference", "product-interface", "branded-extension"]) {
+  const route = `examples/${name}/`;
+  const example = readFileSync(new URL(`${route}index.html`, dist), "utf8");
+  const errors = markupErrors(example);
+  if (errors.length) throw new Error(`${name}: ${errors.join("\n")}`);
+  for (const [, href] of example.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
+    const target = new URL(href, `http://reference.local/${route}`);
+    if (target.origin !== "http://reference.local") continue;
+    const destination = readFileSync(new URL(`${target.pathname.slice(1).replace(/\/$/, "")}/index.html`.replace(/^\//, ""), dist), "utf8");
+    if (target.hash && !destination.includes(`id="${target.hash.slice(1)}"`)) throw new Error(`${name}: missing destination ${href}`);
+  }
+}
+
 const internalProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
   "--_fluid",

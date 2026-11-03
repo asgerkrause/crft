@@ -1,0 +1,7 @@
+---
+import BrandProof from "../../components/BrandProof.astro";
+export function getStaticPaths() {
+  return ["fluid", "static", "mixed"].map((profile) => ({ params: { profile } }));
+}
+---
+<BrandProof profile={Astro.params.profile} />

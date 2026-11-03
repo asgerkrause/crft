@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Example: foundations (non-canonical)</title>
     <!--
-      Repository specimen: /styles/global.css is the CRFT entry, loaded once.
+      Repository specimen: /styles/global.css is the crft entry, loaded once.
       Consumer: explicitly adopt the full framework; do not copy global.css.
       Put the layer prelude and tokens.css/crft.css imports in the project's
-      existing CSS entry and replace the CRFT link below with that entry.
+      existing CSS entry and replace the crft link below with that entry.
       Keep example.css presentation in the project's normal CSS owner.
     -->
     <link rel="stylesheet" href="/styles/global.css" />
@@ -21,7 +21,7 @@
     <header>
       <div class="c">
         <div class="s">
-          <strong><a href="/">CRFT foundations</a></strong>
+          <strong><a href="/">crft foundations</a></strong>
           <nav aria-label="Primary">
             <ul class="s">
               <li><a href="#orientation">Overview</a></li>
@@ -38,16 +38,15 @@
       <section id="orientation">
         <div class="c">
           <div class="s">
-            <p class="small">Primer</p>
             <h1>Compose with ownership, not a kit.</h1>
             <p class="lead">
-              Semantic HTML first, public CRFT API second, distinctive chrome
+              Semantic HTML first, public crft API second, distinctive chrome
               in project-owned CSS. This specimen uses <code>@layer project</code>,
-              but CRFT does not require that owner. This page is teaching
+              but crft does not require that owner. This page is teaching
               material—not public API.
             </p>
             <p>
-              <a class="action" href="/docs">Open the system handbook</a>
+              <a class="action" href="/#architecture">Open the system handbook</a>
             </p>
           </div>
         </div>
@@ -57,7 +56,7 @@
         This section ID is the Proof navigation target. The grid remains below
         section > .c. data-accent routes tokens; project CSS paints the tile.
       -->
-      <section id="proof" data-skin="tone">
+      <section id="proof" data-theme="tone">
         <div class="c">
           <div g="3-2">
             <header c="0" class="s">
@@ -80,14 +79,14 @@
               <p>
                 Type roles, stacks, and
                 <code>g</code>/<code>c</code>/<code>r</code>/<code>o</code>
-                resolved as large, medium, then small.
+                use large and medium values; small stacks automatically. Order uses all three positions.
               </p>
             </article>
 
             <article class="s proof-tile" data-accent="success">
               <h3>Verified path</h3>
               <p>
-                Skins and accent routes stay semantic; product paint stays
+                Themes and accent routes stay semantic; product paint stays
                 layered. Label the claim in copy, not only in hue.
               </p>
             </article>
@@ -111,7 +110,7 @@
             <details>
               <summary>Where do product rules go?</summary>
               <p>
-                Outside the adopted CRFT tree, in the project’s normal CSS
+                Outside the adopted crft tree, in the project’s normal CSS
                 owner. This specimen uses <code>@layer project</code>. An accidental
                 unlayered rule outranks every named layer.
               </p>
@@ -119,7 +118,7 @@
             <details>
               <summary>May I use <code>data-theme</code>?</summary>
               <p>
-                Use supplied <code>data-theme="light|dark"</code> schemes. <code>data-skin</code> selects a local canvas from that approved scheme.
+                Use <code>data-theme="invert|tone|accent"</code> for colors only. Set root <code>color-scheme</code> for light or dark.
               </p>
             </details>
           </div>
@@ -135,7 +134,7 @@
             out of scope.
           </p>
           <p class="small">
-            <a href="/docs/verification">Verification baseline</a>
+            <a href="/#native">Verification baseline</a>
           </p>
         </div>
       </div>

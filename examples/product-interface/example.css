@@ -1,202 +1,54 @@
 @layer project {
-  body > header .c > .s,
-  body > footer .c > .s { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
-  nav ul { display: flex; flex-wrap: wrap; gap: var(--gap); }
-  header > .small, footer .small { color: var(--muted); }
-  form > .s:has(> button) { flex-direction: row; flex-wrap: wrap; }
-  /*
-    Non-canonical product chrome for an invitations screen.
-    Native elements own form structure; stable product roles own classes.
-  */
-
+  :root { --space: 1rem; --space-ratio: 1.5; --gap: 1rem; --padding: 1rem; }
   .invites {
-    --invites-control-min-size: 2.75rem;
+    display: grid;
+    grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+    min-block-size: 100dvh;
+    overflow-wrap: anywhere;
 
     > header {
-      padding-block: var(--padding-sm);
-      color: var(--text);
-      background-color: var(--surface);
-      border-bottom: var(--border-width) solid var(--border);
-
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        gap: var(--gap);
-      }
-
-      a {
-        color: var(--text);
-
-        &:hover {
-          color: var(--accent);
-        }
-
-        &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--accent);
-          outline-offset: 2px;
-        }
-      }
+      padding: var(--padding-lg);
+      background: var(--surface);
+      border-right: var(--border-width) solid var(--border);
+      > a { font-weight: var(--weight-bold); }
+      > p, > details { margin-top: var(--space-lg); }
+      nav { display: grid; gap: var(--gap-sm); margin-top: var(--space); }
+      nav a { padding: var(--padding-sm); }
+      [aria-current] { color: var(--text); background: var(--canvas); font-weight: var(--weight-bold); }
     }
-
-    .panel {
-      padding-block: var(--padding-lg);
-      padding-inline: var(--padding-lg);
-      color: var(--text);
-      background-color: var(--surface);
-      border: var(--border-width) solid var(--border);
-      border-radius: var(--radius);
+    > main {
+      min-inline-size: 0;
+      padding: var(--padding-lg);
+      > header, > section { padding-block: var(--padding-lg); }
+      > section { padding-inline: 0; border-top: var(--border-width) solid var(--border); }
+      > section:has(> form:not([role])) { padding: var(--padding); }
     }
-
-    form {
-      > p:has(> :is(input, select, textarea)),
-      fieldset {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap-xs);
-        margin: 0;
-      }
-
-      fieldset {
-        min-width: 0;
-        padding: 0;
-        border: 0;
-      }
-
-      label,
-      legend {
-        font-size: .8em;
-        line-height: var(--small-leading);
-        color: var(--text);
-      }
-
-      :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
-        width: 100%;
-
-        &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--accent);
-          outline-offset: 2px;
-        }
-      }
-
-      textarea {
-        min-height: calc(var(--invites-control-min-size) * 2);
-        resize: vertical;
-      }
-
-      [role="alert"] {
-        color: var(--danger);
-        font-size: .8em;
-        line-height: var(--small-leading);
-      }
-
-      label:has(> input:is([type="checkbox"], [type="radio"])) {
-        display: flex;
-        align-items: center;
-        gap: var(--gap-sm);
-        min-height: var(--invites-control-min-size);
-      }
-    }
-
-    .action {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: var(--invites-control-min-size);
-      padding-block: var(--padding-sm);
-      padding-inline: var(--padding);
-      color: var(--on-accent);
-      background-color: var(--accent);
-      border: var(--border-width) solid var(--accent-border);
-      border-radius: var(--radius-sm);
-      text-decoration: none;
-      cursor: pointer;
-
-      &:hover {
-        color: var(--accent-text);
-        background-color: var(--accent-surface);
-      }
-
-      &:focus-visible {
-        outline: max(2px, var(--border-width)) solid var(--accent);
-        outline-offset: 2px;
-      }
-
-      &:disabled,
-      &[aria-disabled="true"] {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      &.action-secondary {
-        color: var(--text);
-        background-color: var(--canvas);
-        border-color: var(--border);
-
-        &:hover {
-          color: var(--accent-text);
-          background-color: var(--accent-surface);
-          border-color: var(--accent-border);
-        }
-      }
-    }
-
-    .banner {
-      margin: 0;
-      padding-block: var(--padding);
-      padding-inline: var(--padding);
-      color: var(--text);
-      background-color: var(--surface);
-      border: var(--border-width) solid var(--border);
-      border-radius: var(--radius-sm);
-    }
-
-    .panel[data-accent] .banner {
-      color: var(--accent-text);
-      background-color: var(--accent-surface);
-      border-color: var(--accent-border);
-    }
-
-    .skeleton {
-      min-height: calc(var(--space-xl) * 3);
-      background-color: color-mix(in oklab, var(--muted) 18%, var(--surface));
-      border-radius: var(--radius-sm);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-
-      th,
-      td {
-        padding-block: var(--padding-sm);
-        padding-inline: var(--padding-sm);
-        text-align: left;
-        border-bottom: var(--border-width) solid var(--border);
-      }
-
-      th {
-        font-size: .8em;
-        color: var(--muted);
-      }
-    }
-
-    .pill {
-      display: inline-block;
-      padding-block: var(--padding-xs);
-      padding-inline: var(--padding-sm);
-      color: var(--text);
-      background-color: var(--canvas);
-      border: var(--border-width) solid var(--border);
-      border-radius: var(--radius-xl);
-      font-size: .8em;
-      line-height: var(--small-leading);
-
-      &[data-accent] {
-        color: var(--accent-text);
-        background-color: var(--accent-surface);
-        border-color: var(--accent-border);
-      }
+    :is(h1, h2, p, details) { margin-bottom: var(--space); }
+    h1 { --h1-size: var(--h2-size); }
+    h2 { --h2-size: var(--h3-size); }
+    form { display: grid; gap: var(--gap); }
+    label { display: grid; gap: var(--gap-xs); }
+    :is(input, select) { inline-size: 100%; min-inline-size: 0; }
+    :is(button, input, select, summary, nav a) { min-block-size: 2.75rem; }
+    :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+    button, summary { cursor: pointer; }
+    button { color: var(--text); background: var(--canvas); border: var(--border-width) solid var(--border); }
+    button[type="submit"] { color: var(--canvas); background: var(--text); border-color: var(--text); }
+    form[role="search"] { grid-template-columns: minmax(10rem, 1fr) minmax(8rem, .6fr) auto auto; align-items: end; margin-bottom: var(--space); }
+    form:not([role]) { max-inline-size: 42rem; }
+    section[tabindex] { overflow-x: auto; }
+    table { min-inline-size: 26rem; inline-size: 100%; table-layout: fixed; border-collapse: collapse; }
+    caption { text-align: start; margin-bottom: var(--space-sm); }
+    th, td { padding: var(--padding-sm); text-align: start; border-bottom: var(--border-width) solid var(--border); }
+    th:first-child { inline-size: 50%; }
+    [role="alert"] { color: var(--text); }
+    [hidden] { display: none; }
+  }
+  @media (width < 60rem) {
+    .invites {
+      grid-template-columns: minmax(0, 1fr);
+      > header { border-right: 0; border-bottom: var(--border-width) solid var(--border); }
+      form[role="search"] { grid-template-columns: minmax(0, 1fr); }
     }
   }
 }

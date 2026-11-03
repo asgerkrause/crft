@@ -1,5 +1,5 @@
 ---
-title: CRFT accessibility
+title: crft accessibility
 status: canonical
 owner: accessibility
 read_when: Building or accepting semantics, keyboard behavior, focus, accessible names, contrast, status announcements, zoom, or assistive-technology behavior.
@@ -7,7 +7,7 @@ read_when: Building or accepting semantics, keyboard behavior, focus, accessible
 
 # Accessibility
 
-Accessibility is an implementation and verification boundary for CRFT guidance and adopted CSS. Semantic implementation belongs to the relevant topic owner. This file documents reusable primitives, fallbacks, and evidence prompts; the product owns its requirements, target standards, assistive-technology scope, and acceptance.
+Accessibility is an implementation and verification boundary for crft guidance and adopted CSS. Semantic implementation belongs to the relevant topic owner. This file documents reusable primitives, fallbacks, and evidence prompts; the product owns its requirements, target standards, assistive-technology scope, and acceptance.
 
 ## Native first
 
@@ -45,7 +45,7 @@ Do not remove the base focus indicator without a verified replacement. Focus mus
 
 Tab follows source order between controls. Composite widgets implement the established keyboard pattern for that widget. Escape closes dismissible overlays. Opening and closing overlays moves and restores focus when the product flow requires it. Covered background content must not remain interactive.
 
-Never use positive `tabindex` to repair source order. CRFT grid ordering changes presentation only.
+Never use positive `tabindex` to repair source order. crft grid ordering changes presentation only.
 
 ## Names and announcements
 
@@ -87,4 +87,4 @@ Use `.sr` for content that must remain available to assistive technology but not
 
 ## Verify
 
-Complete the primary task with keyboard only. Inspect the accessibility tree and names. Exercise every applicable state and overlay. Test zoom, text resize, narrow reflow, both color schemes, every skin, reduced motion, and unsupported features. Product authority selects target standards, task coverage, and assistive technologies. Record untested combinations as not verified, not passed; CRFT evidence alone cannot mark product accessibility accepted.
+Complete the primary task with keyboard only. Inspect the accessibility tree and names. Exercise every applicable state and overlay. Test zoom, text resize, narrow reflow, both color schemes, every skin, reduced motion, and unsupported features. Product authority selects target standards, task coverage, and assistive technologies. Record untested combinations as not verified, not passed; crft evidence alone cannot mark product accessibility accepted.

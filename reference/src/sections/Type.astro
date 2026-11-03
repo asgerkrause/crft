@@ -13,14 +13,36 @@ const roles = ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "c
     <p>Native h1–h3 match their roles; h4–h6 use h3. Native small, label, and figcaption use their own roles.</p>
   </Specimen>
   <Specimen id="long-content" title="Long content">
-    <article class="s" data-fixture="type-long-content">
-      <h4 data-fixture="type-semantic-heading">Semantic headings retain a readable measure when a long sentence needs more than one line to communicate its complete meaning.</h4>
-      <h4 class="h1" data-fixture="type-visual-override">A semantic heading can use an explicit visual role without changing its document level.</h4>
-      <p class="lead" data-fixture="type-large-text">Lead text establishes the subject and keeps its own readable measure.</p>
-      <p class="body" data-fixture="type-body-text">Body text stays readable when the content reveals its measure and ordinary wrapping.</p>
-      <p class="small" data-fixture="type-small-text">Supporting text uses a role-owned measure.</p>
-      <ul data-fixture="type-inheritance"><li data-fixture="type-inherited-item">Lists inherit body type.</li></ul>
-    </article>
+    <p>These are independent samples, not one reading flow. They use the configured crft roles; the surrounding explanations use the preview’s reading size. Heading width follows the layout unless its role has a local measure.</p>
+    <div class="sg-type-samples" data-fixture="type-long-content">
+      <figure>
+        <figcaption>Native heading · <code>h4</code> uses the h3 role</figcaption>
+        <div class="sg-type-sample"><h4 data-fixture="type-semantic-heading">A long semantic heading wraps within the available layout without changing its place in the document outline.</h4></div>
+      </figure>
+      <figure>
+        <figcaption>Explicit visual role · <code>h4.h1</code></figcaption>
+        <div class="sg-type-sample"><h4 class="h1" data-fixture="type-visual-override">A semantic heading can use an explicit visual role without changing its document level.</h4></div>
+      </figure>
+      <figure>
+        <figcaption>Introduction · <code>.lead</code></figcaption>
+        <div class="sg-type-sample"><p class="lead" data-fixture="type-large-text">Lead text establishes the subject and keeps its own readable measure.</p></div>
+      </figure>
+      <figure>
+        <figcaption>Reading flow · <code>.body</code></figcaption>
+        <div class="sg-type-sample s">
+          <p class="body" data-fixture="type-body-text">A useful type sample needs enough content to show how reading feels. Follow this paragraph across several lines, then resize the page. The configured body role controls the text size and measure, while the available column determines when each line wraps.</p>
+          <p class="body">A second paragraph makes the rhythm easier to judge. The space between paragraphs separates two related ideas without turning them into separate sections. Compare this flow with the larger introduction above and the supporting text below.</p>
+        </div>
+      </figure>
+      <figure>
+        <figcaption>Supporting text · <code>.small</code></figcaption>
+        <div class="sg-type-sample"><p class="small" data-fixture="type-small-text">Supporting text uses a role-owned measure.</p></div>
+      </figure>
+      <figure>
+        <figcaption>Inherited body role · <code>ul</code></figcaption>
+        <div class="sg-type-sample"><ul data-fixture="type-inheritance"><li data-fixture="type-inherited-item">Lists inherit body type from their context.</li></ul></div>
+      </figure>
+    </div>
   </Specimen>
   <Specimen id="line-clamp" title="Line clamp">
     <p l="2" data-fixture="type-clamp">A supporting paragraph can stop after two lines when the heading already carries the meaning and the extra sentences would push the following action out of the first screen.</p>

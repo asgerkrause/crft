@@ -9,12 +9,12 @@ import test from "node:test";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 const fixturePaths = [
-  "README.md",
-  "AGENTS.md",
+  "GUIDE.md",
+  "reference-contract.md",
   "CRAFT.md",
   "craft",
   "examples",
-  "skills",
+  "SKILL.md",
   "reference/fixtures/public-contract.json",
   "reference/package.json",
   "reference/src/components/Header.astro",
@@ -56,7 +56,7 @@ function runCheck(root) {
 test("current repository contract passes", () => {
   const result = runCheck(sourceRoot);
   assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /PASS: CRFT contract — \d+ public tokens/);
+  assert.match(result.stdout, /PASS: crft contract — \d+ public tokens/);
 });
 
 test("the committed public contract must match emitted output", (t) => {
@@ -163,28 +163,28 @@ test("the token owner routes live authority to CSS", (t) => {
 
 test("retired holistic authority claims are rejected", (t) => {
   for (const claim of [
-    "CRFT is the system.",
-    "CRFT is design authority.",
-    "CRFT provides product strategy.",
-    "CRFT governs design judgment.",
+    "crft is the system.",
+    "crft is design authority.",
+    "crft provides product strategy.",
+    "crft governs design judgment.",
     "This guide owns product intent.",
-    "CRFT owns product strategy, not just CSS.",
+    "crft owns product strategy, not just CSS.",
   ]) {
     const root = makeFixture(t);
-    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    replace(root, "GUIDE.md", "# crft\n", `# crft\n\n${claim}\n`);
     const result = runCheck(root);
     assert.equal(result.status, 1, claim);
-    assert.match(result.stderr, /retired CRFT strategy claim/, claim);
+    assert.match(result.stderr, /retired crft strategy claim/, claim);
   }
 });
 
 test("explicit authority denials remain allowed", (t) => {
   for (const claim of [
-    "CRFT provides no product strategy.",
-    "CRFT supplies CSS without design judgment.",
+    "crft provides no product strategy.",
+    "crft supplies CSS without design judgment.",
   ]) {
     const root = makeFixture(t);
-    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    replace(root, "GUIDE.md", "# crft\n", `# crft\n\n${claim}\n`);
     const result = runCheck(root);
     assert.equal(result.status, 0, claim);
   }
@@ -193,10 +193,10 @@ test("explicit authority denials remain allowed", (t) => {
 test("mandatory copier and fluid-type claims are rejected", (t) => {
   for (const claim of ["The copier is required.", "Fluid type is mandatory."]) {
     const root = makeFixture(t);
-    replace(root, "README.md", "# CRFT\n", `# CRFT\n\n${claim}\n`);
+    replace(root, "GUIDE.md", "# crft\n", `# crft\n\n${claim}\n`);
     const result = runCheck(root);
     assert.equal(result.status, 1, claim);
-    assert.match(result.stderr, /retired CRFT strategy claim/, claim);
+    assert.match(result.stderr, /retired crft strategy claim/, claim);
   }
 });
 
@@ -208,7 +208,7 @@ test("adoption modes remain explicit", (t) => {
   assert.match(result.stderr, /adoption modes differ from the canonical four-mode contract/);
 });
 
-test("local extraction grants no CRFT hooks", (t) => {
+test("local extraction grants no crft hooks", (t) => {
   const root = makeFixture(t);
   replace(
     root,
@@ -218,7 +218,7 @@ test("local extraction grants no CRFT hooks", (t) => {
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /Local extraction must expose no CRFT hooks/);
+  assert.match(result.stderr, /Local extraction must expose no crft hooks/);
 });
 
 test("selected layers expose retained live hooks only", (t) => {
@@ -237,17 +237,17 @@ test("fluid type remains optional for projects", (t) => {
   assert.match(result.stderr, /craft\/type\.md must keep fluid type optional for projects/);
 });
 
-test("direct CRFT guidance rejects product authority", (t) => {
+test("direct crft guidance rejects product authority", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "skills/crft/SKILL.md",
-    "It does not supply product strategy, design judgment, taste, or product accessibility acceptance.",
+    "SKILL.md",
+    "crft owns the concrete CSS system, tokens, recipes, and contract.",
     "It supplies product strategy, design judgment, taste, and product accessibility acceptance.",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /retired CRFT strategy claim/);
+  assert.match(result.stderr, /retired crft strategy claim/);
 });
 
 test("the public token index rejects duplicate names", (t) => {
@@ -276,7 +276,7 @@ test("every indexed public token requires a non-empty job", (t) => {
 
 test("the HTML owner states the purpose-based identifier contract", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/html.md", "A section needs no ID by default.", "Every section needs identity.");
+  replace(root, "craft/html.md", "A direct `main > section` requires a meaningful, nonempty, unique `id`.", "Every section needs identity.");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing identifier doctrine/);
@@ -284,7 +284,7 @@ test("the HTML owner states the purpose-based identifier contract", (t) => {
 
 test("canonical examples reject names on generic wrappers", (t) => {
   const root = makeFixture(t);
-  replace(root, "README.md", "  <div class=\"c\">", "  <div class=\"c\" aria-label=\"Content\">");
+  replace(root, "GUIDE.md", "  <div class=\"c\">", "  <div class=\"c\" aria-label=\"Content\">");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("names a generic div wrapper"), result.stderr);
@@ -478,7 +478,7 @@ test("the finite utility surface remains source-backed", (t) => {
 
 test("documented color boundaries remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", ":root,\n  [data-theme],\n  [data-skin] {", ":root,\n  [data-theme],\n  [data-context] {");
+  replace(root, "styles/tokens.css", ":root,\n  [data-theme] {", ":root,\n  [data-context] {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("missing a documented skin or accent boundary"), result.stderr);
@@ -569,10 +569,10 @@ test("an unsupported accent route fails", (t) => {
 
 test("removed color-specific skin routes fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "  [data-skin='tone'] {", "  [data-skin='secondary'] {\n    --canvas: var(--canvas-base);\n  }\n\n  [data-skin='tone'] {");
+  replace(root, "styles/tokens.css", "  [data-theme='tone'] {", "  [data-theme='secondary'] {\n    --canvas: var(--canvas-base);\n  }\n\n  [data-theme='tone'] {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /explicit data-skin routes differ/);
+  assert.match(result.stderr, /explicit data-theme routes differ/);
 });
 
 test("confirmed example styles must declare their chosen project layer", (t) => {
@@ -633,7 +633,7 @@ test("the router records the retired tooling boundary", (t) => {
 
 test("adoption keeps the breaking migration record", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "contractVersion 2", "contractVersion future");
+  replace(root, "craft/adopt.md", "contractVersion 3", "contractVersion future");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("missing breaking migration guidance"), result.stderr);
@@ -657,7 +657,7 @@ test("retired topic references fail in examples", (t) => {
 
 test("the skill must stay a thin router", (t) => {
   const root = makeFixture(t);
-  const path = join(root, "skills/crft/SKILL.md");
+  const path = join(root, "SKILL.md");
   writeFileSync(path, `${readFileSync(path, "utf8")}\n${"detail ".repeat(1000)}`);
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -666,7 +666,7 @@ test("the skill must stay a thin router", (t) => {
 
 test("the skill starts with inspect and plan", (t) => {
   const root = makeFixture(t);
-  replace(root, "skills/crft/SKILL.md", "## Start", "## Begin");
+  replace(root, "SKILL.md", "## Start", "## Begin");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing the inspect-and-plan start/);
@@ -783,4 +783,30 @@ test("retired public token families fail", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("uses a retired token family"), result.stderr);
+});
+
+
+test("v3 cannot restore theme recipe rebinding or body resets", (t) => {
+  for (const css of [
+    '[data-theme] { --gap-lg: calc(var(--gap) * var(--gap-ratio)); }',
+    '[data-theme] { --h1-min: 2; --h1-size: 2rem; }',
+    ':where([data-theme]) { font-size: var(--body-size); }',
+    '[data-skin="tone"] { color: var(--text); }',
+  ]) {
+    const root = makeFixture(t);
+    const path = join(root, "styles/tokens.css");
+    writeFileSync(path, readFileSync(path, "utf8") + css);
+    const result = runCheck(root);
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /v3 (?:foundations|themes|rejects)/);
+  }
+});
+
+test("canonical examples reject nested theme geometry", (t) => {
+  const root = makeFixture(t);
+  const path = join(root, "examples/foundations/example.css");
+  writeFileSync(path, readFileSync(path, "utf8") + '\n@layer project { [data-theme="tone"] { @media (width > 10px) { padding: 3rem; } } }');
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /examples\/foundations\/example.css v3 themes must change color only/);
 });

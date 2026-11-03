@@ -8,7 +8,7 @@ const distDir = resolve(root, "dist");
 mkdirSync(distDir, { recursive: true });
 
 const prelude = "@layer reset, base, tokens, type, layout, grid, motion, utility;\n\n";
-const banner = "/* CRFT Standalone Distribution — Pure Native CSS with Cascade Layers */\n";
+const banner = "/* crft Standalone Distribution — Pure Native CSS with Cascade Layers */\n";
 
 const parts = [
   tokensWithoutFonts(readFileSync(resolve(root, "styles/tokens.css"), "utf8")),

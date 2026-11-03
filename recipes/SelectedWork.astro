@@ -1,0 +1,62 @@
+---
+import Card from "./Card.astro";
+
+interface Project {
+  title: string;
+  href: string;
+  type: string;
+  year: string;
+  summary: string;
+  image: { src: string; alt: string };
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  projects: Project[];
+}
+
+const { id, heading, intro, projects } = Astro.props;
+// Four projects zigzag across three tracks: wide, narrow, narrow, wide.
+const wide = (index: number) => (index % 3 === 0 ? "2" : undefined);
+---
+
+<section id={id}>
+  <div class="c">
+    <div class="s">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{intro}</p>
+    </div>
+    <div g="3">
+      {projects.map((project, index) => (
+        <Card c={wide(index)}>
+          <img src={project.image.src} alt={project.image.alt} width="1200" height="900" />
+          <p class="small">{project.type} · {project.year}</p>
+          <h3 class="h3"><a class="stretch" href={project.href}>{project.title}</a></h3>
+          <p>{project.summary}</p>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    /* The title link covers its card through ::after; the card owns position: relative. */
+    .stretch {
+      color: inherit;
+      text-decoration: none;
+      text-underline-offset: .18em;
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+
+      &:hover { text-decoration: underline; }
+      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import Card from "./Card.astro";
+
+interface Member {
+  name: string;
+  role: string;
+  bio: string;
+  portrait: { src: string; alt: string };
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  members: Member[];
+}
+
+const { id, heading, intro, members } = Astro.props;
+---
+
+<section id={id} data-theme="tone">
+  <div class="c">
+    <div class="s">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{intro}</p>
+    </div>
+    <div g="3">
+      {members.map((member) => (
+        <Card>
+          <img src={member.portrait.src} alt={member.portrait.alt} width="800" height="600" />
+          <div class="s">
+            <h3 class="h3">{member.name}</h3>
+            <p class="small">{member.role}</p>
+            <p>{member.bio}</p>
+          </div>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+

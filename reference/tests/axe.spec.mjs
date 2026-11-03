@@ -6,8 +6,7 @@ test("reference has no WCAG A/AA violations in supplied light/dark schemes", asy
   await page.goto("/");
   for (const mode of ["light", "dark"]) {
     await page.locator("html").evaluate((element, value) => {
-      element.setAttribute("data-theme", value);
-      element.setAttribute("data-mode", value);
+      element.style.colorScheme = value;
     }, mode);
     await expect(page.locator("html")).toHaveCSS("color-scheme", mode);
     await page.evaluate(() => Promise.all(document.getAnimations()

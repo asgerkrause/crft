@@ -7,6 +7,7 @@ import placeholder from "../assets/placehold.svg";
 <Section {...sections.layout}>
   <p slot="summary">Containers establish content measure. A stack groups one vertical flow; other arrangements belong to their local semantic owner.</p>
   <Specimen id="containers" title="Containers">
+    <p class="small">This specimen sets <code>--content-max: 36rem</code>: narrow, default, and wide caps are 24, 36, and 48rem. All three fit the available space on small screens.</p>
     <div class="sg-width-specimens">
       <div class="c sm"><span>Narrow container</span><code>.c.sm</code></div>
       <div class="c"><span>Default container</span><code>.c</code></div>
@@ -14,8 +15,17 @@ import placeholder from "../assets/placehold.svg";
     </div>
   </Specimen>
   <Specimen id="stacks" title="Stack">
-    <div class="sg-stack-sample s"><span>One</span><span>Two</span><span>Three</span></div>
-    <p><code>.s</code> consumes <code>--gap</code>. A project owns horizontal actions, alignment, and local spacing.</p>
+    <div class="sg-stack-list">
+      <div>
+        <p class="sg-specimen-label"><code>.s</code> · default <code>--gap</code></p>
+        <div class="sg-stack-sample s"><span>One</span><span>Two</span><span>Three</span></div>
+      </div>
+      <div>
+        <p class="sg-specimen-label"><code>.s</code> · <code>--gap: var(--gap-lg)</code></p>
+        <div class="sg-stack-sample s" style="--gap:var(--gap-lg)"><span>One</span><span>Two</span><span>Three</span></div>
+      </div>
+    </div>
+    <p class="small">Item padding stays the same. The shaded space between items is the stack's gap.</p>
   </Specimen>
   <Specimen id="image-frame" title="Image frame">
     <figure class="sg-scroll-example">

@@ -1,5 +1,5 @@
 {
-  "contractVersion": 2,
+  "contractVersion": 3,
   "packagingVersion": 1,
   "dirty": false,
   "publicTokens": [
@@ -230,7 +230,7 @@
     "--m-src-to",
     "--or"
   ],
-  "digest": "sha256:1f76d5a639278e19257136d8bc5d1157ed0a90646a017961d5297733c2d239c9",
+  "digest": "sha256:93c77367d09b1c30b92cb3dd904e451b14578e24b71065154b1fe8bf284629e1",
   "bans": [
     "never use --_fluid in product CSS or examples",
     "never use --l-cs in product CSS or examples",
@@ -249,10 +249,6 @@
     "never heading max-width; override the role's --ROLE-measure token"
   ],
   "themes": [
-    "dark",
-    "light"
-  ],
-  "skins": [
     "accent",
     "invert",
     "tone"
@@ -308,7 +304,6 @@
       "o",
       "l",
       "data-theme",
-      "data-skin",
       "data-accent",
       "data-scrub",
       "container",

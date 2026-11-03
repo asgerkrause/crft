@@ -1,13 +1,13 @@
 ---
-title: CRFT utilities
+title: crft utilities
 status: canonical
 owner: utilities
-read_when: Finding a public utility, deciding whether a utility belongs in CRFT, or checking hidden-content recovery.
+read_when: Finding a public utility, deciding whether a utility belongs in crft, or checking hidden-content recovery.
 ---
 
 # Utilities
 
-CRFT exposes a finite utility surface for stable operations used by unrelated markup. Utilities do not replace semantic elements, layout composition, components, or project CSS.
+crft exposes a finite utility surface for stable operations used by unrelated markup. Utilities do not replace semantic elements, layout composition, components, or project CSS.
 
 ## Public surface
 

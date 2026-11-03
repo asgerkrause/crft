@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { resolveAdoptRequest } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
-import { buildContract, hasExplicitWght, staticBans } from "./emit-contract.mjs";
+import { buildContract, v3CssErrors, hasExplicitWght, staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -48,7 +48,7 @@ const topicNames = [
 const topicDocs = topicNames.map((name) => `craft/${name}.md`);
 const retiredTopicDocs = ["strategy", "design", "structure", "css", "quality"].map((name) => `craft/${name}.md`);
 const retiredTopicPattern = /craft\/(?:strategy|design|structure|css|quality)\.md/i;
-const canonicalDocs = ["README.md", "AGENTS.md", "CRAFT.md", ...topicDocs, "skills/crft/SKILL.md"];
+const canonicalDocs = ["GUIDE.md", "reference-contract.md", "CRAFT.md", ...topicDocs, "SKILL.md"];
 const privateProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
   "--_fluid",
@@ -69,7 +69,7 @@ for (const path of retiredTopicDocs) {
   if (existsSync(new URL(path, root))) fail(`retired topic owner remains: ${path}`);
 }
 
-if (existsSync(new URL("tooling/", root))) fail("tooling/ remains; CRFT has no product CLI or analyzer");
+if (existsSync(new URL("tooling/", root))) fail("tooling/ remains; crft has no product CLI or analyzer");
 if (existsSync(new URL("styles/layers/", root))) fail("styles/layers/ remains; shared CSS has three physical owners");
 if (existsSync(new URL("styles/sans.ttf", root)) || existsSync(new URL("styles/mono.ttf", root))) {
   fail("TrueType fonts remain; WOFF is the copied font format");
@@ -94,21 +94,21 @@ for (const [path, source] of Object.entries(docsByPath)) {
 const retiredStrategyPatterns = [
   /\bCRFT is (?!not\b)[^.\n]*(?:frontend design|design system|complete [^.\n]*system|the system)\b/i,
   /\bCRFT is (?!not\b)(?:the\s+)?(?:product strategy|design authority|product accessibility authority)\b/i,
-  /\b(?:CRFT|It|This (?:file|owner|guide|document)|Composition|The (?:system|strategy|reference))\s+(?:owns|decides|approves|sets|supplies|provides|combines|governs|controls|directs|determines)(?:(?!\b(?:not|no|without)\b)[^.\n])*(?:product strategy|product intent|design judgment|visual judgment|taste|product accessibility|user-facing requirements|form behavior|product-state requirements)/i,
+  /\b(?:crft|It|This (?:file|owner|guide|document)|Composition|The (?:system|strategy|reference))\s+(?:owns|decides|approves|sets|supplies|provides|combines|governs|controls|directs|determines)(?:(?!\b(?:not|no|without)\b)[^.\n])*(?:product strategy|product intent|design judgment|visual judgment|taste|product accessibility|user-facing requirements|form behavior|product-state requirements)/i,
   /\bfluid type\s+(?:is|remains|must be|should be)\s+(?:required|mandatory)\b/i,
-  /\b(?:must|shall|required to)\s+(?:use|run)\s+(?:the\s+)?(?:CRFT\s+)?(?:copier|copy-system)\b/i,
+  /\b(?:must|shall|required to)\s+(?:use|run)\s+(?:the\s+)?(?:crft\s+)?(?:copier|copy-system)\b/i,
   /\b(?:copier|copy-system)[^.\n]*\b(?:is|remains)\s+(?:required|mandatory)\b/i,
 ];
 for (const [path, source] of Object.entries(docsByPath)) {
   for (const pattern of retiredStrategyPatterns) {
     const claim = source.match(pattern)?.[0];
-    if (claim) fail(`${path} contains retired CRFT strategy claim: ${claim}`);
+    if (claim) fail(`${path} contains retired crft strategy claim: ${claim}`);
   }
 }
 for (const path of referenceBrandSources) {
   const source = read(path);
   if (/\bseess\b|snz-frontend|snz-css-system/i.test(source)) fail(`${path} references a retired frontend source`);
-  if (!/crft/i.test(source)) fail(`${path} does not identify CRFT`);
+  if (!/crft|craft/i.test(source)) fail(`${path} does not identify crft`);
 }
 const referenceHeader = read("reference/src/components/Header.astro");
 if (!referenceHeader.includes('<header class="sg-header">') || referenceHeader.includes('<header id="top">')) {
@@ -125,7 +125,7 @@ const adoptionModes = adoptionModeRows.map(([name]) => name);
 const expectedAdoptionModes = ["Strategy only", "Local extraction", "Tokens only", "Explicit full adoption"];
 if (adoptionModes.join("|") !== expectedAdoptionModes.join("|")) fail("craft/adopt.md adoption modes differ from the canonical four-mode contract");
 for (const mode of ["Strategy only", "Local extraction"]) {
-  if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`craft/adopt.md ${mode} must expose no CRFT hooks`);
+  if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`craft/adopt.md ${mode} must expose no crft hooks`);
 }
 if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tokens only")?.[2] ?? "")) {
   fail("craft/adopt.md tokens-only adoption must expose retained live hooks only");
@@ -133,7 +133,7 @@ if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tok
 if (!craft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
   fail("CRAFT.md does not record the retired tooling boundary");
 }
-for (const migration of ["contractVersion 2", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
+for (const migration of ["contractVersion 3", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
   if (!adoption.includes(migration)) fail(`craft/adopt.md is missing breaking migration guidance: ${migration}`);
 }
 const routeBlock = craft.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
@@ -153,26 +153,26 @@ for (const [index, path] of topicDocs.entries()) {
     fail(`CRAFT.md route order is incorrect before ${path}`);
   }
 }
-const skill = docsByPath["skills/crft/SKILL.md"];
-if (!skill.includes("CRAFT.md")) fail("skills/crft/SKILL.md does not route through CRAFT.md");
-if (skill.length > 5000) fail("skills/crft/SKILL.md is no longer a thin router");
+const skill = docsByPath["SKILL.md"];
+if (!skill.includes("CRAFT.md")) fail("SKILL.md does not route through CRAFT.md");
+if (skill.length > 5000) fail("SKILL.md is no longer a thin router");
 const skillAsk = skill.match(/## Ask\n([\s\S]*?)\n## Detect/)?.[1] ?? "";
 const skillCopy = skill.match(/## Copy\n([\s\S]*?)\n## Work/)?.[1] ?? "";
-const skillWork = skill.match(/## Work\n([\s\S]*?)\n## Stop/)?.[1] ?? "";
+const skillWork = skill.match(/## Work\n([\s\S]*?)\nStop:/)?.[1] ?? "";
 for (const mode of expectedAdoptionModes) {
-  if (!skillAsk.toLowerCase().includes(mode.toLowerCase())) fail(`skills/crft/SKILL.md Ask is missing adoption mode: ${mode}`);
+  if (!skillAsk.toLowerCase().includes(mode.toLowerCase())) fail(`SKILL.md Ask is missing adoption mode: ${mode}`);
 }
-if (!/local extraction[^.\n]*tokens-only adoption[^.\n]*coexist/i.test(skillAsk) || !/extraction itself grants no CRFT hooks/i.test(skillAsk)) {
-  fail("skills/crft/SKILL.md Ask must allow mixed subsystem modes without granting extraction hooks");
+if (!/local extraction[^.\n]*tokens-only adoption[^.\n]*coexist/i.test(skillAsk) || !/extraction itself grants no crft hooks/i.test(skillAsk)) {
+  fail("SKILL.md Ask must allow mixed subsystem modes without granting extraction hooks");
 }
 if (!/copier[^.\n]*optional[^.\n]*whole-layer/i.test(skillCopy)) {
-  fail("skills/crft/SKILL.md Copy must keep the copier optional and whole-layer only");
+  fail("SKILL.md Copy must keep the copier optional and whole-layer only");
 }
 if (!/fluid type[^.\n]*(?:unnecessary|not needed|optional)[^.\n]*static semantic type tokens/i.test(skillWork)) {
-  fail("skills/crft/SKILL.md Work must keep fluid type optional for projects");
+  fail("SKILL.md Work must keep fluid type optional for projects");
 }
 if (!/file presence alone[^.\n]*not API/i.test(skill)) {
-  fail("skills/crft/SKILL.md must inspect retained live hooks after project simplification");
+  fail("SKILL.md must inspect retained live hooks after project simplification");
 }
 if (!/fluid type[^.\n]*(?:not a project requirement|optional)/i.test(docsByPath["craft/type.md"])) {
   fail("craft/type.md must keep fluid type optional for projects");
@@ -188,7 +188,7 @@ const documentedHooks = {
   "craft/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
   "craft/utilities.md": [".sr", ".sr.focusable", ".squircle"],
   "craft/motion.md": [".img-w", "data-scrub"],
-  "craft/color.md": ["data-theme", "data-skin", "data-accent"],
+  "craft/color.md": ["data-theme", "data-accent"],
 };
 for (const [path, hooks] of Object.entries(documentedHooks)) {
   for (const hook of hooks) {
@@ -206,14 +206,14 @@ else if (unique(indexedHooks).sort().join("|") !== expectedHooks.join("|")) {
   fail("CRAFT.md hook index differs from the documented hook map");
 }
 if (!skill.includes("Do not add a spacing, alignment, or display matrix")) {
-  fail("skills/crft/SKILL.md does not reject a spacing matrix");
+  fail("SKILL.md does not reject a spacing matrix");
 }
-if (!skill.includes("--layers")) fail("skills/crft/SKILL.md does not route overlay copy through --layers");
-if (!skill.includes("inventory")) fail("skills/crft/SKILL.md does not require inventory before token fill");
-if (!skill.includes("Do not invent")) fail("skills/crft/SKILL.md does not refuse invented CRFT without a copy");
-if (!skill.includes("at most three")) fail("skills/crft/SKILL.md does not cap topic reads");
-if (!skill.includes("class on `section`")) fail("skills/crft/SKILL.md does not forbid class on section");
-if (!skill.includes("## Start")) fail("skills/crft/SKILL.md is missing the inspect-and-plan start");
+if (!skill.includes("--layers")) fail("SKILL.md does not route overlay copy through --layers");
+if (!skill.includes("inventory")) fail("SKILL.md does not require inventory before token fill");
+if (!skill.includes("Do not invent")) fail("SKILL.md does not refuse invented crft without a copy");
+if (!skill.includes("at most three")) fail("SKILL.md does not cap topic reads");
+if (!skill.includes("class on `section`")) fail("SKILL.md does not forbid class on section");
+if (!skill.includes("## Start")) fail("SKILL.md is missing the inspect-and-plan start");
 const banIndexLines = markedCodeNames(craft, "ban-index", /^(.+)$/gm);
 if (!banIndexLines) fail("CRAFT.md is missing the ban index");
 else {
@@ -222,13 +222,14 @@ else {
     if (!indexed.includes(ban)) fail(`CRAFT.md ban index is missing: ${ban}`);
   }
 }
-if (!skill.includes("craft/layout.md")) fail("skills/crft/SKILL.md does not route spacing through layout.md");
+if (!skill.includes("craft/layout.md")) fail("SKILL.md does not route spacing through layout.md");
 if (!docsByPath["craft/layout.md"].includes("## Property form")) fail("craft/layout.md is missing ## Property form");
 if (!docsByPath["craft/layout.md"].includes("*-block-start")) fail("craft/layout.md is missing *-block-start");
 
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
 const allCss = files.map((file) => source[file]).join("\n");
+for (const file of files) for (const error of v3CssErrors(read(file))) fail(`${file} ${error}`);
 const tokensCss = source["styles/tokens.css"];
 const frameworkCss = source["styles/crft.css"];
 const typeCss = cssLayerBlock(frameworkCss, "type");
@@ -309,7 +310,7 @@ if (!tokenDocument.includes("styles/tokens.css") || !/sole catalog and authority
   fail("craft/tokens.md must route live token values and formulas to styles/tokens.css");
 }
 for (const signal of [
-  "A section needs no ID by default.",
+  "A direct `main > section` requires a meaningful, nonempty, unique `id`.",
   "Do not put a class on `section`.",
   "Add `aria-labelledby` only when the section should become a useful named `region` landmark.",
   "Do not style through IDs.",
@@ -338,11 +339,11 @@ for (const [family, file] of [["sans", "sans.woff"], ["mono", "mono.woff"]]) {
   const face = [...fontsCss.matchAll(/@font-face\s*\{[^}]*\}/g)].map((match) => match[0]).find((block) => block.includes(`font-family: "${family}"`));
   if (!face || !face.includes(`src: url("./${file}") format("woff");`) || !/font-weight:\s*100 900;/.test(face)) fail(`${family} must load ./${file} with a registered 100 900 font-weight range`);
 }
-for (const signal of [":where(h1)", ":where(h2)", ":where(h3, h4, h5, h6)", ":where(small)", ":where(label)", ":where(figcaption)", ":where([data-theme])"]) {
+for (const signal of [":where(h1)", ":where(h2)", ":where(h3, h4, h5, h6)", ":where(small)", ":where(label)", ":where(figcaption)"]) {
   if (!hasCssSignal(typeCss, signal)) fail(`type.css is missing native/context mapping ${signal}`);
 }
 if (!hasCssSignal(tokensCss, "--_fluid: clamp(")) fail("tokens.css is missing fluid font-size clamping");
-if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :root, [data-theme] {")) fail("type recipes require a pow feature gate and context rebinding");
+if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :root {")) fail("type recipes require a pow feature gate and root-only recipes");
 for (const role of typeRoles) {
   if (!new RegExp(`--${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
 }
@@ -435,7 +436,7 @@ const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s
 if (actualUtilityHooks.join("|") !== expectedUtilityHooks.join("|")) fail("utility.css selectors differ from the documented finite utility surface");
 if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is missing documented hook .sr.focusable");
 if (!hasCssSignal(utilityCss, ".squircle { corner-shape: squircle; }")) fail("utility.css is missing documented hook .squircle");
-if (!hasCssSignal(tokensCss, ":root, [data-theme], [data-skin] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
+if (!hasCssSignal(tokensCss, ":root, [data-theme] {") || !hasCssSignal(tokensCss, "[data-accent] {")) {
   fail("tokens.css is missing a documented skin or accent boundary");
 }
 const resetCss = cssLayerBlock(baseCss, "reset");
@@ -496,18 +497,18 @@ if (/@media\s*\(\s*width\b/.test(gridCss)) fail("grid.css must use container que
 if (/(?:^|})\s*(?:\.c|\[c\])\s*\{[^}]*\bcontainer\s*:/s.test(layoutCss)) fail("only section > .c may establish the query boundary");
 
 const accentRoutes = unique([...tokensCss.matchAll(/\[data-accent\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
-const skinRoutes = unique([...tokensCss.matchAll(/\[data-skin\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
+const skinRoutes = unique([...tokensCss.matchAll(/\[data-theme\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 if (accentRoutes.join("|") !== supportedAccentRoutes.join("|")) fail("tokens.css explicit data-accent routes differ from the contract");
-if (skinRoutes.join("|") !== supportedSkins.join("|")) fail("tokens.css explicit data-skin routes differ from the contract");
+if (skinRoutes.join("|") !== supportedSkins.join("|")) fail("tokens.css explicit data-theme routes differ from the contract");
 const documentedAccentRoutes = markedCodeNames(docsByPath["craft/color.md"], "accent-value-index", /`([a-z-]+)`/g)?.sort();
-const documentedSkinRoutes = markedCodeNames(docsByPath["craft/color.md"], "skin-value-index", /`([a-z-]+)`/g)?.sort();
+const documentedSkinRoutes = markedCodeNames(docsByPath["craft/color.md"], "theme-value-index", /`([a-z-]+)`/g)?.sort();
 if (!documentedAccentRoutes || documentedAccentRoutes.join("|") !== accentRoutes.join("|")) fail("craft/color.md accent routes differ from source");
 if (!documentedSkinRoutes || documentedSkinRoutes.join("|") !== skinRoutes.join("|")) fail("craft/color.md skin routes differ from source");
 if (!motionCss.includes("&[data-scrub='reverse']>img")) fail("motion.css is missing reverse scrub behavior");
 if (/\.(?:btn|crd|lnk|card)(?:[\s,:.{#]|$)/i.test(allCss)) fail("canonical CSS styles a project component naming convention");
 
 for (const property of privateProperties) {
-  if ((!tokenDocument.includes(property) || !docsByPath["AGENTS.md"].includes(property)) && !property.startsWith("--_")) fail(`${property} is not documented as private`);
+  if ((!tokenDocument.includes(property) || !docsByPath["reference-contract.md"].includes(property)) && !property.startsWith("--_")) fail(`${property} is not documented as private`);
   if (documentedTokens?.includes(property)) fail(`${property} appears in the public token index`);
 }
 if (/\[(?:t|s|x|y)[~=$*^\]]/.test(allCss)) fail("canonical CSS retains legacy hooks");
@@ -522,7 +523,7 @@ const idReferenceAttributes = [
 ];
 const allowedExampleClasses = new Set([
   "action", "action-secondary", "banner", "board-frame", "btn", "btns", "centered", "chip", "crd", "focusable",
-  "img-w", "index", "invites", "issue", "issue-summary", "lnk", "lnks", "northline", "panel", "pill",
+  "img-w", "index", "invites", "issue", "issue-summary", "lnk", "lnks", "northline", "notice", "panel", "pill",
   "proof-tile", "signal", "skeleton", "sr", "c", "s", "sm", "lg", ...typeRoles,
 ]);
 const validateIdentifiers = (html, path) => {
@@ -561,8 +562,8 @@ const validateExampleMarkup = (html, path) => {
       if (!allowedExampleClasses.has(hook)) fail(`${path} uses unlisted example class .${hook}`);
     }
   }
-  for (const value of attributeValues(active, "data-skin")) {
-    if (value && !supportedSkins.includes(value)) fail(`${path} uses unsupported data-skin ${value}`);
+  for (const value of attributeValues(active, "data-theme")) {
+    if (!supportedSkins.includes(value)) fail(`${path} uses unsupported data-theme ${value}`);
   }
   for (const value of attributeValues(active, "data-accent")) {
     if (!supportedAccentRoutes.includes(value)) fail(`${path} uses unsupported data-accent ${value}`);
@@ -572,6 +573,7 @@ const validateExampleMarkup = (html, path) => {
 };
 const validateExampleCss = (css, path) => {
   const active = stripCssComments(css);
+  for (const error of v3CssErrors(css)) fail(`${path} ${error}`);
   if (!/^\s*@layer\s+project\s*\{/.test(active)) fail(`${path} must declare its chosen project layer`);
   assertWeightVariationPair(active, path);
   if (/(?:^|[,{}])\s*#[a-z][a-z0-9_-]*/im.test(active)) fail(`${path} styles through an ID selector`);
@@ -653,5 +655,5 @@ if (savedContract !== undefined && (savedContract === null || typeof savedContra
 }
 
 if (!process.exitCode) {
-  console.log(`PASS: CRFT contract — ${publicTokens.length} public tokens, ${privateProperties.length} private properties, ${preludeLayers.length} layers, ${files.length} shared stylesheets`);
+  console.log(`PASS: crft contract — ${publicTokens.length} public tokens, ${privateProperties.length} private properties, ${preludeLayers.length} layers, ${files.length} shared stylesheets`);
 }

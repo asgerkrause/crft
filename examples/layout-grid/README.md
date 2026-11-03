@@ -28,7 +28,7 @@ Large: 3 tracks           Medium: 2 tracks       Small / no query
 This runnable specimen loads the complete reference through `../../styles/global.css`. Consumers need explicit full adoption to use these hooks and own their CSS entry rather than copying `global.css`.
 
 - Shared: `.c.lg`, `.s`, `g="3-2"`, `c="2-1"`, `c="0"`, native type, colors, landmark spacing, and stacked fallback.
-- Project: item padding, dashed teaching borders, and a semantic surface. The articles are content, not a CRFT card API. No new class or token is needed.
+- Project: item padding, dashed teaching borders, and a semantic surface. The articles are content, not a crft card API. No new class or token is needed.
 - Boundary: `section > .c` is the named `container`; its descendant `[g]` owns tracks. Both articles and the full-row aside are direct grid children. Semantic section/aside roles describe content, not geometry.
 
 ## Tracks, spans, and order

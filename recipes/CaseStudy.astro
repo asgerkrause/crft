@@ -1,0 +1,139 @@
+---
+interface Fact {
+  label: string;
+  value: string;
+}
+
+interface Chapter {
+  heading: string;
+  paragraphs: string[];
+}
+
+interface Metric {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  id: string;
+  title: string;
+  summary: string;
+  facts: Fact[];
+  image: { src: string; alt: string };
+  chapters: Chapter[];
+  metrics: Metric[];
+  quote: { text: string; name: string; role: string };
+  next: { title: string; href: string };
+}
+
+const { id, title, summary, facts, image, chapters, metrics, quote, next } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c">
+    <div class="s">
+      <h2 class="display">{title}</h2>
+      <p class="lead">{summary}</p>
+      <dl g="3" class="facts">
+        {facts.map((fact) => (
+          <div class="s">
+            <dt class="small">{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+    <figure>
+      <img src={image.src} alt={image.alt} width="1200" height="900" />
+    </figure>
+    <div g="3" class="story">
+      <div class="s" c="2">
+        {chapters.map((chapter) => (
+          <div class="chapter s">
+            <h3 class="h3">{chapter.heading}</h3>
+            {chapter.paragraphs.map((text) => <p class="body">{text}</p>)}
+          </div>
+        ))}
+      </div>
+      <aside class="s" c="1">
+        <dl class="metrics">
+          {metrics.map((metric) => (
+            <div>
+              <dt class="small">{metric.label}</dt>
+              <dd class="h2">{metric.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <blockquote>
+          <p class="body">{quote.text}</p>
+          <footer class="small"><strong>{quote.name}</strong>, {quote.role}</footer>
+        </blockquote>
+      </aside>
+    </div>
+    <p class="next"><a href={next.href}>Next project: {next.title}</a></p>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    figure { margin: 0; }
+
+    figure img {
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+
+    .facts {
+      padding-top: var(--padding);
+      border-top: var(--border-width) solid var(--border);
+
+      dt, dd { margin: 0; }
+    }
+
+    .chapter {
+      padding-top: var(--padding);
+      border-top: var(--border-width) solid var(--border);
+
+      h3 { margin: 0; }
+
+      + .chapter { margin-top: var(--padding); }
+    }
+
+    .metrics {
+      margin: 0;
+      display: grid;
+      gap: var(--gap);
+
+      > div {
+        display: grid;
+        gap: var(--gap-xs);
+      }
+
+      dt, dd { margin: 0; }
+    }
+
+    blockquote {
+      margin: 0;
+      padding: var(--padding);
+      border-left: 3px solid var(--accent);
+
+      p { margin: 0; }
+      footer { margin-top: var(--gap-sm); }
+    }
+
+    .next {
+      margin: 0;
+
+      a {
+        color: inherit;
+        text-underline-offset: .18em;
+
+        &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      }
+    }
+  }
+</style>

@@ -37,11 +37,11 @@ Landmarks provide document meaning. `.c` provides content measure and structural
 
 The exact `section > .c` relationship establishes the named `container` inline-size query context. Future responsive descendants would query the available width inside this container, rather than the viewport. Header and footer `.c` elements provide measure and flow but remain intrinsic: they do not establish that named context.
 
-This shell needs no grid or container query. If content later needs a responsive `[g]`, put it inside the section's `.c`, on a descendant rather than on the boundary itself. Without an eligible ancestor or container-query support, CRFT's responsive grid stays stacked. The heading and paragraph here remain in normal flow without query support.
+This shell needs no grid or container query. If content later needs a responsive `[g]`, put it inside the section's `.c`, on a descendant rather than on the boundary itself. Without an eligible ancestor or container-query support, crft's responsive grid stays stacked. The heading and paragraph here remain in normal flow without query support.
 
 ## CSS ownership
 
-In this repository, the document loads `../../styles/global.css` exactly once as its CRFT entry, followed by the project-owned `example.css`. The CRFT entry declares the layer order and imports `tokens.css` and `crft.css`; the example declares its later `project` layer.
+In this repository, the document loads `../../styles/global.css` exactly once as its crft entry, followed by the project-owned `example.css`. The crft entry declares the layer order and imports `tokens.css` and `crft.css`; the example declares its later `project` layer.
 
 A consumer must explicitly adopt the full framework to use this shell's `.c`, `.s`, and `.sr.focusable` hooks. Consumers do not copy `global.css`. After full adoption, put the prelude and imports in the project's existing CSS entry, with paths relative to that entry:
 
@@ -52,7 +52,7 @@ A consumer must explicitly adopt the full framework to use this shell's `.c`, `.
 @import "./crft.css";
 ```
 
-Replace the repository CRFT link with one link to that consumer-owned entry. Keep the small presentation rules in the project's normal CSS owner. Strategy-only, local extraction, and tokens-only adoption do not grant these framework hooks; see [`craft/adopt.md`](../../craft/adopt.md).
+Replace the repository crft link with one link to that consumer-owned entry. Keep the small presentation rules in the project's normal CSS owner. Strategy-only, local extraction, and tokens-only adoption do not grant these framework hooks; see [`craft/adopt.md`](../../craft/adopt.md).
 
 ## Verify
 

@@ -1,5 +1,5 @@
 ---
-title: CRFT motion
+title: crft motion
 status: canonical
 owner: motion
 read_when: Adding motion, image scrub, view transitions, reduced-motion behavior, or unsupported-feature fallback.
@@ -87,7 +87,7 @@ The public image enhancement is:
 
 Use `data-scrub="reverse"` to reverse travel. Apply the hook only when the wrapper has a deliberate height and crop in project CSS.
 
-CRFT activates scrub only when view timelines are supported and the user has not requested reduced motion. Otherwise the image remains static. The generic `[data-scrub]` rule supplies internal progress to this public image hook. It is not a separate documented consumer feature.
+crft activates scrub only when view timelines are supported and the user has not requested reduced motion. Otherwise the image remains static. The generic `[data-scrub]` rule supplies internal progress to this public image hook. It is not a separate documented consumer feature.
 
 Do not scrub proof that must remain fully visible, interactive media, text, or controls.
 
@@ -121,9 +121,9 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for a comple
 
 Prefer intact text with the type role’s wrapping behavior. CSS cannot reliably address rendered lines because line breaks change with width, fonts, content, language, and user settings.
 
-Word, character, or line splitting is project JavaScript, not CRFT API. Use it only when a signature motion earns the lifecycle cost. Preserve one coherent accessible reading, selection, copy, search, and translation result. Recompute after relevant font, size, and content changes. Remove decorative fragmentation under reduced motion when the static text is sufficient. Clean up generated nodes and observers when the view is replaced.
+Word, character, or line splitting is project JavaScript, not crft API. Use it only when a signature motion earns the lifecycle cost. Preserve one coherent accessible reading, selection, copy, search, and translation result. Recompute after relevant font, size, and content changes. Remove decorative fragmentation under reduced motion when the static text is sufficient. Clean up generated nodes and observers when the view is replaced.
 
-Do not hand-author spans around every word or copy a text-splitting component into CRFT. Two unrelated project uses with accessibility and lifecycle evidence are the minimum trigger to reconsider shared guidance.
+Do not hand-author spans around every word or copy a text-splitting component into crft. Two unrelated project uses with accessibility and lifecycle evidence are the minimum trigger to reconsider shared guidance.
 
 ## Project interaction
 

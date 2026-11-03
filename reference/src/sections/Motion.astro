@@ -17,6 +17,7 @@ import placeholder from "../assets/placehold.svg";
 
   <Specimen id="motion-roles" title="Motion roles">
     <div class="s sg-motion-groups" data-fixture="reduced-motion">
+      <div class="sg-motion-controls" hidden>
       <fieldset class="sg-motion-speed">
         <legend>Preview duration</legend>
         <div>
@@ -27,6 +28,8 @@ import placeholder from "../assets/placehold.svg";
           <label><input class="sr" type="radio" name="motion-speed" value="slowest" checked>Slowest <code>--duration-xl</code></label>
         </div>
       </fieldset>
+      <button type="button" class="sg-motion-replay">Replay from start</button>
+      </div>
       <div class="sg-motion-list">
         <div class="sg-motion-demo" style="--sg-motion-ease:var(--ease-in)">
           <div class="sg-motion-track" aria-hidden="true"><i></i></div><span>In</span><code>--ease-in</code>
@@ -45,10 +48,11 @@ import placeholder from "../assets/placehold.svg";
         </div>
       </div>
     </div>
-    <p class="small">Reduced motion resolves these roles to a near-instant linear path.</p>
+    <p class="small">Each replay starts all five bars together, reaches the same marker in the selected duration, then rests. Space beyond the marker keeps spring overshoot visible. Replaying starts a fresh comparison. Reduced motion and the static fallback show the same endpoint.</p>
   </Specimen>
 
   <Specimen id="scroll-linked-motion" title="Scroll-linked motion">
+    <p class="small">The frame stays fixed. The image is taller by its travel distance, keeping the crop covered in both directions. Reduced motion keeps a static crop.</p>
     <div g="2">
       <figure class="sg-scroll-example">
         <div class="img-w" data-scrub data-fixture="progressive-scroll-default"><img alt="" width="1005" height="1005" src={placeholder.src}></div>
@@ -65,3 +69,38 @@ import placeholder from "../assets/placehold.svg";
     <p>Supported browsers animate same-origin navigation of <code>main</code> with <code>--transition-*</code>. Header and footer keep their names. Reduced motion removes the animation.</p>
   </Specimen>
 </Section>
+
+<script>
+  const comparison = document.querySelector<HTMLElement>(".sg-motion-groups");
+  const controls = comparison?.querySelector<HTMLElement>(".sg-motion-controls");
+  const replay = comparison?.querySelector<HTMLButtonElement>(".sg-motion-replay");
+  if (comparison && controls && replay) {
+    const bars = Array.from(comparison.querySelectorAll<HTMLElement>(".sg-motion-track > i"));
+    const preference = matchMedia("(prefers-reduced-motion: reduce)");
+    let animations: Animation[] = [];
+    function stop() {
+      animations.forEach((animation) => animation.cancel());
+      animations = [];
+    }
+    replay.addEventListener("click", () => {
+      stop();
+      if (preference.matches) return;
+      // Replay is an explicit timing specimen, including keyboard activation.
+      const start = document.timeline.currentTime;
+      animations = bars.map((bar) => {
+        const style = getComputedStyle(bar);
+        const time = style.getPropertyValue("--sg-motion-preview-duration").trim();
+        const animation = bar.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+          duration: parseFloat(time) * (time.endsWith("ms") ? 1 : 1000),
+          easing: style.getPropertyValue("--sg-motion-ease").trim(),
+        });
+        animation.startTime = start;
+        return animation;
+      });
+    });
+    controls.addEventListener("change", stop);
+    preference.addEventListener("change", stop);
+    window.addEventListener("pagehide", stop);
+    controls.hidden = false;
+  }
+</script>

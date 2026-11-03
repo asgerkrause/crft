@@ -1,7 +1,7 @@
 ---
 status: example
 canonical: false
-use_when: A brand needs distinctive type, accent, radius, and composition while keeping its copied CRFT source maintainable.
+use_when: A brand needs distinctive type, accent, radius, and composition while keeping its copied crft source maintainable.
 not_for: Minting shared tokens or utilities from one brand, scattering base brand values outside the token owner, or treating art direction as public API.
 crft_api: confirmed
 ---
@@ -13,9 +13,9 @@ Northline Press needs display-led type, signal color, sharp radii, and an asymme
 ## Demonstrates
 
 - base brand values owned by copied `styles/tokens.css`;
-- campaign-only accent and radius overrides scoped to `.northline`;
+- root radius recipe and campaign-only accent overrides scoped to `.northline`;
 - narrow type-measure overrides through matching role tokens;
-- `section > .c.lg`, public grid spans, nested skins, and accent routing;
+- `section > .c.lg`, public grid spans, nested themes, and accent routing;
 - project-owned hairlines, index marks, board frame, action presentation, and progressively enhanced issue stagger.
 
 Read [`markup.html`](markup.html) and [`example.css`](example.css).
@@ -43,7 +43,7 @@ The campaign variation is scoped so it cannot leak into unrelated product chrome
 
 ## Verify
 
-Render large, medium, and small. Check nested skins and both schemes. Test title wrapping, source order, focus, and solid accent contrast. Confirm base brand values are not scattered through product rules.
+Render large, medium, and small. Check nested themes and both schemes. Test title wrapping, source order, focus, and solid accent contrast. Confirm base brand values are not scattered through product rules.
 
 ```sh
 node scripts/check-system.mjs
@@ -51,4 +51,4 @@ node scripts/check-system.mjs
 
 ## Limits
 
-Campaign composition, action styling, index marks, webfont loading, and asset pipelines remain project-owned. One campaign does not prove shared CRFT API.
+Campaign composition, action styling, index marks, webfont loading, and asset pipelines remain project-owned. One campaign does not prove shared crft API.

@@ -2,7 +2,7 @@
 status: example
 canonical: false
 use_when: A written product brief must drive a full page without a visual reference.
-not_for: Pixel-matching a screenshot or promoting brief-specific presentation into CRFT.
+not_for: Pixel-matching a screenshot or promoting brief-specific presentation into crft.
 crft_api: confirmed
 ---
 
@@ -10,14 +10,14 @@ crft_api: confirmed
 
 Brief:
 
-> Help a skeptical technical lead decide to copy CRFT for one marketing site. Lead with “structure without a component tax,” one primary action, ownership proof, and clear non-goals.
+> Help a skeptical technical lead decide to copy crft for one marketing site. Lead with “structure without a component tax,” one primary action, ownership proof, and clear non-goals.
 
 ## Demonstrates
 
 - strategy translated into section jobs and source order;
 - one thesis and primary action group;
 - an ownership ladder, proof claims, refusal strip, FAQ, and closing action;
-- `section > .c`, public grid and type roles, `tone` and `invert` skins;
+- `section > .c`, public grid and type roles, `tone` and `invert` themes;
 - project-owned action and editorial presentation.
 
 Read [`markup.html`](markup.html) and [`example.css`](example.css).

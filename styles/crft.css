@@ -1,3 +1,5 @@
+/* Craft semantic contract: 3. */
+/* crft by Asger Krause and SANITIZE Studio. MIT License. */
 /* Reset: neutralize the user agent. No brand. No layout. No tokens. */
 @layer reset {
   *,
@@ -331,8 +333,7 @@
     touch-action: manipulation;
   }
 
-  [data-theme],
-  [data-skin] {
+  [data-theme] {
     background: var(--canvas);
     color: var(--text);
   }
@@ -370,8 +371,7 @@
 
 /* Type: native defaults and intentional visual roles. */
 @layer type {
-  body,
-  :where([data-theme]) {
+  body {
     font-family: var(--body-font);
     font-size: var(--body-size);
     font-weight: var(--body-weight);

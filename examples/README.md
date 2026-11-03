@@ -4,7 +4,7 @@ canonical: false
 scope: examples/**
 ---
 
-# CRFT examples
+# crft examples
 
 These runnable specimens show decisions in context. They are evidence, not public API. When an example conflicts with `CRAFT.md`, `craft/**`, or `styles/**`, fix the example.
 
@@ -20,7 +20,7 @@ Read the [semantic structure](../craft/html.md#landmarks-and-regions), [layout r
 | Copy-first splits | [HTML](layout-split/markup.html) | [CSS](layout-split/example.css) | [Equal and asymmetric text/media layouts](layout-split/README.md) |
 | Responsive grid spans | [HTML](layout-grid/markup.html) | [CSS](layout-grid/example.css) | [Tracks, featured spans, and full rows](layout-grid/README.md) |
 
-Landmarks describe document meaning; containers, stacks, and grids describe layout. The focused recipes isolate those relationships without prescribing a product design. Their `.centered`, `.btns`, `.lnks`, `.btn`, and `.lnk` classes are project-owned conventions, not CRFT API.
+Landmarks describe document meaning; containers, stacks, and grids describe layout. The focused recipes isolate those relationships without prescribing a product design. Their `.centered`, `.btns`, `.lnks`, `.btn`, and `.lnk` classes are project-owned conventions, not crft API.
 
 ## Worked examples
 
@@ -32,7 +32,7 @@ These existing full-page specimens combine more decisions:
 | [`page-from-brief/`](page-from-brief/) | Turn a product argument into a page |
 | [`page-from-reference/`](page-from-reference/) | Translate supplied visual evidence without false fidelity |
 | [`product-interface/`](product-interface/) | Build native forms and truthful product states |
-| [`branded-extension/`](branded-extension/) | Add scoped brand composition without expanding CRFT API |
+| [`branded-extension/`](branded-extension/) | Add scoped brand composition without expanding crft API |
 
 Each directory contains:
 
@@ -46,18 +46,18 @@ Serve the repository root to open a specimen's `markup.html`. In this repository
 
 Consumers do not copy `global.css`. These specimens use framework hooks, so reproducing them requires explicit full adoption and the prelude/imports in the project's existing CSS entry. Replace the repository stylesheet link with that consumer-owned entry. Keep example presentation in the project's normal CSS owner; the specimens use a later `project` layer. See [adoption modes and entry setup](../craft/adopt.md#copy-tokens-or-the-full-framework).
 
-Strategy-only, local extraction, and tokens-only adoption remain valid choices, but they do not grant framework hooks such as `.c`, `.s`, or `[g]`. Rework the affected layout in project CSS when choosing those modes.
+Strategy-only, local extraction, and tokens-only adoption remain valid choices, but they do not grant framework hooks such as `.c`, `.s`, or `[g]`. Rework the affected layout in project CSS when choosing those modes. Example styles use an explicit `project` layer for portability. Projects may use another coherent owner.
 
 ## Rules
 
-- IDs appear only when fragments, native or ARIA relationships, behavior, integration, or stable external identity need them.
+- Direct `main > section` elements require meaningful unique IDs. Nested sections need IDs only for useful relationships.
 - Sections become named regions only when the landmark improves navigation.
 - Numbered responsive grids sit below `section > .c`; intrinsic fit/fill grids need no named container.
 - `o` always uses all large-medium-small positions.
 - Public token names come from `styles/tokens.css`.
-- Private properties never appear. `data-theme` selects only supplied light/dark schemes.
+- Private properties never appear. `data-theme="invert|tone|accent"` changes colors only. Root `color-scheme` selects light/dark.
 - `.btn`, `.crd`, `.lnk`, and optional `.btns`/`.lnks` groups remain [project conventions](../craft/components.md).
-- Brand values belong in the copied token owner. Local campaign variations may be scoped.
+- Brand values belong in the copied token owner. Typography and spacing recipes belong on root. Local final-role tokens may be scoped.
 
 ## Verify
 
@@ -68,3 +68,5 @@ git diff --check
 ```
 
 Then render the chosen example at relevant sizes and states. Check source order, keyboard behavior, focus, contrast, reduced motion, and unsupported-feature fallbacks. Static confirmation does not prove strategy or rendered quality.
+
+Run `bun run dev` from `reference/`, then open `/examples/` or `/brands/`.

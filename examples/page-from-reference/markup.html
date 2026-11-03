@@ -1,53 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Example: page from reference (non-canonical)</title>
-    <!--
-      Repository specimen: /styles/global.css is the CRFT entry, loaded once.
-      Consumer: explicitly adopt the full framework; do not copy global.css.
-      Put the layer prelude and tokens.css/crft.css imports in the project's
-      existing CSS entry and replace the CRFT link below with that entry.
-      Keep example.css presentation in the project's normal CSS owner.
-    -->
-    <link rel="stylesheet" href="/styles/global.css" />
-    <link rel="stylesheet" href="./example.css" />
-  </head>
-  <body>
-    <main>
-      <!--
-        section > .c establishes the named container. data-scrub is deliberate
-        because project CSS gives the image wrapper a stable crop and height.
-      -->
-      <section data-skin="tone">
-        <div class="c lg">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Readable systems — Field notes</title><link rel="stylesheet" href="/styles/global.css"><link rel="stylesheet" href="./example.css"></head>
+<body>
+  <header><nav aria-label="Editorial"><a href="/examples/">Field notes</a> · <a href="#related">Related reading</a></nav></header>
+  <main>
+    <section id="readable-systems" data-theme="tone">
+      <div class="c lg">
+        <article>
+          <header><h1>Editorial systems for complex ideas.</h1><p class="lead">A clear structure gives strong work room to speak.</p><p>Northline editorial desk · 4-minute read</p></header>
           <div g="12-6">
-            <header c="5-3" class="s">
-              <p class="small">Field notes</p>
-              <h1>Editorial systems for complex ideas.</h1>
-              <p class="lead">
-                A clear structure gives strong work room to speak without
-                inventing a component library for every band.
-              </p>
-              <p>
-                <a class="action" href="/systems">Read the system handbook</a>
-              </p>
-            </header>
-
-            <figure class="img-w" data-scrub c="7-3">
-              <img
-                src="/media/hero.webp"
-                alt="Layered editorial spreads on a desk"
-                width="1600"
-                height="1000"
-                loading="eager"
-                decoding="async"
-              />
+            <div c="7-4" class="s">
+              <h2>Start with the reading order</h2>
+              <p>A page first makes a promise, then supplies evidence. Headings help readers find that evidence without reading every line.</p>
+              <p>Keep the article in source order. A narrow screen changes the arrangement, but the argument still moves from claim to evidence.</p>
+              <h2>Give the figure a job</h2>
+              <p>This figure maps the relationship between a claim and its supporting proof. Its caption explains the same relationship in text.</p>
+              <blockquote><p>A useful layout makes the argument easier to follow.</p></blockquote>
+            </div>
+            <figure c="5-2">
+              <div class="img-w" data-scrub><img src="./argument.svg" alt="Claim supported by evidence, followed by a next step" width="400" height="360"></div>
+              <figcaption>A claim earns trust through evidence before asking readers to act.</figcaption>
             </figure>
           </div>
-        </div>
-      </section>
-    </main>
-  </body>
+        </article>
+      </div>
+    </section>
+    <section id="related">
+      <div class="c"><h2>Continue reading</h2><div g="3-2">
+        <article><h3><a href="/examples/foundations/">Semantic foundations</a></h3><p>Build a basic page with native navigation and disclosure.</p></article>
+        <article><h3><a href="/brands/">Type recipes</a></h3><p>Compare static, fluid, and mixed role sizes.</p></article>
+        <article><h3><a href="/examples/product-interface/">Workspace composition</a></h3><p>Use semantic application regions for ongoing tasks.</p></article>
+      </div></div>
+    </section>
+  </main>
+  <footer><p><a href="/examples/">All examples</a></p></footer>
+</body>
 </html>

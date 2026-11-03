@@ -1,0 +1,36 @@
+---
+// One object per card. Children stack with the public .s hook; media is a plain img.
+// `c` is the optional direct-child column span of the parent grid.
+interface Props {
+  c?: string;
+}
+
+const { c } = Astro.props;
+---
+
+<article class="card s" c={c}>
+  <slot />
+</article>
+
+<style>
+  @layer project {
+    .card {
+      position: relative;
+      min-inline-size: 0;
+      padding: var(--padding);
+      overflow: clip;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+
+      :global(img) {
+        display: block;
+        inline-size: 100%;
+        block-size: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+      }
+    }
+  }
+</style>

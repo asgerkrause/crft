@@ -1,59 +1,34 @@
 ---
 status: example
 canonical: false
-use_when: A product screen needs native controls, truthful UI states, and project chrome without promoting buttons or cards into CRFT.
-not_for: Building a shared component kit, inventing CRFT form primitives, or styling meaning with color alone.
 crft_api: confirmed
 ---
 
 # Product interface
 
-A workspace-invitations screen with filters, an invite form, and visible loading, empty, error, and success specimens.
+A sidebar workspace with local search, native validation, draft creation, and selectable loading, empty, and error states.
 
-## Demonstrates
-
-- native labels, controls, groups, validation, disabled state, and submit behavior;
-- `aria-invalid`, `aria-describedby`, `aria-busy`, alerts, and status text;
-- `section > .c` with large and medium filter/form columns;
-- semantic skins and success or danger accent routing;
-- native form-element selectors plus project-owned action, banner, panel, and state presentation.
-
+Open `/examples/product-interface/` in the reference app.
 Read [`markup.html`](markup.html) and [`example.css`](example.css).
+
+The application shell uses project-owned CSS grid, semantic navigation, and meaningful main-section IDs.
+Native `details` keeps mobile navigation keyboard-operable. Without script, navigation starts expanded.
+[`example.js`](example.js) filters fictional records and creates temporary local drafts. It sends no requests or emails.
+A keyboard-focusable records region scrolls the table horizontally under narrow widths and text enlargement.
+The state selector exposes loading, empty, and error previews; Retry restores local records.
+Appearance sets `document.documentElement.style.colorScheme`; System clears the override.
+A compact spacing recipe lives on root; descendants inherit its resolved scale. Local final role sizes remain permitted.
 
 ## Layout intent
 
-The diagram shows the task and state relationships. CSS owns the actual container thresholds.
-
 ```text
-Large / medium                     Small
-┌──────────┬────────────────────┐  ┌────────────────────┐
-│ Filters  │ Invite form        │  │ Filters            │
-└──────────┴────────────────────┘  ├────────────────────┤
-┌───────────────────────────────┐  │ Invite form        │
-│ Loading specimen              │  ├────────────────────┤
-├───────────────────────────────┤  │ Loading            │
-│ Empty specimen                │  │ Empty              │
-├───────────────────────────────┤  │ Error              │
-│ Error specimen                │  │ Success            │
-├───────────────────────────────┤  └────────────────────┘
-│ Success specimen              │
-└───────────────────────────────┘
+Wide:   Navigation | Workspace
+Narrow: Navigation
+        Workspace
 ```
 
-The static specimen shows four separate result sections. A product uses one results region and renders only its current state.
+Run `bun run test` and `bun run test:rendered` from `reference/`.
+Browser checks cover responsive layout, keyboard operation, content pressure, themes, and reduced motion where applicable.
 
-## Decisions
-
-All states remain visible so the example needs no framework runtime. Text and truthful attributes carry meaning before color. The medium layout is inferred. One screen does not prove shared form, button, card, or banner API.
-
-## Verify
-
-Keyboard through filters and form controls. Check labels, groups, error relationships, disabled behavior, status announcements, focus, contrast, long content, and large-medium-small order. Exercise both color schemes.
-
-```sh
-node scripts/check-system.mjs
-```
-
-## Limits
-
-Async requests, optimistic updates, routing, toast queues, framework components, and product density decisions remain application-owned.
+Stop: Backend integration, real-device behavior, and Firefox/WebKit proof remain outside this example.
+Reply: Changed paths, executed checks, rendered evidence, remaining gaps.

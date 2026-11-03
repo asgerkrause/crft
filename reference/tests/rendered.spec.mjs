@@ -2,6 +2,31 @@ import { expect, test } from "@playwright/test";
 
 const fixture = (page, name) => page.locator(`[data-fixture="${name}"]`);
 
+test("layout specimens reveal caps, gaps, real lengths, and grid tracks", async ({ page }) => {
+  for (const width of [1440, 960, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const widths = await page.locator(".sg-width-specimens > .c").evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().width));
+    if (width === 1440) expect(widths).toEqual([384, 576, 768]);
+    if (width === 375) expect(new Set(widths).size).toBe(1);
+    const stacks = await page.locator(".sg-stack-sample").evaluateAll((elements) => elements.map((element) => {
+      const [first, second] = element.children;
+      return { gap: second.getBoundingClientRect().top - first.getBoundingClientRect().bottom, itemHeight: first.getBoundingClientRect().height };
+    }));
+    expect(stacks.map((stack) => stack.gap)).toEqual([20, 40]);
+    expect(stacks[0].itemHeight).toBe(stacks[1].itemHeight);
+    const lengths = await page.locator(".sg-measure i").evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().width));
+    expect(lengths).toEqual([20, 40, 80, 160, 320]);
+    for (const suffix of ["-sm", "", "-lg"]) {
+      const fit = await page.locator(`[g="fit${suffix}"] > span`).first().boundingBox();
+      const fill = await page.locator(`[g="fill${suffix}"] > span`).first().boundingBox();
+      if (width === 1440) expect(fit.width).toBeGreaterThan(fill.width);
+    }
+    expect(await page.locator(".sg-grid-list [g] > *").evaluateAll((elements) => elements.every((element) => element.scrollWidth <= element.clientWidth + 1))).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
 function contrastRatio(foreground, background) {
   const luminance = (value) => {
     const channels = value.match(/[\d.]+/g).slice(0, 3).map((channel) => {
@@ -41,7 +66,7 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
   await page.goto("/#long-content");
 
   const minimum = {
-    body: await page.locator("body").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
+    body: await size("type-body-text"),
     inherited: await size("type-inherited-item"),
     semantic: await size("type-semantic-heading"),
     override: await size("type-visual-override"),
@@ -57,7 +82,7 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
 
   await page.setViewportSize({ width: 1600, height: 900 });
   const maximum = {
-    body: await page.locator("body").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
+    body: await size("type-body-text"),
     override: await size("type-visual-override"),
   };
   expect(maximum.body).toBeCloseTo(20, 1);
@@ -67,7 +92,7 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
 
 test("fluid type doubles with root font size at the clamp ends", async ({ page }) => {
   const readSizes = () => page.evaluate(() => ({
-    body: Number.parseFloat(getComputedStyle(document.body).fontSize),
+    body: Number.parseFloat(getComputedStyle(document.querySelector('[data-fixture="type-body-text"]')).fontSize),
     heading: Number.parseFloat(getComputedStyle(document.querySelector("[data-fixture=\"type-semantic-heading\"]")).fontSize),
   }));
   const zoomRoot = () => page.evaluate(() => {
@@ -174,6 +199,23 @@ test("image scrub travels in opposite directions and keeps static media and labe
   expect(Math.sign(deltas[0])).toBe(-Math.sign(deltas[1]));
   for (const caption of await page.locator(".sg-scroll-example figcaption").all()) await expect(caption).toBeVisible();
 
+  for (const width of [1440, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const figure of figures) {
+      for (const progress of [0, .25, .5, .75, 1]) {
+        await figure.evaluate((element, value) => {
+          const bounds = element.getBoundingClientRect();
+          window.scrollTo(0, bounds.top + scrollY - innerHeight + (innerHeight + bounds.height) * value);
+        }, progress);
+        await expect.poll(() => figure.evaluate((element) => {
+          const frame = element.getBoundingClientRect();
+          const image = element.querySelector("img").getBoundingClientRect();
+          return Math.max(image.top - frame.top, frame.bottom - image.bottom, Math.abs(image.height - frame.height - innerHeight * .08), Math.abs(frame.height - frame.width * 7 / 12));
+        })).toBeLessThan(1);
+      }
+    }
+  }
+
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
   const reduced = await Promise.all([
@@ -181,6 +223,7 @@ test("image scrub travels in opposite directions and keeps static media and labe
     fixture(page, "progressive-scroll-reverse"),
   ].map((figure) => figure.locator("img").evaluate((image) => ({
     height: image.getBoundingClientRect().height,
+    frameHeight: image.parentElement.getBoundingClientRect().height,
     translate: getComputedStyle(image).translate,
     width: image.getBoundingClientRect().width,
   }))));
@@ -188,8 +231,27 @@ test("image scrub travels in opposite directions and keeps static media and labe
     expect(image.translate).toBe("none");
     expect(image.width).toBeGreaterThan(0);
     expect(image.height).toBeGreaterThan(0);
+    expect(image.height).toBeCloseTo(image.frameHeight, 1);
   }
   for (const caption of await page.locator(".sg-scroll-example figcaption").all()) await expect(caption).toBeVisible();
+});
+
+test("image crop stays complete without view timeline support", async ({ page }) => {
+  let replaced = false;
+  await page.route("**/*.css", async (route) => {
+    const response = await route.fetch();
+    const body = await response.text();
+    const fallback = body.replace(/@supports\s*\(animation-timeline:\s*view\(\)\)/g, "@supports (animation-timeline: unsupported)");
+    replaced ||= fallback !== body;
+    await route.fulfill({ response, body: fallback });
+  });
+  await page.goto("/#scroll-linked-motion");
+  expect(replaced).toBe(true);
+  for (const name of ["progressive-scroll-default", "progressive-scroll-reverse"]) {
+    const image = fixture(page, name).locator("img");
+    await expect(image).toHaveCSS("translate", "none");
+    expect(await image.evaluate((element) => Math.abs(element.getBoundingClientRect().height - element.parentElement.getBoundingClientRect().height))).toBeLessThan(1);
+  }
 });
 
 test("accent skin follows every active route across presets and schemes", async ({ page }) => {
@@ -206,8 +268,7 @@ test("accent skin follows every active route across presets and schemes", async 
   for (const preset of ["core", "claude", "openai", "github", "supabase"]) {
     for (const mode of ["light", "dark"]) {
       await root.evaluate((element, values) => {
-        element.setAttribute("data-theme", values.mode);
-        element.setAttribute("data-mode", values.mode);
+        element.style.colorScheme = values.mode;
         element.setAttribute("data-preset", values.preset);
       }, { mode, preset });
       for (const [name, token] of routes) {
@@ -240,13 +301,12 @@ test("nested skin boundary resets semantic colors", async ({ page }) => {
 test("muted text stays a quieter tone than foreground across skins", async ({ page }) => {
   await page.goto("/#skins");
   const root = page.locator("html");
-  const cards = page.locator("#skins [data-skin]");
+  const cards = page.locator("#skins [data-theme]");
 
   for (const preset of ["core", "claude", "openai", "github", "supabase"]) {
     for (const mode of ["light", "dark"]) {
       await root.evaluate((element, values) => {
-        element.setAttribute("data-theme", values.mode);
-        element.setAttribute("data-mode", values.mode);
+        element.style.colorScheme = values.mode;
         element.setAttribute("data-preset", values.preset);
       }, { mode, preset });
       const colors = await cards.evaluateAll((elements) => elements.map((element) => {

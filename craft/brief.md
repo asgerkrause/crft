@@ -1,5 +1,5 @@
 ---
-title: CRFT brief
+title: crft brief
 status: canonical
 owner: brief
 read_when: Recording a supplied product outcome, page argument, content jobs, copy, evidence, or signature moves before implementation.
@@ -7,11 +7,13 @@ read_when: Recording a supplied product outcome, page argument, content jobs, co
 
 # Brief
 
+General frontend craft and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
+
 Record the job before structure or presentation. This file is a worksheet for product intent and content decisions supplied by project or design authority. It does not create those decisions or prescribe section templates.
 
 ## Product record
 
-Record only supported facts. If project or design authority has not supplied a decision, mark it **Blocked**; CRFT does not choose it.
+Record only supported facts. If project or design authority has not supplied a decision, mark it **Blocked**; crft does not choose it.
 
 ```text
 User:
@@ -79,7 +81,7 @@ For a URL, screenshot, design file, brief, or existing page, record observed con
 
 Separate:
 
-- **System:** repeated roles already owned by CRFT.
+- **System:** repeated roles already owned by crft.
 - **Composition:** hierarchy, geometry, rhythm, alignment, and layering.
 - **Atmosphere:** media, color, type character, texture, and motion.
 
@@ -97,8 +99,8 @@ Prefer one coherent move to several unrelated effects.
 - Treating supplied copy as evidence for an unsupported claim.
 - Adding several primary actions with equal emphasis.
 - Describing a visual reference as exact when only one viewport or state was inspected.
-- Promoting local art direction into CRFT API.
+- Promoting local art direction into crft API.
 
 ## Verify
 
-Before implementation, have project authority confirm the outcome, audience, page argument, section sequence, primary action, proof, signature moves, responsive implications, and unresolved decisions. CRFT records that input; it does not approve it. Keep this record shorter than the content it guides.
+Before implementation, have project authority confirm the outcome, audience, page argument, section sequence, primary action, proof, signature moves, responsive implications, and unresolved decisions. crft records that input; it does not approve it. Keep this record shorter than the content it guides.

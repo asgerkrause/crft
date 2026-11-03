@@ -1,5 +1,5 @@
 ---
-title: CRFT Layout
+title: crft Layout
 status: canonical
 owner: layout
 read_when: Structuring page chrome, containers, stacks, or spacing.
@@ -81,7 +81,9 @@ There is no shared `.center` hook. This bounded project example centers the cont
 }
 ```
 
-The page-scope class and selectors belong to that project, not CRFT's public API. A new nested flex owner needs its own bounded alignment rule if its children should also center. Do not turn this example into a shared modifier or utility matrix without a separate API decision supported by unrelated consumers.
+The page-scope class and selectors belong to that project, not crft's public API. A new nested flex owner needs its own bounded alignment rule if its children should also center. Do not turn this example into a shared modifier or utility matrix without a separate API decision supported by unrelated consumers.
+
+Shared scale recipes resolve at `:root` only; themes never rebind spacing or radius. Semantic owners may set final `--gap`, `--padding`, `--radius`, and derived scale values directly. These local values do not recompute inherited scale members.
 
 ## Media
 

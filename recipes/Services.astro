@@ -1,0 +1,68 @@
+---
+import Card from "./Card.astro";
+
+interface Service {
+  name: string;
+  summary: string;
+  deliverables: string[];
+  timeline: string;
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  services: Service[];
+}
+
+const { id, heading, intro, services } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c">
+    <div class="s">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{intro}</p>
+    </div>
+    <div g="3">
+      {services.map((service) => (
+        <Card>
+          <h3 class="h3">{service.name}</h3>
+          <p>{service.summary}</p>
+          <ul class="deliverables">
+            {service.deliverables.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="small">{service.timeline}</p>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .deliverables {
+      display: grid;
+      gap: var(--gap-xs);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        padding-left: var(--padding);
+        position: relative;
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: .6em;
+          inline-size: .4em;
+          aspect-ratio: 1;
+          border-radius: 50%;
+          background: var(--accent);
+        }
+      }
+    }
+  }
+</style>

@@ -118,7 +118,7 @@ test("a custom property name inside a CSS string does not declare a local proper
   write(join(root, "project.css"), '.x { content: "--c-ghost: red"; }\np { color: var(--c-ghost); }\n');
   const result = run(root);
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /unknown CRFT token --c-ghost/);
+  assert.match(result.stderr, /unknown crft token --c-ghost/);
 });
 
 test("project CSS cannot set wght in font-variation-settings, even among other axes", (t) => {

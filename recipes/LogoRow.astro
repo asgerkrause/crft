@@ -1,0 +1,41 @@
+---
+interface Props {
+  id: string;
+  names: string[];
+  note: string;
+}
+
+const { id, names, note } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c">
+    <ul class="logos" aria-label="Clients and partners">
+      {names.map((name) => <li>{name}</li>)}
+    </ul>
+    <p class="small">{note}</p>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .logos {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--gap) var(--space);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        font-family: var(--font-serif);
+        font-size: var(--h3-size);
+        line-height: 1.1;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+    }
+  }
+</style>

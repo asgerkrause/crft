@@ -7,7 +7,7 @@ function dimension(value, units, positive = true) {
 }
 
 export function resolveFixture(fixture) {
-  if (fixture.contractVersion !== 1) throw new Error("Unsupported fixture contractVersion");
+  if (fixture.contractVersion !== 3) throw new Error("Incompatible Brand OS context: crft requires contractVersion 3; v1/v2 context recipes require explicit migration");
   const f = fixture.foundations;
   const min = dimension(f["fluid-min"], ["rem"]);
   const max = dimension(f["fluid-max"], ["rem"]);

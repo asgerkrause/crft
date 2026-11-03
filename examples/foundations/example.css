@@ -5,7 +5,7 @@
   header > .small, footer .small { color: var(--muted); }
   /*
     Non-canonical example — consumer-owned rules only.
-    This specimen uses @layer project after CRFT global.css.
+    This specimen uses @layer project after crft global.css.
     Do not copy private properties. Keep the cascade choice explicit.
   */
 

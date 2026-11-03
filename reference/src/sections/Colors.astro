@@ -5,8 +5,8 @@ import Swatches from "../components/Swatches.astro";
 import { sections } from "../data";
 
 const palette = [
-  { label: "Light", token: "--palette-light", featured: true },
-  { label: "Dark", token: "--palette-dark", featured: true },
+  { label: "Light", token: "--palette-light" },
+  { label: "Dark", token: "--palette-dark" },
   { label: "Red", token: "--palette-red" },
   { label: "Orange", token: "--palette-orange" },
   { label: "Yellow", token: "--palette-yellow" },
@@ -30,24 +30,24 @@ const theme = [
 ] as const;
 
 const accent = [
-  { label: "Solid", token: "--accent", ink: "--on-accent", grouped: true },
-  { label: "Contrast", token: "--on-accent", ink: "--accent", grouped: true },
+  { label: "Solid", token: "--accent", ink: "--on-accent" },
+  { label: "Contrast", token: "--on-accent", ink: "--accent" },
   { label: "Text", token: "--accent-text" },
   { label: "Background", token: "--accent-surface" },
   { label: "Border", token: "--accent-border" },
 ] as const;
 
 const secondary = [
-  { label: "Solid", token: "--secondary", ink: "--on-secondary", grouped: true },
-  { label: "Contrast", token: "--on-secondary", ink: "--secondary", grouped: true },
+  { label: "Solid", token: "--secondary", ink: "--on-secondary" },
+  { label: "Contrast", token: "--on-secondary", ink: "--secondary" },
   { label: "Text", token: "--secondary-text" },
   { label: "Background", token: "--secondary-surface" },
   { label: "Border", token: "--secondary-border" },
 ] as const;
 
 const tertiary = [
-  { label: "Solid", token: "--tertiary", ink: "--on-tertiary", grouped: true },
-  { label: "Contrast", token: "--on-tertiary", ink: "--tertiary", grouped: true },
+  { label: "Solid", token: "--tertiary", ink: "--on-tertiary" },
+  { label: "Contrast", token: "--on-tertiary", ink: "--tertiary" },
   { label: "Text", token: "--tertiary-text" },
   { label: "Background", token: "--tertiary-surface" },
   { label: "Border", token: "--tertiary-border" },
@@ -57,8 +57,8 @@ const feedback = [
   {
     title: "Success",
     items: [
-      { label: "Solid", token: "--success", ink: "--on-success", grouped: true },
-      { label: "Contrast", token: "--on-success", ink: "--success", grouped: true },
+      { label: "Solid", token: "--success", ink: "--on-success" },
+      { label: "Contrast", token: "--on-success", ink: "--success" },
       { label: "Text", token: "--accent-text", accent: "success" },
       { label: "Background", token: "--accent-surface", accent: "success" },
       { label: "Border", token: "--accent-border", accent: "success" },
@@ -67,8 +67,8 @@ const feedback = [
   {
     title: "Warning",
     items: [
-      { label: "Solid", token: "--warning", ink: "--on-warning", grouped: true },
-      { label: "Contrast", token: "--on-warning", ink: "--warning", grouped: true },
+      { label: "Solid", token: "--warning", ink: "--on-warning" },
+      { label: "Contrast", token: "--on-warning", ink: "--warning" },
       { label: "Text", token: "--accent-text", accent: "warning" },
       { label: "Background", token: "--accent-surface", accent: "warning" },
       { label: "Border", token: "--accent-border", accent: "warning" },
@@ -77,8 +77,8 @@ const feedback = [
   {
     title: "Danger",
     items: [
-      { label: "Solid", token: "--danger", ink: "--on-danger", grouped: true },
-      { label: "Contrast", token: "--on-danger", ink: "--danger", grouped: true },
+      { label: "Solid", token: "--danger", ink: "--on-danger" },
+      { label: "Contrast", token: "--on-danger", ink: "--danger" },
       { label: "Text", token: "--accent-text", accent: "danger" },
       { label: "Background", token: "--accent-surface", accent: "danger" },
       { label: "Border", token: "--accent-border", accent: "danger" },

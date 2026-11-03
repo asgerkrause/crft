@@ -1,47 +1,48 @@
-# CRFT
+# crft
 
-> **Superseded.** This repo is archived. crft now lives in AK `skills/craft` (github.com/asgerkrause/ak). Do not read, run, copy, or install anything from here.
+crft is a CSS system for semantic HTML: tokens, type roles, layout, grid, and motion in eight cascade layers. It is built so agents and people can adopt it without guessing. A machine-readable contract states what is public API, and the checkers fail when a project drifts from it.
 
-CRFT is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. It supplies semantic CSS constraints, accessibility primitives and fallbacks, adoption guidance, and verification—not product strategy, design judgment, taste, or product acceptance.
+It is not a component library. `.btn`, `.crd`, and `.lnk` stay project-owned.
 
-Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical owner.
+By Asger Krause and SANITIZE Studio.
 
-## Documentation
+## Files
 
-[`CRAFT.md`](CRAFT.md) is the only complete task router. It routes to 16 focused topic owners under `craft/`.
+- `styles/tokens.css`: brand foundations, recipes, color schemes, and optional fonts.
+- `styles/crft.css`: framework behavior in the `reset`, `base`, `type`, `layout`, `grid`, `motion`, and `utility` layers.
+- `styles/global.css`: the layer order and both imports.
+- `CRAFT.md`: the task router. Topic guides are in `craft/`.
+- `SKILL.md`: the entry point for coding agents.
+- `examples/`, `recipes/`, and `reference/`: runnable examples, copyable Astro blocks, and the reference site.
 
-`styles/global.css` imports two owners: `styles/tokens.css` for brand values/recipes/optional fonts, and `styles/crft.css` for framework behavior. Eight logical layers keep their precedence. [`examples/`](examples/) contains runnable evidence, not API.
+## Adopt
 
-CRFT has no dependency on another frontend doctrine. It is not a component library.
+Pick the smallest mode that does the job, per subsystem:
 
-## Adopt the strategy
+- **Strategy only:** follow the guidance with your own CSS.
+- **Local extraction:** copy only the rules you need into your stylesheet.
+- **Tokens only:** copy `tokens.css`.
+- **Full:** copy `tokens.css` and `crft.css`.
 
-Choose the least complete mode for each affected subsystem. A project may combine local extraction for one subsystem with tokens-only adoption for another; extraction itself grants no CRFT hooks.
-
-- **Strategy only:** use the guidance with semantic HTML and project CSS; add no CRFT hooks or files.
-- **Local extraction:** move only the useful rules, tokens, and relationships into the project’s existing stylesheet, then remove unused CRFT state and dependencies. The result is project CSS, not a partial CRFT API.
-- **Tokens only:** copy the complete token owner; framework selectors remain project-owned.
-- **Explicit full adoption:** request `--layers full`; never infer this mode from an existing site.
+The copier handles tokens-only and full adoption. It writes the CSS and a `crft-manifest.json` that records the source revision, file hashes, and contract:
 
 ```sh
-node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project/styles
-node scripts/copy-system.mjs --layers full --fonts /absolute/path/to/project/styles
+node scripts/copy-system.mjs --dry-run --layers tokens /path/to/project/styles
+node scripts/copy-system.mjs --layers full --fonts /path/to/project/styles
 ```
 
-The copier is an optional whole-layer convenience. It writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. `--layers` accepts only `tokens` or `full`. Fonts and their declarations copy only with `--fonts`. Semantic contractVersion 2 is unchanged; packagingVersion 1 identifies the flat package. Keep product presentation and every adopted result in the project’s normal owners.
+Then check the project against its manifest:
 
-## Built for agents
+```sh
+node scripts/check-project.mjs /path/to/project/styles
+```
 
-The public API is machine-readable, not prose. `node scripts/emit-contract.mjs` derives the full contract (tokens, hooks, skins, accents, layer dependencies, bans) from live CSS. The manifest makes every adopting repo self-describing, and `node scripts/check-project.mjs <styles-dir>` verifies consumer CSS against its adopted contract. Run the checker from this checkout; it uses its adjacent contract helpers. An agent never has to guess what is API: the contract says so, and the checkers fail when it drifts.
+## Example
 
-[`CRAFT.md`](CRAFT.md) is the task router. [`craft/`](craft/) holds topic guidance. [`skills/crft/SKILL.md`](skills/crft/SKILL.md) is the thin agent entrypoint.
-
-## Full-adoption example
-
-This markup assumes tokens.css and crft.css are present. Strategy-only and local-extraction projects use their own CSS API.
+With full adoption:
 
 ```html
-<section data-skin="tone">
+<section id="intro" data-theme="tone">
   <div class="c">
     <div class="s">
       <h2>Meaning before presentation</h2>
@@ -54,15 +55,28 @@ This markup assumes tokens.css and crft.css are present. Strategy-only and local
 </section>
 ```
 
-`.btn`, `.crd`, and `.lnk` are project component naming conventions. CRFT does not style or implement them.
+## Develop
 
-## Verify
+Core tools need Node 24 or later and no install.
 
 ```sh
 node scripts/check-system.mjs
 node --test scripts/*.test.mjs
-cd reference && bun run test
-cd reference && bun run test:rendered
+node scripts/emit-contract.mjs
+node scripts/build-dist.mjs
 ```
 
-Static checks do not prove strategy, accessibility, visual quality, or browser behavior. Use the three gates in [`craft/verify.md`](craft/verify.md).
+The reference site needs Bun and Playwright Chromium:
+
+```sh
+cd reference
+bun install
+bun run test
+bun run test:rendered
+```
+
+Static checks don't prove accessibility, visual quality, or browser behavior. See `craft/verify.md` for the rendered and review gates.
+
+## License
+
+MIT. See `LICENSE`. The bundled fonts, Inter and Geist Mono, use the SIL Open Font License; see `styles/LICENSE-Inter.txt` and `styles/LICENSE-Geist.txt`.

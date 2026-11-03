@@ -1,0 +1,72 @@
+---
+interface Item {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  items: Item[];
+}
+
+const { id, heading, intro, items } = Astro.props;
+---
+
+<section id={id}>
+  <div class="c sm">
+    <div class="s">
+      <h2 class="h1">{heading}</h2>
+      <p class="lead">{intro}</p>
+    </div>
+    <div class="s faq">
+      {items.map((item) => (
+        <details name={`${id}-faq`}>
+          <summary class="h3">{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer project {
+    .faq details {
+      padding-block: var(--padding);
+      border-bottom: var(--border-width) solid var(--border);
+
+      &:first-child { border-top: var(--border-width) solid var(--border); }
+
+      p { margin-block: var(--gap) 0; }
+    }
+
+    .faq summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--gap);
+      min-block-size: var(--control);
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker { display: none; }
+
+      &::after {
+        content: "+";
+        flex-shrink: 0;
+        font-family: var(--font-mono);
+        font-size: var(--h3-size);
+        line-height: 1;
+        transition: transform var(--duration-sm) var(--ease-out);
+      }
+
+      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    }
+
+    .faq details[open] summary::after {
+      transform: rotate(45deg);
+    }
+  }
+</style>
