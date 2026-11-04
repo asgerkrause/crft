@@ -192,7 +192,7 @@ test("partial subgrid, nested grids and unsupported grid features keep fallbacks
 test("unsupported pow keeps readable static text", async ({ page }) => {
   await page.setContent(`<style>${css.replace('@supports (font-size: calc(1rem * pow(2, 1)))', '@supports (unsupported: unsupported)')}</style><h1>Readable fallback</h1><p>Body</p>`);
   expect(await size(page.locator("h1"))).toBeGreaterThan(20);
-  expect(await size(page.locator("p"))).toBe(14);
+  expect(await size(page.locator("p"))).toBe(16);
 });
 
 test("200% text enlargement and narrow multilingual reflow preserve every profile", async ({ page }) => {
@@ -289,4 +289,69 @@ test("on-color companions keep the static pair without either feature and yield 
   await expect(page.locator("p")).toHaveCSS("color", "rgb(1, 2, 3)");
   await page.setContent(`<style>${css}</style><style>:root { --on-accent: rgb(4 5 6); --on-secondary: rgb(7 8 9); }</style><div data-theme="invert"><p style="color:var(--on-accent)">Plain</p><p data-accent="secondary" style="color:var(--on-accent)">Routed</p></div>`);
   expect(await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color))).toEqual(["rgb(4, 5, 6)", "rgb(7, 8, 9)"]);
+});
+
+test("native defaults retain field floors, bounded section rhythm, and disclosure focus", async ({ page }) => {
+  for (const scheme of ["light", "dark"]) for (const width of [320, 390, 1000, 1440, 2400]) {
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.setViewportSize({ width, height: 900 });
+    await page.setContent(`<style>${css}</style><main><section id="defaults"><div class="c"><details><summary>Disclosure</summary><p>Content</p></details><label>Small<input><select><option>Choose</option></select><textarea></textarea></label><div style="font-size:24px"><input aria-label="Large"></div></div></section></main>`);
+    for (const root of [16, 32]) {
+      await page.locator("html").evaluate((e, root) => { e.style.fontSize = `${root}px`; }, root);
+      for (const field of await page.locator("label :is(input,select,textarea)").all()) expect(await size(field)).toBeGreaterThanOrEqual(root);
+      expect(await size(page.getByLabel("Large"))).toBe(Math.max(root, 24));
+      expect(await page.locator("section").evaluate((e) => parseFloat(getComputedStyle(e).paddingTop))).toBeCloseTo(Math.min(12 * root, Math.max(4 * root, 2 * root + .08 * width)), 2);
+    }
+    await page.keyboard.press("Tab");
+    await expect(page.locator("summary")).toBeFocused();
+    for (const open of [false, true]) {
+      if (open) await page.keyboard.press("Enter");
+      await expect(page.locator("summary")).toHaveCSS("outline-style", "solid");
+      await expect(page.locator("details")).toHaveCSS("overflow", "visible");
+      expect(await page.locator("details").evaluate((e) => e.open)).toBe(open);
+    }
+  }
+});
+
+test("routed native edges, focus and accent text retain contrast in every state", async ({ page }) => {
+  const themes = ["", "invert", "tone", "accent"];
+  const accents = ["", "secondary", "tertiary", "success", "warning", "danger"];
+  for (const colorScheme of ["light", "dark"]) for (const contrast of ["no-preference", "more"]) {
+    await page.emulateMedia({ colorScheme, contrast, reducedMotion: "reduce" });
+    const content = '<button>Action</button><input aria-label="Normal"><input aria-label="Invalid" aria-invalid="true"><input aria-label="Disabled" disabled><p style="color:var(--accent-text)">Accent</p>';
+    await page.setContent(`<style>${css}</style>` + themes.flatMap((theme) => accents.flatMap((accent) => [
+      `<div data-theme="${theme}" data-accent="${accent}">${content}</div>`,
+      `<div data-theme="${theme}"><div data-accent="${accent}">${content}</div></div>`,
+      `<div data-accent="${accent}"><div data-theme="${theme}">${content}</div></div>`,
+    ])).join(""));
+    const result = await page.evaluate(() => {
+      const context = new OffscreenCanvas(1, 1).getContext("2d");
+      const paint = (value) => { context.fillStyle = value; context.fillRect(0, 0, 1, 1); return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3); };
+      const luminance = (rgb) => rgb.map((v) => v / 255).map((v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+      const ratio = (a, b) => { const x = luminance(a), y = luminance(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+      let edge = Infinity, text = Infinity, focus = Infinity;
+      for (const e of document.querySelectorAll("button,input,p")) {
+        const style = getComputedStyle(e);
+        const probe = document.createElement("i"); e.parentElement.append(probe);
+        for (const token of ["canvas", "surface", ...(e.tagName === "P" ? ["accent-surface"] : [])]) {
+          probe.style.color = `var(--${token})`;
+          const fill = paint(getComputedStyle(probe).color);
+          if (e.tagName === "P") text = Math.min(text, ratio(paint(style.color), fill));
+          else { edge = Math.min(edge, ratio(paint(style.borderTopColor), fill)); focus = Math.min(focus, ratio(paint(style.color), fill)); }
+        }
+        probe.remove();
+      }
+      return { edge, text, focus };
+    });
+    console.log({ colorScheme, contrast, ...result });
+    expect(result.edge).toBeGreaterThanOrEqual(3);
+    expect(result.text).toBeGreaterThanOrEqual(4.5);
+    expect(result.focus).toBeGreaterThanOrEqual(3);
+    const button = page.locator("button").first();
+    const edge = await button.evaluate((e) => getComputedStyle(e).borderTopColor);
+    await button.hover(); await expect(button).toHaveCSS("border-top-color", edge);
+    await page.mouse.down(); await expect(button).toHaveCSS("border-top-color", edge); await page.mouse.up();
+    await page.keyboard.press("Tab"); await page.keyboard.press("Shift+Tab");
+    await expect(button).toBeFocused(); await expect(button).toHaveCSS("outline-style", "solid");
+  }
 });

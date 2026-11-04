@@ -347,6 +347,114 @@ if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :r
 for (const role of typeRoles) {
   if (!new RegExp(`--${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
 }
+
+// Static fallbacks must follow the recipe inputs.
+{
+  const input = (name) => Number(tokensCss.match(new RegExp(`--${name}:\\s*(-?[\\d.]+);`))?.[1]);
+  const [min, max, ratioMin, ratioMax] = ["type-min", "type-max", "type-ratio-min", "type-ratio-max"].map(input);
+  for (const role of typeRoles) {
+    const step = input(`${role}-step`);
+    const expected = { min: min * ratioMin ** step, max: max * ratioMax ** step };
+    for (const [key, value] of Object.entries(expected)) {
+      if (!(Math.abs(input(`${role}-${key}`) - value) < 1e-6)) fail(`static --${role}-${key} must equal its recipe value ${value}`);
+    }
+    if (!(Math.abs(Number(tokensCss.match(new RegExp(`--${role}-size:\\s*([\\d.]+)rem;`))?.[1]) - expected.min) < 1e-6)) fail(`static --${role}-size must equal --${role}-min`);
+  }
+}
+
+// Contrast of the supplied schemes in every theme, light and dark, with and without prefers-contrast.
+{
+  const css = tokensCss.replace(/\/\*[\s\S]*?\*\//g, "");
+  const block = (selector, from = css) => {
+    const start = from.indexOf(`${selector} {`);
+    if (start < 0) fail(`contrast check cannot find the ${selector.replace(/\s+/g, " ")} block`);
+    return start < 0 ? "" : from.slice(start + selector.length + 2, from.indexOf("}", start));
+  };
+  const decls = (text) => Object.fromEntries([...text.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
+  const statics = {};
+  for (const [name, value] of Object.entries(decls(css.slice(0, css.indexOf("@supports"))))) statics[name] ??= value;
+  const scheme = decls(block(":root,\n  [data-theme]"));
+  const moreStart = css.indexOf("@media (prefers-contrast: more)");
+  if (moreStart < 0) fail("contrast check cannot find @media (prefers-contrast: more)");
+  const more = moreStart < 0 ? {} : decls(block("[data-theme],\n    :root", css.slice(moreStart)));
+  const split = (text) => {
+    const parts = [];
+    let depth = 0, last = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === "(") depth++;
+      else if (text[i] === ")") depth--;
+      else if (text[i] === "," && depth === 0) { parts.push(text.slice(last, i).trim()); last = i + 1; }
+    }
+    return [...parts, text.slice(last).trim()];
+  };
+  const resolve = (env, value, dark) => {
+    if (Array.isArray(value)) return value;
+    value = value.trim();
+    if (value === "transparent") return [0, 0, 0, 0];
+    if (/^#[\da-f]{3}$/i.test(value)) return [...value.slice(1)].map((d) => parseInt(d + d, 16) / 255).concat(1);
+    if (/^#[\da-f]{6}$/i.test(value)) return [1, 3, 5].map((i) => parseInt(value.slice(i, i + 2), 16) / 255).concat(1);
+    const call = value.match(/^([a-z-]+)\(([\s\S]*)\)$/);
+    if (!call) throw new Error(`cannot resolve ${value}`);
+    const args = split(call[2]);
+    if (call[1] === "var") return resolve(env, env[args[0]] ?? statics[args[0]], dark);
+    if (call[1] === "light-dark") return resolve(env, args[dark ? 1 : 0], dark);
+    if (call[1] === "color-mix" && args[0] === "in srgb") {
+      const parse = (arg) => { const m = arg.match(/^(.*?)\s*(?:(\d+(?:\.\d+)?)%)?$/); return [resolve(env, m[1], dark), m[2] && Number(m[2]) / 100]; };
+      const [[a, pa], [b, pb]] = [parse(args[1]), parse(args[2])];
+      const p = pa ?? (pb === undefined ? 0.5 : 1 - pb), q = pb ?? 1 - p;
+      const alpha = a[3] * p + b[3] * q;
+      return [0, 1, 2].map((i) => (alpha ? (a[i] * a[3] * p + b[i] * b[3] * q) / alpha : 0)).concat(alpha);
+    }
+    throw new Error(`cannot resolve ${value}`);
+  };
+  const over = (top, under) => [0, 1, 2].map((i) => top[i] * top[3] + under[i] * (1 - top[3]));
+  const luminance = (c) => c.slice(0, 3).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+  const ratio = (a, b) => { const [x, y] = [luminance(a), luminance(b)]; return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const edge = frameworkCss.match(/border: var\(--border-width\) solid (color-mix\(in srgb, var\(--text\) \d+%, var\(--canvas\)\));/g) ?? [];
+  if (edge.length !== 2 || new Set(edge).size !== 1) fail("buttons and fields must share one control edge color-mix(in srgb, var(--text) N%, var(--canvas))");
+  const controlEdge = edge[0]?.match(/solid (.*);$/)[1];
+  const invalidEdge = frameworkCss.match(/\[aria-invalid="true"\]\s*\{\s*border-color:\s*([^;]+);/)?.[1];
+  if (!invalidEdge) fail("missing invalid field edge");
+  const accentRoles = decls(block("[data-accent]"));
+  for (const theme of ["", ...supportedSkins]) {
+    for (const contrast of [false, true]) {
+      for (const dark of [false, true]) {
+        const themed = { ...statics, ...scheme, ...decls(theme ? block(`[data-theme='${theme}']`) : ""), ...(contrast ? more : {}) };
+        for (const accent of ["", ...supportedAccentRoutes]) for (const placement of ["combined", "nested"]) {
+          const label = `${theme || "root"} ${dark ? "dark" : "light"}${contrast ? " prefers-contrast" : ""}${accent ? ` ${accent} ${placement}` : ""}`;
+          try {
+            // Nested accent routes inherit resolved canvas roles; combined boundaries recompute them.
+            const inherited = placement === "nested"
+              ? Object.fromEntries(Object.keys(scheme).map((key) => [key, resolve(themed, `var(${key})`, dark)]))
+              : {};
+            const env = { ...themed, ...inherited, ...(accent ? { ...accentRoles, ...decls(block(`[data-accent='${accent}']`)) } : {}) };
+            const canvas = resolve(env, "var(--canvas)", dark);
+            const surface = over(resolve(env, "var(--surface)", dark), canvas);
+            const accentSurface = over(resolve(env, "var(--accent-surface)", dark), canvas);
+            for (const [name, value, floor] of [["--text", "var(--text)", 4.5], ["--muted", "var(--muted)", 4.5], ["--accent-text", "var(--accent-text)", 4.5], ["control edge", controlEdge, 3], ["invalid edge", invalidEdge, 3], ["focus ring", "var(--text)", 3]]) {
+              const grounds = [["--canvas", canvas], ["--surface", surface]];
+              if (name === "--text" || name === "--accent-text") grounds.push(["--accent-surface", accentSurface]);
+              for (const [ground, fill] of grounds) {
+                const measured = ratio(over(resolve(env, value, dark), fill), fill);
+                if (measured < floor) fail(`${name} on ${ground} is ${measured.toFixed(2)}:1 in ${label}; needs ${floor}:1`);
+              }
+            }
+          } catch (error) {
+            fail(`contrast check cannot resolve ${label}: ${error.message}`);
+          }
+        }
+      }
+    }
+  }
+  for (const role of ["accent", ...supportedAccentRoutes]) {
+    const fill = resolve(statics, `var(--${role})`, false);
+    const derived = luminance(fill) > 0.1791 ? [0, 0, 0, 1] : [1, 1, 1, 1];
+    for (const [kind, on] of [["static", resolve(statics, `var(--on-${role})`, false)], ["derived", derived]]) {
+      const measured = ratio(on, fill);
+      if (measured < 4.5) fail(`${kind} --on-${role} on --${role} is ${measured.toFixed(2)}:1; needs 4.5:1`);
+    }
+  }
+}
 const onColorGates = [
   "@supports (color: color(from red xyz-d65 clamp(0, (0.1791 - y) * 1e6, 1) y z)) { :root {",
   "@supports (color: contrast-color(red)) { :root {",
@@ -382,11 +490,13 @@ if (unparsedFluidTokens.length) {
   for (const step of fluidSteps) {
     const lo = fsMin * rtMin ** step;
     const hi = fsMax * rtMax ** step;
+    if (!Number.isFinite(lo) || !Number.isFinite(hi) || lo <= 0 || hi < lo) fail(`invalid fluid endpoints at step ${step}`);
     if (lo * vpMax <= hi * vpMin) {
       fail(`fluid type step ${step} loses zoom growth: lo * vp-max must exceed hi * vp-min`);
     }
-    if (step >= -1 && step <= 1 && hi / lo > 2.5) {
-      fail(`fluid text step ${step} exceeds the 2x zoom budget: hi / lo must stay at or below 2.5`);
+    // Source policy for every role; rendered enlargement still needs browser checks.
+    if (hi / lo > 2.5) {
+      fail(`fluid text step ${step} exceeds the 2.5x source ratio budget: hi / lo must stay at or below 2.5`);
     }
   }
 }
@@ -452,11 +562,18 @@ for (const signal of [
   'transition-duration: var(--duration)',
   '[aria-current="page"]',
   "list-style-position: outside",
-  "border: var(--border-width) solid var(--border)",
-  "border-color: var(--danger)",
+  "font-size: max(1rem, 1em)",
+  "details { &::details-content { height: 0; overflow: clip",
+  ":focus-visible { outline: max(2px, var(--border-width)) solid currentColor; outline-offset: 0.2em",
+  ":where(button, input, select, textarea):disabled { color: var(--muted)",
 ]) {
   if (!hasCssSignal(baseLayerCss, signal)) fail(`base layer is missing native enhancement: ${signal}`);
 }
+if (!hasCssSignal(resetCss, ":where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; }")) {
+  fail("reset must retain paired text adjustment");
+}
+if (!hasCssSignal(tokensCss, "--bleed-y: clamp(4rem, 2rem + 8vi, 12rem)")) fail("missing bounded --bleed-y recipe");
+if (/overscroll-behavior(?:-[xy])?:\s*none/.test(baseCss)) fail("preserve native scroll-boundary behavior");
 if (!hasCssSignal(typeCss, "[l] {") || !hasCssSignal(typeCss, '[l="4"]')) {
   fail("type.css is missing documented l");
 }

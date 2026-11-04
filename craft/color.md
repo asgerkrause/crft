@@ -117,7 +117,12 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 
 ## Contrast preferences
 
-`prefers-contrast: more` strengthens `--muted` and `--border` contrast on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
+Native button and field edges reach 3:1 against canvas and surface across supplied schemes, themes, and accent routes.
+Invalid edges mix danger with text; hover and active retain their edges. Focus uses the current foreground.
+Disabled controls retain those edges and use muted text; native disabled controls are exempt from WCAG contrast requirements.
+`--border` and `--accent-border` are decorative dividers, never sole control boundaries or essential state cues.
+`--accent-text` reaches 4.5:1 on canvas, surface, and its matching accent surface in the supplied palettes.
+Normal text also reaches 4.5:1 on accent surfaces. These pair checks do not certify arbitrary consumer palettes. `prefers-contrast: more` strengthens `--muted` and `--border` contrast on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
 
 ## Verify
 

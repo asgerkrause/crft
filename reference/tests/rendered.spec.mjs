@@ -71,10 +71,10 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
     semantic: await size("type-semantic-heading"),
     override: await size("type-visual-override"),
   };
-  expect(minimum.body).toBeCloseTo(14, 1);
+  expect(minimum.body).toBeCloseTo(16, 1);
   expect(minimum.inherited).toBeCloseTo(minimum.body, 2);
-  expect(minimum.semantic).toBeCloseTo(18.515, 1);
-  expect(minimum.override).toBeCloseTo(24.486, 1);
+  expect(minimum.semantic).toBeCloseTo(23.04, 1);
+  expect(minimum.override).toBeCloseTo(33.1776, 1);
 
   await page.setViewportSize({ width: 1000, height: 900 });
   const midpoint = await size("type-visual-override");
@@ -86,11 +86,11 @@ test("fluid type clamps, interpolates, inherits, and respects explicit roles", a
     override: await size("type-visual-override"),
   };
   expect(maximum.body).toBeCloseTo(20, 1);
-  expect(maximum.override).toBeCloseTo(76.832, 1);
+  expect(maximum.override).toBeCloseTo(71.4892578125, 1);
   expect(midpoint).toBeLessThan(maximum.override);
 });
 
-test("fluid type doubles with root font size at the clamp ends", async ({ page }) => {
+test("fluid type responds to root size through its rem-bound interpolation", async ({ page }) => {
   const readSizes = () => page.evaluate(() => ({
     body: Number.parseFloat(getComputedStyle(document.querySelector('[data-fixture="type-body-text"]')).fontSize),
     heading: Number.parseFloat(getComputedStyle(document.querySelector("[data-fixture=\"type-semantic-heading\"]")).fontSize),
@@ -117,7 +117,7 @@ test("fluid type doubles with root font size at the clamp ends", async ({ page }
   const atMaxZoomed = await readSizes();
   expect(atMaxZoomed.body / atMax.body).toBeGreaterThanOrEqual(1.3);
   // h4 now uses h3 (step 2); assert its actual rem-bound interpolation.
-  expect(atMaxZoomed.heading).toBeCloseTo((18.515 + (39.2 - 18.515) / 3) * 2, 2);
+  expect(atMaxZoomed.heading).toBeCloseTo((23.04 + (37.8125 - 23.04) / 3) * 2, 2);
 
   await resetRoot();
   await page.setViewportSize({ width: 1000, height: 900 });

@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
+import { createHash } from "node:crypto";
 import { buildContract } from "./emit-contract.mjs";
 import { adoptSystem } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
@@ -344,7 +345,7 @@ test("token/framework v2-v3 mixing fails both ways with and without manifests", 
   const v2Framework = '@layer base { [data-skin] { background: var(--canvas); color: var(--text); font-size: var(--body-size); } }';
   writeFileSync(join(target, "tokens.css"), v2Tokens);
   writeFileSync(join(target, "crft.css"), v2Framework);
-  const v2Manifest = { ...v3Manifest, contractVersion: 2, contract: buildContract(target) };
+  const v2Manifest = { ...v3Manifest, contractVersion: 2, files: { "crft.css": createHash("sha256").update(v2Framework).digest("hex") }, contract: buildContract(target) };
   for (const recorded of [false, true]) {
     for (const [tokens, framework, manifest, pass] of [
       [v2Tokens, v2Framework, v2Manifest, true],
@@ -361,4 +362,19 @@ test("token/framework v2-v3 mixing fails both ways with and without manifests", 
       if (!pass) assert.match(result.stderr, /Incompatible token\/framework semantic versions/);
     }
   }
+});
+
+test("synthetic recipes enforce the ratio policy on resolved endpoints", () => {
+  for (const mutate of [
+    (f) => { f.foundations["type-ratio-max"] = 1.5; },
+    (f) => { f.roles.body.min = { value: 1, unit: "rem" }; f.roles.body.max = { value: 3, unit: "rem" }; },
+    (f) => { f.foundations["fluid-min"].value = 80; },
+  ]) {
+    const f = load("fluid"); mutate(f);
+    assert.throws(() => resolveFixture(f), /Source ratio budget|Lost zoom growth/);
+  }
+  const f = load("fluid");
+  f.roles.display.size = { value: 3, unit: "rem" };
+  f.roles.display.max = { value: 99, unit: "rem" };
+  assert.equal(resolveFixture(f).display.staticRem, 3);
 });

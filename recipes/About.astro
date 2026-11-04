@@ -21,7 +21,7 @@ const { id, heading, paragraphs, facts, image } = Astro.props;
       <div class="s" c="7">
         <h2 class="h1">{heading}</h2>
         {paragraphs.map((text) => <p class="body">{text}</p>)}
-        <dl g="3" class="facts">
+        <dl g="3-1" class="facts">
           {facts.map((fact) => (
             <div class="s">
               <dt class="small">{fact.label}</dt>

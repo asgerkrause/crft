@@ -26,6 +26,9 @@ These layout contracts describe the retained layout layer in `styles/crft.css`, 
 - **Responsive behavior:** These rules have no breakpoint switch. `--bleed-x` supplies horizontal page breathing room and `--bleed-y` supplies section rhythm at every width unless the project overrides them. Print production bleed is a separate format field.
 - **Minimal markup:** [`html.md` page shape](html.md#page-shape) shows the page landmarks with one section. An inner `.c` bounds content without narrowing the section's canvas.
 
+The reference clamps `--bleed-y` between 4rem and 12rem, interpolating from 2rem plus 8vi.
+`vi` follows the viewport inline dimension: width in horizontal writing, height in vertical writing.
+
 ## Container
 
 - **Purpose:** `.c` bounds content measure and separates major child groups.

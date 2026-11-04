@@ -22,6 +22,8 @@ export function resolveFixture(fixture) {
     const lo = literal ?? (role.min ? dimension(role.min, ["rem"]) : baseMin * f["type-ratio-min"] ** role.step);
     const hi = literal ?? (role.max ? dimension(role.max, ["rem"]) : baseMax * f["type-ratio-max"] ** role.step);
     if (!Number.isFinite(lo) || !Number.isFinite(hi) || lo <= 0 || hi < lo) throw new Error(`Invalid endpoints ${name}`);
+    if (hi / lo > 2.5) throw new Error(`Source ratio budget exceeded ${name}`);
+    if (lo * max <= hi * min) throw new Error(`Lost zoom growth ${name}`);
     if (typeof role.axes !== "string" || /["']wght["']/.test(role.axes)) throw new Error("Role axes must preserve ordinary weight");
     dimension(role.tracking, ["em"], false);
     dimension(role.measure, ["ch"]);

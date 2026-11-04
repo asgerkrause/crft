@@ -752,12 +752,12 @@ test("retired w attribute fails", (t) => {
   assert.ok(result.stderr.includes("retired w attribute"), result.stderr);
 });
 
-test("fluid text steps cannot exceed the 2x zoom budget", (t) => {
+test("fluid text steps cannot exceed the 2.5x source ratio budget", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --type-max: 1.25;", "    --type-max: 2;");
+  replace(root, "styles/tokens.css", "    --type-max: 1.25;", "    --type-max: 3;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.ok(result.stderr.includes("fluid text step 1 exceeds the 2x zoom budget"), result.stderr);
+  assert.ok(result.stderr.includes("fluid text step 1 exceeds the 2.5x source ratio budget"), result.stderr);
 });
 
 test("fluid type steps cannot lose zoom growth", (t) => {
@@ -809,4 +809,69 @@ test("canonical examples reject nested theme geometry", (t) => {
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /examples\/foundations\/example.css v3 themes must change color only/);
+});
+
+test("weak control edges fail non-text contrast", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/crft.css", "solid color-mix(in srgb, var(--text) 60%, var(--canvas))", "solid color-mix(in srgb, var(--text) 25%, var(--canvas))");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /control edge on --canvas is \d\.\d\d:1 in root light; needs 3:1/);
+});
+
+test("weak muted text fails contrast on the dark tone surface", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--muted: color-mix(in srgb, var(--text) 78%", "--muted: color-mix(in srgb, var(--text) 40%");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--muted on --surface is .* in tone dark/);
+});
+
+test("an on-color below 4.5:1 on its fill fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--on-warning: var(--palette-dark);", "--on-warning: var(--palette-light);");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /static --on-warning on --warning/);
+});
+
+test("a fluid range above 2.5 fails the source ratio policy", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--type-ratio-max: 1.375;", "--type-ratio-max: 1.5;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.ok(result.stderr.includes("fluid text step 5 exceeds the 2.5x source ratio budget"), result.stderr);
+});
+
+test("a stale static type fallback fails", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--type-min: 1;", "--type-min: 0.875;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /static --body-min must equal its recipe value 0\.875/);
+});
+
+for (const [name, path, before, after, message] of [
+  ["invalid edge", "styles/crft.css", "border-color: color-mix(in srgb, var(--danger) 70%, var(--text));", "border-color: var(--danger);", /invalid edge on --surface/],
+  ["warning route edge", "styles/crft.css", "var(--text) 60%, var(--canvas)", "var(--text) 55%, var(--canvas)", /control edge on --surface.*warning combined/],
+  ["accent text", "styles/tokens.css", "--accent-text: color-mix(in srgb, var(--accent) 25%, var(--text));", "--accent-text: var(--canvas);", /--accent-text on --canvas/],
+  ["field floor", "styles/crft.css", "font-size: max(1rem, 1em);", "font-size: inherit;", /font-size: max/],
+  ["details clipping", "styles/crft.css", "details {", "details { overflow: clip;", /details.*details-content/],
+  ["bleed clamp", "styles/tokens.css", "--bleed-y: clamp(4rem, 2rem + 8vi, 12rem);", "--bleed-y: 12rem;", /bounded --bleed-y/],
+  ["WebKit adjustment", "styles/crft.css", "-webkit-text-size-adjust: none;", "", /paired text adjustment/],
+  ["focus ring", "styles/crft.css", "solid currentColor", "solid var(--border)", /outline:/],
+]) test(`${name} regression fails`, (t) => {
+  const root = makeFixture(t);
+  replace(root, path, before, after);
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, message);
+});
+
+test("reversed fluid endpoints fail", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--type-max: 1.25;", "--type-max: 0.5;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /invalid fluid endpoints/);
 });

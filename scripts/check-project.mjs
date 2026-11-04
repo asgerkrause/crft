@@ -1,4 +1,5 @@
 import { buildContract, v3CssErrors, declaredProperties, hasExplicitWght } from "./emit-contract.mjs";
+import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -94,7 +95,7 @@ function loadAdoption(target) {
   }
   const sourceContract = buildContract(flat ? target : layersDir);
   if ((version === 3) !== (sourceContract.contractVersion === 3)) throw new Error("Semantic version marker disagrees with adoption; explicit v2/v3 migration required");
-  return { contract: manifest.contract, flat };
+  return { contract: manifest.contract, flat, files: manifest.files };
 }
 
 function privatePattern(names) {
@@ -104,7 +105,7 @@ function privatePattern(names) {
 }
 
 function checkProject(target) {
-  const { contract, flat } = loadAdoption(target);
+  const { contract, flat, files } = loadAdoption(target);
   const version = Object.hasOwn(contract, "contractVersion") ? contract.contractVersion : 1;
   if (![1, 2, 3].includes(version)) throw new Error(`Unsupported contractVersion ${version}`);
   for (const field of ["publicTokens", "privateProperties"]) {
@@ -130,6 +131,10 @@ function checkProject(target) {
     ? (existsSync(join(target, "crft.css")) ? Object.keys(layerDependencies) : ["tokens"])
     : layerNamesFromFiles(join(target, "layers")));
   if (flat && !existsSync(join(target, "tokens.css"))) throw new Error("crft.css requires tokens.css");
+
+  // crft.css is copied framework; tokens.css is the editable brand file.
+  const recorded = flat && files?.["crft.css"];
+  if (recorded && existsSync(join(target, "crft.css")) && createHash("sha256").update(readFileSync(join(target, "crft.css"))).digest("hex") !== recorded) fail("crft.css differs from its crft-manifest.json hash; re-copy it with scripts/copy-system.mjs or move the change into project CSS");
 
   for (const layer of present) {
     const missing = (dependencies[layer] ?? []).filter((need) => !present.has(need));
