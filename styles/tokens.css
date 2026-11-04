@@ -11,7 +11,7 @@
     --fluid-max: 100;
     --content-max: 100rem;
     --bleed-x: 2rem;
-    --bleed-y: 12rem;
+    --bleed-y: clamp(4rem, 2rem + 8vi, 12rem);
     --query-md: 30rem;
     --query-lg: 60rem;
 
@@ -199,10 +199,10 @@
     --weight-light: 300;
     --weight: 400;
     --weight-bold: 600;
-    --type-min: 0.875;
+    --type-min: 1;
     --type-max: 1.25;
-    --type-ratio-min: 1.15;
-    --type-ratio-max: 1.4;
+    --type-ratio-min: 1.2;
+    --type-ratio-max: 1.375;
     --display-step: 5;
     --h1-step: 4;
     --h2-step: 3;
@@ -223,9 +223,9 @@
     --display-features: normal;
     --display-axes: normal;
     --display-optical-sizing: auto;
-    --display-min: 1.759937539;
-    --display-max: 6.7228;
-    --display-size: 1.759937539rem;
+    --display-min: 2.48832;
+    --display-max: 6.143608093;
+    --display-size: 2.48832rem;
     --h1-leading: 1.1;
     --h1-tracking: -0.01em;
     --h1-measure: none;
@@ -233,9 +233,9 @@
     --h1-features: normal;
     --h1-axes: normal;
     --h1-optical-sizing: auto;
-    --h1-min: 1.530380469;
-    --h1-max: 4.802;
-    --h1-size: 1.530380469rem;
+    --h1-min: 2.0736;
+    --h1-max: 4.468078613;
+    --h1-size: 2.0736rem;
     --h2-leading: 1.1;
     --h2-tracking: -0.01em;
     --h2-measure: none;
@@ -243,9 +243,9 @@
     --h2-features: normal;
     --h2-axes: normal;
     --h2-optical-sizing: auto;
-    --h2-min: 1.330765625;
-    --h2-max: 3.43;
-    --h2-size: 1.330765625rem;
+    --h2-min: 1.728;
+    --h2-max: 3.249511719;
+    --h2-size: 1.728rem;
     --h3-leading: 1.1;
     --h3-tracking: -0.01em;
     --h3-measure: none;
@@ -253,9 +253,9 @@
     --h3-features: normal;
     --h3-axes: normal;
     --h3-optical-sizing: auto;
-    --h3-min: 1.1571875;
-    --h3-max: 2.45;
-    --h3-size: 1.1571875rem;
+    --h3-min: 1.44;
+    --h3-max: 2.36328125;
+    --h3-size: 1.44rem;
     --lead-leading: 1.5;
     --lead-tracking: 0em;
     --lead-measure: 70ch;
@@ -263,9 +263,9 @@
     --lead-features: normal;
     --lead-axes: normal;
     --lead-optical-sizing: auto;
-    --lead-min: 1.00625;
-    --lead-max: 1.75;
-    --lead-size: 1.00625rem;
+    --lead-min: 1.2;
+    --lead-max: 1.71875;
+    --lead-size: 1.2rem;
     --body-leading: 1.5;
     --body-tracking: 0em;
     --body-measure: 70ch;
@@ -273,9 +273,9 @@
     --body-features: normal;
     --body-axes: normal;
     --body-optical-sizing: auto;
-    --body-min: 0.875;
+    --body-min: 1;
     --body-max: 1.25;
-    --body-size: 0.875rem;
+    --body-size: 1rem;
     --small-leading: 1.5;
     --small-tracking: 0em;
     --small-measure: 70ch;
@@ -283,9 +283,9 @@
     --small-features: normal;
     --small-axes: normal;
     --small-optical-sizing: auto;
-    --small-min: 0.7608695652;
-    --small-max: 0.8928571429;
-    --small-size: 0.7608695652rem;
+    --small-min: 0.8333333333;
+    --small-max: 0.9090909091;
+    --small-size: 0.8333333333rem;
     --label-leading: 1.5;
     --label-tracking: 0em;
     --label-measure: 70ch;
@@ -293,9 +293,9 @@
     --label-features: normal;
     --label-axes: normal;
     --label-optical-sizing: auto;
-    --label-min: 0.7608695652;
-    --label-max: 0.8928571429;
-    --label-size: 0.7608695652rem;
+    --label-min: 0.8333333333;
+    --label-max: 0.9090909091;
+    --label-size: 0.8333333333rem;
     --caption-leading: 1.5;
     --caption-tracking: 0em;
     --caption-measure: 70ch;
@@ -303,9 +303,9 @@
     --caption-features: normal;
     --caption-axes: normal;
     --caption-optical-sizing: auto;
-    --caption-min: 0.7608695652;
-    --caption-max: 0.8928571429;
-    --caption-size: 0.7608695652rem;
+    --caption-min: 0.8333333333;
+    --caption-max: 0.9090909091;
+    --caption-size: 0.8333333333rem;
   }
 
   :root {

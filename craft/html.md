@@ -93,9 +93,9 @@ Base:
 
 | Area | Guarantee |
 | --- | --- |
-| Document | Minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, no overscroll, tab size, hanging punctuation, and font smoothing |
+| Document | Minimum document height, light/dark color scheme, intrinsic-size interpolation, pretty wrapping, stable scrollbar gutter, thin semantic scrollbars, tab size, hanging punctuation, and font smoothing |
 | Active canvas | Root, body, document controls, selections, marks, and `[data-theme]` consume active semantic colors |
-| Controls | Native button appearance, start-aligned control text, no hanging punctuation on controls, no text selection on `button`, minimal field and button chrome, invalid border color, muted disabled text, content-driven textarea field sizing, and touch manipulation |
+| Controls | Native button appearance, start-aligned control text, no hanging punctuation on controls, no text selection on `button`, minimal field and button chrome, a `max(1rem, 1em)` field floor (16px at a 16px root), invalid border color, muted disabled text, content-driven textarea field sizing, and touch manipulation |
 | Lists and links | List markers sit outside with start padding, navigation lists remove markers and padding, links inherit color with no underline, `a` `button` and `label` use the public motion roles for color, surface, and `font-weight` transitions, and `aria-current="page"` is visible without color alone |
 | Interaction | Pointer cursors for native interactive labels and controls, visible `:focus-visible`, disabled cursor treatment, and target scroll offset |
 | Hidden and disabled | Native `disabled` controls receive browser behavior. `[aria-disabled="true"]` receives cursor styling only; application code must enforce its behavior |

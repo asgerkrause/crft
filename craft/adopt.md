@@ -278,9 +278,32 @@ crft contractVersion 3 is a breaking replacement. Recorded manifests without a v
 
 Live values also changed. Do not copy values from this table. Read the current CSS and [`tokens.md`](tokens.md), then verify each adopted role. Search every consumer of an earlier name before removal. crft provides no aliases for the earlier contract.
 
+## Accessibility defaults update
+
+Re-pin explicitly; copied projects do not receive these changes automatically. Public names and the contract digest are unchanged.
+At a 16px root in horizontal writing, compare these previous and current defaults:
+
+| Default | Previous | Current |
+| --- | --- | --- |
+| Body at 320px | 14px | 16px |
+| Display at 320px | 28.16px | 39.81px |
+| Display at 1440px | 96.98px | 90.50px |
+| Section block padding at 390px | 192px | 64px |
+
+The type recipe and static fallbacks changed together. Independent spacing scales did not change.
+Button and field edges are darker; invalid fields retain danger color with sufficient edge contrast.
+Fields use `max(1rem, 1em)`: 16px at a 16px root, retaining larger inherited text and explicit role overrides.
+Disclosure focus no longer clips at `details`; animated `::details-content` retains its clip.
+Text adjustment includes the WebKit prefix. Removing `overscroll-behavior: none` restores native scroll-boundary behavior, including pull-to-refresh where supported.
+Compare project-owned overrides and verify their rendered states before updating the recorded revision and framework hash.
+
 ## Intentional updates
 
-A copied project does not follow crft automatically. `crft-manifest.json` records the adopted revision and file hashes, and `node scripts/check-project.mjs <styles-dir>` verifies project CSS against the recorded contract: private-property use, single-side logical longhands, unknown or mixed-version public tokens, and missing layer dependencies. To adopt a later upstream change:
+A copied project does not follow crft automatically. `crft-manifest.json` records the adopted revision and file hashes, and `node scripts/check-project.mjs <styles-dir>` verifies project CSS against the recorded contract: private-property use, single-side logical longhands, unknown or mixed-version public tokens, and missing layer dependencies. For flat packages, a recorded `files["crft.css"]` hash is checked byte-for-byte, including whitespace and comments.
+Formatting copied framework CSS changes its hash. Keep project rules separate; refresh the hash only after an intentional, verified update.
+Editable `tokens.css` has no integrity restriction. No manifest or no framework hash means no framework-integrity check.
+Tokens-only and legacy layer packages also lack this flat-framework check; structural validation still runs.
+Manual complete copies remain supported. To adopt a later upstream change:
 
 1. compare the project copy with the intended crft revision recorded in the manifest;
 2. identify project-owned brand and behavior changes;

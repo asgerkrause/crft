@@ -46,7 +46,9 @@ Disclosure rows own label wrapping and icon layout, including emergency word bre
 
 Type, spacing, and radius recipes resolve at `:root` only. Change foundations there. Arbitrary descendant foundation overrides are unsupported because inherited custom-property outputs are already resolved. Local final role-size or metadata overrides belong on separate semantic owners, never theme selectors. The pow enhancement is feature-gated; readable static sizes remain without it. Static recipes supply literal lengths with no viewport dependency. Equal bases and ratios also produce a constant modular result.
 
-Keep independent approved leading, tracking, case, features, and measure. Positive rem terms and ratio limits are source checks, not proof of accessible enlargement. Test every used step at/below/inside/above bounds, user root sizes, browser zoom, 200% enlargement, narrow reflow, and multilingual content.
+Keep independent approved leading, tracking, case, features, and measure. The canonical recipe and synthetic brand fixtures require positive ordered endpoints and a maximum/minimum ratio at most 2.5.
+They also require positive zoom growth across their viewport bounds. Literal role sizes take precedence over endpoints.
+Positive rem terms and ratio limits are source checks, not proof of accessible enlargement. Test every used step at/below/inside/above bounds, user root sizes, browser zoom, 200% enlargement, narrow reflow, and multilingual content.
 
 Font and weight foundations resolve at root. Final role sizes and metadata inherit through themes without rebinding.
 Separate semantic owners support local final role overrides. The v3 change removes theme-local foundation recipes.

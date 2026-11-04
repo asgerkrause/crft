@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -136,4 +136,34 @@ test("wght text inside a content string is not a font-variation-settings declara
   write(join(root, "project.css"), `.x { content: "font-variation-settings: 'wght' 700"; }\n`);
   const result = run(root);
   assert.equal(result.status, 0, result.stderr);
+});
+
+test("a modified copied crft.css fails its manifest hash", (t) => {
+  const root = fixture(t);
+  const copy = spawnSync(process.execPath, [fileURLToPath(new URL("./copy-system.mjs", import.meta.url)), "--layers", "full", root], { encoding: "utf8" });
+  assert.equal(copy.status, 0, copy.stderr);
+  assert.equal(run(root).status, 0, run(root).stderr);
+  writeFileSync(join(root, "crft.css"), `${readFileSync(join(root, "crft.css"), "utf8")}\n.x { --_foo: 1; }\n`);
+  const result = run(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /crft\.css differs from its crft-manifest\.json hash/);
+});
+
+for (const baseline of ["recorded", "no manifest", "no framework hash"]) test(`framework byte integrity: ${baseline}`, (t) => {
+  const root = fixture(t);
+  const copy = spawnSync(process.execPath, [fileURLToPath(new URL("./copy-system.mjs", import.meta.url)), "--layers", "full", root], { encoding: "utf8" });
+  assert.equal(copy.status, 0, copy.stderr);
+  const manifestPath = join(root, "crft-manifest.json");
+  if (baseline === "no manifest") rmSync(manifestPath);
+  if (baseline === "no framework hash") {
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    delete manifest.files["crft.css"];
+    writeFileSync(manifestPath, JSON.stringify(manifest));
+  }
+  writeFileSync(join(root, "tokens.css"), readFileSync(join(root, "tokens.css"), "utf8") + "\n/* owned brand change */\n");
+  assert.equal(run(root).status, 0);
+  writeFileSync(join(root, "crft.css"), readFileSync(join(root, "crft.css"), "utf8") + "\n");
+  const result = run(root);
+  assert.equal(result.status, baseline === "recorded" ? 1 : 0, result.stderr);
+  if (baseline === "recorded") assert.match(result.stderr, /differs from its crft-manifest/);
 });
