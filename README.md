@@ -11,7 +11,7 @@ By Asger Krause and SANITIZE Studio.
 - `styles/tokens.css`: brand foundations, recipes, color schemes, and optional fonts.
 - `styles/crft.css`: framework behavior in the `reset`, `base`, `type`, `layout`, `grid`, `motion`, and `utility` layers.
 - `styles/global.css`: the layer order and both imports.
-- `CRAFT.md`: the task router. Topic guides are in `craft/`.
+- `CRFT.md`: the task router. Topic guides are in `docs/`.
 - `SKILL.md`: the entry point for coding agents.
 - `examples/`, `recipes/`, and `reference/`: runnable examples, copyable Astro blocks, and the reference site.
 
@@ -75,7 +75,7 @@ bun run test
 bun run test:rendered
 ```
 
-Static checks don't prove accessibility, visual quality, or browser behavior. See `craft/verify.md` for the rendered and review gates.
+Static checks don't prove accessibility, visual quality, or browser behavior. See `docs/verify.md` for the rendered and review gates.
 
 ## License
 

@@ -11,8 +11,8 @@ const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 const fixturePaths = [
   "GUIDE.md",
   "reference-contract.md",
-  "CRAFT.md",
-  "craft",
+  "CRFT.md",
+  "docs",
   "examples",
   "SKILL.md",
   "reference/fixtures/public-contract.json",
@@ -155,7 +155,7 @@ test("a public token value change needs no duplicate documentation value", (t) =
 
 test("the token owner routes live authority to CSS", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "sole catalog and authority", "secondary reference");
+  replace(root, "docs/tokens.md", "sole catalog and authority", "secondary reference");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /must route live token values and formulas/);
@@ -202,7 +202,7 @@ test("mandatory copier and fluid-type claims are rejected", (t) => {
 
 test("adoption modes remain explicit", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "| Local extraction |", "| Project subset |");
+  replace(root, "docs/adopt.md", "| Local extraction |", "| Project subset |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /adoption modes differ from the canonical four-mode contract/);
@@ -212,7 +212,7 @@ test("local extraction grants no crft hooks", (t) => {
   const root = makeFixture(t);
   replace(
     root,
-    "craft/adopt.md",
+    "docs/adopt.md",
     "| Local extraction | Only useful declarations, tokens, or relationships moved into an existing project stylesheet | None |",
     "| Local extraction | Only useful declarations, tokens, or relationships moved into an existing project stylesheet | Complete API |",
   );
@@ -223,7 +223,7 @@ test("local extraction grants no crft hooks", (t) => {
 
 test("selected layers expose retained live hooks only", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "Only retained live hooks from tokens.css", "Every documented hook");
+  replace(root, "docs/adopt.md", "Only retained live hooks from tokens.css", "Every documented hook");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /tokens-only adoption must expose retained live hooks only/);
@@ -231,10 +231,10 @@ test("selected layers expose retained live hooks only", (t) => {
 
 test("fluid type remains optional for projects", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/type.md", "Fluid type is a reference strategy, not a project requirement", "Fluid type is required");
+  replace(root, "docs/type.md", "Fluid type is a reference strategy, not a project requirement", "Fluid type is required");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /craft\/type\.md must keep fluid type optional for projects/);
+  assert.match(result.stderr, /docs\/type\.md must keep fluid type optional for projects/);
 });
 
 test("direct crft guidance rejects product authority", (t) => {
@@ -252,7 +252,7 @@ test("direct crft guidance rejects product authority", (t) => {
 
 test("the public token index rejects duplicate names", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--header` |", "| `--header`, `--header` |");
+  replace(root, "docs/tokens.md", "| `--header` |", "| `--header`, `--header` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /documents a public token more than once/);
@@ -260,7 +260,7 @@ test("the public token index rejects duplicate names", (t) => {
 
 test("the public token index rejects copied live values", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | Native control height set to `2.75rem` |");
+  replace(root, "docs/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | Native control height set to `2.75rem` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /duplicates a live value or formula/);
@@ -268,7 +268,7 @@ test("the public token index rejects copied live values", (t) => {
 
 test("every indexed public token requires a non-empty job", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | |");
+  replace(root, "docs/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /has an empty job for: --control/);
@@ -276,7 +276,7 @@ test("every indexed public token requires a non-empty job", (t) => {
 
 test("the HTML owner states the purpose-based identifier contract", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/html.md", "A direct `main > section` requires a meaningful, nonempty, unique `id`.", "Every section needs identity.");
+  replace(root, "docs/html.md", "A direct `main > section` requires a meaningful, nonempty, unique `id`.", "Every section needs identity.");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing identifier doctrine/);
@@ -292,7 +292,7 @@ test("canonical examples reject names on generic wrappers", (t) => {
 
 test("canonical examples reject dangling ARIA id references", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/forms.md", "invite-email-help invite-email-error", "invite-email-help missing-error");
+  replace(root, "docs/forms.md", "invite-email-help invite-email-error", "invite-email-help missing-error");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /references missing id missing-error/);
@@ -300,23 +300,23 @@ test("canonical examples reject dangling ARIA id references", (t) => {
 
 test("the canonical topic map rejects extra files", (t) => {
   const root = makeFixture(t);
-  writeFileSync(join(root, "craft/extra.md"), "# Extra\n");
+  writeFileSync(join(root, "docs/extra.md"), "# Extra\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /differs from the 16-topic documentation map/);
 });
 
-test("CRAFT routes every topic", (t) => {
+test("CRFT routes every topic", (t) => {
   const root = makeFixture(t);
-  replace(root, "CRAFT.md", "](craft/brief.md)", "](craft/missing.md)");
+  replace(root, "CRFT.md", "](docs/brief.md)", "](docs/missing.md)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /does not route to craft\/brief\.md/);
+  assert.match(result.stderr, /does not route to docs\/brief\.md/);
 });
 
 test("topic owners require canonical frontmatter", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/brief.md", "read_when:", "usage:");
+  replace(root, "docs/brief.md", "read_when:", "usage:");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing canonical topic frontmatter/);
@@ -324,7 +324,7 @@ test("topic owners require canonical frontmatter", (t) => {
 
 test("documented color routes must match source", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/color.md", "| `danger` | Danger feedback |", "| `critical` | Danger feedback |");
+  replace(root, "docs/color.md", "| `danger` | Danger feedback |", "| `critical` | Danger feedback |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /accent routes differ from source/);
@@ -625,7 +625,7 @@ test("project stagger remains inside feature and reduced-motion gates", (t) => {
 
 test("the router records the retired tooling boundary", (t) => {
   const root = makeFixture(t);
-  replace(root, "CRAFT.md", "consumer analyzer", "consumer inspector");
+  replace(root, "CRFT.md", "consumer analyzer", "consumer inspector");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /does not record the retired tooling boundary/);
@@ -633,7 +633,7 @@ test("the router records the retired tooling boundary", (t) => {
 
 test("adoption keeps the breaking migration record", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "contractVersion 3", "contractVersion future");
+  replace(root, "docs/adopt.md", "contractVersion 3", "contractVersion future");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("missing breaking migration guidance"), result.stderr);
@@ -641,7 +641,7 @@ test("adoption keeps the breaking migration record", (t) => {
 
 test("retired doctrine references fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/brief.md", "# Brief", "# Brief\n\nSee seess for values.");
+  replace(root, "docs/brief.md", "# Brief", "# Brief\n\nSee seess for values.");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /references a retired frontend source/);
@@ -649,7 +649,7 @@ test("retired doctrine references fail", (t) => {
 
 test("retired topic references fail in examples", (t) => {
   const root = makeFixture(t);
-  replace(root, "examples/foundations/README.md", "# Foundations", "# Foundations\n\nSee craft/css.md.");
+  replace(root, "examples/foundations/README.md", "# Foundations", "# Foundations\n\nSee docs/css.md.");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /references a retired topic owner/);
@@ -674,23 +674,23 @@ test("the skill starts with inspect and plan", (t) => {
 
 test("the layout owner keeps property-form doctrine", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/layout.md", "*-block-start", "*-block-begin");
+  replace(root, "docs/layout.md", "*-block-start", "*-block-begin");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /craft\/layout\.md is missing \*-block-start/);
+  assert.match(result.stderr, /docs\/layout\.md is missing \*-block-start/);
 });
 
 test("the HTML owner names the reset and base layers", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/html.md", "@layer reset", "@layer strip");
+  replace(root, "docs/html.md", "@layer reset", "@layer strip");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /craft\/html\.md Native base guarantees is missing @layer reset/);
+  assert.match(result.stderr, /docs\/html\.md Native base guarantees is missing @layer reset/);
 });
 
 test("adoption documents overlay copy", (t) => {
   const root = makeFixture(t);
-  replace(root, "craft/adopt.md", "Do not default to the full tree on an existing site", "Always copy every layer");
+  replace(root, "docs/adopt.md", "Do not default to the full tree on an existing site", "Always copy every layer");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /missing breaking migration guidance: Do not default to the full tree on an existing site/);
@@ -770,11 +770,11 @@ test("fluid type steps cannot lose zoom growth", (t) => {
 
 test("the router ban index must stay present", (t) => {
   const root = makeFixture(t);
-  const path = join(root, "CRAFT.md");
+  const path = join(root, "CRFT.md");
   writeFileSync(path, readFileSync(path, "utf8").replace(/<!-- ban-index:start -->[\s\S]*?<!-- ban-index:end -->\n?/, ""));
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /CRAFT.md is missing the ban index/);
+  assert.match(result.stderr, /CRFT.md is missing the ban index/);
 });
 
 test("retired public token families fail", (t) => {

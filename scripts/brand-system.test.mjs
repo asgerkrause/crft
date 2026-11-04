@@ -160,7 +160,7 @@ test("flat adoption rejects mixed layout and missing framework", async (t) => {
 test("recorded and manual v2 legacy layer packages remain supported", (t) => {
   const target = temporary(t);
   mkdirSync(join(target, "layers"));
-  writeFileSync(join(target, "layers/tokens.css"), readFileSync(new URL("styles/tokens.css", root), "utf8").replace("/* Craft semantic contract: 3. */", ""));
+  writeFileSync(join(target, "layers/tokens.css"), readFileSync(new URL("styles/tokens.css", root), "utf8").replace("/* crft semantic contract: 3. */", ""));
   const contract = buildContract(root);
   delete contract.packagingVersion;
   contract.contractVersion = 2;
@@ -182,7 +182,7 @@ test("legacy v2 package permits project-owned root tokens but rejects flat packa
   contract.skins = ["tone"];
   const layers = Object.keys(contract.layerDependencies);
   for (const layer of layers) writeFileSync(join(target, "layers", `${layer}.css`), `@layer ${layer} {}`);
-  writeFileSync(join(target, "layers/tokens.css"), readFileSync(new URL("styles/tokens.css", root), "utf8").replace("/* Craft semantic contract: 3. */", ""));
+  writeFileSync(join(target, "layers/tokens.css"), readFileSync(new URL("styles/tokens.css", root), "utf8").replace("/* crft semantic contract: 3. */", ""));
   const manifest = join(target, "layers/crft-manifest.json");
   writeFileSync(manifest, JSON.stringify({ contractVersion: 2, layers, contract }));
   writeFileSync(join(target, "tokens.css"), ":root { --project-gutter: 2rem; }");

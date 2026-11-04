@@ -52,7 +52,7 @@ A consumer must explicitly adopt the full framework to use this shell's `.c`, `.
 @import "./crft.css";
 ```
 
-Replace the repository crft link with one link to that consumer-owned entry. Keep the small presentation rules in the project's normal CSS owner. Strategy-only, local extraction, and tokens-only adoption do not grant these framework hooks; see [`craft/adopt.md`](../../craft/adopt.md).
+Replace the repository crft link with one link to that consumer-owned entry. Keep the small presentation rules in the project's normal CSS owner. Strategy-only, local extraction, and tokens-only adoption do not grant these framework hooks; see [`docs/adopt.md`](../../docs/adopt.md).
 
 ## Verify
 

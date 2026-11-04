@@ -2,7 +2,7 @@
 
 ## Scope
 
-crft is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRAFT.md`, then only the owners required by its route.
+crft is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. Read `CRFT.md`, then only the owners required by its route.
 
 crft owns its canonical reference CSS and documented contract. It does not own product strategy, design judgment, taste, brand, content, or product accessibility acceptance.
 
@@ -24,7 +24,7 @@ This repository loads `styles/global.css` once. For each affected subsystem, con
 
 Put a shared rule in the first owner that fully explains it. Consumers own every result. Brand in a copied complete `tokens.css` or the project’s existing token owner. Keep product CSS in the project’s normal owner.
 
-The complete-layer public API consists of live token names in `tokens.css`, documented selectors and attributes still present in their owning layer, the named `container` context, and retained native guarantees in the base layer of `crft.css`. File presence alone is not proof after project simplification. A local extraction grants none of these hooks. `craft/tokens.md` documents every exact public reference token name and job without copying live values.
+The complete-layer public API consists of live token names in `tokens.css`, documented selectors and attributes still present in their owning layer, the named `container` context, and retained native guarantees in the base layer of `crft.css`. File presence alone is not proof after project simplification. A local extraction grants none of these hooks. `docs/tokens.md` documents every exact public reference token name and job without copying live values.
 
 These properties are private:
 

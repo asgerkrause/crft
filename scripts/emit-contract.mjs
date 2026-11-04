@@ -15,7 +15,7 @@ const layerDependencies = {
   motion: ["tokens", "layout"],
   utility: [],
 };
-// Public composition hooks. Keep aligned with CRAFT.md public-hook-index.
+// Public composition hooks. Keep aligned with CRFT.md public-hook-index.
 const hooks = {
   attributes: ["g", "c", "r", "o", "l", "data-theme", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
   classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable", ".squircle"],
@@ -126,9 +126,10 @@ function buildContract(rootUrl) {
     ...staticBans,
   ];
 
-  const marker = "/* Craft semantic contract: 3. */";
-  const contractVersion = tokensCss.includes(marker) ? 3 : 2;
-  if (files.some((name) => name !== "tokens.css" && sources[name].includes(marker) !== (contractVersion === 3))) {
+  // Copies adopted before the rename still carry the old marker spelling.
+  const marker = /\/\* (?:crft|Craft) semantic contract: 3\. \*\//;
+  const contractVersion = marker.test(tokensCss) ? 3 : 2;
+  if (files.some((name) => name !== "tokens.css" && marker.test(sources[name]) !== (contractVersion === 3))) {
     throw new Error("Incompatible token/framework semantic versions; explicit v2/v3 migration required");
   }
 

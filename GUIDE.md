@@ -1,14 +1,14 @@
 # crft
 
-crft owns this concrete system. General frontend craft and design judgment belong to the project or a companion design skill.
+crft owns this concrete system. General frontend and design judgment belong to the project or a companion design skill.
 
 crft is the SNZ CSS, token, class, naming, and architecture strategy plus a reference structure. It supplies semantic CSS constraints, accessibility primitives and fallbacks, adoption guidance, and verification—not product strategy, design judgment, taste, or product acceptance.
 
-Start with [`CRAFT.md`](CRAFT.md). It routes tasks to the relevant canonical owner.
+Start with [`CRFT.md`](CRFT.md). It routes tasks to the relevant canonical owner.
 
 ## Documentation
 
-[`CRAFT.md`](CRAFT.md) is the only complete task router. It routes to 16 focused topic owners under `craft/`.
+[`CRFT.md`](CRFT.md) is the only complete task router. It routes to 16 focused topic owners under `docs/`.
 
 `styles/global.css` imports two owners: `styles/tokens.css` for brand values/recipes/optional fonts, and `styles/crft.css` for framework behavior. Eight logical layers keep their precedence. [`examples/`](examples/) contains runnable evidence, not API.
 
@@ -34,7 +34,7 @@ The copier is an optional whole-layer convenience. It writes `tokens.css`, optio
 
 The public API is machine-readable, not prose. `node scripts/emit-contract.mjs` derives the full contract (tokens, hooks, themes, accents, layer dependencies, bans) from live CSS. The manifest makes every adopting repo self-describing, and `node scripts/check-project.mjs <styles-dir>` verifies consumer CSS against its adopted contract. Run the checker from this checkout; it uses its adjacent contract helpers. An agent never has to guess what is API: the contract says so, and the checkers fail when it drifts.
 
-[`CRAFT.md`](CRAFT.md) is the task router. [`craft/`](craft/) holds topic guidance. [`SKILL.md`](SKILL.md) is the thin agent entrypoint.
+[`CRFT.md`](CRFT.md) is the task router. [`docs/`](docs/) holds topic guidance. [`SKILL.md`](SKILL.md) is the thin agent entrypoint.
 
 ## Full-adoption example
 
@@ -65,4 +65,4 @@ cd reference && bun run test
 cd reference && bun run test:rendered
 ```
 
-Static checks do not prove strategy, accessibility, visual quality, or browser behavior. Use the three gates in [`craft/verify.md`](craft/verify.md).
+Static checks do not prove strategy, accessibility, visual quality, or browser behavior. Use the three gates in [`docs/verify.md`](docs/verify.md).
