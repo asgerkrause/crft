@@ -7,7 +7,7 @@ read_when: Recording a supplied product outcome, page argument, content jobs, co
 
 # Brief
 
-General frontend craft and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
+General frontend and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
 
 Record the job before structure or presentation. This file is a worksheet for product intent and content decisions supplied by project or design authority. It does not create those decisions or prescribe section templates.
 

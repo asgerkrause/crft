@@ -1,11 +1,11 @@
 ---
-name: craft
-description: Use for /craft or adopting, building, reviewing, or migrating the crft CSS system. Own concrete tokens, hooks, recipes, and validation. General frontend design judgment is out of scope.
+name: crft
+description: Use for /crft or adopting, building, reviewing, or migrating the crft CSS system. Own concrete tokens, hooks, recipes, and validation. General frontend design judgment is out of scope.
 ---
 
 # crft
 
-crft owns the concrete CSS system, tokens, recipes, and contract. General frontend craft and design judgment belong to the project or a companion design skill. `CRAFT.md` routes tasks; `craft/` holds topic guidance.
+crft owns the concrete CSS system, tokens, recipes, and contract. General frontend and design judgment belong to the project or a companion design skill. `CRFT.md` routes tasks; `docs/` holds topic guidance.
 
 Paths/commands start here; prerequisites are in [README.md](README.md).
 
@@ -13,11 +13,11 @@ Paths/commands start here; prerequisites are in [README.md](README.md).
 
 Do not edit yet.
 
-1. Inspect `CRAFT.md` Route; name the workflow row and every owner hit.
+1. Inspect `CRFT.md` Route; name the workflow row and every owner hit.
 2. Read those owners and the matching live CSS; grep is not the owner.
 3. Plan from that; stop if an owner is unread.
 
-Spacing, padding, margin, gap, and property form always load `craft/layout.md`.
+Spacing, padding, margin, gap, and property form always load `docs/layout.md`.
 
 ## Ask
 
@@ -30,7 +30,7 @@ Copy selections: `tokens` | `full`. Full adds framework behavior. `--fonts` adds
 1. Read project instructions and current source.
 2. Adopted layers: inspect `tokens.css` and `crft.css` (or legacy `layers/*.css`) and which public selectors, tokens, and guarantees their live contents retain. File presence alone is not API after project simplification. A missing file or live hook is not API; local extraction does not grant it.
 3. Strategy-only or no-layer work uses semantic HTML and project CSS. Do not invent crft hooks, tokens, Tailwind, or React into an HTML-first repo.
-4. Read CRAFT.md and only its routed owners.
+4. Read CRFT.md and only its routed owners.
 
 ## Load
 
@@ -56,11 +56,11 @@ Classes display/h1/h2/h3/lead/body/small/label/caption select visual roles. Nati
 
 Use ordinary font-weight and preserve supported custom axes; canonical axes exclude wght. Shared type, spacing, and radius recipes resolve at :root only. Local final-role sizes/metadata may override; arbitrary nested foundation overrides are unsupported. Static role sizes are literal lengths. Read approved brand inputs before choosing recipes; missing client schemes and format mappings fail visibly. Brand OS v2 context exports require explicit migration before use.
 
-Never put a class on `section`. Direct `main > section` requires a meaningful, nonempty, unique `id`. Nested IDs need purpose. `data-theme` and `data-accent` remain canvas hooks. `.btn`, `.crd`, and `.lnk` remain project-owned. The full agent ban list lives in `CRAFT.md` Never and in the contract `bans`.
+Never put a class on `section`. Direct `main > section` requires a meaningful, nonempty, unique `id`. Nested IDs need purpose. `data-theme` and `data-accent` remain canvas hooks. `.btn`, `.crd`, and `.lnk` remain project-owned. The full agent ban list lives in `CRFT.md` Never and in the contract `bans`.
 
 ## Check
 
-Checks are named commands: pass, fail, or not run. Repo: `node scripts/check-system.mjs`, `node --test scripts/*.test.mjs`. Consumer: `node scripts/check-project.mjs <styles-dir>` against `crft-manifest.json`. Rendered and judgment gates follow `craft/verify.md`. `/craft audit` is the Full crft system audit row in `CRAFT.md`: `craft/verify.md` first, the other owners in route order, then every gate.
+Checks are named commands: pass, fail, or not run. Repo: `node scripts/check-system.mjs`, `node --test scripts/*.test.mjs`. Consumer: `node scripts/check-project.mjs <styles-dir>` against `crft-manifest.json`. Rendered and judgment gates follow `docs/verify.md`. `/crft audit` is the Full crft system audit row in `CRFT.md`: `docs/verify.md` first, the other owners in route order, then every gate.
 
 Stop: Do not invent product, design, brand, content, or accessibility acceptance. Also stop when ownership, live CSS, a hook’s complete layer, semantics, source order, keyboard, contrast, reduced motion, fallback, inventory conflict, or deletion safety cannot be established. If two heading treatments fight for one token, ask the project authority.
 

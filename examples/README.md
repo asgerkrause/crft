@@ -6,11 +6,11 @@ scope: examples/**
 
 # crft examples
 
-These runnable specimens show decisions in context. They are evidence, not public API. When an example conflicts with `CRAFT.md`, `craft/**`, or `styles/**`, fix the example.
+These runnable specimens show decisions in context. They are evidence, not public API. When an example conflicts with `CRFT.md`, `crft/**`, or `styles/**`, fix the example.
 
 ## Start small
 
-Read the [semantic structure](../craft/html.md#landmarks-and-regions), [layout roles](../craft/layout.md), and [grid contract](../craft/grid.md), then choose one focused specimen:
+Read the [semantic structure](../docs/html.md#landmarks-and-regions), [layout roles](../docs/layout.md), and [grid contract](../docs/grid.md), then choose one focused specimen:
 
 | Example | Source | Project CSS | Explanation |
 | --- | --- | --- | --- |
@@ -44,7 +44,7 @@ Each directory contains:
 
 Serve the repository root to open a specimen's `markup.html`. In this repository, each document loads `styles/global.css` once, followed by its project-owned `example.css`. The entry declares the layer order and imports `tokens.css` and `crft.css`.
 
-Consumers do not copy `global.css`. These specimens use framework hooks, so reproducing them requires explicit full adoption and the prelude/imports in the project's existing CSS entry. Replace the repository stylesheet link with that consumer-owned entry. Keep example presentation in the project's normal CSS owner; the specimens use a later `project` layer. See [adoption modes and entry setup](../craft/adopt.md#copy-tokens-or-the-full-framework).
+Consumers do not copy `global.css`. These specimens use framework hooks, so reproducing them requires explicit full adoption and the prelude/imports in the project's existing CSS entry. Replace the repository stylesheet link with that consumer-owned entry. Keep example presentation in the project's normal CSS owner; the specimens use a later `project` layer. See [adoption modes and entry setup](../docs/adopt.md#copy-tokens-or-the-full-framework).
 
 Strategy-only, local extraction, and tokens-only adoption remain valid choices, but they do not grant framework hooks such as `.c`, `.s`, or `[g]`. Rework the affected layout in project CSS when choosing those modes. Example styles use an explicit `project` layer for portability. Projects may use another coherent owner.
 
@@ -56,7 +56,7 @@ Strategy-only, local extraction, and tokens-only adoption remain valid choices, 
 - `o` always uses all large-medium-small positions.
 - Public token names come from `styles/tokens.css`.
 - Private properties never appear. `data-theme="invert|tone|accent"` changes colors only. Root `color-scheme` selects light/dark.
-- `.btn`, `.crd`, `.lnk`, and optional `.btns`/`.lnks` groups remain [project conventions](../craft/components.md).
+- `.btn`, `.crd`, `.lnk`, and optional `.btns`/`.lnks` groups remain [project conventions](../docs/components.md).
 - Brand values belong in the copied token owner. Typography and spacing recipes belong on root. Local final-role tokens may be scoped.
 
 ## Verify

@@ -7,7 +7,7 @@ read_when: Applying supplied visual direction through hierarchy, rhythm, density
 
 # Composition
 
-General frontend craft and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
+General frontend and design judgment belong to the project or a companion design skill. crft records system-specific implementation constraints.
 
 Composition translates project-approved direction and semantic structure into visible relationships. This owner records implementation constraints and evidence; it does not own visual judgment or taste.
 

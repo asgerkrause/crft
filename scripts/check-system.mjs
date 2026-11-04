@@ -45,10 +45,10 @@ const topicNames = [
   "brief", "composition", "html", "components", "forms", "tokens", "color", "type",
   "layout", "grid", "utilities", "motion", "adopt", "accessibility", "performance", "verify",
 ];
-const topicDocs = topicNames.map((name) => `craft/${name}.md`);
-const retiredTopicDocs = ["strategy", "design", "structure", "css", "quality"].map((name) => `craft/${name}.md`);
-const retiredTopicPattern = /craft\/(?:strategy|design|structure|css|quality)\.md/i;
-const canonicalDocs = ["GUIDE.md", "reference-contract.md", "CRAFT.md", ...topicDocs, "SKILL.md"];
+const topicDocs = topicNames.map((name) => `docs/${name}.md`);
+const retiredTopicDocs = ["strategy", "design", "structure", "css", "quality"].map((name) => `docs/${name}.md`);
+const retiredTopicPattern = /docs\/(?:strategy|design|structure|css|quality)\.md/i;
+const canonicalDocs = ["GUIDE.md", "reference-contract.md", "CRFT.md", ...topicDocs, "SKILL.md"];
 const privateProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
   "--_fluid",
@@ -60,11 +60,11 @@ const supportedSkins = ["accent", "invert", "tone"];
 for (const path of [...canonicalDocs, "styles/global.css", ...files, "styles/sans.woff", "styles/mono.woff"]) {
   if (!existsSync(new URL(path, root))) fail(`missing canonical file: ${path}`);
 }
-const actualTopicDocs = readdirSync(new URL("craft/", root))
+const actualTopicDocs = readdirSync(new URL("docs/", root))
   .filter((name) => name.endsWith(".md"))
-  .map((name) => `craft/${name}`)
+  .map((name) => `docs/${name}`)
   .sort();
-if (actualTopicDocs.join("|") !== [...topicDocs].sort().join("|")) fail("craft/ differs from the 16-topic documentation map");
+if (actualTopicDocs.join("|") !== [...topicDocs].sort().join("|")) fail("docs/ differs from the 16-topic documentation map");
 for (const path of retiredTopicDocs) {
   if (existsSync(new URL(path, root))) fail(`retired topic owner remains: ${path}`);
 }
@@ -108,41 +108,41 @@ for (const [path, source] of Object.entries(docsByPath)) {
 for (const path of referenceBrandSources) {
   const source = read(path);
   if (/\bseess\b|snz-frontend|snz-css-system/i.test(source)) fail(`${path} references a retired frontend source`);
-  if (!/crft|craft/i.test(source)) fail(`${path} does not identify crft`);
+  if (!/crft|crft/i.test(source)) fail(`${path} does not identify crft`);
 }
 const referenceHeader = read("reference/src/components/Header.astro");
 if (!referenceHeader.includes('<header class="sg-header">') || referenceHeader.includes('<header id="top">')) {
   fail("reference header does not use its stable visual-role class");
 }
 
-const craft = docsByPath["CRAFT.md"];
-const adoption = docsByPath["craft/adopt.md"];
+const crft = docsByPath["CRFT.md"];
+const adoption = docsByPath["docs/adopt.md"];
 const adoptionModeBlock = adoption.match(/## Choose a mode\n([\s\S]*?)\n## /)?.[1];
 const adoptionModeRows = [...(adoptionModeBlock ?? "").matchAll(/^\| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/gm)]
   .map((match) => match.slice(1).map((cell) => cell.trim()))
   .filter(([name]) => name !== "Mode" && !/^-+$/.test(name));
 const adoptionModes = adoptionModeRows.map(([name]) => name);
 const expectedAdoptionModes = ["Strategy only", "Local extraction", "Tokens only", "Explicit full adoption"];
-if (adoptionModes.join("|") !== expectedAdoptionModes.join("|")) fail("craft/adopt.md adoption modes differ from the canonical four-mode contract");
+if (adoptionModes.join("|") !== expectedAdoptionModes.join("|")) fail("docs/adopt.md adoption modes differ from the canonical four-mode contract");
 for (const mode of ["Strategy only", "Local extraction"]) {
-  if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`craft/adopt.md ${mode} must expose no crft hooks`);
+  if (adoptionModeRows.find(([name]) => name === mode)?.[2] !== "None") fail(`docs/adopt.md ${mode} must expose no crft hooks`);
 }
 if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tokens only")?.[2] ?? "")) {
-  fail("craft/adopt.md tokens-only adoption must expose retained live hooks only");
+  fail("docs/adopt.md tokens-only adoption must expose retained live hooks only");
 }
-if (!craft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
-  fail("CRAFT.md does not record the retired tooling boundary");
+if (!crft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
+  fail("CRFT.md does not record the retired tooling boundary");
 }
 for (const migration of ["contractVersion 3", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
-  if (!adoption.includes(migration)) fail(`craft/adopt.md is missing breaking migration guidance: ${migration}`);
+  if (!adoption.includes(migration)) fail(`docs/adopt.md is missing breaking migration guidance: ${migration}`);
 }
-const routeBlock = craft.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
-if (!routeBlock) fail("CRAFT.md is missing its bounded topic route");
+const routeBlock = crft.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
+if (!routeBlock) fail("CRFT.md is missing its bounded topic route");
 for (const path of topicDocs) {
-  if (!routeBlock?.includes(`](${path})`)) fail(`CRAFT.md does not route to ${path}`);
+  if (!routeBlock?.includes(`](${path})`)) fail(`CRFT.md does not route to ${path}`);
 }
 for (const path of retiredTopicDocs) {
-  if (craft.includes(`](${path})`)) fail(`CRAFT.md routes to retired owner ${path}`);
+  if (crft.includes(`](${path})`)) fail(`CRFT.md routes to retired owner ${path}`);
 }
 for (const [index, path] of topicDocs.entries()) {
   const document = docsByPath[path];
@@ -150,11 +150,11 @@ for (const [index, path] of topicDocs.entries()) {
     fail(`${path} is missing canonical topic frontmatter`);
   }
   if (index > 0 && routeBlock && routeBlock.indexOf(`](${topicDocs[index - 1]})`) > routeBlock.indexOf(`](${path})`)) {
-    fail(`CRAFT.md route order is incorrect before ${path}`);
+    fail(`CRFT.md route order is incorrect before ${path}`);
   }
 }
 const skill = docsByPath["SKILL.md"];
-if (!skill.includes("CRAFT.md")) fail("SKILL.md does not route through CRAFT.md");
+if (!skill.includes("CRFT.md")) fail("SKILL.md does not route through CRFT.md");
 if (skill.length > 5000) fail("SKILL.md is no longer a thin router");
 const skillAsk = skill.match(/## Ask\n([\s\S]*?)\n## Detect/)?.[1] ?? "";
 const skillCopy = skill.match(/## Copy\n([\s\S]*?)\n## Work/)?.[1] ?? "";
@@ -174,36 +174,36 @@ if (!/fluid type[^.\n]*(?:unnecessary|not needed|optional)[^.\n]*static semantic
 if (!/file presence alone[^.\n]*not API/i.test(skill)) {
   fail("SKILL.md must inspect retained live hooks after project simplification");
 }
-if (!/fluid type[^.\n]*(?:not a project requirement|optional)/i.test(docsByPath["craft/type.md"])) {
-  fail("craft/type.md must keep fluid type optional for projects");
+if (!/fluid type[^.\n]*(?:not a project requirement|optional)/i.test(docsByPath["docs/type.md"])) {
+  fail("docs/type.md must keep fluid type optional for projects");
 }
 for (const component of [".btn", ".crd", ".lnk"]) {
-  if (!craft.includes(component) || !docsByPath["craft/components.md"].includes(component)) {
+  if (!crft.includes(component) || !docsByPath["docs/components.md"].includes(component)) {
     fail(`${component} is missing from the project component naming boundary`);
   }
 }
 const documentedHooks = {
-  "craft/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", "l"],
-  "craft/layout.md": [".c", ".c.sm", ".c.lg", ".s", "container", ".img-w"],
-  "craft/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
-  "craft/utilities.md": [".sr", ".sr.focusable", ".squircle"],
-  "craft/motion.md": [".img-w", "data-scrub"],
-  "craft/color.md": ["data-theme", "data-accent"],
+  "docs/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", "l"],
+  "docs/layout.md": [".c", ".c.sm", ".c.lg", ".s", "container", ".img-w"],
+  "docs/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
+  "docs/utilities.md": [".sr", ".sr.focusable", ".squircle"],
+  "docs/motion.md": [".img-w", "data-scrub"],
+  "docs/color.md": ["data-theme", "data-accent"],
 };
 for (const [path, hooks] of Object.entries(documentedHooks)) {
   for (const hook of hooks) {
     if (!docsByPath[path].includes(`\`${hook}\``)) fail(`${path} does not document public hook ${hook}`);
   }
 }
-if (!craft.includes("## Public hook grammar")) fail("CRAFT.md is missing the public hook grammar");
-if (!craft.includes("Do not add margin, padding, gap, radius, align, or justify attributes")) {
-  fail("CRAFT.md does not reject a spacing or alignment matrix");
+if (!crft.includes("## Public hook grammar")) fail("CRFT.md is missing the public hook grammar");
+if (!crft.includes("Do not add margin, padding, gap, radius, align, or justify attributes")) {
+  fail("CRFT.md does not reject a spacing or alignment matrix");
 }
-const indexedHooks = markedCodeNames(craft, "public-hook-index", /`([^`]+)`/g);
+const indexedHooks = markedCodeNames(crft, "public-hook-index", /`([^`]+)`/g);
 const expectedHooks = unique(Object.values(documentedHooks).flat()).sort();
-if (!indexedHooks) fail("CRAFT.md is missing the public hook index");
+if (!indexedHooks) fail("CRFT.md is missing the public hook index");
 else if (unique(indexedHooks).sort().join("|") !== expectedHooks.join("|")) {
-  fail("CRAFT.md hook index differs from the documented hook map");
+  fail("CRFT.md hook index differs from the documented hook map");
 }
 if (!skill.includes("Do not add a spacing, alignment, or display matrix")) {
   fail("SKILL.md does not reject a spacing matrix");
@@ -214,17 +214,17 @@ if (!skill.includes("Do not invent")) fail("SKILL.md does not refuse invented cr
 if (!skill.includes("at most three")) fail("SKILL.md does not cap topic reads");
 if (!skill.includes("class on `section`")) fail("SKILL.md does not forbid class on section");
 if (!skill.includes("## Start")) fail("SKILL.md is missing the inspect-and-plan start");
-const banIndexLines = markedCodeNames(craft, "ban-index", /^(.+)$/gm);
-if (!banIndexLines) fail("CRAFT.md is missing the ban index");
+const banIndexLines = markedCodeNames(crft, "ban-index", /^(.+)$/gm);
+if (!banIndexLines) fail("CRFT.md is missing the ban index");
 else {
   const indexed = banIndexLines.join("\n").replace(/`/g, "");
   for (const ban of staticBans) {
-    if (!indexed.includes(ban)) fail(`CRAFT.md ban index is missing: ${ban}`);
+    if (!indexed.includes(ban)) fail(`CRFT.md ban index is missing: ${ban}`);
   }
 }
-if (!skill.includes("craft/layout.md")) fail("SKILL.md does not route spacing through layout.md");
-if (!docsByPath["craft/layout.md"].includes("## Property form")) fail("craft/layout.md is missing ## Property form");
-if (!docsByPath["craft/layout.md"].includes("*-block-start")) fail("craft/layout.md is missing *-block-start");
+if (!skill.includes("docs/layout.md")) fail("SKILL.md does not route spacing through layout.md");
+if (!docsByPath["docs/layout.md"].includes("## Property form")) fail("docs/layout.md is missing ## Property form");
+if (!docsByPath["docs/layout.md"].includes("*-block-start")) fail("docs/layout.md is missing *-block-start");
 
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
@@ -281,33 +281,33 @@ const publicTokenSet = new Set(publicTokens);
 for (const token of publicTokens) {
   if (/^--[lsgprbctm](?:-|$)/.test(token)) fail(`${token} uses a retired token family`);
 }
-const tokenDocument = docsByPath["craft/tokens.md"];
+const tokenDocument = docsByPath["docs/tokens.md"];
 const tokenIndexBlock = tokenDocument.match(/<!-- public-token-index:start -->([\s\S]*?)<!-- public-token-index:end -->/)?.[1];
 const documentedTokens = markedCodeNames(tokenDocument, "public-token-index", /`(--[a-z0-9-]+)`/g);
-if (!documentedTokens || !tokenIndexBlock) fail("craft/tokens.md is missing the public token index");
+if (!documentedTokens || !tokenIndexBlock) fail("docs/tokens.md is missing the public token index");
 else {
   if (/#(?:[0-9a-f]{3}){1,2}\b|\b\d+(?:\.\d+)?(?:px|rem|ch|ms|s|%)\b|\b(?:calc|clamp|color-mix|light-dark)\(/i.test(tokenIndexBlock)) {
-    fail("craft/tokens.md public token index duplicates a live value or formula");
+    fail("docs/tokens.md public token index duplicates a live value or formula");
   }
-  if (documentedTokens.length !== unique(documentedTokens).length) fail("craft/tokens.md documents a public token more than once in its index");
+  if (documentedTokens.length !== unique(documentedTokens).length) fail("docs/tokens.md documents a public token more than once in its index");
   const tokenJobRows = tokenIndexBlock.split("\n").filter((line) => /^\s*\|/.test(line) && /`--[a-z0-9-]+`/.test(line));
   const tokensWithJobs = new Set();
   for (const row of tokenJobRows) {
     const cells = row.split("|");
     const job = cells.at(-2)?.trim();
     const names = [...row.matchAll(/`(--[a-z0-9-]+)`/g)].map((match) => match[1]);
-    if (!job) fail(`craft/tokens.md has an empty job for: ${names.join(", ")}`);
+    if (!job) fail(`docs/tokens.md has an empty job for: ${names.join(", ")}`);
     else names.forEach((name) => tokensWithJobs.add(name));
   }
   const tokensWithoutJobs = documentedTokens.filter((name) => !tokensWithJobs.has(name));
-  if (tokensWithoutJobs.length) fail(`craft/tokens.md has no job row for: ${tokensWithoutJobs.join(", ")}`);
+  if (tokensWithoutJobs.length) fail(`docs/tokens.md has no job row for: ${tokensWithoutJobs.join(", ")}`);
   const missingTokens = publicTokens.filter((name) => !documentedTokens.includes(name));
   const staleTokens = documentedTokens.filter((name) => !publicTokenSet.has(name));
-  if (missingTokens.length) fail(`craft/tokens.md is missing public tokens: ${missingTokens.join(", ")}`);
-  if (staleTokens.length) fail(`craft/tokens.md contains stale public tokens: ${staleTokens.join(", ")}`);
+  if (missingTokens.length) fail(`docs/tokens.md is missing public tokens: ${missingTokens.join(", ")}`);
+  if (staleTokens.length) fail(`docs/tokens.md contains stale public tokens: ${staleTokens.join(", ")}`);
 }
 if (!tokenDocument.includes("styles/tokens.css") || !/sole catalog and authority/i.test(tokenDocument)) {
-  fail("craft/tokens.md must route live token values and formulas to styles/tokens.css");
+  fail("docs/tokens.md must route live token values and formulas to styles/tokens.css");
 }
 for (const signal of [
   "A direct `main > section` requires a meaningful, nonempty, unique `id`.",
@@ -315,14 +315,14 @@ for (const signal of [
   "Add `aria-labelledby` only when the section should become a useful named `region` landmark.",
   "Do not style through IDs.",
 ]) {
-  if (!docsByPath["craft/html.md"].includes(signal)) fail(`craft/html.md is missing identifier doctrine: ${signal}`);
+  if (!docsByPath["docs/html.md"].includes(signal)) fail(`docs/html.md is missing identifier doctrine: ${signal}`);
 }
-const htmlDocument = docsByPath["craft/html.md"];
-if (!htmlDocument.includes("## Native base guarantees")) fail("craft/html.md is missing ## Native base guarantees");
+const htmlDocument = docsByPath["docs/html.md"];
+if (!htmlDocument.includes("## Native base guarantees")) fail("docs/html.md is missing ## Native base guarantees");
 else {
   const nativeBaseSection = htmlDocument.match(/## Native base guarantees\n([\s\S]*?)(?=\n## )/)?.[1] ?? "";
-  if (!nativeBaseSection.includes("@layer reset")) fail("craft/html.md Native base guarantees is missing @layer reset");
-  if (!nativeBaseSection.includes("@layer base")) fail("craft/html.md Native base guarantees is missing @layer base");
+  if (!nativeBaseSection.includes("@layer reset")) fail("docs/html.md Native base guarantees is missing @layer reset");
+  if (!nativeBaseSection.includes("@layer base")) fail("docs/html.md Native base guarantees is missing @layer base");
 }
 
 for (const role of typeRoles) {
@@ -541,7 +541,7 @@ for (const position of ["f", "a", "l"]) {
 for (const signal of ["--l-gc: 3", "--l-cs: 1", "--l-rs: 1"]) {
   if (!hasCssSignal(gridCss, signal)) fail(`grid.css is missing omitted-span default ${signal}`);
 }
-const expectedUtilityHooks = documentedHooks["craft/utilities.md"].filter((hook) => hook !== ".sr.focusable").sort();
+const expectedUtilityHooks = documentedHooks["docs/utilities.md"].filter((hook) => hook !== ".sr.focusable").sort();
 const actualUtilityHooks = unique([...utilityCss.matchAll(/^ {2}\.([a-z0-9-]+)\s*\{/gm)].map((match) => `.${match[1]}`)).sort();
 if (actualUtilityHooks.join("|") !== expectedUtilityHooks.join("|")) fail("utility.css selectors differ from the documented finite utility surface");
 if (!hasCssSignal(utilityCss, "&.focusable:focus-visible")) fail("utility.css is missing documented hook .sr.focusable");
@@ -617,10 +617,10 @@ const accentRoutes = unique([...tokensCss.matchAll(/\[data-accent\s*=\s*(["'])([
 const skinRoutes = unique([...tokensCss.matchAll(/\[data-theme\s*=\s*(["'])([^"']+)\1\]/g)].map((match) => match[2])).sort();
 if (accentRoutes.join("|") !== supportedAccentRoutes.join("|")) fail("tokens.css explicit data-accent routes differ from the contract");
 if (skinRoutes.join("|") !== supportedSkins.join("|")) fail("tokens.css explicit data-theme routes differ from the contract");
-const documentedAccentRoutes = markedCodeNames(docsByPath["craft/color.md"], "accent-value-index", /`([a-z-]+)`/g)?.sort();
-const documentedSkinRoutes = markedCodeNames(docsByPath["craft/color.md"], "theme-value-index", /`([a-z-]+)`/g)?.sort();
-if (!documentedAccentRoutes || documentedAccentRoutes.join("|") !== accentRoutes.join("|")) fail("craft/color.md accent routes differ from source");
-if (!documentedSkinRoutes || documentedSkinRoutes.join("|") !== skinRoutes.join("|")) fail("craft/color.md skin routes differ from source");
+const documentedAccentRoutes = markedCodeNames(docsByPath["docs/color.md"], "accent-value-index", /`([a-z-]+)`/g)?.sort();
+const documentedSkinRoutes = markedCodeNames(docsByPath["docs/color.md"], "theme-value-index", /`([a-z-]+)`/g)?.sort();
+if (!documentedAccentRoutes || documentedAccentRoutes.join("|") !== accentRoutes.join("|")) fail("docs/color.md accent routes differ from source");
+if (!documentedSkinRoutes || documentedSkinRoutes.join("|") !== skinRoutes.join("|")) fail("docs/color.md skin routes differ from source");
 if (!motionCss.includes("&[data-scrub='reverse']>img")) fail("motion.css is missing reverse scrub behavior");
 if (/\.(?:btn|crd|lnk|card)(?:[\s,:.{#]|$)/i.test(allCss)) fail("canonical CSS styles a project component naming convention");
 
@@ -715,7 +715,7 @@ if (!pageReferenceMarkup.includes('class="img-w" data-scrub')) {
   fail("page-from-reference does not demonstrate the public image scrub with a static fallback");
 }
 for (const signal of ["## Progressive stagger", "## Split text", "sibling-count()", "complete static fallback"]) {
-  if (!docsByPath["craft/motion.md"].includes(signal)) fail(`craft/motion.md is missing progressive guidance: ${signal}`);
+  if (!docsByPath["docs/motion.md"].includes(signal)) fail(`docs/motion.md is missing progressive guidance: ${signal}`);
 }
 const exampleRoot = new URL("examples/", root);
 if (existsSync(exampleRoot)) {
