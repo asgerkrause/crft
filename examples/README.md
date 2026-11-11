@@ -6,7 +6,7 @@ scope: examples/**
 
 # crft examples
 
-These runnable specimens show decisions in context. They are evidence, not public API. When an example conflicts with `CRFT.md`, `crft/**`, or `styles/**`, fix the example.
+These runnable specimens show decisions in context. They are evidence, not public API. When an example conflicts with `CRFT.md`, `docs/**`, or `styles/**`, fix the example.
 
 ## Start small
 

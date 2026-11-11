@@ -88,7 +88,7 @@ node scripts/copy-system.mjs --dry-run --layers tokens <absolute-target>
 node scripts/copy-system.mjs --layers full <absolute-target>
 ```
 
-Choose the least complete mode for each affected subsystem before athemeg whether to copy tokens or the full framework. The copier is optional whole-layer convenience. It accepts only `--layers tokens|full` and writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json` (semantic contractVersion 3, packagingVersion 1, revision, hashes, contract snapshot) and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
+Choose the [least complete mode](docs/adopt.md#choose-a-mode) for each affected subsystem before copying tokens or the full framework. The copier is optional whole-layer convenience. It accepts only `--layers tokens|full` and writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json` (semantic contractVersion 3, packagingVersion 1, revision, hashes, contract snapshot) and refuses conflicts; it never merges, upgrades owned files, or writes `global.css`. `--fonts` is optional. `node scripts/emit-contract.mjs` prints the machine-readable contract. `node scripts/check-project.mjs <styles-dir>` verifies a consumer's CSS against its adopted contract.
 
 For local extraction, keep only observed semantic jobs and useful relationships in the project’s existing owners. Remove unused token families, ratios, formulas, private state, selectors, and dependencies. Static role outputs use literal lengths without viewport dependence.
 

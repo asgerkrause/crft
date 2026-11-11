@@ -126,7 +126,7 @@ function buildContract(rootUrl) {
     ...staticBans,
   ];
 
-  // Copies adopted before the rename still carry the old marker spelling.
+  // Copies adopted before the rename to crft still carry the old marker spelling.
   const marker = /\/\* (?:crft|Craft) semantic contract: 3\. \*\//;
   const contractVersion = marker.test(tokensCss) ? 3 : 2;
   if (files.some((name) => name !== "tokens.css" && marker.test(sources[name]) !== (contractVersion === 3))) {

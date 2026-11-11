@@ -365,7 +365,7 @@ Show the table before the patch. If two heading treatments fight for one token, 
 ## Common mistakes
 
 - Treating the copier as the required adoption path.
-- Copying the full tree onto an existing site without athemeg.
+- Copying the full tree onto an existing site without [full-adoption approval](../SKILL.md#ask).
 - Preserving an unused subsystem, token family, ratio, formula, or private property only to resemble crft.
 - Copying `global.css` into the project.
 - Copying into a directory with conflicting destination files.
