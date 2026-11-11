@@ -108,14 +108,14 @@ for (const [path, source] of Object.entries(docsByPath)) {
 for (const path of referenceBrandSources) {
   const source = read(path);
   if (/\bseess\b|snz-frontend|snz-css-system/i.test(source)) fail(`${path} references a retired frontend source`);
-  if (!/crft|crft/i.test(source)) fail(`${path} does not identify crft`);
+  if (!/crft/i.test(source)) fail(`${path} does not identify crft`);
 }
 const referenceHeader = read("reference/src/components/Header.astro");
 if (!referenceHeader.includes('<header class="sg-header">') || referenceHeader.includes('<header id="top">')) {
   fail("reference header does not use its stable visual-role class");
 }
 
-const crft = docsByPath["CRFT.md"];
+const router = docsByPath["CRFT.md"];
 const adoption = docsByPath["docs/adopt.md"];
 const adoptionModeBlock = adoption.match(/## Choose a mode\n([\s\S]*?)\n## /)?.[1];
 const adoptionModeRows = [...(adoptionModeBlock ?? "").matchAll(/^\| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/gm)]
@@ -130,19 +130,19 @@ for (const mode of ["Strategy only", "Local extraction"]) {
 if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tokens only")?.[2] ?? "")) {
   fail("docs/adopt.md tokens-only adoption must expose retained live hooks only");
 }
-if (!crft.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
+if (!router.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
   fail("CRFT.md does not record the retired tooling boundary");
 }
 for (const migration of ["contractVersion 3", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
   if (!adoption.includes(migration)) fail(`docs/adopt.md is missing breaking migration guidance: ${migration}`);
 }
-const routeBlock = crft.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
+const routeBlock = router.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
 if (!routeBlock) fail("CRFT.md is missing its bounded topic route");
 for (const path of topicDocs) {
   if (!routeBlock?.includes(`](${path})`)) fail(`CRFT.md does not route to ${path}`);
 }
 for (const path of retiredTopicDocs) {
-  if (crft.includes(`](${path})`)) fail(`CRFT.md routes to retired owner ${path}`);
+  if (router.includes(`](${path})`)) fail(`CRFT.md routes to retired owner ${path}`);
 }
 for (const [index, path] of topicDocs.entries()) {
   const document = docsByPath[path];
@@ -178,7 +178,7 @@ if (!/fluid type[^.\n]*(?:not a project requirement|optional)/i.test(docsByPath[
   fail("docs/type.md must keep fluid type optional for projects");
 }
 for (const component of [".btn", ".crd", ".lnk"]) {
-  if (!crft.includes(component) || !docsByPath["docs/components.md"].includes(component)) {
+  if (!router.includes(component) || !docsByPath["docs/components.md"].includes(component)) {
     fail(`${component} is missing from the project component naming boundary`);
   }
 }
@@ -195,11 +195,11 @@ for (const [path, hooks] of Object.entries(documentedHooks)) {
     if (!docsByPath[path].includes(`\`${hook}\``)) fail(`${path} does not document public hook ${hook}`);
   }
 }
-if (!crft.includes("## Public hook grammar")) fail("CRFT.md is missing the public hook grammar");
-if (!crft.includes("Do not add margin, padding, gap, radius, align, or justify attributes")) {
+if (!router.includes("## Public hook grammar")) fail("CRFT.md is missing the public hook grammar");
+if (!router.includes("Do not add margin, padding, gap, radius, align, or justify attributes")) {
   fail("CRFT.md does not reject a spacing or alignment matrix");
 }
-const indexedHooks = markedCodeNames(crft, "public-hook-index", /`([^`]+)`/g);
+const indexedHooks = markedCodeNames(router, "public-hook-index", /`([^`]+)`/g);
 const expectedHooks = unique(Object.values(documentedHooks).flat()).sort();
 if (!indexedHooks) fail("CRFT.md is missing the public hook index");
 else if (unique(indexedHooks).sort().join("|") !== expectedHooks.join("|")) {
@@ -214,7 +214,7 @@ if (!skill.includes("Do not invent")) fail("SKILL.md does not refuse invented cr
 if (!skill.includes("at most three")) fail("SKILL.md does not cap topic reads");
 if (!skill.includes("class on `section`")) fail("SKILL.md does not forbid class on section");
 if (!skill.includes("## Start")) fail("SKILL.md is missing the inspect-and-plan start");
-const banIndexLines = markedCodeNames(crft, "ban-index", /^(.+)$/gm);
+const banIndexLines = markedCodeNames(router, "ban-index", /^(.+)$/gm);
 if (!banIndexLines) fail("CRFT.md is missing the ban index");
 else {
   const indexed = banIndexLines.join("\n").replace(/`/g, "");

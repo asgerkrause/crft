@@ -133,6 +133,17 @@ test("manual legacy copy retains legacy vocabulary and rejects declared new fami
 });
 
 
+test("copies adopted before the crft rename keep contract v3", async (t) => {
+  const target = temporary(t);
+  await adoptSystem({ sourceRoot: root.pathname, target, layers: "full" });
+  for (const file of ["tokens.css", "crft.css"]) {
+    const path = join(target, file);
+    writeFileSync(path, readFileSync(path, "utf8").replace("/* crft semantic contract: 3. */", "/* Craft semantic contract: 3. */"));
+  }
+  assert.match(readFileSync(join(target, "tokens.css"), "utf8"), /Craft semantic contract/);
+  assert.equal(buildContract(target).contractVersion, 3);
+});
+
 test("flat full package works in a directory named layers", async (t) => {
   const target = join(temporary(t), "layers");
   await adoptSystem({ sourceRoot: root.pathname, target, layers: "full" });
