@@ -50,11 +50,11 @@ const { id, heading, intro, projects } = Astro.props;
         display: grid;
         grid-template-columns: minmax(0, 7rem) minmax(0, 1fr) auto;
         align-items: center;
-        gap: var(--gap);
-        padding-block: var(--padding);
-        border-bottom: var(--border-width) solid var(--border);
+        gap: var(--ak-gap-md);
+        padding-block: var(--ak-padding-md);
+        border-bottom: var(--ak-border-width) solid var(--ak-border);
 
-        &:first-child { border-top: var(--border-width) solid var(--border); }
+        &:first-child { border-top: var(--ak-border-width) solid var(--ak-border); }
       }
 
       img {
@@ -62,14 +62,14 @@ const { id, heading, intro, projects } = Astro.props;
         inline-size: 100%;
         aspect-ratio: 4 / 3;
         object-fit: cover;
-        border-radius: var(--radius-sm);
+        border-radius: var(--ak-radius-sm);
       }
 
       h3 a {
         color: inherit;
         text-underline-offset: .18em;
 
-        &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        &:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 3px; }
       }
 
       .year {

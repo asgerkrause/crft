@@ -45,15 +45,15 @@ const invalidDestination = typeof actionHref !== "string" || !/^#[A-Za-z][\w:-]*
   @layer project {
     .hero {
       display: grid;
-      gap: var(--space);
+      gap: var(--ak-space-md);
       align-items: end;
       overflow-wrap: anywhere;
-      --display-font: var(--font-serif);
-      --display-size: 3rem;
+      --ak-display-family: var(--ak-font-serif);
+      --ak-display-size: 3rem;
 
       > div {
         align-items: start;
-        gap: var(--gap-lg);
+        gap: var(--ak-gap-lg);
       }
 
       > div > h1 {
@@ -64,15 +64,15 @@ const invalidDestination = typeof actionHref !== "string" || !/^#[A-Za-z][\w:-]*
       > div > a {
         display: inline-flex;
         align-items: center;
-        min-block-size: var(--control);
+        min-block-size: var(--ak-control-height);
         max-inline-size: 100%;
-        padding: var(--padding-sm) var(--padding);
-        border: var(--border-width) solid var(--text);
-        border-radius: var(--radius-sm);
-        background: var(--text);
-        color: var(--canvas);
+        padding: var(--ak-padding-sm) var(--ak-padding-md);
+        border: var(--ak-border-width) solid var(--ak-text);
+        border-radius: var(--ak-radius-sm);
+        background: var(--ak-text);
+        color: var(--ak-canvas);
 
-        &:focus-visible { outline-color: var(--text); }
+        &:focus-visible { outline-color: var(--ak-text); }
         &:active { text-decoration: underline; }
 
         @media (hover: hover) and (pointer: fine) {
@@ -81,13 +81,13 @@ const invalidDestination = typeof actionHref !== "string" || !/^#[A-Za-z][\w:-]*
       }
 
       > aside {
-        padding-top: var(--padding);
-        border-top: var(--border-width) solid var(--border);
+        padding-top: var(--ak-padding-md);
+        border-top: var(--ak-border-width) solid var(--ak-border);
       }
 
       @container container (width >= 48rem) {
         grid-template-columns: 3fr 2fr;
-        --display-size: 4rem;
+        --ak-display-size: 4rem;
       }
     }
   }

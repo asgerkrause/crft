@@ -61,7 +61,7 @@ test("current repository contract passes", () => {
 
 test("the committed public contract must match emitted output", (t) => {
   const root = makeFixture(t);
-  replace(root, "reference/fixtures/public-contract.json", '    "--accent-border",\n', "");
+  replace(root, "reference/fixtures/public-contract.json", '    "--ak-accent-border",\n', "");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /public-contract\.json drifts from scripts\/emit-contract\.mjs output/);
@@ -132,23 +132,23 @@ test("the opt-in .squircle utility must exist", (t) => {
 
 test("a new public token requires a documented job", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --fixture-token: 0;\n");
+  replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --ak-fixture-token: 0;\n");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /missing public tokens: --fixture-token/);
+  assert.match(result.stderr, /missing public tokens: --ak-fixture-token/);
 });
 
 test("a removed public token cannot remain documented", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --header: 4rem;\n", "");
+  replace(root, "styles/tokens.css", "    --ak-header-height: 4rem;\n", "");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /stale public tokens: --header/);
+  assert.match(result.stderr, /stale public tokens: --ak-header-height/);
 });
 
 test("a public token value change needs no duplicate documentation value", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --header: 4rem;", "    --header: 5rem;");
+  replace(root, "styles/tokens.css", "    --ak-header-height: 4rem;", "    --ak-header-height: 5rem;");
   const result = runCheck(root);
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
@@ -252,7 +252,7 @@ test("direct crft guidance rejects product authority", (t) => {
 
 test("the public token index rejects duplicate names", (t) => {
   const root = makeFixture(t);
-  replace(root, "docs/tokens.md", "| `--header` |", "| `--header`, `--header` |");
+  replace(root, "docs/tokens.md", "| `--ak-header-height` |", "| `--ak-header-height`, `--ak-header-height` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /documents a public token more than once/);
@@ -260,7 +260,7 @@ test("the public token index rejects duplicate names", (t) => {
 
 test("the public token index rejects copied live values", (t) => {
   const root = makeFixture(t);
-  replace(root, "docs/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | Native control height set to `2.75rem` |");
+  replace(root, "docs/tokens.md", "| `--ak-control-height` | Native control height for buttons, inputs, selects, and textareas |", "| `--ak-control-height` | Native control height set to `2.75rem` |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /duplicates a live value or formula/);
@@ -268,10 +268,10 @@ test("the public token index rejects copied live values", (t) => {
 
 test("every indexed public token requires a non-empty job", (t) => {
   const root = makeFixture(t);
-  replace(root, "docs/tokens.md", "| `--control` | Native control height for buttons, inputs, selects, and textareas |", "| `--control` | |");
+  replace(root, "docs/tokens.md", "| `--ak-control-height` | Native control height for buttons, inputs, selects, and textareas |", "| `--ak-control-height` | |");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /has an empty job for: --control/);
+  assert.match(result.stderr, /has an empty job for: --ak-control-height/);
 });
 
 test("the HTML owner states the purpose-based identifier contract", (t) => {
@@ -368,10 +368,10 @@ test("fluid type calculation remains source-backed", (t) => {
 
 test("on-color companions derive from their source", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--on-warning: contrast-color(var(--warning))", "--on-warning: #000");
+  replace(root, "styles/tokens.css", "--ak-on-warning: contrast-color(var(--ak-warning))", "--ak-on-warning: #000");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.ok(result.stderr.includes("--on-warning must derive from --warning"), result.stderr);
+  assert.ok(result.stderr.includes("--ak-on-warning must derive from --ak-warning"), result.stderr);
 });
 
 test("on-color derivations keep their feature gates", (t) => {
@@ -398,7 +398,7 @@ test("reset must not consume tokens", (t) => {
     root,
     "styles/crft.css",
     "    box-sizing: border-box;",
-    "    box-sizing: border-box;\n    color: var(--text);",
+    "    box-sizing: border-box;\n    color: var(--ak-text);",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -411,7 +411,7 @@ test("reset token use with space inside var() is caught", (t) => {
     root,
     "styles/crft.css",
     "    box-sizing: border-box;",
-    "    box-sizing: border-box;\n    color: var( --text);",
+    "    box-sizing: border-box;\n    color: var( --ak-text);",
   );
   const result = runCheck(root);
   assert.equal(result.status, 1);
@@ -446,7 +446,7 @@ test("documented layout hooks remain source-backed", (t) => {
 
 test("derived container ratios remain source-backed", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/crft.css", "max-width: calc(var(--content-max) / 3 * 2)", "max-width: calc(var(--content-max) * .75)");
+  replace(root, "styles/crft.css", "max-width: calc(var(--ak-content-width) / 3 * 2)", "max-width: calc(var(--ak-content-width) * .75)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /layout\.css is missing viewport-derived container behavior/);
@@ -551,9 +551,9 @@ test("three-position numeric grids fail", (t) => {
   assert.ok(result.stderr.includes("invalid g value"), result.stderr);
 });
 
-test("named container-query tokens must match grid literals", (t) => {
+test("grid container-query thresholds stay at the documented literals", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--query-md: 30rem;", "--query-md: 32rem;");
+  replace(root, "styles/crft.css", "@container container (width >=30rem)", "@container container (width >=32rem)");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /grid\.css is missing invariant/);
@@ -569,7 +569,7 @@ test("an unsupported accent route fails", (t) => {
 
 test("removed color-specific skin routes fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "  [data-theme='tone'] {", "  [data-theme='secondary'] {\n    --canvas: var(--canvas-base);\n  }\n\n  [data-theme='tone'] {");
+  replace(root, "styles/tokens.css", "  [data-theme='tone'] {", "  [data-theme='secondary'] {\n    --ak-canvas: var(--ak-canvas-base);\n  }\n\n  [data-theme='tone'] {");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /explicit data-theme routes differ/);
@@ -698,7 +698,7 @@ test("adoption documents overlay copy", (t) => {
 
 test("canonical axes must not override ordinary font-weight", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/crft.css", "font-variation-settings: var(--body-axes);", "font-variation-settings: \"wght\" 400;");
+  replace(root, "styles/crft.css", "font-variation-settings: var(--ak-body-axes);", "font-variation-settings: \"wght\" 400;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("explicit wght overrides ordinary font-weight"), result.stderr);
@@ -754,7 +754,7 @@ test("retired w attribute fails", (t) => {
 
 test("fluid text steps cannot exceed the 2.5x source ratio budget", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --type-max: 1.25;", "    --type-max: 3;");
+  replace(root, "styles/tokens.css", "    --ak-type-size-max: 1.25;", "    --ak-type-size-max: 3;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("fluid text step 1 exceeds the 2.5x source ratio budget"), result.stderr);
@@ -762,7 +762,7 @@ test("fluid text steps cannot exceed the 2.5x source ratio budget", (t) => {
 
 test("fluid type steps cannot lose zoom growth", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --fluid-min: 25;", "    --fluid-min: 87.5;");
+  replace(root, "styles/tokens.css", "    --ak-viewport-min: 25;", "    --ak-viewport-min: 87.5;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("loses zoom growth"), result.stderr);
@@ -779,26 +779,26 @@ test("the router ban index must stay present", (t) => {
 
 test("retired public token families fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "    --control: 2.75rem;", "    --control: 2.75rem;\n    --c-sm: red;");
+  replace(root, "styles/tokens.css", "    --ak-control-height: 2.75rem;", "    --ak-control-height: 2.75rem;\n    --c-sm: red;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("uses a retired token family"), result.stderr);
 });
 
 
-test("v3 cannot restore theme recipe rebinding or body resets", (t) => {
+test("v4 cannot restore theme recipe rebinding or body resets", (t) => {
   for (const css of [
-    '[data-theme] { --gap-lg: calc(var(--gap) * var(--gap-ratio)); }',
-    '[data-theme] { --h1-min: 2; --h1-size: 2rem; }',
-    ':where([data-theme]) { font-size: var(--body-size); }',
-    '[data-skin="tone"] { color: var(--text); }',
+    '[data-theme] { --ak-gap-lg: calc(var(--ak-gap-md) * var(--ak-gap-scale)); }',
+    '[data-theme] { --ak-h1-size-min: 2; --ak-h1-size: 2rem; }',
+    ':where([data-theme]) { font-size: var(--ak-body-size); }',
+    '[data-skin="tone"] { color: var(--ak-text); }',
   ]) {
     const root = makeFixture(t);
     const path = join(root, "styles/tokens.css");
     writeFileSync(path, readFileSync(path, "utf8") + css);
     const result = runCheck(root);
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /v3 (?:foundations|themes|rejects)/);
+    assert.match(result.stderr, /v4 (?:foundations|themes|rejects)/);
   }
 });
 
@@ -808,36 +808,36 @@ test("canonical examples reject nested theme geometry", (t) => {
   writeFileSync(path, readFileSync(path, "utf8") + '\n@layer project { [data-theme="tone"] { @media (width > 10px) { padding: 3rem; } } }');
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /examples\/foundations\/example.css v3 themes must change color only/);
+  assert.match(result.stderr, /examples\/foundations\/example.css v4 themes must change color only/);
 });
 
 test("weak control edges fail non-text contrast", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/crft.css", "solid color-mix(in srgb, var(--text) 60%, var(--canvas))", "solid color-mix(in srgb, var(--text) 25%, var(--canvas))");
+  replace(root, "styles/crft.css", "solid color-mix(in srgb, var(--ak-text) 60%, var(--ak-canvas))", "solid color-mix(in srgb, var(--ak-text) 25%, var(--ak-canvas))");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /control edge on --canvas is \d\.\d\d:1 in root light; needs 3:1/);
+  assert.match(result.stderr, /control edge on --ak-canvas is \d\.\d\d:1 in root light; needs 3:1/);
 });
 
 test("weak muted text fails contrast on the dark tone surface", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--muted: color-mix(in srgb, var(--text) 78%", "--muted: color-mix(in srgb, var(--text) 40%");
+  replace(root, "styles/tokens.css", "--ak-text-muted: color-mix(in srgb, var(--ak-text) 78%", "--ak-text-muted: color-mix(in srgb, var(--ak-text) 40%");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /--muted on --surface is .* in tone dark/);
+  assert.match(result.stderr, /--ak-text-muted on --ak-surface is .* in tone dark/);
 });
 
 test("an on-color below 4.5:1 on its fill fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--on-warning: var(--palette-dark);", "--on-warning: var(--palette-light);");
+  replace(root, "styles/tokens.css", "--ak-on-warning: var(--ak-palette-dark);", "--ak-on-warning: var(--ak-palette-light);");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /static --on-warning on --warning/);
+  assert.match(result.stderr, /static --ak-on-warning on --ak-warning/);
 });
 
 test("a fluid range above 2.5 fails the source ratio policy", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--type-ratio-max: 1.375;", "--type-ratio-max: 1.5;");
+  replace(root, "styles/tokens.css", "--ak-type-scale-max: 1.375;", "--ak-type-scale-max: 1.5;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.ok(result.stderr.includes("fluid text step 5 exceeds the 2.5x source ratio budget"), result.stderr);
@@ -845,21 +845,21 @@ test("a fluid range above 2.5 fails the source ratio policy", (t) => {
 
 test("a stale static type fallback fails", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--type-min: 1;", "--type-min: 0.875;");
+  replace(root, "styles/tokens.css", "--ak-type-size-min: 1;", "--ak-type-size-min: 0.875;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /static --body-min must equal its recipe value 0\.875/);
+  assert.match(result.stderr, /static --ak-body-size-min must equal its recipe value 0\.875/);
 });
 
 for (const [name, path, before, after, message] of [
-  ["invalid edge", "styles/crft.css", "border-color: color-mix(in srgb, var(--danger) 70%, var(--text));", "border-color: var(--danger);", /invalid edge on --surface/],
-  ["warning route edge", "styles/crft.css", "var(--text) 60%, var(--canvas)", "var(--text) 55%, var(--canvas)", /control edge on --surface.*warning combined/],
-  ["accent text", "styles/tokens.css", "--accent-text: color-mix(in srgb, var(--accent) 25%, var(--text));", "--accent-text: var(--canvas);", /--accent-text on --canvas/],
+  ["invalid edge", "styles/crft.css", "border-color: color-mix(in srgb, var(--ak-danger) 70%, var(--ak-text));", "border-color: var(--ak-danger);", /invalid edge on --ak-surface/],
+  ["warning route edge", "styles/crft.css", "var(--ak-text) 60%, var(--ak-canvas)", "var(--ak-text) 55%, var(--ak-canvas)", /control edge on --ak-surface.*warning combined/],
+  ["accent text", "styles/tokens.css", "--ak-accent-text: color-mix(in srgb, var(--ak-accent) 25%, var(--ak-text));", "--ak-accent-text: var(--ak-canvas);", /--ak-accent-text on --ak-canvas/],
   ["field floor", "styles/crft.css", "font-size: max(1rem, 1em);", "font-size: inherit;", /font-size: max/],
   ["details clipping", "styles/crft.css", "details {", "details { overflow: clip;", /details.*details-content/],
-  ["bleed clamp", "styles/tokens.css", "--bleed-y: clamp(4rem, 2rem + 8vi, 12rem);", "--bleed-y: 12rem;", /bounded --bleed-y/],
+  ["bleed clamp", "styles/tokens.css", "--ak-bleed-y: clamp(4rem, 2rem + 8vi, 12rem);", "--ak-bleed-y: 12rem;", /bounded --ak-bleed-y/],
   ["WebKit adjustment", "styles/crft.css", "-webkit-text-size-adjust: none;", "", /paired text adjustment/],
-  ["focus ring", "styles/crft.css", "solid currentColor", "solid var(--border)", /outline:/],
+  ["focus ring", "styles/crft.css", "solid currentColor", "solid var(--ak-border)", /outline:/],
 ]) test(`${name} regression fails`, (t) => {
   const root = makeFixture(t);
   replace(root, path, before, after);
@@ -870,8 +870,76 @@ for (const [name, path, before, after, message] of [
 
 test("reversed fluid endpoints fail", (t) => {
   const root = makeFixture(t);
-  replace(root, "styles/tokens.css", "--type-max: 1.25;", "--type-max: 0.5;");
+  replace(root, "styles/tokens.css", "--ak-type-size-max: 1.25;", "--ak-type-size-max: 0.5;");
   const result = runCheck(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /invalid fluid endpoints/);
+});
+
+test("every public token carries the --ak- prefix", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "    /* Layout */\n", "    /* Layout */\n    --header: 4rem;\n");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /--header is a public token without the --ak- prefix/);
+});
+
+test("contract 4 declares no earlier public name as an alias", () => {
+  const legacy = JSON.parse(readFileSync(join(sourceRoot, "scripts/legacy-contract-v3.json"), "utf8"));
+  const current = JSON.parse(readFileSync(join(sourceRoot, "reference/fixtures/public-contract.json"), "utf8"));
+  assert.equal(legacy.contractVersion, 3);
+  assert.equal(current.contractVersion, 4);
+  assert.deepEqual(current.publicTokens.filter((name) => legacy.publicTokens.includes(name)), []);
+  assert.deepEqual(current.privateProperties, legacy.privateProperties);
+  assert.equal(current.publicTokens.length, 226);
+});
+
+test("the adoption map covers every contract 3 name and every renamed contract 4 name", () => {
+  const legacy = JSON.parse(readFileSync(join(sourceRoot, "scripts/legacy-contract-v3.json"), "utf8")).publicTokens;
+  const current = JSON.parse(readFileSync(join(sourceRoot, "reference/fixtures/public-contract.json"), "utf8")).publicTokens;
+  const section = readFileSync(join(sourceRoot, "docs/adopt.md"), "utf8").match(/## Migrate contract 3 to contract 4\n([\s\S]*?)\n## /)[1];
+  const rows = [...section.matchAll(/^\| `(--[a-z0-9-]+)` \| (?:`(--[a-z0-9-]+)`|none) \| /gm)].map((match) => [match[1], match[2]]);
+  assert.deepEqual(rows.map(([old]) => old).sort(), [...legacy].sort());
+  assert.deepEqual(rows.filter(([, next]) => !next).map(([old]) => old).sort(), ["--lift", "--query-lg", "--query-md"]);
+  const renamed = rows.map(([, next]) => next).filter(Boolean);
+  assert.equal(new Set(renamed).size, renamed.length);
+  assert.deepEqual(renamed.sort(), current.filter((name) => !name.startsWith("--ak-stat-")).sort());
+  assert.equal(current.filter((name) => name.startsWith("--ak-stat-")).length, 13);
+});
+
+test("the stat role remains source-backed", (t) => {
+  const root = makeFixture(t);
+  replace(root, "styles/crft.css", "  .stat {", "  .fixture {");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.ok(result.stderr.includes("missing documented role stat"), result.stderr);
+});
+
+test("the stat role is a documented public hook", (t) => {
+  const root = makeFixture(t);
+  replace(root, "CRFT.md", "| `.stat` | type | Documented type role |\n", "");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /CRFT\.md hook index differs from the documented hook map/);
+});
+
+test("the stat role keeps lining tabular numerals and a matching static fallback", (t) => {
+  const tokens = readFileSync(join(sourceRoot, "styles/tokens.css"), "utf8");
+  assert.match(tokens, /--ak-stat-features: "lnum", "tnum";/);
+  assert.match(tokens, /--ak-stat-leading: 1;/);
+  assert.match(tokens, /--ak-stat-measure: none;/);
+  const root = makeFixture(t);
+  replace(root, "styles/tokens.css", "--ak-stat-size: 2.48832rem;", "--ak-stat-size: 2rem;");
+  const result = runCheck(root);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /static --ak-stat-size must equal --ak-stat-size-min/);
+});
+
+test("removed tokens keep their literal behavior and the control height stays a token", () => {
+  const framework = readFileSync(join(sourceRoot, "styles/crft.css"), "utf8");
+  assert.equal(framework.match(/min-height: var\(--ak-control-height\);/g)?.length, 2);
+  assert.match(readFileSync(join(sourceRoot, "styles/tokens.css"), "utf8"), /--ak-control-height: 2\.75rem;/);
+  assert.equal(framework.match(/translate: 0 0\.75rem;/g)?.length, 2);
+  assert.match(framework, /@container container \(width >=30rem\)/);
+  assert.match(framework, /@container container \(width >=60rem\)/);
 });

@@ -1,15 +1,15 @@
 @layer project {
-  :root { --space: 1.5rem; --space-ratio: 1.5; --bleed-y: 4rem; }
-  body > header, body > footer { padding: var(--padding-lg); }
+  :root { --ak-space-md: 1.5rem; --ak-space-scale: 1.5; --ak-bleed-y: 4rem; }
+  body > header, body > footer { padding: var(--ak-padding-lg); }
   article { overflow-wrap: anywhere; }
-  article > header { margin-bottom: var(--space-xl); }
-  article > header p { margin-top: var(--space); }
+  article > header { margin-bottom: var(--ak-space-xl); }
+  article > header p { margin-top: var(--ak-space-md); }
   figure { margin: 0; align-self: start; }
   figure .img-w { aspect-ratio: 10 / 9; overflow: clip; background: #fff; }
   figure img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; }
-  figcaption { margin-top: var(--space); }
-  blockquote { margin: 0; padding: var(--padding); border-left: var(--border-width) solid var(--border); }
-  main > section:last-child h2 { margin-bottom: var(--space-lg); }
-  main > section:last-child article { padding-block: var(--padding); border-top: var(--border-width) solid var(--border); }
-  a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  figcaption { margin-top: var(--ak-space-md); }
+  blockquote { margin: 0; padding: var(--ak-padding-md); border-left: var(--ak-border-width) solid var(--ak-border); }
+  main > section:last-child h2 { margin-bottom: var(--ak-space-lg); }
+  main > section:last-child article { padding-block: var(--ak-padding-md); border-top: var(--ak-border-width) solid var(--ak-border); }
+  a:focus-visible { outline: 2px solid var(--ak-text); outline-offset: 3px; }
 }

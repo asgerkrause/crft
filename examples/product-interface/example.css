@@ -1,5 +1,5 @@
 @layer project {
-  :root { --space: 1rem; --space-ratio: 1.5; --gap: 1rem; --padding: 1rem; }
+  :root { --ak-space-md: 1rem; --ak-space-scale: 1.5; --ak-gap-md: 1rem; --ak-padding-md: 1rem; }
   .invites {
     display: grid;
     grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
@@ -7,47 +7,47 @@
     overflow-wrap: anywhere;
 
     > header {
-      padding: var(--padding-lg);
-      background: var(--surface);
-      border-right: var(--border-width) solid var(--border);
-      > a { font-weight: var(--weight-bold); }
-      > p, > details { margin-top: var(--space-lg); }
-      nav { display: grid; gap: var(--gap-sm); margin-top: var(--space); }
-      nav a { padding: var(--padding-sm); }
-      [aria-current] { color: var(--text); background: var(--canvas); font-weight: var(--weight-bold); }
+      padding: var(--ak-padding-lg);
+      background: var(--ak-surface);
+      border-right: var(--ak-border-width) solid var(--ak-border);
+      > a { font-weight: var(--ak-weight-bold); }
+      > p, > details { margin-top: var(--ak-space-lg); }
+      nav { display: grid; gap: var(--ak-gap-sm); margin-top: var(--ak-space-md); }
+      nav a { padding: var(--ak-padding-sm); }
+      [aria-current] { color: var(--ak-text); background: var(--ak-canvas); font-weight: var(--ak-weight-bold); }
     }
     > main {
       min-inline-size: 0;
-      padding: var(--padding-lg);
-      > header, > section { padding-block: var(--padding-lg); }
-      > section { padding-inline: 0; border-top: var(--border-width) solid var(--border); }
-      > section:has(> form:not([role])) { padding: var(--padding); }
+      padding: var(--ak-padding-lg);
+      > header, > section { padding-block: var(--ak-padding-lg); }
+      > section { padding-inline: 0; border-top: var(--ak-border-width) solid var(--ak-border); }
+      > section:has(> form:not([role])) { padding: var(--ak-padding-md); }
     }
-    :is(h1, h2, p, details) { margin-bottom: var(--space); }
-    h1 { --h1-size: var(--h2-size); }
-    h2 { --h2-size: var(--h3-size); }
-    form { display: grid; gap: var(--gap); }
-    label { display: grid; gap: var(--gap-xs); }
+    :is(h1, h2, p, details) { margin-bottom: var(--ak-space-md); }
+    h1 { --ak-h1-size: var(--ak-h2-size); }
+    h2 { --ak-h2-size: var(--ak-h3-size); }
+    form { display: grid; gap: var(--ak-gap-md); }
+    label { display: grid; gap: var(--ak-gap-xs); }
     :is(input, select) { inline-size: 100%; min-inline-size: 0; }
     :is(button, input, select, summary, nav a) { min-block-size: 2.75rem; }
-    :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+    :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 2px solid var(--ak-text); outline-offset: 3px; }
     button, summary { cursor: pointer; }
-    button { color: var(--text); background: var(--canvas); border: var(--border-width) solid var(--border); }
-    button[type="submit"] { color: var(--canvas); background: var(--text); border-color: var(--text); }
-    form[role="search"] { grid-template-columns: minmax(10rem, 1fr) minmax(8rem, .6fr) auto auto; align-items: end; margin-bottom: var(--space); }
+    button { color: var(--ak-text); background: var(--ak-canvas); border: var(--ak-border-width) solid var(--ak-border); }
+    button[type="submit"] { color: var(--ak-canvas); background: var(--ak-text); border-color: var(--ak-text); }
+    form[role="search"] { grid-template-columns: minmax(10rem, 1fr) minmax(8rem, .6fr) auto auto; align-items: end; margin-bottom: var(--ak-space-md); }
     form:not([role]) { max-inline-size: 42rem; }
     section[tabindex] { overflow-x: auto; }
     table { min-inline-size: 26rem; inline-size: 100%; table-layout: fixed; border-collapse: collapse; }
-    caption { text-align: start; margin-bottom: var(--space-sm); }
-    th, td { padding: var(--padding-sm); text-align: start; border-bottom: var(--border-width) solid var(--border); }
+    caption { text-align: start; margin-bottom: var(--ak-space-sm); }
+    th, td { padding: var(--ak-padding-sm); text-align: start; border-bottom: var(--ak-border-width) solid var(--ak-border); }
     th:first-child { inline-size: 50%; }
-    [role="alert"] { color: var(--text); }
+    [role="alert"] { color: var(--ak-text); }
     [hidden] { display: none; }
   }
   @media (width < 60rem) {
     .invites {
       grid-template-columns: minmax(0, 1fr);
-      > header { border-right: 0; border-bottom: var(--border-width) solid var(--border); }
+      > header { border-right: 0; border-bottom: var(--ak-border-width) solid var(--ak-border); }
       form[role="search"] { grid-template-columns: minmax(0, 1fr); }
     }
   }

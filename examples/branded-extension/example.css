@@ -1,40 +1,40 @@
 @layer project {
   body > header .c > .s,
   body > footer .c > .s { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
-  nav ul { display: flex; flex-wrap: wrap; gap: var(--gap); }
-  header > .small, footer .small { color: var(--muted); }
+  nav ul { display: flex; flex-wrap: wrap; gap: var(--ak-gap-md); }
+  header > .small, footer .small { color: var(--ak-text-muted); }
   .issue-summary { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
   /*
     Non-canonical composition example. Base brand values belong in the copied
     token owner. Campaign variation and motion remain scoped to .northline.
   */
 
-  :root { --radius: .25rem; }
+  :root { --ak-radius-md: .25rem; }
 
   .northline {
-    --accent: var(--palette-red);
-    --on-accent: var(--palette-dark);
-    --northline-frame: color-mix(in oklab, var(--text) 88%, var(--accent));
+    --ak-accent: var(--ak-palette-red);
+    --ak-on-accent: var(--ak-palette-dark);
+    --northline-frame: color-mix(in oklab, var(--ak-text) 88%, var(--ak-accent));
 
-    color: var(--text);
-    background-color: var(--canvas);
-    font-family: var(--font);
+    color: var(--ak-text);
+    background-color: var(--ak-canvas);
+    font-family: var(--ak-font-body);
 
     > header,
     > footer {
-      padding-block: var(--padding);
+      padding-block: var(--ak-padding-md);
       border-color: var(--northline-frame);
-      background-color: var(--canvas);
+      background-color: var(--ak-canvas);
 
       ul {
         list-style: none;
         margin: 0;
         padding: 0;
-        gap: var(--gap-lg);
+        gap: var(--ak-gap-lg);
       }
 
       a {
-        color: var(--text);
+        color: var(--ak-text);
         text-decoration-thickness: 1px;
         text-underline-offset: 0.2em;
 
@@ -43,60 +43,60 @@
         }
 
         &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--text);
+          outline: max(2px, var(--ak-border-width)) solid var(--ak-text);
           outline-offset: 3px;
         }
       }
     }
 
     > header {
-      border-bottom: var(--border-width) solid var(--northline-frame);
+      border-bottom: var(--ak-border-width) solid var(--northline-frame);
 
       p {
         letter-spacing: 0;
-        color: var(--text);
-        font-weight: var(--weight-bold);
+        color: var(--ak-text);
+        font-weight: var(--ak-weight-bold);
 
       }
     }
 
     > footer {
-      border-top: var(--border-width) solid var(--northline-frame);
+      border-top: var(--ak-border-width) solid var(--northline-frame);
     }
 
     .board-frame {
-      padding-block: var(--padding-xl);
-      padding-inline: var(--padding-lg);
-      color: var(--text);
-      background-color: var(--surface);
-      border: var(--border-width) solid var(--northline-frame);
+      padding-block: var(--ak-padding-xl);
+      padding-inline: var(--ak-padding-lg);
+      color: var(--ak-text);
+      background-color: var(--ak-surface);
+      border: var(--ak-border-width) solid var(--northline-frame);
 
       > header {
-        --h1-measure: 12ch;
+        --ak-h1-measure: 12ch;
 
         align-self: end;
 
         h1 {
-          font-family: var(--font-serif);
-          font-weight: var(--weight-bold);
+          font-family: var(--ak-font-serif);
+          font-weight: var(--ak-weight-bold);
 
         }
       }
 
       > aside {
         min-height: 100%;
-        padding-block: var(--padding-lg);
-        padding-inline: var(--padding-lg);
-        border: var(--border-width) solid var(--border);
+        padding-block: var(--ak-padding-lg);
+        padding-inline: var(--ak-padding-lg);
+        border: var(--ak-border-width) solid var(--ak-border);
 
         h2 {
-          font-weight: var(--weight-bold);
+          font-weight: var(--ak-weight-bold);
 
         }
       }
 
       blockquote {
-        --lead-measure: 28ch;
+        --ak-lead-measure: 28ch;
 
         margin: 0;
         padding: 0;
@@ -104,61 +104,61 @@
 
         p {
           margin: 0;
-          font-family: var(--font-serif);
+          font-family: var(--ak-font-serif);
         }
       }
     }
 
     .signal {
       display: inline-block;
-      padding-block: var(--padding-sm);
-      padding-inline: var(--padding-lg);
-      color: var(--on-accent);
-      background-color: var(--accent);
-      border: var(--border-width) solid var(--accent);
-      border-radius: var(--radius);
-      font-family: var(--font);
-      font-weight: var(--weight-bold);
+      padding-block: var(--ak-padding-sm);
+      padding-inline: var(--ak-padding-lg);
+      color: var(--ak-on-accent);
+      background-color: var(--ak-accent);
+      border: var(--ak-border-width) solid var(--ak-accent);
+      border-radius: var(--ak-radius-md);
+      font-family: var(--ak-font-body);
+      font-weight: var(--ak-weight-bold);
 
       letter-spacing: 0;
       text-decoration: none;
 
       &:hover {
-        color: var(--text);
+        color: var(--ak-text);
         background-color: transparent;
       }
 
       &:focus-visible {
-        outline: max(2px, var(--border-width)) solid var(--text);
+        outline: max(2px, var(--ak-border-width)) solid var(--ak-text);
         outline-offset: 3px;
       }
     }
 
     .issue-summary {
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--ak-space-lg);
 
       h2 {
-        font-family: var(--font-serif);
+        font-family: var(--ak-font-serif);
       }
     }
 
     .issue {
       height: 100%;
-      padding-block: var(--padding-lg);
-      padding-inline: var(--padding);
-      color: var(--text);
-      background-color: var(--surface);
-      border-top: calc(var(--border-width) * 2) solid var(--accent);
+      padding-block: var(--ak-padding-lg);
+      padding-inline: var(--ak-padding-md);
+      color: var(--ak-text);
+      background-color: var(--ak-surface);
+      border-top: calc(var(--ak-border-width) * 2) solid var(--ak-accent);
 
       a {
-        color: var(--text);
-        font-weight: var(--weight-bold);
+        color: var(--ak-text);
+        font-weight: var(--ak-weight-bold);
 
         text-decoration-thickness: 1px;
         text-underline-offset: 0.18em;
 
         &:focus-visible {
-          outline: max(2px, var(--border-width)) solid var(--text);
+          outline: max(2px, var(--ak-border-width)) solid var(--ak-text);
           outline-offset: 2px;
         }
       }
@@ -166,8 +166,8 @@
 
     .index {
       margin: 0;
-      color: var(--accent);
-      font-family: var(--font-mono);
+      color: var(--ak-accent);
+      font-family: var(--ak-font-mono);
       letter-spacing: 0;
     }
   }
@@ -177,13 +177,13 @@
       @keyframes northline-issue-in {
         from {
           opacity: 0;
-          translate: 0 var(--space-sm);
+          translate: 0 var(--ak-space-sm);
         }
       }
 
       .northline .issue {
-        animation: northline-issue-in var(--duration-lg) var(--ease-out) both;
-        animation-delay: calc((sibling-index() - 1) * var(--duration-sm));
+        animation: northline-issue-in var(--ak-duration-lg) var(--ak-ease-out) both;
+        animation-delay: calc((sibling-index() - 1) * var(--ak-duration-sm));
       }
     }
   }

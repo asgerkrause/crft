@@ -46,7 +46,7 @@ node scripts/copy-system.mjs --layers full /absolute/path/to/project/styles
 
 `--layers` is required and accepts exactly `tokens` or `full`. Former selections such as `tokens,type` or `grid` fail with guidance to use local extraction or full adoption. Tokens copies `tokens.css`; full copies `tokens.css` and `crft.css`. `--fonts` retains the optional final font-face section in `tokens.css` and copies adjacent `sans.woff` and `mono.woff`. Without it, that section and the assets are omitted. No separate fonts stylesheet exists.
 
-The copier writes `crft-manifest.json` beside those files: semantic `contractVersion: 3`, physical `packagingVersion: 1`, source revision, copied logical layers, file hashes, and a contract snapshot. It does not copy `global.css`. It never merges, overwrites, edits the project CSS entry, or creates product presentation. A conflicting destination or an existing legacy layer package aborts the copy.
+The copier writes `crft-manifest.json` beside those files: semantic `contractVersion: 4`, physical `packagingVersion: 1`, source revision, copied logical layers, file hashes, and a contract snapshot. It does not copy `global.css`. It never merges, overwrites, edits the project CSS entry, or creates product presentation. A conflicting destination or an existing legacy layer package aborts the copy.
 
 Dry run prints the file list and project-entry block. Put the printed prelude and imports at the top of the project's existing entrypoint. Full adoption uses:
 
@@ -71,12 +71,13 @@ The logical order stays `reset, base, tokens, type, layout, grid, motion, utilit
 
 Tokens-only adoption permits retained public tokens, data-theme and data-accent. Painting and framework selectors require crft.css or project-owned CSS. Type role classes, l clamp, containers, stacks, grids and utilities require their retained logical layers in crft.css. A local extraction grants no crft hooks.
 
-Brand OS v2 context exports are incompatible with crft v3. Stop before applying them.
+Brand OS v2 context exports are incompatible with crft v3 and v4. Stop before applying them.
 Explicit migration moves type, spacing, radius, and font foundations to `:root`.
 Keep deliberate local final role and layout values on separate semantic owners; remove context recipe rebinding.
 Theme selectors permit colors only, including nested selectors and conditional rules.
-Both `tokens.css` and `crft.css` carry v3 markers; mixed v2/v3 pairs fail verification.
+Both `tokens.css` and `crft.css` carry the same semantic-version marker; mixed v2/v3 or v3/v4 pairs fail verification.
 External Brand OS and consumer repositories remain unchanged.
+A brnd kit reaches a crft project through its `adapters/crft.css`, loaded after crft's `tokens.css`. The adapter carries no `@font-face` rules: declare the kit's local fonts in project CSS. Loading the kit's `styles/brand.css` on the same page is not supported: both systems declare `--ak-*` names.
 
 ## Packaging migration
 
@@ -107,6 +108,8 @@ crft provides no in-place compatibility upgrade from the earlier frontend packag
 
 crft contractVersion 3 is a breaking replacement. Recorded manifests without a version are legacy v1. The checker validates the matching vocabulary, rejects unknown versions, missing fields, and old/new mixtures. No compatibility aliases ship.
 
+The second table maps legacy v1 names to contract 3 names. A project that moves to the current contract then applies the [contract 3 to contract 4 map](#migrate-contract-3-to-contract-4).
+
 | Legacy hook | Current action |
 | --- | --- |
 | t roles h0/h1/h2/h3/lg/bd/sm | .display/.h1/.h2/.h3/.lead/.body/.small |
@@ -119,7 +122,7 @@ crft contractVersion 3 is a breaking replacement. Recorded manifests without a v
 | paired wght rule | Ordinary font-weight; preserve supported custom axes |
 | data-theme prohibition | Color-only invert/tone/accent; document CSS color-scheme chooses light/dark |
 
-| Old | New | Action |
+| Legacy v1 | Contract 3 | Action |
 | --- | --- | --- |
 | `--b-wd` | `--border-width` | Map |
 | `--c-ac` | `--accent` | Map |
@@ -278,6 +281,243 @@ crft contractVersion 3 is a breaking replacement. Recorded manifests without a v
 
 Live values also changed. Do not copy values from this table. Read the current CSS and [`tokens.md`](tokens.md), then verify each adopted role. Search every consumer of an earlier name before removal. crft provides no aliases for the earlier contract.
 
+## Migrate contract 3 to contract 4
+
+crft contractVersion 4 renames every public token. Each public name now starts with `--ak-`, so a crft token cannot collide with a token from another CSS library such as Tailwind or shadcn. No compatibility aliases ship: an earlier name is not declared as a second name. Private properties keep their names.
+
+A contract 4 adoption fails when its adopted `tokens.css` declares a contract 3 name. If that name belongs to another library (for example shadcn's `--border`), declare it in project CSS, not in the adopted `tokens.css`.
+
+The rename follows these rules:
+
+- Each scale (space, gap, padding, radius, duration) has an explicit `md` base step. The bare family name is no longer a token: `--gap` becomes `--ak-gap-md`.
+- The multiplier between scale steps is `scale`, not `ratio`: `--gap-ratio` becomes `--ak-gap-scale`, and `--type-ratio-min` becomes `--ak-type-scale-min`.
+- Role tokens use `family`, `size-min`, and `size-max`: `--ROLE-font` becomes `--ak-ROLE-family`, `--ROLE-min` becomes `--ak-ROLE-size-min`, and `--ROLE-max` becomes `--ak-ROLE-size-max`.
+- Three tokens are removed: `--lift`, `--query-md`, and `--query-lg`. Replace each use with the literal in the table.
+- A tenth type role, `stat`, is new. It adds the `.stat` class and the `--ak-stat-*` tokens. No earlier name maps to it.
+
+Values, formulas, selectors, themes, contrast companions, static fallbacks, and reduced-motion behavior do not change. `@container` conditions cannot read custom properties, so the grid thresholds were always the literals `30rem` and `60rem`.
+
+To migrate a copied project, rename every declaration and every `var()` use in the copied `tokens.css`, the copied `crft.css`, and project CSS in one change. Then set the marker in both copied files to `/* crft semantic contract: 4. */` and record `contractVersion: 4` with the new contract in `crft-manifest.json`. A mixed v3/v4 pair fails verification. The copier does not upgrade owned files; copy into an empty target to compare. The checker continues to validate a project that stays on contract 1, 2, or 3 against its recorded vocabulary.
+
+| Contract 3 | Contract 4 | Action |
+| --- | --- | --- |
+| `--accent` | `--ak-accent` | Rename |
+| `--accent-border` | `--ak-accent-border` | Rename |
+| `--accent-surface` | `--ak-accent-surface` | Rename |
+| `--accent-text` | `--ak-accent-text` | Rename |
+| `--bleed-x` | `--ak-bleed-x` | Rename |
+| `--bleed-y` | `--ak-bleed-y` | Rename |
+| `--body-axes` | `--ak-body-axes` | Rename |
+| `--body-case` | `--ak-body-case` | Rename |
+| `--body-features` | `--ak-body-features` | Rename |
+| `--body-font` | `--ak-body-family` | Rename |
+| `--body-leading` | `--ak-body-leading` | Rename |
+| `--body-max` | `--ak-body-size-max` | Rename |
+| `--body-measure` | `--ak-body-measure` | Rename |
+| `--body-min` | `--ak-body-size-min` | Rename |
+| `--body-optical-sizing` | `--ak-body-optical-sizing` | Rename |
+| `--body-size` | `--ak-body-size` | Rename |
+| `--body-step` | `--ak-body-step` | Rename |
+| `--body-tracking` | `--ak-body-tracking` | Rename |
+| `--body-weight` | `--ak-body-weight` | Rename |
+| `--border` | `--ak-border` | Rename |
+| `--border-width` | `--ak-border-width` | Rename |
+| `--canvas` | `--ak-canvas` | Rename |
+| `--canvas-base` | `--ak-canvas-base` | Rename |
+| `--caption-axes` | `--ak-caption-axes` | Rename |
+| `--caption-case` | `--ak-caption-case` | Rename |
+| `--caption-features` | `--ak-caption-features` | Rename |
+| `--caption-font` | `--ak-caption-family` | Rename |
+| `--caption-leading` | `--ak-caption-leading` | Rename |
+| `--caption-max` | `--ak-caption-size-max` | Rename |
+| `--caption-measure` | `--ak-caption-measure` | Rename |
+| `--caption-min` | `--ak-caption-size-min` | Rename |
+| `--caption-optical-sizing` | `--ak-caption-optical-sizing` | Rename |
+| `--caption-size` | `--ak-caption-size` | Rename |
+| `--caption-step` | `--ak-caption-step` | Rename |
+| `--caption-tracking` | `--ak-caption-tracking` | Rename |
+| `--caption-weight` | `--ak-caption-weight` | Rename |
+| `--content-max` | `--ak-content-width` | Rename |
+| `--control` | `--ak-control-height` | Rename |
+| `--danger` | `--ak-danger` | Rename |
+| `--display-axes` | `--ak-display-axes` | Rename |
+| `--display-case` | `--ak-display-case` | Rename |
+| `--display-features` | `--ak-display-features` | Rename |
+| `--display-font` | `--ak-display-family` | Rename |
+| `--display-leading` | `--ak-display-leading` | Rename |
+| `--display-max` | `--ak-display-size-max` | Rename |
+| `--display-measure` | `--ak-display-measure` | Rename |
+| `--display-min` | `--ak-display-size-min` | Rename |
+| `--display-optical-sizing` | `--ak-display-optical-sizing` | Rename |
+| `--display-size` | `--ak-display-size` | Rename |
+| `--display-step` | `--ak-display-step` | Rename |
+| `--display-tracking` | `--ak-display-tracking` | Rename |
+| `--display-weight` | `--ak-display-weight` | Rename |
+| `--duration` | `--ak-duration-md` | Rename |
+| `--duration-lg` | `--ak-duration-lg` | Rename |
+| `--duration-sm` | `--ak-duration-sm` | Rename |
+| `--duration-xl` | `--ak-duration-xl` | Rename |
+| `--duration-xs` | `--ak-duration-xs` | Rename |
+| `--ease-glide` | `--ak-ease-glide` | Rename |
+| `--ease-in` | `--ak-ease-in` | Rename |
+| `--ease-in-out` | `--ak-ease-in-out` | Rename |
+| `--ease-out` | `--ak-ease-out` | Rename |
+| `--ease-spring` | `--ak-ease-spring` | Rename |
+| `--fluid-max` | `--ak-viewport-max` | Rename |
+| `--fluid-min` | `--ak-viewport-min` | Rename |
+| `--font` | `--ak-font-body` | Rename |
+| `--font-display` | `--ak-font-display` | Rename |
+| `--font-mono` | `--ak-font-mono` | Rename |
+| `--font-sans` | `--ak-font-sans` | Rename |
+| `--font-serif` | `--ak-font-serif` | Rename |
+| `--gap` | `--ak-gap-md` | Rename |
+| `--gap-lg` | `--ak-gap-lg` | Rename |
+| `--gap-ratio` | `--ak-gap-scale` | Rename |
+| `--gap-sm` | `--ak-gap-sm` | Rename |
+| `--gap-xl` | `--ak-gap-xl` | Rename |
+| `--gap-xs` | `--ak-gap-xs` | Rename |
+| `--h1-axes` | `--ak-h1-axes` | Rename |
+| `--h1-case` | `--ak-h1-case` | Rename |
+| `--h1-features` | `--ak-h1-features` | Rename |
+| `--h1-font` | `--ak-h1-family` | Rename |
+| `--h1-leading` | `--ak-h1-leading` | Rename |
+| `--h1-max` | `--ak-h1-size-max` | Rename |
+| `--h1-measure` | `--ak-h1-measure` | Rename |
+| `--h1-min` | `--ak-h1-size-min` | Rename |
+| `--h1-optical-sizing` | `--ak-h1-optical-sizing` | Rename |
+| `--h1-size` | `--ak-h1-size` | Rename |
+| `--h1-step` | `--ak-h1-step` | Rename |
+| `--h1-tracking` | `--ak-h1-tracking` | Rename |
+| `--h1-weight` | `--ak-h1-weight` | Rename |
+| `--h2-axes` | `--ak-h2-axes` | Rename |
+| `--h2-case` | `--ak-h2-case` | Rename |
+| `--h2-features` | `--ak-h2-features` | Rename |
+| `--h2-font` | `--ak-h2-family` | Rename |
+| `--h2-leading` | `--ak-h2-leading` | Rename |
+| `--h2-max` | `--ak-h2-size-max` | Rename |
+| `--h2-measure` | `--ak-h2-measure` | Rename |
+| `--h2-min` | `--ak-h2-size-min` | Rename |
+| `--h2-optical-sizing` | `--ak-h2-optical-sizing` | Rename |
+| `--h2-size` | `--ak-h2-size` | Rename |
+| `--h2-step` | `--ak-h2-step` | Rename |
+| `--h2-tracking` | `--ak-h2-tracking` | Rename |
+| `--h2-weight` | `--ak-h2-weight` | Rename |
+| `--h3-axes` | `--ak-h3-axes` | Rename |
+| `--h3-case` | `--ak-h3-case` | Rename |
+| `--h3-features` | `--ak-h3-features` | Rename |
+| `--h3-font` | `--ak-h3-family` | Rename |
+| `--h3-leading` | `--ak-h3-leading` | Rename |
+| `--h3-max` | `--ak-h3-size-max` | Rename |
+| `--h3-measure` | `--ak-h3-measure` | Rename |
+| `--h3-min` | `--ak-h3-size-min` | Rename |
+| `--h3-optical-sizing` | `--ak-h3-optical-sizing` | Rename |
+| `--h3-size` | `--ak-h3-size` | Rename |
+| `--h3-step` | `--ak-h3-step` | Rename |
+| `--h3-tracking` | `--ak-h3-tracking` | Rename |
+| `--h3-weight` | `--ak-h3-weight` | Rename |
+| `--header` | `--ak-header-height` | Rename |
+| `--label-axes` | `--ak-label-axes` | Rename |
+| `--label-case` | `--ak-label-case` | Rename |
+| `--label-features` | `--ak-label-features` | Rename |
+| `--label-font` | `--ak-label-family` | Rename |
+| `--label-leading` | `--ak-label-leading` | Rename |
+| `--label-max` | `--ak-label-size-max` | Rename |
+| `--label-measure` | `--ak-label-measure` | Rename |
+| `--label-min` | `--ak-label-size-min` | Rename |
+| `--label-optical-sizing` | `--ak-label-optical-sizing` | Rename |
+| `--label-size` | `--ak-label-size` | Rename |
+| `--label-step` | `--ak-label-step` | Rename |
+| `--label-tracking` | `--ak-label-tracking` | Rename |
+| `--label-weight` | `--ak-label-weight` | Rename |
+| `--lead-axes` | `--ak-lead-axes` | Rename |
+| `--lead-case` | `--ak-lead-case` | Rename |
+| `--lead-features` | `--ak-lead-features` | Rename |
+| `--lead-font` | `--ak-lead-family` | Rename |
+| `--lead-leading` | `--ak-lead-leading` | Rename |
+| `--lead-max` | `--ak-lead-size-max` | Rename |
+| `--lead-measure` | `--ak-lead-measure` | Rename |
+| `--lead-min` | `--ak-lead-size-min` | Rename |
+| `--lead-optical-sizing` | `--ak-lead-optical-sizing` | Rename |
+| `--lead-size` | `--ak-lead-size` | Rename |
+| `--lead-step` | `--ak-lead-step` | Rename |
+| `--lead-tracking` | `--ak-lead-tracking` | Rename |
+| `--lead-weight` | `--ak-lead-weight` | Rename |
+| `--lift` | none | Remove; use the literal `0.75rem`. The overlay entry distance does not change |
+| `--muted` | `--ak-text-muted` | Rename |
+| `--on-accent` | `--ak-on-accent` | Rename |
+| `--on-danger` | `--ak-on-danger` | Rename |
+| `--on-secondary` | `--ak-on-secondary` | Rename |
+| `--on-success` | `--ak-on-success` | Rename |
+| `--on-tertiary` | `--ak-on-tertiary` | Rename |
+| `--on-warning` | `--ak-on-warning` | Rename |
+| `--padding` | `--ak-padding-md` | Rename |
+| `--padding-lg` | `--ak-padding-lg` | Rename |
+| `--padding-ratio` | `--ak-padding-scale` | Rename |
+| `--padding-sm` | `--ak-padding-sm` | Rename |
+| `--padding-xl` | `--ak-padding-xl` | Rename |
+| `--padding-xs` | `--ak-padding-xs` | Rename |
+| `--palette-blue` | `--ak-palette-blue` | Rename |
+| `--palette-dark` | `--ak-palette-dark` | Rename |
+| `--palette-green` | `--ak-palette-green` | Rename |
+| `--palette-light` | `--ak-palette-light` | Rename |
+| `--palette-orange` | `--ak-palette-orange` | Rename |
+| `--palette-purple` | `--ak-palette-purple` | Rename |
+| `--palette-red` | `--ak-palette-red` | Rename |
+| `--palette-yellow` | `--ak-palette-yellow` | Rename |
+| `--query-lg` | none | Remove; no replacement. `@container` conditions use the literal `60rem` |
+| `--query-md` | none | Remove; no replacement. `@container` conditions use the literal `30rem` |
+| `--radius` | `--ak-radius-md` | Rename |
+| `--radius-lg` | `--ak-radius-lg` | Rename |
+| `--radius-ratio` | `--ak-radius-scale` | Rename |
+| `--radius-sm` | `--ak-radius-sm` | Rename |
+| `--radius-xl` | `--ak-radius-xl` | Rename |
+| `--radius-xs` | `--ak-radius-xs` | Rename |
+| `--secondary` | `--ak-secondary` | Rename |
+| `--secondary-border` | `--ak-secondary-border` | Rename |
+| `--secondary-surface` | `--ak-secondary-surface` | Rename |
+| `--secondary-text` | `--ak-secondary-text` | Rename |
+| `--small-axes` | `--ak-small-axes` | Rename |
+| `--small-case` | `--ak-small-case` | Rename |
+| `--small-features` | `--ak-small-features` | Rename |
+| `--small-font` | `--ak-small-family` | Rename |
+| `--small-leading` | `--ak-small-leading` | Rename |
+| `--small-max` | `--ak-small-size-max` | Rename |
+| `--small-measure` | `--ak-small-measure` | Rename |
+| `--small-min` | `--ak-small-size-min` | Rename |
+| `--small-optical-sizing` | `--ak-small-optical-sizing` | Rename |
+| `--small-size` | `--ak-small-size` | Rename |
+| `--small-step` | `--ak-small-step` | Rename |
+| `--small-tracking` | `--ak-small-tracking` | Rename |
+| `--small-weight` | `--ak-small-weight` | Rename |
+| `--space` | `--ak-space-md` | Rename |
+| `--space-lg` | `--ak-space-lg` | Rename |
+| `--space-ratio` | `--ak-space-scale` | Rename |
+| `--space-sm` | `--ak-space-sm` | Rename |
+| `--space-xl` | `--ak-space-xl` | Rename |
+| `--space-xs` | `--ak-space-xs` | Rename |
+| `--success` | `--ak-success` | Rename |
+| `--surface` | `--ak-surface` | Rename |
+| `--tertiary` | `--ak-tertiary` | Rename |
+| `--tertiary-border` | `--ak-tertiary-border` | Rename |
+| `--tertiary-surface` | `--ak-tertiary-surface` | Rename |
+| `--tertiary-text` | `--ak-tertiary-text` | Rename |
+| `--text` | `--ak-text` | Rename |
+| `--text-base` | `--ak-text-base` | Rename |
+| `--transition-blur` | `--ak-view-transition-blur` | Rename |
+| `--transition-duration` | `--ak-view-transition-duration` | Rename |
+| `--transition-in-x` | `--ak-view-transition-in-x` | Rename |
+| `--transition-in-y` | `--ak-view-transition-in-y` | Rename |
+| `--transition-out-x` | `--ak-view-transition-out-x` | Rename |
+| `--transition-out-y` | `--ak-view-transition-out-y` | Rename |
+| `--type-max` | `--ak-type-size-max` | Rename |
+| `--type-min` | `--ak-type-size-min` | Rename |
+| `--type-ratio-max` | `--ak-type-scale-max` | Rename |
+| `--type-ratio-min` | `--ak-type-scale-min` | Rename |
+| `--warning` | `--ak-warning` | Rename |
+| `--weight` | `--ak-weight-regular` | Rename |
+| `--weight-bold` | `--ak-weight-bold` | Rename |
+| `--weight-light` | `--ak-weight-light` | Rename |
+
 ## Accessibility defaults update
 
 Re-pin explicitly; copied projects do not receive these changes automatically. Public names and the contract digest are unchanged.
@@ -314,9 +554,9 @@ Manual complete copies remain supported. To adopt a later upstream change:
 
 Do not overwrite consumer-owned files with the copy script.
 
-Container queries are required for a responsive grid. Match `--query-md` and `--query-lg` when project CSS must share a grid state. Do not put custom properties in `@container` conditions.
+Container queries are required for a responsive grid. Use the literals `30rem` and `60rem` when project CSS must share a grid state. Do not put custom properties in `@container` conditions.
 
-In the complete reference, `--bleed-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
+In the complete reference, `--ak-bleed-y` is the section-rhythm role. Project or design authority selects its value from approved direction and content evidence. A local extraction keeps that token or relationship only when the project needs the role.
 
 Scrub, view transitions, the opt-in `.squircle` corner, and disclosure animation stay optional. The base layer no longer sets `corner-shape`. Explicit full adopters add `.squircle` per element. Strategy-only, local-extraction, and tokens-only projects have no `.squircle` hook, so they use a project rule; the former global look is `*, *::before, *::after { corner-shape: squircle; }`.
 
@@ -327,9 +567,9 @@ Remove light/dark `data-theme` selectors and attributes; use document CSS `color
 Keep `data-accent` routes unchanged. There are no automatic upgrades or compatibility aliases.
 Move type, spacing, and radius foundations and recipes to `:root`; preserve local final role overrides.
 Give direct `main > section` meaningful, nonempty, unique IDs. Nested IDs still need purpose.
-Review old Brand OS context output before migration; the v3 fixture adapter rejects v1/v2 inputs visibly.
-Manual v3 copies retain the semantic-version marker in `tokens.css`; unmarked copies retain v2 validation.
-The CSS checker rejects v2 hooks and non-root recipes in v3; it does not validate consumer markup or intent.
+Review old Brand OS context output before migration; the fixture adapter rejects v1, v2, and v3 inputs visibly.
+Manual v3 and v4 copies retain the semantic-version marker in `tokens.css`; unmarked copies retain v2 validation.
+The CSS checker rejects v2 hooks and non-root recipes in v3 and v4; it does not validate consumer markup or intent.
 
 ## Migrate existing CSS
 
@@ -349,16 +589,16 @@ Do not patch copied `tokens.css` or a project token owner for local extraction u
 
 | Observed | Source | Viewport or state | crft job | Action |
 | --- | --- | --- | --- | --- |
-| `h1` 2.5rem / 1.1 / 500 | project CSS and computed at 1280 | large | `--h1-leading`, `--h1-weight`, native `h1` | map |
+| `h1` 2.5rem / 1.1 / 500 | project CSS and computed at 1280 | large | `--ak-h1-leading`, `--ak-h1-weight`, native `h1` | map |
 | `.hero h1` 56px | computed at 1280 only | large | `.display` or scoped override | scope |
-| body color | computed + `body` rule | light | `--text` | map |
+| body color | computed + `body` rule | light | `--ak-text` | map |
 | `.card { padding: 13px }` | one component | — | none | local |
 
 Actions: `map` writes the selected token owner. `scope` overrides at a boundary. `local` stays as a direct project rule. `gap` has no evidence.
 
 Collect from source CSS always: custom properties, headings, body, colors, spacing clusters, font stacks, class grammar. Collect computed styles from the running page when a URL exists, at two widths. If the site cannot be rendered, mark computed cells `gap`.
 
-Final role sizes use --ROLE-size; explicit lengths win over endpoints and step recipes. Inventory existing role customizations before collapsing h4/h5/h6 to h3. Shared-scale inputs belong at root only. Public hook presence follows live adopted CSS.
+Final role sizes use --ak-ROLE-size; explicit lengths win over endpoints and step recipes. Inventory existing role customizations before collapsing h4/h5/h6 to h3. Shared-scale inputs belong at root only. Public hook presence follows live adopted CSS.
 
 Show the table before the patch. If two heading treatments fight for one token, stop and ask.
 

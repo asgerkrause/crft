@@ -18,7 +18,7 @@ const layerDependencies = {
 // Public composition hooks. Keep aligned with CRFT.md public-hook-index.
 const hooks = {
   attributes: ["g", "c", "r", "o", "l", "data-theme", "data-accent", "data-scrub", "container", "sg", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg"],
-  classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".img-w", ".sr", ".sr.focusable", ".squircle"],
+  classes: [".c", ".c.sm", ".c.lg", ".s", ".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".stat", ".img-w", ".sr", ".sr.focusable", ".squircle"],
 };
 const staticBans = [
   "never *-block-start or *-inline-start single-side longhands",
@@ -27,7 +27,7 @@ const staticBans = [
   "never new spacing, alignment, or display utility matrices",
   "never substring attribute selectors in documentation",
   "never explicit wght in canonical role axes; ordinary weight uses font-weight",
-  "never heading max-width; override the role's --ROLE-measure token",
+  "never heading max-width; override the role's --ak-ROLE-measure token",
 ];
 
 const unique = (values) => [...new Set(values)];
@@ -121,17 +121,20 @@ function buildContract(rootUrl) {
     .sort();
   const git = gitState(root);
 
+  // Copies adopted before the rename to crft still carry the old marker spelling.
+  const markedVersion = (css) => Number(css.match(/\/\* (?:crft|Craft) semantic contract: ([34])\. \*\//)?.[1] ?? 2);
+  const contractVersion = markedVersion(tokensCss);
+  const mixed = files.filter((name) => name !== "tokens.css").map((name) => markedVersion(sources[name])).find((version) => version !== contractVersion);
+  if (mixed !== undefined) {
+    throw new Error(`Incompatible token/framework semantic versions; explicit ${Math.max(mixed, contractVersion) === 4 ? "v3/v4" : "v2/v3"} migration required`);
+  }
+  // Contracts before 4 name tokens without the --ak- prefix and have no stat role.
+  const versionHooks = contractVersion >= 4 ? hooks : { ...hooks, classes: hooks.classes.filter((hook) => hook !== ".stat") };
+
   const bans = [
     ...privateProperties.map((name) => `never use ${name} in product CSS or examples`),
-    ...staticBans,
+    ...(contractVersion >= 4 ? staticBans : staticBans.map((ban) => ban.replace("--ak-ROLE-", "--ROLE-"))),
   ];
-
-  // Copies adopted before the rename to crft still carry the old marker spelling.
-  const marker = /\/\* (?:crft|Craft) semantic contract: 3\. \*\//;
-  const contractVersion = marker.test(tokensCss) ? 3 : 2;
-  if (files.some((name) => name !== "tokens.css" && marker.test(sources[name]) !== (contractVersion === 3))) {
-    throw new Error("Incompatible token/framework semantic versions; explicit v2/v3 migration required");
-  }
 
   return {
     contractVersion,
@@ -147,7 +150,7 @@ function buildContract(rootUrl) {
     accents: quotedAttributeValues(tokensCss, "data-accent"),
     layers: Object.fromEntries(files.map((name) => [name, declaredLayers(sources[name])])),
     layerDependencies: snapshotDependencies(),
-    hooks: contractVersion === 3 ? hooks : { ...hooks, attributes: [...hooks.attributes, "data-skin"] },
+    hooks: contractVersion >= 3 ? versionHooks : { ...versionHooks, attributes: [...versionHooks.attributes, "data-skin"] },
   };
 }
 
@@ -203,7 +206,25 @@ function walkCss(css, rule, declaration) {
 }
 
 // Color tokens are a closed public family; unknown custom properties cannot prove color-only scope.
-const colorToken = /^--(?:palette-[a-z-]+|canvas(?:-base)?|text(?:-base)?|surface|border|muted|(?:accent|secondary|tertiary)(?:-surface|-text|-border)?|success|warning|danger|on-(?:accent|secondary|tertiary|success|warning|danger))$/;
+// Each contract version checks its own vocabulary; v3 names stay frozen for adopted v3 copies.
+const semanticRules = {
+  3: {
+    colorToken: /^--(?:palette-[a-z-]+|canvas(?:-base)?|text(?:-base)?|surface|border|muted|(?:accent|secondary|tertiary)(?:-surface|-text|-border)?|success|warning|danger|on-(?:accent|secondary|tertiary|success|warning|danger))$/,
+    foundation: /^--(?:fluid-(?:min|max)|type-(?:min|max|ratio-min|ratio-max)|font(?:-sans|-serif|-mono|-display)?|weight(?:-light|-bold)?|(?:space|gap|padding|radius)-ratio|(?:display|h[1-3]|lead|body|small|label|caption)-(?:step|min|max))$/,
+    roleSize: /^--(?:display|h[1-3]|lead|body|small|label|caption)-size$/,
+    roleRecipe: /pow\(|var\(\s*--(?:_fluid|type-|fluid-|(?:display|h[1-3]|lead|body|small|label|caption)-(?:min|max))/,
+    scaleStep: /^--(?:space|gap|padding|radius)(?:-xs|-sm|-lg|-xl)?$/,
+    scaleRecipe: /var\(\s*--(?:space|gap|padding|radius)-ratio/,
+  },
+  4: {
+    colorToken: /^--ak-(?:palette-[a-z-]+|canvas(?:-base)?|text(?:-base|-muted)?|surface|border|(?:accent|secondary|tertiary)(?:-surface|-text|-border)?|success|warning|danger|on-(?:accent|secondary|tertiary|success|warning|danger))$/,
+    foundation: /^--ak-(?:viewport-(?:min|max)|type-(?:size|scale)-(?:min|max)|font-(?:sans|serif|mono|body|display)|weight-(?:light|regular|bold)|(?:space|gap|padding|radius)-scale|(?:display|h[1-3]|lead|body|small|label|caption|stat)-(?:step|size-min|size-max))$/,
+    roleSize: /^--ak-(?:display|h[1-3]|lead|body|small|label|caption|stat)-size$/,
+    roleRecipe: /pow\(|var\(\s*--(?:_fluid|ak-type-|ak-viewport-|ak-(?:display|h[1-3]|lead|body|small|label|caption|stat)-size-(?:min|max))/,
+    scaleStep: /^--ak-(?:space|gap|padding|radius)-(?:xs|sm|md|lg|xl)$/,
+    scaleRecipe: /var\(\s*--ak-(?:space|gap|padding|radius)-scale/,
+  },
+};
 const colorProperty = /^(?:color|background-color|(?:border(?:-(?:top|right|bottom|left|block|inline)(?:-start|-end)?)?|outline|text-decoration|text-emphasis|column-rule|caret|accent|stop|flood|lighting)-color|fill|stroke)$/;
 const colorValue = /^(?:[a-z]+|#[a-f0-9]+|(?:var|light-dark|color|color-mix|contrast-color|rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch)\([\s\S]*\))\s*(?:!important)?$/i;
 
@@ -245,32 +266,35 @@ function isRootSelector(selector, parentRoot) {
   });
 }
 
-// Check the v3-only boundary in canonical and adopted CSS; final role/layout outputs remain local.
-function v3CssErrors(css) {
+// Check the semantic boundary in canonical and adopted CSS; final role/layout outputs remain local.
+function semanticCssErrors(css, version) {
   const errors = [];
-  const foundation = /^--(?:fluid-(?:min|max)|type-(?:min|max|ratio-min|ratio-max)|font(?:-sans|-serif|-mono|-display)?|weight(?:-light|-bold)?|(?:space|gap|padding|radius)-ratio|(?:display|h[1-3]|lead|body|small|label|caption)-(?:step|min|max))$/;
+  const v = `v${version}`;
+  const { colorToken, foundation, roleSize, roleRecipe, scaleStep, scaleRecipe } = semanticRules[version];
   walkCss(css, (selector, parent) => {
     let theme = parent.theme;
     // Match whole attributes so quoted values of unrelated attributes stay opaque.
     for (const [rawAttribute] of selector.matchAll(/\[(?:[^\]"'\\]|\\[\s\S]|"(?:[^"\\]|\\[\s\S])*"|'(?:[^'\\]|\\[\s\S])*')*\]/g)) {
       const attribute = cssUnescape(rawAttribute);
-      if (/^\[\s*data-(?:skin|scheme)(?=[\s~|^$*!=\]])/i.test(attribute)) errors.push("v3 rejects data-skin and scheme attributes");
+      if (/^\[\s*data-(?:skin|scheme)(?=[\s~|^$*!=\]])/i.test(attribute)) errors.push(`${v} rejects data-skin and scheme attributes`);
       if (!/^\[\s*data-theme(?=[\s~|^$*!=\]])/i.test(attribute)) continue;
       theme = true;
-      if (!/^\[\s*data-theme\s*(?:=\s*(?:(["'])(?:invert|tone|accent)\1|invert|tone|accent)\s*)?\]$/i.test(attribute)) errors.push("v3 data-theme accepts invert, tone, accent only");
+      if (!/^\[\s*data-theme\s*(?:=\s*(?:(["'])(?:invert|tone|accent)\1|invert|tone|accent)\s*)?\]$/i.test(attribute)) errors.push(`${v} data-theme accepts invert, tone, accent only`);
     }
     return { theme, root: !theme && (selector.startsWith("@") ? parent.root : isRootSelector(selector, parent.root)) };
   }, (property, value, scope) => {
     const name = property.startsWith("--") ? property : property.toLowerCase();
-    if (scope.theme && !colorToken.test(name) && !colorProperty.test(name) && !(name === "background" && isColorBackground(value))) errors.push("v3 themes must change color only");
-    if (name === "color-scheme" && !scope.root) errors.push("v3 document color-scheme requires :root");
+    if (scope.theme && !colorToken.test(name) && !colorProperty.test(name) && !(name === "background" && isColorBackground(value))) errors.push(`${v} themes must change color only`);
+    if (name === "color-scheme" && !scope.root) errors.push(`${v} document color-scheme requires :root`);
     if (scope.root) return;
-    if (foundation.test(name)) errors.push("v3 foundations and recipes require :root");
-    if (/^--(?:display|h[1-3]|lead|body|small|label|caption)-size$/.test(name) && /pow\(|var\(\s*--(?:_fluid|type-|fluid-|(?:display|h[1-3]|lead|body|small|label|caption)-(?:min|max))/.test(value)) errors.push("v3 type recipes require :root");
-    if (/^--(?:space|gap|padding|radius)(?:-xs|-sm|-lg|-xl)?$/.test(name) && /var\(\s*--(?:space|gap|padding|radius)-ratio/.test(value)) errors.push("v3 spacing and radius recipes require :root");
+    if (foundation.test(name)) errors.push(`${v} foundations and recipes require :root`);
+    if (roleSize.test(name) && roleRecipe.test(value)) errors.push(`${v} type recipes require :root`);
+    if (scaleStep.test(name) && scaleRecipe.test(value)) errors.push(`${v} spacing and radius recipes require :root`);
   });
   return [...new Set(errors)];
 }
+const v3CssErrors = (css) => semanticCssErrors(css, 3);
+const v4CssErrors = (css) => semanticCssErrors(css, 4);
 
 function parseArguments(arguments_) {
   let out;
@@ -310,6 +334,6 @@ function main() {
   }
 }
 
-export { v3CssErrors, buildContract, contractDigest, declaredProperties, gitState, hasExplicitWght, layerDependencies, staticBans };
+export { v3CssErrors, v4CssErrors, buildContract, contractDigest, declaredProperties, gitState, hasExplicitWght, layerDependencies, staticBans };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

@@ -1,4 +1,4 @@
-import { buildContract, v3CssErrors, declaredProperties, hasExplicitWght } from "./emit-contract.mjs";
+import { buildContract, v3CssErrors, v4CssErrors, declaredProperties, hasExplicitWght } from "./emit-contract.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
@@ -16,6 +16,8 @@ const bannedSpacing = [
   "margin-inline-end",
 ];
 const legacy = JSON.parse(readFileSync(new URL("./legacy-contract.json", import.meta.url), "utf8"));
+// Frozen contract 3 names: a legacy v1 project must not mix them in, whatever the canonical source now declares.
+const legacyV3 = JSON.parse(readFileSync(new URL("./legacy-contract-v3.json", import.meta.url), "utf8"));
 const familyPattern = /^--[lsgprbctm](?:-[a-z0-9_-]+)?$/;
 const layerDependencies = {
   tokens: [],
@@ -80,10 +82,10 @@ function loadAdoption(target) {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   if (!manifest.contract) throw new Error(`${manifestPath} is missing contract`);
   const version = Object.hasOwn(manifest, "contractVersion") ? manifest.contractVersion : 1;
-  if (![1, 2, 3].includes(version)) throw new Error(`Unsupported contractVersion ${version}`);
+  if (![1, 2, 3, 4].includes(version)) throw new Error(`Unsupported contractVersion ${version}`);
   if ((Object.hasOwn(manifest.contract, "contractVersion") ? manifest.contract.contractVersion : 1) !== version) throw new Error("Manifest and contract versions disagree");
   if (flat) {
-    if (manifest.packagingVersion !== 1 || manifest.contract.packagingVersion !== 1 || ![2, 3].includes(version)) throw new Error("Unsupported or missing packagingVersion for flat adoption");
+    if (manifest.packagingVersion !== 1 || manifest.contract.packagingVersion !== 1 || ![2, 3, 4].includes(version)) throw new Error("Unsupported or missing packagingVersion for flat adoption");
     if (!Array.isArray(manifest.layers) || !manifest.layers.includes("tokens")) throw new Error("Flat adoption requires tokens");
     const expectedLayers = manifest.layers.length === 1 ? ["tokens"] : ["base", "tokens", "type", "layout", "grid", "motion", "utility"];
     if (manifest.layers.join("|") !== expectedLayers.join("|")) throw new Error("Flat adoption supports tokens or full only");
@@ -94,7 +96,9 @@ function loadAdoption(target) {
     throw new Error("Legacy layer packaging must not declare packagingVersion");
   }
   const sourceContract = buildContract(flat ? target : layersDir);
-  if ((version === 3) !== (sourceContract.contractVersion === 3)) throw new Error("Semantic version marker disagrees with adoption; explicit v2/v3 migration required");
+  // Versions 1 and 2 carry no marker; 3 and 4 must match theirs exactly.
+  const marked = (value) => (value >= 3 ? value : 2);
+  if (marked(version) !== marked(sourceContract.contractVersion)) throw new Error(`Semantic version marker disagrees with adoption; explicit ${Math.max(version, sourceContract.contractVersion) === 4 ? "v3/v4" : "v2/v3"} migration required`);
   return { contract: manifest.contract, flat, files: manifest.files };
 }
 
@@ -107,7 +111,7 @@ function privatePattern(names) {
 function checkProject(target) {
   const { contract, flat, files } = loadAdoption(target);
   const version = Object.hasOwn(contract, "contractVersion") ? contract.contractVersion : 1;
-  if (![1, 2, 3].includes(version)) throw new Error(`Unsupported contractVersion ${version}`);
+  if (![1, 2, 3, 4].includes(version)) throw new Error(`Unsupported contractVersion ${version}`);
   for (const field of ["publicTokens", "privateProperties"]) {
     if (!Array.isArray(contract[field]) || !contract[field].every((name) => typeof name === "string" && /^--[a-z0-9_-]+$/.test(name))) throw new Error(`Missing or invalid contract ${field}`);
   }
@@ -121,7 +125,7 @@ function checkProject(target) {
     }
     if (!contract.hooks || !["attributes", "classes"].every((field) => Array.isArray(contract.hooks[field]) && contract.hooks[field].every((hook) => typeof hook === "string"))) throw new Error("Missing or invalid contract hooks");
   }
-  if (version === 3 && (contract.themes.join("|") !== "accent|invert|tone" || Object.hasOwn(contract, "skins") || contract.hooks.attributes.includes("data-skin"))) throw new Error("Invalid v3 color contract; explicit v2 migration required");
+  if (version >= 3 && (contract.themes.join("|") !== "accent|invert|tone" || Object.hasOwn(contract, "skins") || contract.hooks.attributes.includes("data-skin"))) throw new Error(`Invalid v${version} color contract; explicit v2 migration required`);
   const publicTokens = new Set(contract.publicTokens);
   const privates = contract.privateProperties ?? [];
   const privateSet = new Set(privates);
@@ -144,15 +148,19 @@ function checkProject(target) {
   const projectFiles = existsSync(target) ? walkProjectCss(target, flat) : [];
   const localProperties = new Set(projectFiles.flatMap((path) => declaredProperties(readFileSync(path, "utf8"))));
   const legacyTokens = new Set(legacy.publicTokens);
-  const currentTokens = new Set(buildContract(new URL("../", import.meta.url)).publicTokens);
+  const currentTokens = new Set(legacyV3.publicTokens);
   const layerFiles = flat
     ? ["tokens.css", "crft.css"].map((file) => join(target, file)).filter(existsSync)
     : [...present].map((layer) => join(target, "layers", `${layer}.css`));
   const allActive = [...projectFiles, ...layerFiles].map((path) => stripCssComments(readFileSync(path, "utf8"))).join("\n");
   if (version >= 2 && (/\[(?:t|s|x|y)(?:[\s~|^$*!=]|\])/.test(allActive) || [...allActive.matchAll(/--[a-z0-9_-]+/g)].some(([name]) => legacyTokens.has(name)))) fail("mixed legacy and v2 hooks or tokens");
   if (version === 1 && ([...allActive.matchAll(/--[a-z0-9_-]+/g)].some(([name]) => currentTokens.has(name) && !legacyTokens.has(name)) || /\[(?:data-theme|r)(?:[\s~|^$*!=]|\])|\.(?:c|s|h[1-3]|display|lead|body|small|caption|label)(?=[\s.{:#])/i.test(allActive))) fail("mixed legacy and v2 hooks or tokens");
-  if (version === 3) for (const path of [...projectFiles, ...layerFiles]) {
-    for (const error of v3CssErrors(readFileSync(path, "utf8"))) fail(error);
+  if (version >= 3) for (const path of [...projectFiles, ...layerFiles]) {
+    for (const error of (version === 3 ? v3CssErrors : v4CssErrors)(readFileSync(path, "utf8"))) fail(error);
+  }
+  // A contract 3 name left in the adopted tokens.css is a brand value the rename lost.
+  if (version === 4) for (const path of layerFiles.filter((file) => file.endsWith("tokens.css"))) {
+    for (const name of declaredProperties(readFileSync(path, "utf8"))) if (currentTokens.has(name)) fail(`tokens.css declares contract 3 token ${name}; rename it with the map in docs/adopt.md, or move a non-crft declaration to project CSS`);
   }
   for (const path of projectFiles) {
     const rel = relative(target, path);

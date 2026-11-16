@@ -172,7 +172,7 @@ test("reduced-motion preference resolves public motion durations to near zero", 
   await page.goto("/#motion-roles");
   const durations = await fixture(page, "reduced-motion").evaluate((element) => {
     const style = getComputedStyle(element);
-    return ["--duration-xs", "--duration-sm", "--duration", "--duration-lg", "--duration-xl"].map((token) => style.getPropertyValue(token).trim());
+    return ["--ak-duration-xs", "--ak-duration-sm", "--ak-duration-md", "--ak-duration-lg", "--ak-duration-xl"].map((token) => style.getPropertyValue(token).trim());
   });
   expect(durations.map((duration) => Number.parseFloat(duration))).toEqual([0.001, 0.001, 0.001, 0.001, 0.001]);
 });
@@ -258,12 +258,12 @@ test("accent skin follows every active route across presets and schemes", async 
   await page.goto("/#accent-skins");
   const root = page.locator("html");
   const routes = [
-    ["skin-accent-primary", "--accent"],
-    ["skin-accent-secondary", "--secondary"],
-    ["skin-accent-tertiary", "--tertiary"],
-    ["skin-accent-success", "--success"],
-    ["skin-accent-warning", "--warning"],
-    ["skin-accent-danger", "--danger"],
+    ["skin-accent-primary", "--ak-accent"],
+    ["skin-accent-secondary", "--ak-secondary"],
+    ["skin-accent-tertiary", "--ak-tertiary"],
+    ["skin-accent-success", "--ak-success"],
+    ["skin-accent-warning", "--ak-warning"],
+    ["skin-accent-danger", "--ak-danger"],
   ];
   for (const preset of ["core", "claude", "openai", "github", "supabase"]) {
     for (const mode of ["light", "dark"]) {
@@ -275,7 +275,7 @@ test("accent skin follows every active route across presets and schemes", async 
         const colors = await fixture(page, name).evaluate((element, expectedToken) => {
           const routed = document.createElement("i");
           const expected = document.createElement("i");
-          routed.style.backgroundColor = "var(--accent)";
+          routed.style.backgroundColor = "var(--ak-accent)";
           expected.style.backgroundColor = `var(${expectedToken})`;
           element.append(routed, expected);
           const result = [getComputedStyle(routed).backgroundColor, getComputedStyle(expected).backgroundColor];
@@ -311,7 +311,7 @@ test("muted text stays a quieter tone than foreground across skins", async ({ pa
       }, { mode, preset });
       const colors = await cards.evaluateAll((elements) => elements.map((element) => {
         const muted = document.createElement("span");
-        muted.style.color = "var(--muted)";
+        muted.style.color = "var(--ak-text-muted)";
         muted.textContent = "Muted";
         const body = document.createElement("span");
         body.textContent = "Body";

@@ -252,7 +252,7 @@ test("manifest contract includes a known public token and private property", asy
   await adoptSystem({ sourceRoot, target, layers: "tokens" });
 
   const manifest = JSON.parse(readFileSync(join(target, "crft-manifest.json"), "utf8"));
-  assert.ok(manifest.contract.publicTokens.includes("--text"));
+  assert.ok(manifest.contract.publicTokens.includes("--ak-text"));
   assert.ok(manifest.contract.privateProperties.includes("--l-gc"));
 });
 

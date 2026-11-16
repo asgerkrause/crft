@@ -1,31 +1,31 @@
 {
-  "contractVersion": 3,
+  "contractVersion": 4,
   "id": "mixed",
   "description": "Editorial fluid scale with a literal body and explicit display endpoints.",
   "foundations": {
-    "fluid-min": {
+    "viewport-min": {
       "value": 25,
       "unit": "rem"
     },
-    "fluid-max": {
+    "viewport-max": {
       "value": 100,
       "unit": "rem"
     },
-    "type-min": {
+    "type-size-min": {
       "value": 1,
       "unit": "rem"
     },
-    "type-max": {
+    "type-size-max": {
       "value": 1.25,
       "unit": "rem"
     },
-    "type-ratio-min": 1.2,
-    "type-ratio-max": 1.375
+    "type-scale-min": 1.2,
+    "type-scale-max": 1.375
   },
   "roles": {
     "display": {
       "step": 5,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -40,18 +40,18 @@
       "features": "normal",
       "axes": "normal",
       "optical-sizing": "auto",
-      "min": {
+      "size-min": {
         "value": 2,
         "unit": "rem"
       },
-      "max": {
+      "size-max": {
         "value": 5,
         "unit": "rem"
       }
     },
     "h1": {
       "step": 4,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -69,7 +69,7 @@
     },
     "h2": {
       "step": 3,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -87,7 +87,7 @@
     },
     "h3": {
       "step": 2,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.1,
       "tracking": {
@@ -105,7 +105,7 @@
     },
     "lead": {
       "step": 1,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -123,7 +123,7 @@
     },
     "body": {
       "step": 0,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -145,7 +145,7 @@
     },
     "small": {
       "step": -1,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -163,7 +163,7 @@
     },
     "label": {
       "step": -1,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -181,7 +181,7 @@
     },
     "caption": {
       "step": -1,
-      "font": "\"sans\", system-ui, sans-serif",
+      "family": "\"sans\", system-ui, sans-serif",
       "weight": 400,
       "leading": 1.5,
       "tracking": {
@@ -196,6 +196,24 @@
       "features": "normal",
       "axes": "normal",
       "optical-sizing": "auto"
+    },
+    "stat": {
+      "step": 5,
+      "family": "\"sans\", system-ui, sans-serif",
+      "weight": 400,
+      "leading": 1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "\"lnum\", \"tnum\"",
+      "axes": "normal",
+      "optical-sizing": "auto"
     }
   },
   "scales": {
@@ -204,28 +222,28 @@
         "value": 5,
         "unit": "rem"
       },
-      "ratio": 2
+      "scale": 2
     },
     "gap": {
       "size": {
         "value": 1.25,
         "unit": "rem"
       },
-      "ratio": 2
+      "scale": 2
     },
     "padding": {
       "size": {
         "value": 1.25,
         "unit": "rem"
       },
-      "ratio": 2
+      "scale": 2
     },
     "radius": {
       "size": {
         "value": 0.75,
         "unit": "rem"
       },
-      "ratio": 1.5
+      "scale": 1.5
     }
   },
   "colors": {
@@ -235,7 +253,7 @@
     "on-accent": "#ffffff"
   },
   "fonts": {
-    "font": "\"sans\", system-ui, sans-serif",
+    "font-body": "\"sans\", system-ui, sans-serif",
     "font-display": "\"sans\", system-ui, sans-serif"
   },
   "expected": {
@@ -275,6 +293,10 @@
     "caption": {
       "minRem": 0.8333333333333334,
       "maxRem": 0.9090909090909092
+    },
+    "stat": {
+      "minRem": 2.4883199999999994,
+      "maxRem": 6.143608093261719
     }
   }
 }

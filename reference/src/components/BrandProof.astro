@@ -18,8 +18,8 @@ const profile = profiles.find((item) => item.id === Astro.props.profile) ?? flui
           <h1>{profile.description}</h1>
           <p>Each recipe owns document-root typography and spacing. These synthetic fixtures demonstrate the role API.</p>
           <dl>
-            <dt>Static</dt><dd>Assign final <code>--h1-size</code> and other role sizes in rem.</dd>
-            <dt>Fluid</dt><dd>Assign root range, base sizes, ratios, and role steps. Roles interpolate between endpoints.</dd>
+            <dt>Static</dt><dd>Assign final <code>--ak-h1-size</code> and other role sizes in rem.</dd>
+            <dt>Fluid</dt><dd>Assign root range, base sizes, scale multipliers, and role steps. Roles interpolate between endpoints.</dd>
             <dt>Mixed</dt><dd>Keep selected final role sizes static while other roles remain fluid.</dd>
           </dl>
           {Object.keys(roles).map((role) => <div class="role-sample"><span class="small">{role}</span><p class={role} data-role={role}>Readable systems / Læsbare systemer / Verständliche Gestaltung / 読みやすい設計</p></div>)}
@@ -37,11 +37,11 @@ const profile = profiles.find((item) => item.id === Astro.props.profile) ?? flui
   </body>
 </html>
 <style>
-  header, footer { padding: var(--padding); }
-  nav { display: flex; flex-wrap: wrap; gap: var(--gap); }
+  header, footer { padding: var(--ak-padding-md); }
+  nav { display: flex; flex-wrap: wrap; gap: var(--ak-gap-md); }
   main :is(h1, h4, p, label, figcaption) { overflow-wrap: anywhere; }
   input { max-width: 100%; }
-  .role-sample { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--gap); }
-  .role-sample > span { color: var(--muted); }
-  .theme-sample { padding: var(--padding); }
+  .role-sample { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ak-gap-md); }
+  .role-sample > span { color: var(--ak-text-muted); }
+  .theme-sample { padding: var(--ak-padding-md); }
 </style>

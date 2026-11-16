@@ -17,11 +17,11 @@ const { c } = Astro.props;
     .card {
       position: relative;
       min-inline-size: 0;
-      padding: var(--padding);
+      padding: var(--ak-padding-md);
       overflow: clip;
-      border: var(--border-width) solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface);
+      border: var(--ak-border-width) solid var(--ak-border);
+      border-radius: var(--ak-radius-md);
+      background: var(--ak-surface);
 
       :global(img) {
         display: block;
@@ -29,7 +29,7 @@ const { c } = Astro.props;
         block-size: auto;
         aspect-ratio: 4 / 3;
         object-fit: cover;
-        border-radius: var(--radius-sm);
+        border-radius: var(--ak-radius-sm);
       }
     }
   }

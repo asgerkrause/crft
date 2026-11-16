@@ -19,7 +19,7 @@ Build color from outside inward:
 4. Semantic surface, border, muted, and accent roles style descendants.
 5. Project CSS applies those roles to a component or composition.
 
-Use `--canvas`, `--text`, `--surface`, `--border`, and `--muted` for the active context. Use active accent roles for emphasis and component treatment. Use `--on-accent`, `--on-secondary`, `--on-tertiary`, or the matching `--on-success`/`--on-warning`/`--on-danger` role only for content on the matching solid source.
+Use `--ak-canvas`, `--ak-text`, `--ak-surface`, `--ak-border`, and `--ak-text-muted` for the active context. Use active accent roles for emphasis and component treatment. Use `--ak-on-accent`, `--ak-on-secondary`, `--ak-on-tertiary`, or the matching `--ak-on-success`/`--ak-on-warning`/`--ak-on-danger` role only for content on the matching solid source.
 
 Do not apply palette swatches directly when a semantic role expresses the job.
 
@@ -94,7 +94,7 @@ A solid feedback surface uses its matching contrast-companion role. A subtle tre
 
 ## Solid-content companions
 
-Each `--on-*` companion resolves at `:root` to black or white from its source. Where supported, `contrast-color()` picks; its algorithm is UA-defined and the specification guarantees only 3:1. Elsewhere, a relative color flips at XYZ luminance 0.1791, where black and white reach equal WCAG contrast; its worst case over every sRGB source is 4.58:1. The static brand pair remains only where neither feature is supported. Retuning `--accent` or `--success` at `:root` retunes its companion, and `data-accent` routes carry it. A source retuned on a descendant boundary must redeclare its `--on-*` there. Resolving only at `:root` keeps a project override of an `--on-*` token from being replaced in themed subtrees. Inside a `data-accent` route, `--on-accent` comes from the routed companion, so override `--on-secondary` (or the matching route companion) to change routed content; an `--on-accent` override applies outside routes. Pure black and white are deliberate: CSS cannot turn a source's lightness into a choice between two brand colors. Override an `--on-*` token in project CSS when the brand needs a specific pair, then verify the rendered contrast.
+Each `--on-*` companion resolves at `:root` to black or white from its source. Where supported, `contrast-color()` picks; its algorithm is UA-defined and the specification guarantees only 3:1. Elsewhere, a relative color flips at XYZ luminance 0.1791, where black and white reach equal WCAG contrast; its worst case over every sRGB source is 4.58:1. The static brand pair remains only where neither feature is supported. Retuning `--ak-accent` or `--ak-success` at `:root` retunes its companion, and `data-accent` routes carry it. A source retuned on a descendant boundary must redeclare its `--on-*` there. Resolving only at `:root` keeps a project override of an `--on-*` token from being replaced in themed subtrees. Inside a `data-accent` route, `--ak-on-accent` comes from the routed companion, so override `--ak-on-secondary` (or the matching route companion) to change routed content; an `--ak-on-accent` override applies outside routes. Pure black and white are deliberate: CSS cannot turn a source's lightness into a choice between two brand colors. Override an `--on-*` token in project CSS when the brand needs a specific pair, then verify the rendered contrast.
 
 ## Brand ownership
 
@@ -120,9 +120,9 @@ See [`examples/branded-extension/`](../examples/branded-extension/) for scoped b
 Native button and field edges reach 3:1 against canvas and surface across supplied schemes, themes, and accent routes.
 Invalid edges mix danger with text; hover and active retain their edges. Focus uses the current foreground.
 Disabled controls retain those edges and use muted text; native disabled controls are exempt from WCAG contrast requirements.
-`--border` and `--accent-border` are decorative dividers, never sole control boundaries or essential state cues.
-`--accent-text` reaches 4.5:1 on canvas, surface, and its matching accent surface in the supplied palettes.
-Normal text also reaches 4.5:1 on accent surfaces. These pair checks do not certify arbitrary consumer palettes. `prefers-contrast: more` strengthens `--muted` and `--border` contrast on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
+`--ak-border` and `--ak-accent-border` are decorative dividers, never sole control boundaries or essential state cues.
+`--ak-accent-text` reaches 4.5:1 on canvas, surface, and its matching accent surface in the supplied palettes.
+Normal text also reaches 4.5:1 on accent surfaces. These pair checks do not certify arbitrary consumer palettes. `prefers-contrast: more` strengthens `--ak-text-muted` and `--ak-border` contrast on every canvas so secondary text and borders stay legible. `forced-colors: active` gives controls a system border and outline; system colors then replace the palette. Both are reference guarantees; product CSS must not undo them.
 
 ## Verify
 

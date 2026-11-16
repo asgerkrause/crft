@@ -19,9 +19,9 @@ const { label, items, accent } = Astro.props;
   {items.map((item) => (
     <li>
       <figure class="sg-swatch" data-accent={item.accent}>
-        <div data-swatch={item.token.endsWith("border") ? "border" : item.token.endsWith("text") || item.token === "--muted" ? "text" : "fill"}
+        <div data-swatch={item.token.endsWith("border") ? "border" : item.token.endsWith("text") || item.token === "--ak-text-muted" ? "text" : "fill"}
           style={`--sg-color:var(${item.token})${item.ink ? `;--sg-ink:var(${item.ink})` : ""}`}>
-          {(item.ink || item.token.endsWith("text") || item.token === "--muted") && <span aria-hidden="true">Aa</span>}
+          {(item.ink || item.token.endsWith("text") || item.token === "--ak-text-muted") && <span aria-hidden="true">Aa</span>}
         </div>
         <figcaption>{item.label}<code>{item.token}</code></figcaption>
       </figure>

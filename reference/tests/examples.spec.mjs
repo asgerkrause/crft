@@ -108,7 +108,7 @@ test("all examples and root recipes render with valid local destinations", async
   for (const profile of ["static", "fluid", "mixed"]) {
     await page.goto(`/brands/${profile}/`);
     await expect(page.locator(`main [data-fixture="${profile}"]`)).toHaveCount(1);
-    expect(await page.locator("html").getAttribute("style")).toContain("--h1");
+    expect(await page.locator("html").getAttribute("style")).toContain("--ak-h1");
     await page.screenshot({ path: `evidence/recipe-${profile}.png`, fullPage: true, animations: "disabled" });
   }
 });
@@ -189,10 +189,10 @@ test("issue links and form actions retain contrast in both schemes", async ({ pa
   }
 });
 
-test("every recipe visibly names its nine type roles", async ({ page }) => {
+test("every recipe visibly names its ten type roles", async ({ page }) => {
   for (const profile of ["static", "fluid", "mixed"]) {
     await page.goto(`/brands/${profile}/`);
-    await expect(page.locator(".role-sample")).toHaveCount(9);
+    await expect(page.locator(".role-sample")).toHaveCount(10);
     for (const sample of await page.locator(".role-sample").all()) {
       const role = await sample.locator("[data-role]").getAttribute("data-role");
       await expect(sample.locator("span")).toHaveText(role);

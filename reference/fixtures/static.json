@@ -1,31 +1,31 @@
 {
-  "contractVersion": 3,
+  "contractVersion": 4,
   "id": "static",
   "description": "Synthetic literary serif with a static modular scale.",
   "foundations": {
-    "fluid-min": {
+    "viewport-min": {
       "value": 25,
       "unit": "rem"
     },
-    "fluid-max": {
+    "viewport-max": {
       "value": 100,
       "unit": "rem"
     },
-    "type-min": {
+    "type-size-min": {
       "value": 1.125,
       "unit": "rem"
     },
-    "type-max": {
+    "type-size-max": {
       "value": 1.125,
       "unit": "rem"
     },
-    "type-ratio-min": 1.2,
-    "type-ratio-max": 1.2
+    "type-scale-min": 1.2,
+    "type-scale-max": 1.2
   },
   "roles": {
     "display": {
       "step": 5,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.1,
       "tracking": {
@@ -47,7 +47,7 @@
     },
     "h1": {
       "step": 4,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.1,
       "tracking": {
@@ -69,7 +69,7 @@
     },
     "h2": {
       "step": 3,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.1,
       "tracking": {
@@ -91,7 +91,7 @@
     },
     "h3": {
       "step": 2,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.1,
       "tracking": {
@@ -113,7 +113,7 @@
     },
     "lead": {
       "step": 1,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.5,
       "tracking": {
@@ -135,7 +135,7 @@
     },
     "body": {
       "step": 0,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.5,
       "tracking": {
@@ -157,7 +157,7 @@
     },
     "small": {
       "step": -1,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.5,
       "tracking": {
@@ -179,7 +179,7 @@
     },
     "label": {
       "step": -1,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.5,
       "tracking": {
@@ -201,7 +201,7 @@
     },
     "caption": {
       "step": -1,
-      "font": "Georgia, serif",
+      "family": "Georgia, serif",
       "weight": 500,
       "leading": 1.5,
       "tracking": {
@@ -220,6 +220,28 @@
         "value": 0.9375,
         "unit": "rem"
       }
+    },
+    "stat": {
+      "step": 5,
+      "family": "Georgia, serif",
+      "weight": 500,
+      "leading": 1,
+      "tracking": {
+        "value": -0.01,
+        "unit": "em"
+      },
+      "measure": {
+        "value": 24,
+        "unit": "ch"
+      },
+      "case": "none",
+      "features": "\"lnum\", \"tnum\"",
+      "axes": "normal",
+      "optical-sizing": "auto",
+      "size": {
+        "value": 2.799359999999999,
+        "unit": "rem"
+      }
     }
   },
   "scales": {
@@ -228,28 +250,28 @@
         "value": 3.75,
         "unit": "rem"
       },
-      "ratio": 2
+      "scale": 2
     },
     "gap": {
       "size": {
         "value": 0.9375,
         "unit": "rem"
       },
-      "ratio": 1.4
+      "scale": 1.4
     },
     "padding": {
       "size": {
         "value": 0.9375,
         "unit": "rem"
       },
-      "ratio": 1.8
+      "scale": 1.8
     },
     "radius": {
       "size": {
         "value": 0.5625,
         "unit": "rem"
       },
-      "ratio": 1.5
+      "scale": 1.5
     }
   },
   "colors": {
@@ -259,7 +281,7 @@
     "on-accent": "#ffffff"
   },
   "fonts": {
-    "font": "Georgia, serif",
+    "font-body": "Georgia, serif",
     "font-display": "Georgia, serif"
   },
   "expected": {
@@ -307,6 +329,11 @@
       "minRem": 0.9375,
       "maxRem": 0.9375,
       "staticRem": 0.9375
+    },
+    "stat": {
+      "minRem": 2.799359999999999,
+      "maxRem": 2.799359999999999,
+      "staticRem": 2.799359999999999
     }
   }
 }
