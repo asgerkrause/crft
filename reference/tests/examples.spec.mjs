@@ -108,7 +108,7 @@ test("all examples and root recipes render with valid local destinations", async
   for (const profile of ["static", "fluid", "mixed"]) {
     await page.goto(`/brands/${profile}/`);
     await expect(page.locator(`main [data-fixture="${profile}"]`)).toHaveCount(1);
-    expect(await page.locator("html").getAttribute("style")).toContain("--h1");
+    expect(await page.locator("html").getAttribute("style")).toContain("--ak-h1");
     await page.screenshot({ path: `evidence/recipe-${profile}.png`, fullPage: true, animations: "disabled" });
   }
 });
