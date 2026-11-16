@@ -68,7 +68,7 @@
   }
 
   :root {
-    /* Semantic Colors; these --on-* values remain only without contrast-color() and relative color. */
+    /* Semantic Colors; these --ak-on-* values remain only without contrast-color() and relative color. */
     --ak-accent: var(--ak-palette-blue);
     --ak-secondary: var(--ak-palette-purple);
     --ak-tertiary: var(--ak-palette-orange);

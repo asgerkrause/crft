@@ -71,12 +71,13 @@ The logical order stays `reset, base, tokens, type, layout, grid, motion, utilit
 
 Tokens-only adoption permits retained public tokens, data-theme and data-accent. Painting and framework selectors require crft.css or project-owned CSS. Type role classes, l clamp, containers, stacks, grids and utilities require their retained logical layers in crft.css. A local extraction grants no crft hooks.
 
-Brand OS v2 context exports are incompatible with crft v3. Stop before applying them.
+Brand OS v2 context exports are incompatible with crft v3 and v4. Stop before applying them.
 Explicit migration moves type, spacing, radius, and font foundations to `:root`.
 Keep deliberate local final role and layout values on separate semantic owners; remove context recipe rebinding.
 Theme selectors permit colors only, including nested selectors and conditional rules.
 Both `tokens.css` and `crft.css` carry the same semantic-version marker; mixed v2/v3 or v3/v4 pairs fail verification.
 External Brand OS and consumer repositories remain unchanged.
+A brnd kit reaches a crft project through its `adapters/crft.css`, loaded after crft's `tokens.css`. The adapter carries no `@font-face` rules: declare the kit's local fonts in project CSS. Loading the kit's `styles/brand.css` on the same page is not supported: both systems declare `--ak-*` names.
 
 ## Packaging migration
 
@@ -283,6 +284,8 @@ Live values also changed. Do not copy values from this table. Read the current C
 ## Migrate contract 3 to contract 4
 
 crft contractVersion 4 renames every public token. Each public name now starts with `--ak-`, so a crft token cannot collide with a token from another CSS library such as Tailwind or shadcn. No compatibility aliases ship: an earlier name is not declared as a second name. Private properties keep their names.
+
+A contract 4 adoption fails when its adopted `tokens.css` declares a contract 3 name. If that name belongs to another library (for example shadcn's `--border`), declare it in project CSS, not in the adopted `tokens.css`.
 
 The rename follows these rules:
 
@@ -564,9 +567,9 @@ Remove light/dark `data-theme` selectors and attributes; use document CSS `color
 Keep `data-accent` routes unchanged. There are no automatic upgrades or compatibility aliases.
 Move type, spacing, and radius foundations and recipes to `:root`; preserve local final role overrides.
 Give direct `main > section` meaningful, nonempty, unique IDs. Nested IDs still need purpose.
-Review old Brand OS context output before migration; the v3 fixture adapter rejects v1/v2 inputs visibly.
+Review old Brand OS context output before migration; the fixture adapter rejects v1, v2, and v3 inputs visibly.
 Manual v3 and v4 copies retain the semantic-version marker in `tokens.css`; unmarked copies retain v2 validation.
-The CSS checker rejects v2 hooks and non-root recipes in v3; it does not validate consumer markup or intent.
+The CSS checker rejects v2 hooks and non-root recipes in v3 and v4; it does not validate consumer markup or intent.
 
 ## Migrate existing CSS
 

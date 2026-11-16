@@ -128,7 +128,7 @@ test("manual legacy copy retains legacy vocabulary and rejects declared new fami
   writeFileSync(join(target, "layers/tokens.css"), ':root { --c-fg: #111; }');
   writeFileSync(join(target, "project.css"), 'p { color: var(--c-fg); }');
   assert.equal(check(target).status, 0, check(target).stderr);
-  for (const name of ["--gap", "--padding", "--content-max", "--body-size", "--ak-gap-md", "--ak-body-size"]) {
+  for (const name of ["--gap", "--padding", "--content-max", "--body-size"]) {
     writeFileSync(join(target, "project.css"), `:root { ${name}: 1rem; }`);
     assert.notEqual(check(target).status, 0, name);
   }
@@ -544,6 +544,22 @@ test("v4 projects may declare third-party names that contract 3 used", async (t)
   assert.equal(check(target).status, 0, check(target).stderr);
   writeFileSync(join(target, "project.css"), '.card { border-color: var(--border); }');
   assert.match(check(target).stderr, /unknown crft token --border/);
+});
+
+test("v4 rejects a contract 3 name left in the adopted tokens.css", async (t) => {
+  const target = temporary(t);
+  await adoptSystem({ sourceRoot: root.pathname, target, layers: "full" });
+  writeFileSync(join(target, "project.css"), "");
+  assert.equal(check(target).status, 0, check(target).stderr);
+  writeFileSync(join(target, "tokens.css"), readFileSync(join(target, "tokens.css"), "utf8").replace("--ak-header-height: 4rem;", "--ak-header-height: 4rem; --header: 9rem;"));
+  assert.match(check(target).stderr, /tokens\.css declares contract 3 token --header/);
+});
+
+test("a legacy copy may carry --ak- names that contract 4 also declares", (t) => {
+  const target = temporary(t); mkdirSync(join(target, "layers"));
+  writeFileSync(join(target, "layers/tokens.css"), ':root { --c-fg: #111; }');
+  writeFileSync(join(target, "project.css"), '.ak-root { --ak-accent: red; --ak-gap-md: 1rem; } p { color: var(--c-fg); }');
+  assert.equal(check(target).status, 0, check(target).stderr);
 });
 
 test("token/framework v3-v4 mixing fails both ways with and without manifests", async (t) => {

@@ -148,7 +148,7 @@ function checkProject(target) {
   const projectFiles = existsSync(target) ? walkProjectCss(target, flat) : [];
   const localProperties = new Set(projectFiles.flatMap((path) => declaredProperties(readFileSync(path, "utf8"))));
   const legacyTokens = new Set(legacy.publicTokens);
-  const currentTokens = new Set([...legacyV3.publicTokens, ...buildContract(new URL("../", import.meta.url)).publicTokens]);
+  const currentTokens = new Set(legacyV3.publicTokens);
   const layerFiles = flat
     ? ["tokens.css", "crft.css"].map((file) => join(target, file)).filter(existsSync)
     : [...present].map((layer) => join(target, "layers", `${layer}.css`));
@@ -157,6 +157,10 @@ function checkProject(target) {
   if (version === 1 && ([...allActive.matchAll(/--[a-z0-9_-]+/g)].some(([name]) => currentTokens.has(name) && !legacyTokens.has(name)) || /\[(?:data-theme|r)(?:[\s~|^$*!=]|\])|\.(?:c|s|h[1-3]|display|lead|body|small|caption|label)(?=[\s.{:#])/i.test(allActive))) fail("mixed legacy and v2 hooks or tokens");
   if (version >= 3) for (const path of [...projectFiles, ...layerFiles]) {
     for (const error of (version === 3 ? v3CssErrors : v4CssErrors)(readFileSync(path, "utf8"))) fail(error);
+  }
+  // A contract 3 name left in the adopted tokens.css is a brand value the rename lost.
+  if (version === 4) for (const path of layerFiles.filter((file) => file.endsWith("tokens.css"))) {
+    for (const name of declaredProperties(readFileSync(path, "utf8"))) if (currentTokens.has(name)) fail(`tokens.css declares contract 3 token ${name}; rename it with the map in docs/adopt.md, or move a non-crft declaration to project CSS`);
   }
   for (const path of projectFiles) {
     const rel = relative(target, path);
