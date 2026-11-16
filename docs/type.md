@@ -55,7 +55,7 @@ Positive rem terms and ratio limits are source checks, not proof of accessible e
 
 Font and weight foundations resolve at root. Final role sizes and metadata inherit through themes without rebinding.
 Separate semantic owners support local final role overrides. The v3 change removes theme-local foundation recipes.
-Brand OS v2 context exports are incompatible; migrate explicitly before applying them.
+Brand OS v1, v2, and v3 context output is rejected; migrate explicitly before applying it.
 
 ## Fonts and weight
 

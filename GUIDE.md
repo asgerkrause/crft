@@ -28,7 +28,7 @@ node scripts/copy-system.mjs --dry-run --layers tokens /absolute/path/to/project
 node scripts/copy-system.mjs --layers full --fonts /absolute/path/to/project/styles
 ```
 
-The copier is an optional whole-layer convenience. It writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. `--layers` accepts only `tokens` or `full`. Fonts and their declarations copy only with `--fonts`. Semantic contractVersion 3 changes color and recipe scope; packagingVersion 1 identifies the flat package. Keep product presentation and every adopted result in the project’s normal owners.
+The copier is an optional whole-layer convenience. It writes `tokens.css`, optionally `crft.css`, plus `crft-manifest.json`, an adoption record with the source revision, file hashes, and a contract snapshot. It does not copy `global.css`, and never merges or upgrades project-owned files. `--layers` accepts only `tokens` or `full`. Fonts and their declarations copy only with `--fonts`. The manifest records semantic contractVersion 4; packagingVersion 1 identifies the flat package. Keep product presentation and every adopted result in the project’s normal owners.
 
 ## Built for agents
 

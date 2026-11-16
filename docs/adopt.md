@@ -71,13 +71,13 @@ The logical order stays `reset, base, tokens, type, layout, grid, motion, utilit
 
 Tokens-only adoption permits retained public tokens, data-theme and data-accent. Painting and framework selectors require crft.css or project-owned CSS. Type role classes, l clamp, containers, stacks, grids and utilities require their retained logical layers in crft.css. A local extraction grants no crft hooks.
 
-Brand OS v2 context exports are incompatible with crft v3 and v4. Stop before applying them.
+Brand OS v1, v2, and v3 context output is incompatible with crft v4. Stop before applying it.
 Explicit migration moves type, spacing, radius, and font foundations to `:root`.
 Keep deliberate local final role and layout values on separate semantic owners; remove context recipe rebinding.
 Theme selectors permit colors only, including nested selectors and conditional rules.
 Both `tokens.css` and `crft.css` carry the same semantic-version marker; mixed v2/v3 or v3/v4 pairs fail verification.
 External Brand OS and consumer repositories remain unchanged.
-A brnd kit reaches a crft project through its `adapters/crft.css`, loaded after crft's `tokens.css`. The adapter carries no `@font-face` rules: declare the kit's local fonts in project CSS. Loading the kit's `styles/brand.css` on the same page is not supported: both systems declare `--ak-*` names.
+A brnd kit reaches a crft project through its `adapters/crft.css`, loaded after crft's `tokens.css`. The adapter carries the kit's local `@font-face` rules, with URLs that resolve from the adapter file: keep the adapter in the kit, and do not declare the kit's fonts in project CSS. Loading the kit's `styles/brand.css` on the same page is not supported: both systems declare `--ak-*` names.
 
 ## Packaging migration
 

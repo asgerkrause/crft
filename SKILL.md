@@ -54,7 +54,7 @@ Semantic HTML and native behavior before public crft API. For local extraction, 
 
 Classes display/h1/h2/h3/lead/body/small/label/caption/stat select visual roles. Native h4–h6 keep semantics and use h3. Containers use .c (optional sm/lg), vertical stacks .s, grids g/c/r/o, and l clamps lines. Hooks exist only with retained owning layers. Do not add a spacing, alignment, or display matrix.
 
-Use ordinary font-weight and preserve supported custom axes; canonical axes exclude wght. Shared type, spacing, and radius recipes resolve at :root only. Local final-role sizes/metadata may override; arbitrary nested foundation overrides are unsupported. Static role sizes are literal lengths. Read approved brand inputs before choosing recipes; missing client schemes and format mappings fail visibly. Brand OS v2 context exports require explicit migration before use.
+Use ordinary font-weight and preserve supported custom axes; canonical axes exclude wght. Shared type, spacing, and radius recipes resolve at :root only. Local final-role sizes/metadata may override; arbitrary nested foundation overrides are unsupported. Static role sizes are literal lengths. Read approved brand inputs before choosing recipes; missing client schemes and format mappings fail visibly. Brand OS v1, v2, and v3 context output is rejected; migrate explicitly before use.
 
 Never put a class on `section`. Direct `main > section` requires a meaningful, nonempty, unique `id`. Nested IDs need purpose. `data-theme` and `data-accent` remain canvas hooks. `.btn`, `.crd`, and `.lnk` remain project-owned. The full agent ban list lives in `CRFT.md` Never and in the contract `bans`.
 
