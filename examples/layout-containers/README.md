@@ -37,9 +37,9 @@ This runnable repository specimen loads the complete reference through `../../st
 
 ## Maximum-width saturation
 
-Live values belong to [`tokens.css`](../../styles/tokens.css) and [`crft.css`](../../styles/crft.css). With the current `--content-max` of `100rem`, narrow caps at two-thirds, default at `100rem`, and wide at four-thirds. These are ceilings, not requested widths.
+Live values belong to [`tokens.css`](../../styles/tokens.css) and [`crft.css`](../../styles/crft.css). With the current `--ak-content-width` of `100rem`, narrow caps at two-thirds, default at `100rem`, and wide at four-thirds. These are ceilings, not requested widths.
 
-At 390px and 900px with the default root size, available width after page padding and scrollbar space is below every ceiling: all three boxes have the same width. At 1800px, narrow and default reach their ceilings while wide is still viewport-constrained. Only a viewport with room beyond the wide ceiling plus page padding separates all three maximum widths fully. A narrow host inside a wide viewport constrains all three again. Keep the current brand foundations; do not retune `--content-max` just to force a difference into a screenshot.
+At 390px and 900px with the default root size, available width after page padding and scrollbar space is below every ceiling: all three boxes have the same width. At 1800px, narrow and default reach their ceilings while wide is still viewport-constrained. Only a viewport with room beyond the wide ceiling plus page padding separates all three maximum widths fully. A narrow host inside a wide viewport constrains all three again. Keep the current brand foundations; do not retune `--ak-content-width` just to force a difference into a screenshot.
 
 ## Checks
 

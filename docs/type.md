@@ -22,10 +22,13 @@ Semantic elements define document meaning. Fluid type is a reference strategy, n
 | `.small` | Supporting text | -1 |
 | `.label` | Control or category name | -1 |
 | `.caption` | Explanation of a figure | -1 |
+| `.stat` | Large number or stat figure | 5 |
 
 Native h1/h2/h3 match their roles. Native h4/h5/h6 use h3 without changing document hierarchy. Native small, label, and figcaption use their corresponding roles. Controls inherit body type unless the project intentionally chooses another role. Explicit classes override native treatment; inherited body needs no class.
 
-Every role exposes font, size, weight, leading, tracking, measure, case, features, axes, and optical-sizing tokens. Override `--ROLE-measure`, not heading max-width. Body is unconstrained; paragraphs use body measure. Roles consume final tokens at the element so local final-size and metadata overrides work.
+Every role exposes family, size, weight, leading, tracking, measure, case, features, axes, and optical-sizing tokens. Override `--ak-ROLE-measure`, not heading max-width. Body is unconstrained; paragraphs use body measure. Roles consume final tokens at the element so local final-size and metadata overrides work.
+
+`.stat` sets a large number or stat figure. It uses the display family and weight, single-line leading, no measure, and lining tabular numerals, so figures in a row or column align. No native element maps to it; add the class to the element that holds the figure.
 
 Heading measures default to `none`, so headings and role-styled controls use their layout's available width.
 Set an optional heading measure on its hero or editorial owner; keep content caps and fluid bounds separate.
@@ -42,9 +45,9 @@ Disclosure rows own label wrapping and icon layout, including emergency word bre
 
 ## Recipes and scope
 
-`tokens.css` owns role steps, endpoint calculations, and final sizes. Minimum = type-min × type-ratio-min raised to the role step; maximum uses the corresponding maximum inputs. Interpolate endpoints, not the base or ratio. Fluid bounds and endpoint inputs are unitless rem magnitudes; final size is a length. Explicit final size wins, then explicit endpoints, then derived step endpoints.
+`tokens.css` owns role steps, endpoint calculations, and final sizes. Minimum = `--ak-type-size-min` × `--ak-type-scale-min` raised to the role step; maximum uses the corresponding maximum inputs. Interpolate endpoints, not the base or scale multiplier. Fluid bounds and endpoint inputs are unitless rem magnitudes; final size is a length. Explicit final size wins, then explicit endpoints, then derived step endpoints.
 
-Type, spacing, and radius recipes resolve at `:root` only. Change foundations there. Arbitrary descendant foundation overrides are unsupported because inherited custom-property outputs are already resolved. Local final role-size or metadata overrides belong on separate semantic owners, never theme selectors. The pow enhancement is feature-gated; readable static sizes remain without it. Static recipes supply literal lengths with no viewport dependency. Equal bases and ratios also produce a constant modular result.
+Type, spacing, and radius recipes resolve at `:root` only. Change foundations there. Arbitrary descendant foundation overrides are unsupported because inherited custom-property outputs are already resolved. Local final role-size or metadata overrides belong on separate semantic owners, never theme selectors. The pow enhancement is feature-gated; readable static sizes remain without it. Static recipes supply literal lengths with no viewport dependency. Equal bases and scale multipliers also produce a constant modular result.
 
 Keep independent approved leading, tracking, case, features, and measure. The canonical recipe and synthetic brand fixtures require positive ordered endpoints and a maximum/minimum ratio at most 2.5.
 They also require positive zoom growth across their viewport bounds. Literal role sizes take precedence over endpoints.

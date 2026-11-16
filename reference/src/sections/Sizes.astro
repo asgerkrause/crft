@@ -3,13 +3,13 @@ import Section from "../components/Section.astro";
 import { sections } from "../data";
 
 const scaleFamilies = [
-  { id: "spacing", title: "Spacing", prefix: "space", boxClass: "sg-measure", property: "--sg-size", ratio: "--space-ratio", anchor: "--space" },
-  { id: "gap", title: "Gap", prefix: "gap", boxClass: "sg-gap-box", property: "gap", ratio: "--gap-ratio", anchor: "--gap" },
-  { id: "padding", title: "Padding", prefix: "padding", boxClass: "sg-padding-box", property: "padding", ratio: "--padding-ratio", anchor: "--padding" },
-  { id: "radius", title: "Radius", prefix: "radius", boxClass: "sg-radius-box", property: "border-radius", ratio: "--radius-ratio", anchor: "--radius" },
+  { id: "spacing", title: "Spacing", prefix: "space", boxClass: "sg-measure", property: "--sg-size", ratio: "--ak-space-scale", anchor: "--ak-space-md" },
+  { id: "gap", title: "Gap", prefix: "gap", boxClass: "sg-gap-box", property: "gap", ratio: "--ak-gap-scale", anchor: "--ak-gap-md" },
+  { id: "padding", title: "Padding", prefix: "padding", boxClass: "sg-padding-box", property: "padding", ratio: "--ak-padding-scale", anchor: "--ak-padding-md" },
+  { id: "radius", title: "Radius", prefix: "radius", boxClass: "sg-radius-box", property: "border-radius", ratio: "--ak-radius-scale", anchor: "--ak-radius-md" },
 ] as const;
 
-const variants = ["xs", "sm", "", "lg", "xl"] as const;
+const variants = ["xs", "sm", "md", "lg", "xl"] as const;
 ---
 
 <Section {...sections.sizes}>
@@ -21,12 +21,12 @@ const variants = ["xs", "sm", "", "lg", "xl"] as const;
         <div class="sg-heading-wrap">
           <h3>{family.title}</h3>
         </div>
-        <p><code>{family.ratio}</code> ratio · <code>{family.anchor}</code> anchor</p>
+        <p><code>{family.ratio}</code> scale · <code>{family.anchor}</code> base step</p>
       </header>
       {family.id === "spacing" && <p class="small">Bars show actual lengths on one shared scale. Scroll the comparison if the longest bar exceeds the available width.</p>}
       <div class="sg-measure-ramp">
         {variants.map((variant) => {
-          const token = `--${family.prefix}${variant ? `-${variant}` : ""}`;
+          const token = `--ak-${family.prefix}-${variant}`;
           const style = `${family.property}:var(${token})`;
 
           return (

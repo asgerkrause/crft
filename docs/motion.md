@@ -31,11 +31,11 @@ Use duration and timing tokens by semantic job. The duration family moves from s
 
 Project motion uses public tokens in project CSS. Add a local property for a component relationship that no shared role owns.
 
-Reduced motion remaps the shared timing roles and durations in `tokens.css`. Position or parallax motion must still be removed or bypassed when the resulting tiny duration is not a complete reduced-motion experience. Reduced transparency sets `--transition-blur` to zero, so blur never carries a required state.
+Reduced motion remaps the shared timing roles and durations in `tokens.css`. Position or parallax motion must still be removed or bypassed when the resulting tiny duration is not a complete reduced-motion experience. Reduced transparency sets `--ak-view-transition-blur` to zero, so blur never carries a required state.
 
 ## Native overlays
 
-`dialog` and `[popover]` fade and lift in by `--lift` over `--duration` when opened, and out when closed, through `@starting-style` and discrete `display` and `overlay` transitions. The modal backdrop fades with them. Without support the overlay appears and disappears instantly. Project CSS may retune the tokens; do not add a second overlay entrance.
+`dialog` and `[popover]` fade and lift in by `0.75rem` over `--ak-duration-md` when opened, and out when closed, through `@starting-style` and discrete `display` and `overlay` transitions. The modal backdrop fades with them. Without support the overlay appears and disappears instantly. Project CSS may retune the duration and easing tokens; do not add a second overlay entrance.
 
 ## Header elevation
 
@@ -44,29 +44,29 @@ A sticky header that separates from content once content passes under it is a pr
 ```css
 @layer project {
   html {
-    scroll-padding-top: var(--header);
+    scroll-padding-top: var(--ak-header-height);
   }
 
   body > header {
     position: sticky;
     top: 0;
     z-index: 1;
-    min-height: var(--header);
+    min-height: var(--ak-header-height);
   }
 
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
       @keyframes header-elevate {
         to {
-          background: color-mix(in srgb, var(--canvas) 85%, transparent);
-          border-bottom: var(--border-width) solid var(--border);
+          background: color-mix(in srgb, var(--ak-canvas) 85%, transparent);
+          border-bottom: var(--ak-border-width) solid var(--ak-border);
         }
       }
 
       body > header {
         animation: header-elevate linear both;
         animation-timeline: scroll();
-        animation-range: 0 var(--header);
+        animation-range: 0 var(--ak-header-height);
       }
     }
   }
@@ -106,7 +106,7 @@ A repeated project composition can use `sibling-index()` when source order is th
   @supports (animation-delay: calc(1ms * sibling-index())) {
     @media (prefers-reduced-motion: no-preference) {
       .issue {
-        animation-delay: calc((sibling-index() - 1) * var(--duration-sm));
+        animation-delay: calc((sibling-index() - 1) * var(--ak-duration-sm));
       }
     }
   }

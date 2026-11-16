@@ -10,7 +10,7 @@ test("heading roles fill cards and disclosure rows while editorial measures stay
     main { width: 100%; padding: 1rem; }
     summary { display: flex; justify-content: space-between; gap: 1rem; overflow-wrap: anywhere; }
     summary::after { content: "+"; flex-shrink: 0; }
-    .editorial { --h1-measure: 12ch; }
+    .editorial { --ak-h1-measure: 12ch; }
   </style><main>
     <article><h3>A card heading uses the card's available width</h3></article>
     <details><summary class="h3">How long does a commission take?</summary><p>Four to six months.</p></details>
@@ -53,7 +53,7 @@ test("all steps match endpoint interpolation across bounds and user root sizes",
       for (const width of [240, 400, 1000, 1600, 4000]) {
         await page.setViewportSize({ width, height: 900 });
         const f = profile.foundations;
-        const progress = Math.max(0, Math.min(1, (width / rootSize - f["fluid-min"].value) / (f["fluid-max"].value - f["fluid-min"].value)));
+        const progress = Math.max(0, Math.min(1, (width / rootSize - f["viewport-min"].value) / (f["viewport-max"].value - f["viewport-min"].value)));
         for (const [role, values] of Object.entries(profile.expected)) {
           const expected = (values.staticRem ?? values.minRem + (values.maxRem - values.minRem) * progress) * rootSize;
           expect(await size(page.locator(`[data-role="${role}"]`)), `${profile.id}/${role} root=${rootSize} width=${width}`).toBeCloseTo(expected, 2);
@@ -82,20 +82,20 @@ test("themes change colors only, root recipes inherit, and local final overrides
   }
   expect(new Set(colors).size).toBe(3);
   await theme.evaluate((element) => {
-    for (const name of ["type-min", "type-max"]) element.style.setProperty(`--${name}`, "2");
-    element.style.setProperty("--font-display", "monospace");
-    element.style.setProperty("--gap", "10px"); element.style.setProperty("--gap-ratio", "3");
-    element.style.setProperty("--radius", "10px"); element.style.setProperty("--radius-ratio", "3");
+    for (const name of ["type-size-min", "type-size-max"]) element.style.setProperty(`--ak-${name}`, "2");
+    element.style.setProperty("--ak-font-display", "monospace");
+    element.style.setProperty("--ak-gap-md", "10px"); element.style.setProperty("--ak-gap-scale", "3");
+    element.style.setProperty("--ak-radius-md", "10px"); element.style.setProperty("--ak-radius-scale", "3");
   });
   expect(await measure()).toEqual(before);
   const scales = await theme.evaluate((element) => {
-    const probe = document.createElement("i"); probe.style.padding = "var(--gap-lg)"; probe.style.borderRadius = "var(--radius-lg)"; element.append(probe);
+    const probe = document.createElement("i"); probe.style.padding = "var(--ak-gap-lg)"; probe.style.borderRadius = "var(--ak-radius-lg)"; element.append(probe);
     const style = getComputedStyle(probe); return [style.paddingTop, style.borderTopLeftRadius];
   });
   expect(scales).toEqual(["40px", "18px"]);
   await theme.evaluate((element) => {
-    element.style.setProperty("--h1-size", "3rem"); element.style.setProperty("--h1-font", "monospace");
-    element.style.setProperty("--h1-leading", "0.9"); element.style.setProperty("--h1-axes", '"opsz" 32');
+    element.style.setProperty("--ak-h1-size", "3rem"); element.style.setProperty("--ak-h1-family", "monospace");
+    element.style.setProperty("--ak-h1-leading", "0.9"); element.style.setProperty("--ak-h1-axes", '"opsz" 32');
   });
   expect(await size(theme.locator("h1"))).toBe(48);
   await expect(theme.locator("h1")).toHaveCSS("font-family", "monospace");
@@ -125,8 +125,8 @@ test("independent scales and equal-foundation static modular scale", async ({ pa
   const staticBrand = page.locator('[data-fixture="static"]');
   const sizes = await staticBrand.evaluate((element) => {
     const values = {};
-    for (const name of ["gap-lg", "padding-lg", "radius-lg"]) { const probe = document.createElement("i"); probe.style.paddingTop = `var(--${name})`; element.append(probe); values[name] = parseFloat(getComputedStyle(probe).paddingTop); probe.remove(); }
-    for (const role of ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"]) document.documentElement.style.removeProperty(`--${role}-size`);
+    for (const name of ["gap-lg", "padding-lg", "radius-lg"]) { const probe = document.createElement("i"); probe.style.paddingTop = `var(--ak-${name})`; element.append(probe); values[name] = parseFloat(getComputedStyle(probe).paddingTop); probe.remove(); }
+    for (const role of ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption", "stat"]) document.documentElement.style.removeProperty(`--ak-${role}-size`);
     return values;
   });
   expect(sizes).toEqual({ "gap-lg": 21, "padding-lg": 27, "radius-lg": 13.5 });
@@ -247,7 +247,7 @@ test("contrast preference rebinds muted and borders at theme-only boundaries", a
     await page.emulateMedia({ contrast, colorScheme: scheme });
     const muted = contrast === "more" ? 90 : 78;
     const border = contrast === "more" ? 50 : 25;
-    await page.setContent(`<style>${css}</style><div data-theme="${theme}"><p style="color:var(--muted);border-color:var(--border)">Actual</p><p style="color:color-mix(in srgb,var(--text) ${muted}%,var(--canvas));border-color:color-mix(in srgb,var(--text) ${border}%,transparent)">Expected</p></div>`);
+    await page.setContent(`<style>${css}</style><div data-theme="${theme}"><p style="color:var(--ak-text-muted);border-color:var(--ak-border)">Actual</p><p style="color:color-mix(in srgb,var(--ak-text) ${muted}%,var(--ak-canvas));border-color:color-mix(in srgb,var(--ak-text) ${border}%,transparent)">Expected</p></div>`);
     const colors = await page.locator("p").evaluateAll((elements) => elements.map((element) => { const style = getComputedStyle(element); return [style.color, style.borderTopColor]; }));
     expect(colors[0]).toEqual(colors[1]);
   }
@@ -255,7 +255,7 @@ test("contrast preference rebinds muted and borders at theme-only boundaries", a
 
 test("on-color companions follow a retuned source through routes in both derivation tiers", async ({ page }) => {
   for (const sheet of [css, css.replace("@supports (color: contrast-color(red))", "@supports (unsupported: unsupported)")]) {
-    await page.setContent(`<style>${sheet}</style><p data-accent="success" style="background:var(--accent);color:var(--on-accent)">Saved</p>`);
+    await page.setContent(`<style>${sheet}</style><p data-accent="success" style="background:var(--ak-accent);color:var(--ak-on-accent)">Saved</p>`);
     const result = await page.evaluate(() => {
       const context = new OffscreenCanvas(1, 1).getContext("2d", { willReadFrequently: true });
       const paint = (color) => { context.fillStyle = color; context.fillRect(0, 0, 1, 1); return [...context.getImageData(0, 0, 1, 1).data.slice(0, 3)]; };
@@ -264,7 +264,7 @@ test("on-color companions follow a retuned source through routes in both derivat
       let worst = Infinity;
       const inks = new Set();
       for (let r = 0; r < 256; r += 17) for (let g = 0; g < 256; g += 17) for (let b = 0; b < 256; b += 17) {
-        document.documentElement.style.setProperty("--success", `rgb(${r} ${g} ${b})`);
+        document.documentElement.style.setProperty("--ak-success", `rgb(${r} ${g} ${b})`);
         const style = getComputedStyle(p);
         const ink = paint(style.color);
         const [y1, y2] = [luminance(paint(style.backgroundColor)), luminance(ink)];
@@ -281,13 +281,13 @@ test("on-color companions follow a retuned source through routes in both derivat
 test("on-color companions keep the static pair without either feature and yield to a root project override", async ({ page }) => {
   const neither = css.replace("@supports (color: contrast-color(red))", "@supports (unsupported: unsupported)").replace("@supports (color: color(from red xyz-d65", "@supports (unsupported: unsupported) or (unsupported: color(from red xyz-d65");
   const roles = ["accent", "secondary", "tertiary", "success", "warning", "danger"];
-  await page.setContent(`<style>${neither}</style>${roles.map((role) => `<p style="color:var(--on-${role})"></p>`).join("")}<p style="color:var(--palette-light)"></p><p style="color:var(--palette-dark)"></p>`);
+  await page.setContent(`<style>${neither}</style>${roles.map((role) => `<p style="color:var(--ak-on-${role})"></p>`).join("")}<p style="color:var(--ak-palette-light)"></p><p style="color:var(--ak-palette-dark)"></p>`);
   const colors = await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color));
   const [light, dark] = colors.slice(-2);
   expect(colors.slice(0, 6)).toEqual([light, light, dark, dark, dark, dark]);
-  await page.setContent(`<style>${css}</style><style>:root { --on-success: rgb(1 2 3); }</style><div data-theme="invert"><p data-accent="success" style="color:var(--on-accent)">Saved</p></div>`);
+  await page.setContent(`<style>${css}</style><style>:root { --ak-on-success: rgb(1 2 3); }</style><div data-theme="invert"><p data-accent="success" style="color:var(--ak-on-accent)">Saved</p></div>`);
   await expect(page.locator("p")).toHaveCSS("color", "rgb(1, 2, 3)");
-  await page.setContent(`<style>${css}</style><style>:root { --on-accent: rgb(4 5 6); --on-secondary: rgb(7 8 9); }</style><div data-theme="invert"><p style="color:var(--on-accent)">Plain</p><p data-accent="secondary" style="color:var(--on-accent)">Routed</p></div>`);
+  await page.setContent(`<style>${css}</style><style>:root { --ak-on-accent: rgb(4 5 6); --ak-on-secondary: rgb(7 8 9); }</style><div data-theme="invert"><p style="color:var(--ak-on-accent)">Plain</p><p data-accent="secondary" style="color:var(--ak-on-accent)">Routed</p></div>`);
   expect(await page.locator("p").evaluateAll((elements) => elements.map((element) => getComputedStyle(element).color))).toEqual(["rgb(4, 5, 6)", "rgb(7, 8, 9)"]);
 });
 
@@ -318,7 +318,7 @@ test("routed native edges, focus and accent text retain contrast in every state"
   const accents = ["", "secondary", "tertiary", "success", "warning", "danger"];
   for (const colorScheme of ["light", "dark"]) for (const contrast of ["no-preference", "more"]) {
     await page.emulateMedia({ colorScheme, contrast, reducedMotion: "reduce" });
-    const content = '<button>Action</button><input aria-label="Normal"><input aria-label="Invalid" aria-invalid="true"><input aria-label="Disabled" disabled><p style="color:var(--accent-text)">Accent</p>';
+    const content = '<button>Action</button><input aria-label="Normal"><input aria-label="Invalid" aria-invalid="true"><input aria-label="Disabled" disabled><p style="color:var(--ak-accent-text)">Accent</p>';
     await page.setContent(`<style>${css}</style>` + themes.flatMap((theme) => accents.flatMap((accent) => [
       `<div data-theme="${theme}" data-accent="${accent}">${content}</div>`,
       `<div data-theme="${theme}"><div data-accent="${accent}">${content}</div></div>`,
@@ -334,7 +334,7 @@ test("routed native edges, focus and accent text retain contrast in every state"
         const style = getComputedStyle(e);
         const probe = document.createElement("i"); e.parentElement.append(probe);
         for (const token of ["canvas", "surface", ...(e.tagName === "P" ? ["accent-surface"] : [])]) {
-          probe.style.color = `var(--${token})`;
+          probe.style.color = `var(--ak-${token})`;
           const fill = paint(getComputedStyle(probe).color);
           if (e.tagName === "P") text = Math.min(text, ratio(paint(style.color), fill));
           else { edge = Math.min(edge, ratio(paint(style.borderTopColor), fill)); focus = Math.min(focus, ratio(paint(style.color), fill)); }

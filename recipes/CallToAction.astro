@@ -23,24 +23,24 @@ const { id, heading, summary, actionLabel, actionHref } = Astro.props;
 <style>
   @layer project {
     .cta {
-      padding-block: var(--space);
+      padding-block: var(--ak-space-md);
       text-align: start;
 
       a {
         display: inline-flex;
         align-items: center;
-        min-block-size: var(--control);
+        min-block-size: var(--ak-control-height);
         max-inline-size: 100%;
-        padding: var(--padding-sm) var(--padding);
-        border: var(--border-width) solid var(--text);
-        border-radius: var(--radius-sm);
-        background: var(--text);
-        color: var(--canvas);
+        padding: var(--ak-padding-sm) var(--ak-padding-md);
+        border: var(--ak-border-width) solid var(--ak-text);
+        border-radius: var(--ak-radius-sm);
+        background: var(--ak-text);
+        color: var(--ak-canvas);
 
         text-decoration: none;
 
-        &:hover { background: var(--accent); color: var(--on-accent); }
-        &:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+        &:hover { background: var(--ak-accent); color: var(--ak-on-accent); }
+        &:focus-visible { outline: 2px solid var(--ak-text); outline-offset: 3px; }
       }
     }
   }

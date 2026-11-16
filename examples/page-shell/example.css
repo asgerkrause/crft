@@ -1,15 +1,15 @@
 @layer project {
   body > main > section {
-    padding-block: var(--space);
+    padding-block: var(--ak-space-md);
   }
 
   body > footer {
-    padding-block: var(--padding);
+    padding-block: var(--ak-padding-md);
   }
 
   nav ul {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap);
+    gap: var(--ak-gap-md);
   }
 }

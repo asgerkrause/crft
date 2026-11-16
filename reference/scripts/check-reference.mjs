@@ -19,7 +19,7 @@ const requiredSections = [
   "motion", "utilities", "architecture", "tokens",
 ];
 const requiredMarkup = [
-  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"].map((role) => `class="${role}"`),
+  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption", "stat"].map((role) => `class="${role}"`),
   'class="sr focusable"', 'g="8-4"', 'c="4-2"', 'c="0"', 'r="2-1"', 'o="f-a-l"',
   ...["fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"].map((mode) => `g="${mode}"`),
   'data-theme="tone"', 'data-theme="accent"', 'data-theme="invert"',
@@ -129,7 +129,7 @@ const css = existsSync(assetDir)
   : "";
 
 for (const signal of [
-  "--canvas-base", ".sg-swatch", "section[data-scrub]:has(.sg-heading-wrap)",
+  "--ak-canvas-base", ".sg-swatch", "section[data-scrub]:has(.sg-heading-wrap)",
   "animation-range:entry 100% exit 50%", "width:calc(100% * var(--m-src-to))",
 ]) {
   if (!css.includes(signal)) throw new Error(`Built CSS is missing ${signal}.`);

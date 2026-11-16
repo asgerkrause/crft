@@ -66,7 +66,7 @@ Prefer deletion, reuse, and direct code over wrappers, flags, helper classes, st
 - Use padding and margin shorthand when one declaration controls multiple sides.
 - Use `*-block` or `*-inline` when both sides of one axis share a value. Use `*-top`, `*-right`, `*-bottom`, or `*-left` for one physical side.
 - Use ordinary font-weight. Canonical role axes exclude wght; explicit font-specific axes preserve all other settings.
-- Override a type role’s `--ROLE-measure` token instead of setting heading or text-role `max-width`.
+- Override a type role’s `--ak-ROLE-measure` token instead of setting heading or text-role `max-width`.
 
 ## Grid and color
 

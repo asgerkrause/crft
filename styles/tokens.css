@@ -1,414 +1,426 @@
-/* crft semantic contract: 3. */
+/* crft semantic contract: 4. */
 /* crft by Asger Krause and SANITIZE Studio. MIT License. */
 /* Brand: editable foundations, role metadata, recipes, schemes, and motion preferences. */
 @layer tokens {
   :root {
     /* Brand foundations: layout and independent spacing scales. */
     /* Layout */
-    --header: 4rem;
-    --control: 2.75rem;
-    --fluid-min: 25;
-    --fluid-max: 100;
-    --content-max: 100rem;
-    --bleed-x: 2rem;
-    --bleed-y: clamp(4rem, 2rem + 8vi, 12rem);
-    --query-md: 30rem;
-    --query-lg: 60rem;
+    --ak-header-height: 4rem;
+    --ak-control-height: 2.75rem;
+    --ak-viewport-min: 25;
+    --ak-viewport-max: 100;
+    --ak-content-width: 100rem;
+    --ak-bleed-x: 2rem;
+    --ak-bleed-y: clamp(4rem, 2rem + 8vi, 12rem);
 
     /* Unified Sizing / Spacing Scale */
-    --space-ratio: 2;
-    --space: 5rem;
+    --ak-space-scale: 2;
+    --ak-space-md: 5rem;
 
     /* Gap Scale */
-    --gap-ratio: 2;
-    --gap: 1.25rem;
+    --ak-gap-scale: 2;
+    --ak-gap-md: 1.25rem;
 
     /* Padding Scale */
-    --padding-ratio: 2;
-    --padding: 1.25rem;
+    --ak-padding-scale: 2;
+    --ak-padding-md: 1.25rem;
 
     /* Radius */
-    --radius-ratio: 1.5;
-    --radius: .75rem;
+    --ak-radius-scale: 1.5;
+    --ak-radius-md: .75rem;
 
     /* Border */
-    --border-width: 1px;
+    --ak-border-width: 1px;
 
     /* Color Swatches (Palette) */
-    --palette-red: #f44;
-    --palette-orange: #f60;
-    --palette-yellow: #fc3;
-    --palette-green: #0c8;
-    --palette-blue: #06e;
-    --palette-purple: #84f;
+    --ak-palette-red: #f44;
+    --ak-palette-orange: #f60;
+    --ak-palette-yellow: #fc3;
+    --ak-palette-green: #0c8;
+    --ak-palette-blue: #06e;
+    --ak-palette-purple: #84f;
 
     /* Fixed Light / Dark Swatches */
-    --palette-light: #fbfbfa;
-    --palette-dark: #121416;
+    --ak-palette-light: #fbfbfa;
+    --ak-palette-dark: #121416;
 
 
   }
 
   /* Derived spacing: resolve once at the document root. */
   :root {
-    --space-xs: calc(var(--space) / var(--space-ratio) / var(--space-ratio));
-    --space-sm: calc(var(--space) / var(--space-ratio));
-    --space-lg: calc(var(--space) * var(--space-ratio));
-    --space-xl: calc(var(--space) * var(--space-ratio) * var(--space-ratio));
-    --gap-xs: calc(var(--gap) / var(--gap-ratio) / var(--gap-ratio));
-    --gap-sm: calc(var(--gap) / var(--gap-ratio));
-    --gap-lg: calc(var(--gap) * var(--gap-ratio));
-    --gap-xl: calc(var(--gap) * var(--gap-ratio) * var(--gap-ratio));
-    --padding-xs: calc(var(--padding) / var(--padding-ratio) / var(--padding-ratio));
-    --padding-sm: calc(var(--padding) / var(--padding-ratio));
-    --padding-lg: calc(var(--padding) * var(--padding-ratio));
-    --padding-xl: calc(var(--padding) * var(--padding-ratio) * var(--padding-ratio));
-    --radius-xs: calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio));
-    --radius-sm: calc(var(--radius) / var(--radius-ratio));
-    --radius-lg: calc(var(--radius) * var(--radius-ratio));
-    --radius-xl: calc(var(--radius) * var(--radius-ratio) * var(--radius-ratio));
+    --ak-space-xs: calc(var(--ak-space-md) / var(--ak-space-scale) / var(--ak-space-scale));
+    --ak-space-sm: calc(var(--ak-space-md) / var(--ak-space-scale));
+    --ak-space-lg: calc(var(--ak-space-md) * var(--ak-space-scale));
+    --ak-space-xl: calc(var(--ak-space-md) * var(--ak-space-scale) * var(--ak-space-scale));
+    --ak-gap-xs: calc(var(--ak-gap-md) / var(--ak-gap-scale) / var(--ak-gap-scale));
+    --ak-gap-sm: calc(var(--ak-gap-md) / var(--ak-gap-scale));
+    --ak-gap-lg: calc(var(--ak-gap-md) * var(--ak-gap-scale));
+    --ak-gap-xl: calc(var(--ak-gap-md) * var(--ak-gap-scale) * var(--ak-gap-scale));
+    --ak-padding-xs: calc(var(--ak-padding-md) / var(--ak-padding-scale) / var(--ak-padding-scale));
+    --ak-padding-sm: calc(var(--ak-padding-md) / var(--ak-padding-scale));
+    --ak-padding-lg: calc(var(--ak-padding-md) * var(--ak-padding-scale));
+    --ak-padding-xl: calc(var(--ak-padding-md) * var(--ak-padding-scale) * var(--ak-padding-scale));
+    --ak-radius-xs: calc(var(--ak-radius-md) / var(--ak-radius-scale) / var(--ak-radius-scale));
+    --ak-radius-sm: calc(var(--ak-radius-md) / var(--ak-radius-scale));
+    --ak-radius-lg: calc(var(--ak-radius-md) * var(--ak-radius-scale));
+    --ak-radius-xl: calc(var(--ak-radius-md) * var(--ak-radius-scale) * var(--ak-radius-scale));
   }
 
   :root {
     /* Semantic Colors; these --on-* values remain only without contrast-color() and relative color. */
-    --accent: var(--palette-blue);
-    --secondary: var(--palette-purple);
-    --tertiary: var(--palette-orange);
-    --on-accent: var(--palette-light);
-    --on-secondary: var(--palette-light);
-    --on-tertiary: var(--palette-dark);
+    --ak-accent: var(--ak-palette-blue);
+    --ak-secondary: var(--ak-palette-purple);
+    --ak-tertiary: var(--ak-palette-orange);
+    --ak-on-accent: var(--ak-palette-light);
+    --ak-on-secondary: var(--ak-palette-light);
+    --ak-on-tertiary: var(--ak-palette-dark);
 
-    --success: var(--palette-green);
-    --warning: var(--palette-yellow);
-    --danger: var(--palette-red);
-    --on-success: var(--palette-dark);
-    --on-warning: var(--palette-dark);
-    --on-danger: var(--palette-dark);
+    --ak-success: var(--ak-palette-green);
+    --ak-warning: var(--ak-palette-yellow);
+    --ak-danger: var(--ak-palette-red);
+    --ak-on-success: var(--ak-palette-dark);
+    --ak-on-warning: var(--ak-palette-dark);
+    --ak-on-danger: var(--ak-palette-dark);
   }
 
   /* Companions follow their :root source: xyz-d65 y is WCAG luminance, and 0.1791 is where black and white tie. Clamps cap at D65 white. */
   @supports (color: color(from red xyz-d65 clamp(0, (0.1791 - y) * 1e6, 1) y z)) {
     :root {
-      --on-accent: color(from var(--accent) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
-      --on-secondary: color(from var(--secondary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
-      --on-tertiary: color(from var(--tertiary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
-      --on-success: color(from var(--success) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
-      --on-warning: color(from var(--warning) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
-      --on-danger: color(from var(--danger) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-accent: color(from var(--ak-accent) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-secondary: color(from var(--ak-secondary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-tertiary: color(from var(--ak-tertiary) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-success: color(from var(--ak-success) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-warning: color(from var(--ak-warning) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
+      --ak-on-danger: color(from var(--ak-danger) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505) clamp(0, (0.1791 - y) * 1e6, 1) clamp(0, (0.1791 - y) * 1e6, 1.089));
     }
   }
 
   /* Native pick where supported; the algorithm is UA-defined with a 3:1 floor. */
   @supports (color: contrast-color(red)) {
     :root {
-      --on-accent: contrast-color(var(--accent));
-      --on-secondary: contrast-color(var(--secondary));
-      --on-tertiary: contrast-color(var(--tertiary));
-      --on-success: contrast-color(var(--success));
-      --on-warning: contrast-color(var(--warning));
-      --on-danger: contrast-color(var(--danger));
+      --ak-on-accent: contrast-color(var(--ak-accent));
+      --ak-on-secondary: contrast-color(var(--ak-secondary));
+      --ak-on-tertiary: contrast-color(var(--ak-tertiary));
+      --ak-on-success: contrast-color(var(--ak-success));
+      --ak-on-warning: contrast-color(var(--ak-warning));
+      --ak-on-danger: contrast-color(var(--ak-danger));
     }
   }
 
   /* Supplied synthetic schemes; clients must supply their own approved schemes. */
   :root,
   [data-theme] {
-    --canvas-base: light-dark(var(--palette-light), var(--palette-dark));
-    --text-base: light-dark(var(--palette-dark), var(--palette-light));
+    --ak-canvas-base: light-dark(var(--ak-palette-light), var(--ak-palette-dark));
+    --ak-text-base: light-dark(var(--ak-palette-dark), var(--ak-palette-light));
 
-    --canvas: var(--canvas-base);
-    --text: var(--text-base);
-    --surface: color-mix(in srgb, var(--text) 5%, var(--canvas));
-    --border: color-mix(in srgb, var(--text) 25%, transparent);
-    --muted: color-mix(in srgb, var(--text) 78%, var(--canvas));
+    --ak-canvas: var(--ak-canvas-base);
+    --ak-text: var(--ak-text-base);
+    --ak-surface: color-mix(in srgb, var(--ak-text) 5%, var(--ak-canvas));
+    --ak-border: color-mix(in srgb, var(--ak-text) 25%, transparent);
+    --ak-text-muted: color-mix(in srgb, var(--ak-text) 78%, var(--ak-canvas));
 
-    --accent-surface: color-mix(in srgb, var(--accent) 15%, var(--canvas));
-    --accent-text: color-mix(in srgb, var(--accent) 25%, var(--text));
-    --accent-border: color-mix(in srgb, var(--accent) 25%, transparent);
+    --ak-accent-surface: color-mix(in srgb, var(--ak-accent) 15%, var(--ak-canvas));
+    --ak-accent-text: color-mix(in srgb, var(--ak-accent) 25%, var(--ak-text));
+    --ak-accent-border: color-mix(in srgb, var(--ak-accent) 25%, transparent);
 
-    --secondary-surface: color-mix(in srgb, var(--secondary) 15%, var(--canvas));
-    --secondary-text: color-mix(in srgb, var(--secondary) 25%, var(--text));
-    --secondary-border: color-mix(in srgb, var(--secondary) 25%, transparent);
+    --ak-secondary-surface: color-mix(in srgb, var(--ak-secondary) 15%, var(--ak-canvas));
+    --ak-secondary-text: color-mix(in srgb, var(--ak-secondary) 25%, var(--ak-text));
+    --ak-secondary-border: color-mix(in srgb, var(--ak-secondary) 25%, transparent);
 
-    --tertiary-surface: color-mix(in srgb, var(--tertiary) 15%, var(--canvas));
-    --tertiary-text: color-mix(in srgb, var(--tertiary) 25%, var(--text));
-    --tertiary-border: color-mix(in srgb, var(--tertiary) 25%, transparent);
+    --ak-tertiary-surface: color-mix(in srgb, var(--ak-tertiary) 15%, var(--ak-canvas));
+    --ak-tertiary-text: color-mix(in srgb, var(--ak-tertiary) 25%, var(--ak-text));
+    --ak-tertiary-border: color-mix(in srgb, var(--ak-tertiary) 25%, transparent);
   }
 
   [data-theme='invert'] {
-    --canvas: var(--text-base);
-    --text: var(--canvas-base);
+    --ak-canvas: var(--ak-text-base);
+    --ak-text: var(--ak-canvas-base);
   }
 
   [data-theme='accent'] {
-    --canvas: color-mix(in srgb, var(--accent) 10%, var(--canvas-base));
-    --text: color-mix(in srgb, var(--accent) 20%, var(--text-base));
+    --ak-canvas: color-mix(in srgb, var(--ak-accent) 10%, var(--ak-canvas-base));
+    --ak-text: color-mix(in srgb, var(--ak-accent) 20%, var(--ak-text-base));
   }
 
   [data-theme='tone'] {
-    --canvas: color-mix(in srgb, var(--canvas-base), var(--text-base) 5%);
-    --surface: var(--canvas-base);
+    --ak-canvas: color-mix(in srgb, var(--ak-canvas-base), var(--ak-text-base) 5%);
+    --ak-surface: var(--ak-canvas-base);
   }
 
   @media (prefers-contrast: more) {
     [data-theme],
     :root {
-      --muted: color-mix(in srgb, var(--text) 90%, var(--canvas));
-      --border: color-mix(in srgb, var(--text) 50%, transparent);
+      --ak-text-muted: color-mix(in srgb, var(--ak-text) 90%, var(--ak-canvas));
+      --ak-border: color-mix(in srgb, var(--ak-text) 50%, transparent);
     }
   }
 
   [data-accent] {
-    --accent-surface: color-mix(in srgb, var(--accent) 15%, var(--canvas));
-    --accent-text: color-mix(in srgb, var(--accent) 25%, var(--text));
-    --accent-border: color-mix(in srgb, var(--accent) 25%, transparent);
+    --ak-accent-surface: color-mix(in srgb, var(--ak-accent) 15%, var(--ak-canvas));
+    --ak-accent-text: color-mix(in srgb, var(--ak-accent) 25%, var(--ak-text));
+    --ak-accent-border: color-mix(in srgb, var(--ak-accent) 25%, transparent);
   }
 
   [data-accent='secondary'] {
-    --accent: var(--secondary);
-    --on-accent: var(--on-secondary);
+    --ak-accent: var(--ak-secondary);
+    --ak-on-accent: var(--ak-on-secondary);
   }
 
   [data-accent='tertiary'] {
-    --accent: var(--tertiary);
-    --on-accent: var(--on-tertiary);
+    --ak-accent: var(--ak-tertiary);
+    --ak-on-accent: var(--ak-on-tertiary);
   }
 
   [data-accent='success'] {
-    --accent: var(--success);
-    --on-accent: var(--on-success);
+    --ak-accent: var(--ak-success);
+    --ak-on-accent: var(--ak-on-success);
   }
 
   [data-accent='warning'] {
-    --accent: var(--warning);
-    --on-accent: var(--on-warning);
+    --ak-accent: var(--ak-warning);
+    --ak-on-accent: var(--ak-on-warning);
   }
 
   [data-accent='danger'] {
-    --accent: var(--danger);
-    --on-accent: var(--on-danger);
+    --ak-accent: var(--ak-danger);
+    --ak-on-accent: var(--ak-on-danger);
   }
 
   /* Recipe inputs are unitless rem magnitudes; outputs are lengths. */
   :root {
-    --font-sans: "sans", system-ui, sans-serif;
-    --font-serif: serif;
-    --font-mono: "mono", ui-monospace, monospace;
-    --font: var(--font-sans);
-    --font-display: var(--font-sans);
-    --weight-light: 300;
-    --weight: 400;
-    --weight-bold: 600;
-    --type-min: 1;
-    --type-max: 1.25;
-    --type-ratio-min: 1.2;
-    --type-ratio-max: 1.375;
-    --display-step: 5;
-    --h1-step: 4;
-    --h2-step: 3;
-    --h3-step: 2;
-    --lead-step: 1;
-    --body-step: 0;
-    --small-step: -1;
-    --label-step: -1;
-    --caption-step: -1;
+    --ak-font-sans: "sans", system-ui, sans-serif;
+    --ak-font-serif: serif;
+    --ak-font-mono: "mono", ui-monospace, monospace;
+    --ak-font-body: var(--ak-font-sans);
+    --ak-font-display: var(--ak-font-sans);
+    --ak-weight-light: 300;
+    --ak-weight-regular: 400;
+    --ak-weight-bold: 600;
+    --ak-type-size-min: 1;
+    --ak-type-size-max: 1.25;
+    --ak-type-scale-min: 1.2;
+    --ak-type-scale-max: 1.375;
+    --ak-display-step: 5;
+    --ak-h1-step: 4;
+    --ak-h2-step: 3;
+    --ak-h3-step: 2;
+    --ak-lead-step: 1;
+    --ak-body-step: 0;
+    --ak-small-step: -1;
+    --ak-label-step: -1;
+    --ak-caption-step: -1;
+    --ak-stat-step: 5;
   }
 
   /* Editable role metadata and readable static fallbacks. */
   :root {
-    --display-leading: 1.1;
-    --display-tracking: -0.01em;
-    --display-measure: none;
-    --display-case: none;
-    --display-features: normal;
-    --display-axes: normal;
-    --display-optical-sizing: auto;
-    --display-min: 2.48832;
-    --display-max: 6.143608093;
-    --display-size: 2.48832rem;
-    --h1-leading: 1.1;
-    --h1-tracking: -0.01em;
-    --h1-measure: none;
-    --h1-case: none;
-    --h1-features: normal;
-    --h1-axes: normal;
-    --h1-optical-sizing: auto;
-    --h1-min: 2.0736;
-    --h1-max: 4.468078613;
-    --h1-size: 2.0736rem;
-    --h2-leading: 1.1;
-    --h2-tracking: -0.01em;
-    --h2-measure: none;
-    --h2-case: none;
-    --h2-features: normal;
-    --h2-axes: normal;
-    --h2-optical-sizing: auto;
-    --h2-min: 1.728;
-    --h2-max: 3.249511719;
-    --h2-size: 1.728rem;
-    --h3-leading: 1.1;
-    --h3-tracking: -0.01em;
-    --h3-measure: none;
-    --h3-case: none;
-    --h3-features: normal;
-    --h3-axes: normal;
-    --h3-optical-sizing: auto;
-    --h3-min: 1.44;
-    --h3-max: 2.36328125;
-    --h3-size: 1.44rem;
-    --lead-leading: 1.5;
-    --lead-tracking: 0em;
-    --lead-measure: 70ch;
-    --lead-case: none;
-    --lead-features: normal;
-    --lead-axes: normal;
-    --lead-optical-sizing: auto;
-    --lead-min: 1.2;
-    --lead-max: 1.71875;
-    --lead-size: 1.2rem;
-    --body-leading: 1.5;
-    --body-tracking: 0em;
-    --body-measure: 70ch;
-    --body-case: none;
-    --body-features: normal;
-    --body-axes: normal;
-    --body-optical-sizing: auto;
-    --body-min: 1;
-    --body-max: 1.25;
-    --body-size: 1rem;
-    --small-leading: 1.5;
-    --small-tracking: 0em;
-    --small-measure: 70ch;
-    --small-case: none;
-    --small-features: normal;
-    --small-axes: normal;
-    --small-optical-sizing: auto;
-    --small-min: 0.8333333333;
-    --small-max: 0.9090909091;
-    --small-size: 0.8333333333rem;
-    --label-leading: 1.5;
-    --label-tracking: 0em;
-    --label-measure: 70ch;
-    --label-case: none;
-    --label-features: normal;
-    --label-axes: normal;
-    --label-optical-sizing: auto;
-    --label-min: 0.8333333333;
-    --label-max: 0.9090909091;
-    --label-size: 0.8333333333rem;
-    --caption-leading: 1.5;
-    --caption-tracking: 0em;
-    --caption-measure: 70ch;
-    --caption-case: none;
-    --caption-features: normal;
-    --caption-axes: normal;
-    --caption-optical-sizing: auto;
-    --caption-min: 0.8333333333;
-    --caption-max: 0.9090909091;
-    --caption-size: 0.8333333333rem;
+    --ak-display-leading: 1.1;
+    --ak-display-tracking: -0.01em;
+    --ak-display-measure: none;
+    --ak-display-case: none;
+    --ak-display-features: normal;
+    --ak-display-axes: normal;
+    --ak-display-optical-sizing: auto;
+    --ak-display-size-min: 2.48832;
+    --ak-display-size-max: 6.143608093;
+    --ak-display-size: 2.48832rem;
+    --ak-h1-leading: 1.1;
+    --ak-h1-tracking: -0.01em;
+    --ak-h1-measure: none;
+    --ak-h1-case: none;
+    --ak-h1-features: normal;
+    --ak-h1-axes: normal;
+    --ak-h1-optical-sizing: auto;
+    --ak-h1-size-min: 2.0736;
+    --ak-h1-size-max: 4.468078613;
+    --ak-h1-size: 2.0736rem;
+    --ak-h2-leading: 1.1;
+    --ak-h2-tracking: -0.01em;
+    --ak-h2-measure: none;
+    --ak-h2-case: none;
+    --ak-h2-features: normal;
+    --ak-h2-axes: normal;
+    --ak-h2-optical-sizing: auto;
+    --ak-h2-size-min: 1.728;
+    --ak-h2-size-max: 3.249511719;
+    --ak-h2-size: 1.728rem;
+    --ak-h3-leading: 1.1;
+    --ak-h3-tracking: -0.01em;
+    --ak-h3-measure: none;
+    --ak-h3-case: none;
+    --ak-h3-features: normal;
+    --ak-h3-axes: normal;
+    --ak-h3-optical-sizing: auto;
+    --ak-h3-size-min: 1.44;
+    --ak-h3-size-max: 2.36328125;
+    --ak-h3-size: 1.44rem;
+    --ak-lead-leading: 1.5;
+    --ak-lead-tracking: 0em;
+    --ak-lead-measure: 70ch;
+    --ak-lead-case: none;
+    --ak-lead-features: normal;
+    --ak-lead-axes: normal;
+    --ak-lead-optical-sizing: auto;
+    --ak-lead-size-min: 1.2;
+    --ak-lead-size-max: 1.71875;
+    --ak-lead-size: 1.2rem;
+    --ak-body-leading: 1.5;
+    --ak-body-tracking: 0em;
+    --ak-body-measure: 70ch;
+    --ak-body-case: none;
+    --ak-body-features: normal;
+    --ak-body-axes: normal;
+    --ak-body-optical-sizing: auto;
+    --ak-body-size-min: 1;
+    --ak-body-size-max: 1.25;
+    --ak-body-size: 1rem;
+    --ak-small-leading: 1.5;
+    --ak-small-tracking: 0em;
+    --ak-small-measure: 70ch;
+    --ak-small-case: none;
+    --ak-small-features: normal;
+    --ak-small-axes: normal;
+    --ak-small-optical-sizing: auto;
+    --ak-small-size-min: 0.8333333333;
+    --ak-small-size-max: 0.9090909091;
+    --ak-small-size: 0.8333333333rem;
+    --ak-label-leading: 1.5;
+    --ak-label-tracking: 0em;
+    --ak-label-measure: 70ch;
+    --ak-label-case: none;
+    --ak-label-features: normal;
+    --ak-label-axes: normal;
+    --ak-label-optical-sizing: auto;
+    --ak-label-size-min: 0.8333333333;
+    --ak-label-size-max: 0.9090909091;
+    --ak-label-size: 0.8333333333rem;
+    --ak-caption-leading: 1.5;
+    --ak-caption-tracking: 0em;
+    --ak-caption-measure: 70ch;
+    --ak-caption-case: none;
+    --ak-caption-features: normal;
+    --ak-caption-axes: normal;
+    --ak-caption-optical-sizing: auto;
+    --ak-caption-size-min: 0.8333333333;
+    --ak-caption-size-max: 0.9090909091;
+    --ak-caption-size: 0.8333333333rem;
+    --ak-stat-leading: 1;
+    --ak-stat-tracking: -0.01em;
+    --ak-stat-measure: none;
+    --ak-stat-case: none;
+    --ak-stat-features: "lnum", "tnum";
+    --ak-stat-axes: normal;
+    --ak-stat-optical-sizing: auto;
+    --ak-stat-size-min: 2.48832;
+    --ak-stat-size-max: 6.143608093;
+    --ak-stat-size: 2.48832rem;
   }
 
   :root {
-    --display-font: var(--font-display);
-    --display-weight: var(--weight);
-    --h1-font: var(--font-display);
-    --h1-weight: var(--weight);
-    --h2-font: var(--font-display);
-    --h2-weight: var(--weight);
-    --h3-font: var(--font-display);
-    --h3-weight: var(--weight);
-    --lead-font: var(--font);
-    --lead-weight: var(--weight);
-    --body-font: var(--font);
-    --body-weight: var(--weight);
-    --small-font: var(--font);
-    --small-weight: var(--weight);
-    --label-font: var(--font);
-    --label-weight: var(--weight);
-    --caption-font: var(--font);
-    --caption-weight: var(--weight);
+    --ak-display-family: var(--ak-font-display);
+    --ak-display-weight: var(--ak-weight-regular);
+    --ak-h1-family: var(--ak-font-display);
+    --ak-h1-weight: var(--ak-weight-regular);
+    --ak-h2-family: var(--ak-font-display);
+    --ak-h2-weight: var(--ak-weight-regular);
+    --ak-h3-family: var(--ak-font-display);
+    --ak-h3-weight: var(--ak-weight-regular);
+    --ak-lead-family: var(--ak-font-body);
+    --ak-lead-weight: var(--ak-weight-regular);
+    --ak-body-family: var(--ak-font-body);
+    --ak-body-weight: var(--ak-weight-regular);
+    --ak-small-family: var(--ak-font-body);
+    --ak-small-weight: var(--ak-weight-regular);
+    --ak-label-family: var(--ak-font-body);
+    --ak-label-weight: var(--ak-weight-regular);
+    --ak-caption-family: var(--ak-font-body);
+    --ak-caption-weight: var(--ak-weight-regular);
+    --ak-stat-family: var(--ak-font-display);
+    --ak-stat-weight: var(--ak-weight-regular);
   }
 
   /* Derived type recipes; final role overrides may replace these outputs. */
   @supports (font-size: calc(1rem * pow(2, 1))) {
     :root {
-      --_fluid: clamp(0rem, (100vi - var(--fluid-min) * 1rem) / (var(--fluid-max) - var(--fluid-min)), 1rem);
-      --display-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--display-step)));
-      --display-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--display-step)));
-      --display-size: calc(var(--display-min) * 1rem + (var(--display-max) - var(--display-min)) * var(--_fluid));
-      --h1-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--h1-step)));
-      --h1-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--h1-step)));
-      --h1-size: calc(var(--h1-min) * 1rem + (var(--h1-max) - var(--h1-min)) * var(--_fluid));
-      --h2-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--h2-step)));
-      --h2-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--h2-step)));
-      --h2-size: calc(var(--h2-min) * 1rem + (var(--h2-max) - var(--h2-min)) * var(--_fluid));
-      --h3-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--h3-step)));
-      --h3-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--h3-step)));
-      --h3-size: calc(var(--h3-min) * 1rem + (var(--h3-max) - var(--h3-min)) * var(--_fluid));
-      --lead-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--lead-step)));
-      --lead-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--lead-step)));
-      --lead-size: calc(var(--lead-min) * 1rem + (var(--lead-max) - var(--lead-min)) * var(--_fluid));
-      --body-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--body-step)));
-      --body-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--body-step)));
-      --body-size: calc(var(--body-min) * 1rem + (var(--body-max) - var(--body-min)) * var(--_fluid));
-      --small-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--small-step)));
-      --small-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--small-step)));
-      --small-size: calc(var(--small-min) * 1rem + (var(--small-max) - var(--small-min)) * var(--_fluid));
-      --label-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--label-step)));
-      --label-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--label-step)));
-      --label-size: calc(var(--label-min) * 1rem + (var(--label-max) - var(--label-min)) * var(--_fluid));
-      --caption-min: calc(var(--type-min) * pow(var(--type-ratio-min), var(--caption-step)));
-      --caption-max: calc(var(--type-max) * pow(var(--type-ratio-max), var(--caption-step)));
-      --caption-size: calc(var(--caption-min) * 1rem + (var(--caption-max) - var(--caption-min)) * var(--_fluid));
+      --_fluid: clamp(0rem, (100vi - var(--ak-viewport-min) * 1rem) / (var(--ak-viewport-max) - var(--ak-viewport-min)), 1rem);
+      --ak-display-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-display-step)));
+      --ak-display-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-display-step)));
+      --ak-display-size: calc(var(--ak-display-size-min) * 1rem + (var(--ak-display-size-max) - var(--ak-display-size-min)) * var(--_fluid));
+      --ak-h1-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-h1-step)));
+      --ak-h1-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-h1-step)));
+      --ak-h1-size: calc(var(--ak-h1-size-min) * 1rem + (var(--ak-h1-size-max) - var(--ak-h1-size-min)) * var(--_fluid));
+      --ak-h2-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-h2-step)));
+      --ak-h2-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-h2-step)));
+      --ak-h2-size: calc(var(--ak-h2-size-min) * 1rem + (var(--ak-h2-size-max) - var(--ak-h2-size-min)) * var(--_fluid));
+      --ak-h3-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-h3-step)));
+      --ak-h3-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-h3-step)));
+      --ak-h3-size: calc(var(--ak-h3-size-min) * 1rem + (var(--ak-h3-size-max) - var(--ak-h3-size-min)) * var(--_fluid));
+      --ak-lead-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-lead-step)));
+      --ak-lead-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-lead-step)));
+      --ak-lead-size: calc(var(--ak-lead-size-min) * 1rem + (var(--ak-lead-size-max) - var(--ak-lead-size-min)) * var(--_fluid));
+      --ak-body-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-body-step)));
+      --ak-body-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-body-step)));
+      --ak-body-size: calc(var(--ak-body-size-min) * 1rem + (var(--ak-body-size-max) - var(--ak-body-size-min)) * var(--_fluid));
+      --ak-small-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-small-step)));
+      --ak-small-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-small-step)));
+      --ak-small-size: calc(var(--ak-small-size-min) * 1rem + (var(--ak-small-size-max) - var(--ak-small-size-min)) * var(--_fluid));
+      --ak-label-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-label-step)));
+      --ak-label-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-label-step)));
+      --ak-label-size: calc(var(--ak-label-size-min) * 1rem + (var(--ak-label-size-max) - var(--ak-label-size-min)) * var(--_fluid));
+      --ak-caption-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-caption-step)));
+      --ak-caption-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-caption-step)));
+      --ak-caption-size: calc(var(--ak-caption-size-min) * 1rem + (var(--ak-caption-size-max) - var(--ak-caption-size-min)) * var(--_fluid));
+      --ak-stat-size-min: calc(var(--ak-type-size-min) * pow(var(--ak-type-scale-min), var(--ak-stat-step)));
+      --ak-stat-size-max: calc(var(--ak-type-size-max) * pow(var(--ak-type-scale-max), var(--ak-stat-step)));
+      --ak-stat-size: calc(var(--ak-stat-size-min) * 1rem + (var(--ak-stat-size-max) - var(--ak-stat-size-min)) * var(--_fluid));
     }
   }
 
   /* Motion */
   :root {
-    --ease-in: cubic-bezier(0.6, 0, 0.9, 0);
-    --ease-out: cubic-bezier(0.1, 1, 0.4, 1);
-    --ease-in-out: cubic-bezier(0.9, 0, 0.1, 1);
+    --ak-ease-in: cubic-bezier(0.6, 0, 0.9, 0);
+    --ak-ease-out: cubic-bezier(0.1, 1, 0.4, 1);
+    --ak-ease-in-out: cubic-bezier(0.9, 0, 0.1, 1);
 
-    --ease-glide: linear(0, 0.012 0.9%, 0.05 2%, 0.411 9.2%, 0.517 11.8%, 0.611 14.6%, 0.694 17.7%, 0.765 21.1%, 0.824 24.8%, 0.872 28.9%, 0.91 33.4%, 0.939 38.4%, 0.977 50.9%, 0.994 68.4%, 1);
-    --ease-spring: linear(0, 0.007 1.4%, 0.028 2.8%, 0.115 6.1%, 0.228 9.2%, 0.596 18.3%, 0.702 21.3%, 0.79 24.2%, 0.862 27%, 0.92 29.8%, 0.968 32.7%, 1.004 35.7%, 1.043 41.4%, 1.055 48.2%, 1.005 76.7%, 1);
+    --ak-ease-glide: linear(0, 0.012 0.9%, 0.05 2%, 0.411 9.2%, 0.517 11.8%, 0.611 14.6%, 0.694 17.7%, 0.765 21.1%, 0.824 24.8%, 0.872 28.9%, 0.91 33.4%, 0.939 38.4%, 0.977 50.9%, 0.994 68.4%, 1);
+    --ak-ease-spring: linear(0, 0.007 1.4%, 0.028 2.8%, 0.115 6.1%, 0.228 9.2%, 0.596 18.3%, 0.702 21.3%, 0.79 24.2%, 0.862 27%, 0.92 29.8%, 0.968 32.7%, 1.004 35.7%, 1.043 41.4%, 1.055 48.2%, 1.005 76.7%, 1);
 
-    --duration-xs: 50ms;
-    --duration-sm: 100ms;
-    --duration: 200ms;
-    --duration-lg: 400ms;
-    --duration-xl: 800ms;
+    --ak-duration-xs: 50ms;
+    --ak-duration-sm: 100ms;
+    --ak-duration-md: 200ms;
+    --ak-duration-lg: 400ms;
+    --ak-duration-xl: 800ms;
 
-    --lift: 0.75rem;
-
-    --transition-blur: .5em;
-    --transition-in-y: 1em;
-    --transition-in-x: 0em;
-    --transition-out-y: -1em;
-    --transition-out-x: 0em;
-    --transition-duration: var(--duration);
+    --ak-view-transition-blur: .5em;
+    --ak-view-transition-in-y: 1em;
+    --ak-view-transition-in-x: 0em;
+    --ak-view-transition-out-y: -1em;
+    --ak-view-transition-out-x: 0em;
+    --ak-view-transition-duration: var(--ak-duration-md);
 
     @media (orientation: portrait) {
-      --transition-in-y: 0em;
-      --transition-in-x: -1em;
-      --transition-out-y: 0em;
-      --transition-out-x: 1em;
+      --ak-view-transition-in-y: 0em;
+      --ak-view-transition-in-x: -1em;
+      --ak-view-transition-out-y: 0em;
+      --ak-view-transition-out-x: 1em;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      --ease-in: linear;
-      --ease-out: linear;
-      --ease-in-out: linear;
-      --ease-glide: linear;
-      --ease-spring: linear;
-      --duration-xs: 0.001ms;
-      --duration-sm: 0.001ms;
-      --duration: 0.001ms;
-      --duration-lg: 0.001ms;
-      --duration-xl: 0.001ms;
+      --ak-ease-in: linear;
+      --ak-ease-out: linear;
+      --ak-ease-in-out: linear;
+      --ak-ease-glide: linear;
+      --ak-ease-spring: linear;
+      --ak-duration-xs: 0.001ms;
+      --ak-duration-sm: 0.001ms;
+      --ak-duration-md: 0.001ms;
+      --ak-duration-lg: 0.001ms;
+      --ak-duration-xl: 0.001ms;
     }
 
     @media (prefers-reduced-transparency: reduce) {
-      --transition-blur: 0;
+      --ak-view-transition-blur: 0;
     }
   }
 }

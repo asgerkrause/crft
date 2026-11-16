@@ -1,7 +1,7 @@
 @layer project {
   /* Teaching boundary: outline leaves the measured box unchanged. */
   main > section > .c {
-    outline: var(--border-width) dashed var(--text);
-    outline-offset: var(--padding-sm);
+    outline: var(--ak-border-width) dashed var(--ak-text);
+    outline-offset: var(--ak-padding-sm);
   }
 }

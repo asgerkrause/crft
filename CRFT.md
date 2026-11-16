@@ -87,6 +87,7 @@ Hooks require their owning complete layer and retained live selectors. Local ext
 | `.small` | type | Documented type role |
 | `.label` | type | Documented type role |
 | `.caption` | type | Documented type role |
+| `.stat` | type | Documented type role |
 | `l` | type | Documented type role |
 | `.c` | layout | Documented layout role |
 | `.c.sm` | layout | Documented layout role |
@@ -123,7 +124,7 @@ never style through an ID selector
 never new spacing, alignment, or display utility matrices
 never substring attribute selectors in documentation
 never explicit wght in canonical role axes; ordinary weight uses font-weight
-never heading max-width; override the role's --ROLE-measure token
+never heading max-width; override the role's --ak-ROLE-measure token
 Private properties including --_ calculations never appear in product CSS.
 <!-- ban-index:end -->
 

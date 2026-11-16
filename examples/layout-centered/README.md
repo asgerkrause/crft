@@ -39,7 +39,7 @@ This runnable specimen loads the complete reference through `../../styles/global
 The filled links navigate, so they remain anchors with meaningful destinations. The base focus outline follows `currentColor`, which is the fill's contrast companion on `.btn` and can disappear against the surrounding canvas. This project explicitly uses:
 
 ```css
-.btn:focus-visible { outline-color: var(--text); }
+.btn:focus-visible { outline-color: var(--ak-text); }
 ```
 
 The base still owns outline width and offset. The project keeps the ring on the surrounding canvas and verifies both schemes on base and accent canvases. Hover and active underline add a non-color cue without changing contrast pairs. Text and groups can wrap; no fixed height or no-wrap rule hides long names.

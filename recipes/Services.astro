@@ -43,13 +43,13 @@ const { id, heading, intro, services } = Astro.props;
   @layer project {
     .deliverables {
       display: grid;
-      gap: var(--gap-xs);
+      gap: var(--ak-gap-xs);
       margin: 0;
       padding: 0;
       list-style: none;
 
       li {
-        padding-left: var(--padding);
+        padding-left: var(--ak-padding-md);
         position: relative;
 
         &::before {
@@ -60,7 +60,7 @@ const { id, heading, intro, services } = Astro.props;
           inline-size: .4em;
           aspect-ratio: 1;
           border-radius: 50%;
-          background: var(--accent);
+          background: var(--ak-accent);
         }
       }
     }

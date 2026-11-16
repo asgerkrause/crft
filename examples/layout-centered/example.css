@@ -1,7 +1,7 @@
 @layer project {
   main > section > .c {
-    outline: var(--border-width) dashed var(--text);
-    outline-offset: var(--padding-sm);
+    outline: var(--ak-border-width) dashed var(--ak-text);
+    outline-offset: var(--ak-padding-sm);
   }
 
   /* align-items does not inherit into either nested .s. */
@@ -18,7 +18,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--gap);
+    gap: var(--ak-gap-md);
   }
 
   .centered .btns,
@@ -31,15 +31,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: var(--control);
-    padding: var(--padding-sm) var(--padding);
+    min-height: var(--ak-control-height);
+    padding: var(--ak-padding-sm) var(--ak-padding-md);
   }
 
   .btn {
-    color: var(--on-accent);
-    background: var(--accent);
-    border: var(--border-width) solid var(--accent);
-    border-radius: var(--radius);
+    color: var(--ak-on-accent);
+    background: var(--ak-accent);
+    border: var(--ak-border-width) solid var(--ak-accent);
+    border-radius: var(--ak-radius-md);
   }
 
   .btn:hover,
@@ -47,5 +47,5 @@
   .lnk { text-decoration: underline; }
 
   /* The fill's foreground is not the surrounding canvas's focus color. */
-  .btn:focus-visible { outline-color: var(--text); }
+  .btn:focus-visible { outline-color: var(--ak-text); }
 }

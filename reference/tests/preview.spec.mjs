@@ -86,9 +86,9 @@ test("motion replay is synchronized, finite, repeatable, and equal across widths
   expect(await bars(page).evaluateAll((elements) => elements.map((element) => element.getAnimations().length))).toEqual([1, 1, 1, 1, 1]);
   await expect.poll(() => bars(page).evaluateAll((elements) => elements.flatMap((element) => element.getAnimations()).length)).toBe(0);
   const endpoint = await bars(page).evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().width));
-  await page.getByRole("radio", { name: "Slowest --duration-xl", exact: true }).focus();
+  await page.getByRole("radio", { name: "Slowest --ak-duration-xl", exact: true }).focus();
   await page.keyboard.press("ArrowLeft");
-  await expect(page.getByRole("radio", { name: "Slow --duration-lg", exact: true })).toBeChecked();
+  await expect(page.getByRole("radio", { name: "Slow --ak-duration-lg", exact: true })).toBeChecked();
   const durations = await page.locator(".sg-motion-groups").evaluate((group) => {
     group.querySelector("button").click();
     return [...group.querySelectorAll(".sg-motion-track > i")].map((bar) => bar.getAnimations()[0].effect.getTiming().duration);

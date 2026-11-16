@@ -35,28 +35,28 @@ const { id, name, address, email, links } = Astro.props;
 <style>
   @layer project {
     .foot {
-      max-inline-size: var(--content-max);
+      max-inline-size: var(--ak-content-width);
       margin-inline: auto;
-      padding-block: var(--space);
-      border-top: var(--border-width) solid var(--border);
+      padding-block: var(--ak-space-md);
+      border-top: var(--ak-border-width) solid var(--ak-border);
     }
 
     .brand {
       margin: 0;
-      font-family: var(--font-serif);
-      font-size: var(--h2-size);
+      font-family: var(--ak-font-serif);
+      font-size: var(--ak-h2-size);
     }
 
     address {
       font-style: normal;
-      color: var(--muted);
-      line-height: var(--body-leading);
+      color: var(--ak-text-muted);
+      line-height: var(--ak-body-leading);
     }
 
     ul {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--gap-xs) var(--gap);
+      gap: var(--ak-gap-xs) var(--ak-gap-md);
       margin: 0;
       padding: 0;
       list-style: none;
@@ -65,13 +65,13 @@ const { id, name, address, email, links } = Astro.props;
     a {
       display: inline-flex;
       align-items: center;
-      min-block-size: var(--control);
+      min-block-size: var(--ak-control-height);
       color: inherit;
       text-underline-offset: .18em;
 
-      &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      &:focus-visible { outline: 2px solid var(--ak-accent); outline-offset: 3px; }
     }
 
-    .small { margin: 0; color: var(--muted); }
+    .small { margin: 0; color: var(--ak-text-muted); }
   }
 </style>

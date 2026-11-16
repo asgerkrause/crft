@@ -4,14 +4,14 @@ import Section from "../components/Section.astro";
 import { sections } from "../data";
 const names = [...new Set([...source.matchAll(/(--[a-z][a-z0-9-]*)\s*:/g)].map((match) => match[1]))].sort();
 const families = [
-  { id: "foundations", title: "Type foundations", prefixes: ["font", "weight", "type", "fluid"] },
-  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"].map((role) => ({ id: role, title: role, prefixes: [role] })),
+  { id: "foundations", title: "Type foundations", prefixes: ["font", "weight", "type", "viewport"] },
+  ...["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption", "stat"].map((role) => ({ id: role, title: role, prefixes: [role] })),
   { id: "palette", title: "Palette", prefixes: ["palette"] },
-  { id: "colors", title: "Semantic colors", prefixes: ["canvas", "surface", "text", "muted", "border", "accent", "secondary", "tertiary", "success", "warning", "danger", "on"] },
-  { id: "layout", title: "Layout", prefixes: ["bleed", "content", "control", "header", "query"] },
+  { id: "colors", title: "Semantic colors", prefixes: ["canvas", "surface", "text", "border", "accent", "secondary", "tertiary", "success", "warning", "danger", "on"] },
+  { id: "layout", title: "Layout", prefixes: ["bleed", "content", "control", "header"] },
   { id: "spacing", title: "Spacing and radius", prefixes: ["space", "gap", "padding", "radius"] },
-  { id: "motion", title: "Motion", prefixes: ["duration", "ease", "lift", "transition"] },
-].map((family) => ({ ...family, names: names.filter((name) => family.prefixes.some((prefix) => name === `--${prefix}` || name.startsWith(`--${prefix}-`))) }));
+  { id: "motion", title: "Motion", prefixes: ["duration", "ease", "view"] },
+].map((family) => ({ ...family, names: names.filter((name) => family.prefixes.some((prefix) => name === `--ak-${prefix}` || name.startsWith(`--ak-${prefix}-`))) }));
 if (families.flatMap((family) => family.names).length !== names.length) throw new Error("Token index families must cover every public name exactly once.");
 ---
 <Section {...sections.tokens}>

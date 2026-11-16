@@ -49,7 +49,7 @@ Use one primary action group per decision area. Secondary actions must remain av
   .lnks {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--gap-sm);
+    gap: var(--ak-gap-sm);
   }
 
   .btn,
@@ -57,20 +57,20 @@ Use one primary action group per decision area. Secondary actions must remain av
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-sm);
-    min-height: var(--control);
-    padding: var(--padding-sm) var(--padding);
-    border: var(--border-width) solid var(--accent);
-    border-radius: var(--radius);
+    gap: var(--ak-gap-sm);
+    min-height: var(--ak-control-height);
+    padding: var(--ak-padding-sm) var(--ak-padding-md);
+    border: var(--ak-border-width) solid var(--ak-accent);
+    border-radius: var(--ak-radius-md);
   }
 
   .btn {
-    color: var(--on-accent);
-    background: var(--accent);
+    color: var(--ak-on-accent);
+    background: var(--ak-accent);
   }
 
   .btn:focus-visible {
-    outline-color: var(--text);
+    outline-color: var(--ak-text);
   }
 }
 ```

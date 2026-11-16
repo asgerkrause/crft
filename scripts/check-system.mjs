@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { resolveAdoptRequest } from "./copy-system.mjs";
 import { markupErrors } from "./check-markup.mjs";
-import { buildContract, v3CssErrors, hasExplicitWght, staticBans } from "./emit-contract.mjs";
+import { buildContract, v4CssErrors, hasExplicitWght, staticBans } from "./emit-contract.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -53,7 +53,7 @@ const privateProperties = [
   "--l-gc", "--l-cs", "--l-rs", "--or", "--m-src-to", "--m-src-fr", "--m-plx",
   "--_fluid",
 ];
-const typeRoles = ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption"];
+const typeRoles = ["display", "h1", "h2", "h3", "lead", "body", "small", "label", "caption", "stat"];
 const supportedAccentRoutes = ["danger", "secondary", "success", "tertiary", "warning"];
 const supportedSkins = ["accent", "invert", "tone"];
 
@@ -133,7 +133,7 @@ if (!/retained live hooks/i.test(adoptionModeRows.find(([name]) => name === "Tok
 if (!router.includes("intentionally does not ship a product CLI, consumer analyzer, automatic audit, or generated migration plan")) {
   fail("CRFT.md does not record the retired tooling boundary");
 }
-for (const migration of ["contractVersion 3", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
+for (const migration of ["contractVersion 4", "contractVersion 3", "legacy v1", "--layers", "Do not default to the full tree on an existing site", "does not copy `global.css`", "Observed", "--fonts", "--ak-ROLE-size", "No compatibility aliases", "--t-h4-fw"]) {
   if (!adoption.includes(migration)) fail(`docs/adopt.md is missing breaking migration guidance: ${migration}`);
 }
 const routeBlock = router.match(/## Route\n([\s\S]*?)\n## Common workflows/)?.[1];
@@ -183,7 +183,7 @@ for (const component of [".btn", ".crd", ".lnk"]) {
   }
 }
 const documentedHooks = {
-  "docs/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", "l"],
+  "docs/type.md": [".display", ".h1", ".h2", ".h3", ".lead", ".body", ".small", ".label", ".caption", ".stat", "l"],
   "docs/layout.md": [".c", ".c.sm", ".c.lg", ".s", "container", ".img-w"],
   "docs/grid.md": ["g", "c", "r", "o", "fit", "fit-sm", "fit-lg", "fill", "fill-sm", "fill-lg", "sg"],
   "docs/utilities.md": [".sr", ".sr.focusable", ".squircle"],
@@ -229,7 +229,7 @@ if (!docsByPath["docs/layout.md"].includes("*-block-start")) fail("docs/layout.m
 const globalCss = stripCssComments(read("styles/global.css"));
 const source = Object.fromEntries(files.map((file) => [file, stripCssComments(read(file))]));
 const allCss = files.map((file) => source[file]).join("\n");
-for (const file of files) for (const error of v3CssErrors(read(file))) fail(`${file} ${error}`);
+for (const file of files) for (const error of v4CssErrors(read(file))) fail(`${file} ${error}`);
 const tokensCss = source["styles/tokens.css"];
 const frameworkCss = source["styles/crft.css"];
 const typeCss = cssLayerBlock(frameworkCss, "type");
@@ -280,6 +280,7 @@ const publicTokens = unique([...tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/g)].map((
 const publicTokenSet = new Set(publicTokens);
 for (const token of publicTokens) {
   if (/^--[lsgprbctm](?:-|$)/.test(token)) fail(`${token} uses a retired token family`);
+  else if (!token.startsWith("--ak-") && !token.startsWith("--_")) fail(`${token} is a public token without the --ak- prefix`);
 }
 const tokenDocument = docsByPath["docs/tokens.md"];
 const tokenIndexBlock = tokenDocument.match(/<!-- public-token-index:start -->([\s\S]*?)<!-- public-token-index:end -->/)?.[1];
@@ -327,8 +328,8 @@ else {
 
 for (const role of typeRoles) {
   if (!hasCssSignal(typeCss, `.${role} {`)) fail(`type.css is missing documented role ${role}`);
-  for (const property of ["font", "size", "weight", "leading", "tracking", "measure", "case", "features", "axes", "optical-sizing"]) {
-    if (!publicTokenSet.has(`--${role}-${property}`) || !typeCss.includes(`var(--${role}-${property})`)) fail(`type.css is missing role property ${role}-${property}`);
+  for (const property of ["family", "size", "weight", "leading", "tracking", "measure", "case", "features", "axes", "optical-sizing"]) {
+    if (!publicTokenSet.has(`--ak-${role}-${property}`) || !typeCss.includes(`var(--ak-${role}-${property})`)) fail(`type.css is missing role property ${role}-${property}`);
   }
 }
 if (/body[^}]*max-width/s.test(typeCss.slice(0, typeCss.indexOf("  :where(h1)")))) fail("type.css must keep body unconstrained");
@@ -345,20 +346,20 @@ for (const signal of [":where(h1)", ":where(h2)", ":where(h3, h4, h5, h6)", ":wh
 if (!hasCssSignal(tokensCss, "--_fluid: clamp(")) fail("tokens.css is missing fluid font-size clamping");
 if (!hasCssSignal(tokensCss, "@supports (font-size: calc(1rem * pow(2, 1))) { :root {")) fail("type recipes require a pow feature gate and root-only recipes");
 for (const role of typeRoles) {
-  if (!new RegExp(`--${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
+  if (!new RegExp(`--ak-${role}-size:\\s*[\\d.]+rem;`).test(tokensCss)) fail(`missing static fallback ${role}`);
 }
 
 // Static fallbacks must follow the recipe inputs.
 {
-  const input = (name) => Number(tokensCss.match(new RegExp(`--${name}:\\s*(-?[\\d.]+);`))?.[1]);
-  const [min, max, ratioMin, ratioMax] = ["type-min", "type-max", "type-ratio-min", "type-ratio-max"].map(input);
+  const input = (name) => Number(tokensCss.match(new RegExp(`--ak-${name}:\\s*(-?[\\d.]+);`))?.[1]);
+  const [min, max, ratioMin, ratioMax] = ["type-size-min", "type-size-max", "type-scale-min", "type-scale-max"].map(input);
   for (const role of typeRoles) {
     const step = input(`${role}-step`);
     const expected = { min: min * ratioMin ** step, max: max * ratioMax ** step };
     for (const [key, value] of Object.entries(expected)) {
-      if (!(Math.abs(input(`${role}-${key}`) - value) < 1e-6)) fail(`static --${role}-${key} must equal its recipe value ${value}`);
+      if (!(Math.abs(input(`${role}-size-${key}`) - value) < 1e-6)) fail(`static --ak-${role}-size-${key} must equal its recipe value ${value}`);
     }
-    if (!(Math.abs(Number(tokensCss.match(new RegExp(`--${role}-size:\\s*([\\d.]+)rem;`))?.[1]) - expected.min) < 1e-6)) fail(`static --${role}-size must equal --${role}-min`);
+    if (!(Math.abs(Number(tokensCss.match(new RegExp(`--ak-${role}-size:\\s*([\\d.]+)rem;`))?.[1]) - expected.min) < 1e-6)) fail(`static --ak-${role}-size must equal --ak-${role}-size-min`);
   }
 }
 
@@ -410,8 +411,8 @@ for (const role of typeRoles) {
   const over = (top, under) => [0, 1, 2].map((i) => top[i] * top[3] + under[i] * (1 - top[3]));
   const luminance = (c) => c.slice(0, 3).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
   const ratio = (a, b) => { const [x, y] = [luminance(a), luminance(b)]; return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
-  const edge = frameworkCss.match(/border: var\(--border-width\) solid (color-mix\(in srgb, var\(--text\) \d+%, var\(--canvas\)\));/g) ?? [];
-  if (edge.length !== 2 || new Set(edge).size !== 1) fail("buttons and fields must share one control edge color-mix(in srgb, var(--text) N%, var(--canvas))");
+  const edge = frameworkCss.match(/border: var\(--ak-border-width\) solid (color-mix\(in srgb, var\(--ak-text\) \d+%, var\(--ak-canvas\)\));/g) ?? [];
+  if (edge.length !== 2 || new Set(edge).size !== 1) fail("buttons and fields must share one control edge color-mix(in srgb, var(--ak-text) N%, var(--ak-canvas))");
   const controlEdge = edge[0]?.match(/solid (.*);$/)[1];
   const invalidEdge = frameworkCss.match(/\[aria-invalid="true"\]\s*\{\s*border-color:\s*([^;]+);/)?.[1];
   if (!invalidEdge) fail("missing invalid field edge");
@@ -428,12 +429,12 @@ for (const role of typeRoles) {
               ? Object.fromEntries(Object.keys(scheme).map((key) => [key, resolve(themed, `var(${key})`, dark)]))
               : {};
             const env = { ...themed, ...inherited, ...(accent ? { ...accentRoles, ...decls(block(`[data-accent='${accent}']`)) } : {}) };
-            const canvas = resolve(env, "var(--canvas)", dark);
-            const surface = over(resolve(env, "var(--surface)", dark), canvas);
-            const accentSurface = over(resolve(env, "var(--accent-surface)", dark), canvas);
-            for (const [name, value, floor] of [["--text", "var(--text)", 4.5], ["--muted", "var(--muted)", 4.5], ["--accent-text", "var(--accent-text)", 4.5], ["control edge", controlEdge, 3], ["invalid edge", invalidEdge, 3], ["focus ring", "var(--text)", 3]]) {
-              const grounds = [["--canvas", canvas], ["--surface", surface]];
-              if (name === "--text" || name === "--accent-text") grounds.push(["--accent-surface", accentSurface]);
+            const canvas = resolve(env, "var(--ak-canvas)", dark);
+            const surface = over(resolve(env, "var(--ak-surface)", dark), canvas);
+            const accentSurface = over(resolve(env, "var(--ak-accent-surface)", dark), canvas);
+            for (const [name, value, floor] of [["--ak-text", "var(--ak-text)", 4.5], ["--ak-text-muted", "var(--ak-text-muted)", 4.5], ["--ak-accent-text", "var(--ak-accent-text)", 4.5], ["control edge", controlEdge, 3], ["invalid edge", invalidEdge, 3], ["focus ring", "var(--ak-text)", 3]]) {
+              const grounds = [["--ak-canvas", canvas], ["--ak-surface", surface]];
+              if (name === "--ak-text" || name === "--ak-accent-text") grounds.push(["--ak-accent-surface", accentSurface]);
               for (const [ground, fill] of grounds) {
                 const measured = ratio(over(resolve(env, value, dark), fill), fill);
                 if (measured < floor) fail(`${name} on ${ground} is ${measured.toFixed(2)}:1 in ${label}; needs ${floor}:1`);
@@ -447,11 +448,11 @@ for (const role of typeRoles) {
     }
   }
   for (const role of ["accent", ...supportedAccentRoutes]) {
-    const fill = resolve(statics, `var(--${role})`, false);
+    const fill = resolve(statics, `var(--ak-${role})`, false);
     const derived = luminance(fill) > 0.1791 ? [0, 0, 0, 1] : [1, 1, 1, 1];
-    for (const [kind, on] of [["static", resolve(statics, `var(--on-${role})`, false)], ["derived", derived]]) {
+    for (const [kind, on] of [["static", resolve(statics, `var(--ak-on-${role})`, false)], ["derived", derived]]) {
       const measured = ratio(on, fill);
-      if (measured < 4.5) fail(`${kind} --on-${role} on --${role} is ${measured.toFixed(2)}:1; needs 4.5:1`);
+      if (measured < 4.5) fail(`${kind} --ak-on-${role} on --ak-${role} is ${measured.toFixed(2)}:1; needs 4.5:1`);
     }
   }
 }
@@ -461,8 +462,8 @@ const onColorGates = [
 ];
 for (const gate of onColorGates) if (!hasCssSignal(tokensCss, gate)) fail(`on-color derivation requires the gate ${gate}`);
 for (const role of ["accent", ...supportedAccentRoutes]) {
-  if (!hasCssSignal(tokensCss, `--on-${role}: color(from var(--${role}) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505)`) || !hasCssSignal(tokensCss, `--on-${role}: contrast-color(var(--${role}))`)) {
-    fail(`--on-${role} must derive from --${role}`);
+  if (!hasCssSignal(tokensCss, `--ak-on-${role}: color(from var(--ak-${role}) xyz-d65 clamp(0, (0.1791 - y) * 1e6, 0.9505)`) || !hasCssSignal(tokensCss, `--ak-on-${role}: contrast-color(var(--ak-${role}))`)) {
+    fail(`--ak-on-${role} must derive from --ak-${role}`);
   }
 }
 const cssNumber = (css, name) => {
@@ -470,21 +471,21 @@ const cssNumber = (css, name) => {
   const match = css.match(new RegExp(`${escaped}\\s*:\\s*([+-]?(?:\\d+(?:\\.\\d+)?|\\.\\d+))\\s*;`));
   return match ? Number(match[1]) : Number.NaN;
 };
-const fluidTokenNames = ["--type-min", "--type-max", "--type-ratio-min", "--type-ratio-max", "--fluid-min", "--fluid-max"];
+const fluidTokenNames = ["--ak-type-size-min", "--ak-type-size-max", "--ak-type-scale-min", "--ak-type-scale-max", "--ak-viewport-min", "--ak-viewport-max"];
 const fluidTokens = Object.fromEntries(fluidTokenNames.map((name) => [name, cssNumber(tokensCss, name)]));
 const unparsedFluidTokens = fluidTokenNames.filter((name) => !Number.isFinite(fluidTokens[name]));
 if (unparsedFluidTokens.length) {
   fail(`fluid type tokens are not finite numbers: ${unparsedFluidTokens.join(", ")}`);
 } else {
-  const fsMin = fluidTokens["--type-min"];
-  const fsMax = fluidTokens["--type-max"];
-  const rtMin = fluidTokens["--type-ratio-min"];
-  const rtMax = fluidTokens["--type-ratio-max"];
-  const vpMin = fluidTokens["--fluid-min"];
-  const vpMax = fluidTokens["--fluid-max"];
+  const fsMin = fluidTokens["--ak-type-size-min"];
+  const fsMax = fluidTokens["--ak-type-size-max"];
+  const rtMin = fluidTokens["--ak-type-scale-min"];
+  const rtMax = fluidTokens["--ak-type-scale-max"];
+  const vpMin = fluidTokens["--ak-viewport-min"];
+  const vpMax = fluidTokens["--ak-viewport-max"];
   if (Object.values(fluidTokens).some((value) => value <= 0) || vpMax <= vpMin) fail("fluid foundations must be positive and range strictly increasing");
   const fluidSteps = unique(
-    [...tokensCss.matchAll(/--[a-z0-9]+-step\s*:\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*;/g)].map((match) => Number(match[1])),
+    [...tokensCss.matchAll(/--ak-[a-z0-9]+-step\s*:\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*;/g)].map((match) => Number(match[1])),
   );
   if (!fluidSteps.length) fail("tokens.css has no role-step declarations");
   for (const step of fluidSteps) {
@@ -505,11 +506,11 @@ for (const [hook, signal] of Object.entries(layoutHookSignals)) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing documented hook ${hook}`);
 }
 for (const signal of [
-  ">header, >main>section, >footer { padding: var(--bleed-y) var(--bleed-x)",
-  ">header { padding-block: var(--padding)", ">footer { padding-bottom: var(--padding)",
+  ">header, >main>section, >footer { padding: var(--ak-bleed-y) var(--ak-bleed-x)",
+  ">header { padding-block: var(--ak-padding-md)", ">footer { padding-bottom: var(--ak-padding-md)",
   "view-transition-name: header", "view-transition-name: main", "view-transition-name: footer",
-  "max-width: var(--content-max)", "max-width: calc(var(--content-max) / 3 * 2)",
-  "max-width: calc(var(--content-max) / 3 * 4)",
+  "max-width: var(--ak-content-width)", "max-width: calc(var(--ak-content-width) / 3 * 2)",
+  "max-width: calc(var(--ak-content-width) / 3 * 4)",
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing viewport-derived container behavior: ${signal}`);
 }
@@ -559,20 +560,20 @@ for (const signal of [
   "@supports selector(details::details-content)",
   ':where(a) {', ':where(a, button, label) {',
   "transition-property: color, background, border, transform, opacity, font-weight",
-  'transition-duration: var(--duration)',
+  'transition-duration: var(--ak-duration-md)',
   '[aria-current="page"]',
   "list-style-position: outside",
   "font-size: max(1rem, 1em)",
   "details { &::details-content { height: 0; overflow: clip",
-  ":focus-visible { outline: max(2px, var(--border-width)) solid currentColor; outline-offset: 0.2em",
-  ":where(button, input, select, textarea):disabled { color: var(--muted)",
+  ":focus-visible { outline: max(2px, var(--ak-border-width)) solid currentColor; outline-offset: 0.2em",
+  ":where(button, input, select, textarea):disabled { color: var(--ak-text-muted)",
 ]) {
   if (!hasCssSignal(baseLayerCss, signal)) fail(`base layer is missing native enhancement: ${signal}`);
 }
 if (!hasCssSignal(resetCss, ":where(html) { -webkit-text-size-adjust: none; text-size-adjust: none; }")) {
   fail("reset must retain paired text adjustment");
 }
-if (!hasCssSignal(tokensCss, "--bleed-y: clamp(4rem, 2rem + 8vi, 12rem)")) fail("missing bounded --bleed-y recipe");
+if (!hasCssSignal(tokensCss, "--ak-bleed-y: clamp(4rem, 2rem + 8vi, 12rem)")) fail("missing bounded --ak-bleed-y recipe");
 if (/overscroll-behavior(?:-[xy])?:\s*none/.test(baseCss)) fail("preserve native scroll-boundary behavior");
 if (!hasCssSignal(typeCss, "[l] {") || !hasCssSignal(typeCss, '[l="4"]')) {
   fail("type.css is missing documented l");
@@ -599,9 +600,9 @@ for (const signal of [
 ]) {
   if (!hasCssSignal(layoutCss, signal)) fail(`layout.css is missing invariant: ${signal}`);
 }
-const containerQueryMd = tokensCss.match(/--query-md\s*:\s*([^;]+);/)?.[1].trim();
-const containerQueryLg = tokensCss.match(/--query-lg\s*:\s*([^;]+);/)?.[1].trim();
-if (!containerQueryMd || !containerQueryLg) fail("tokens.css is missing named container-query thresholds");
+// Contract 4 removed the named thresholds; @container conditions cannot read custom properties.
+const containerQueryMd = "30rem";
+const containerQueryLg = "60rem";
 for (const signal of [
   `@container container (width >=${containerQueryMd})`,
   `@container container (width >=${containerQueryLg})`,
@@ -690,7 +691,7 @@ const validateExampleMarkup = (html, path) => {
 };
 const validateExampleCss = (css, path) => {
   const active = stripCssComments(css);
-  for (const error of v3CssErrors(css)) fail(`${path} ${error}`);
+  for (const error of v4CssErrors(css)) fail(`${path} ${error}`);
   if (!/^\s*@layer\s+project\s*\{/.test(active)) fail(`${path} must declare its chosen project layer`);
   assertWeightVariationPair(active, path);
   if (/(?:^|[,{}])\s*#[a-z][a-z0-9_-]*/im.test(active)) fail(`${path} styles through an ID selector`);

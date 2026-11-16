@@ -44,7 +44,7 @@ The copier is optional whole-layer convenience for tokens-only adoption or expli
 node scripts/copy-system.mjs --dry-run --layers tokens <styles-dir>
 ```
 
-It writes selected CSS and root crft-manifest.json (contractVersion 3, packagingVersion 1): never `global.css`, the project CSS entry, or a local extraction. Insert the printed prelude and `@import`s at the top of the project CSS file.
+It writes selected CSS and root crft-manifest.json (contractVersion 4, packagingVersion 1): never `global.css`, the project CSS entry, or a local extraction. Insert the printed prelude and `@import`s at the top of the project CSS file.
 
 ## Work
 
@@ -52,7 +52,7 @@ Prefer `calc()` on an existing public token over a new name restating the relati
 
 Semantic HTML and native behavior before public crft API. For local extraction, move only observed semantic jobs and useful relationships into the project’s owner; drop unused families, ratios, formulas, private state, and dependencies. If fluid type is unnecessary, use literal role sizes in an adopted complete layer or project-owned static semantic type tokens in a local extraction.
 
-Classes display/h1/h2/h3/lead/body/small/label/caption select visual roles. Native h4–h6 keep semantics and use h3. Containers use .c (optional sm/lg), vertical stacks .s, grids g/c/r/o, and l clamps lines. Hooks exist only with retained owning layers. Do not add a spacing, alignment, or display matrix.
+Classes display/h1/h2/h3/lead/body/small/label/caption/stat select visual roles. Native h4–h6 keep semantics and use h3. Containers use .c (optional sm/lg), vertical stacks .s, grids g/c/r/o, and l clamps lines. Hooks exist only with retained owning layers. Do not add a spacing, alignment, or display matrix.
 
 Use ordinary font-weight and preserve supported custom axes; canonical axes exclude wght. Shared type, spacing, and radius recipes resolve at :root only. Local final-role sizes/metadata may override; arbitrary nested foundation overrides are unsupported. Static role sizes are literal lengths. Read approved brand inputs before choosing recipes; missing client schemes and format mappings fail visibly. Brand OS v2 context exports require explicit migration before use.
 

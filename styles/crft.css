@@ -1,4 +1,4 @@
-/* crft semantic contract: 3. */
+/* crft semantic contract: 4. */
 /* crft by Asger Krause and SANITIZE Studio. MIT License. */
 /* Reset: neutralize the user agent. No brand. No layout. No tokens. */
 @layer reset {
@@ -106,22 +106,22 @@
 
   :where(html) {
     min-height: 100%;
-    background: var(--canvas);
-    color: var(--text);
-    accent-color: var(--accent);
-    caret-color: var(--accent);
+    background: var(--ak-canvas);
+    color: var(--ak-text);
+    accent-color: var(--ak-accent);
+    caret-color: var(--ak-accent);
     hanging-punctuation: first last;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-color: var(--ak-border) transparent;
   }
 
   :where(body) {
     min-height: 100svh;
-    background: var(--canvas);
-    color: var(--text);
-    font-family: var(--font);
+    background: var(--ak-canvas);
+    color: var(--ak-text);
+    font-family: var(--ak-font-body);
   }
 
   :where(button, input, select, textarea) {
@@ -135,13 +135,13 @@
 
   :where(button, [type="button"], [type="reset"], [type="submit"]) {
     appearance: button;
-    min-height: var(--control);
-    padding: var(--padding-sm) var(--padding);
+    min-height: var(--ak-control-height);
+    padding: var(--ak-padding-sm) var(--ak-padding-md);
     color: inherit;
-    background: var(--canvas);
-    /* Control edges need 3:1 (WCAG 1.4.11); --border stays for dividers. */
-    border: var(--border-width) solid color-mix(in srgb, var(--text) 60%, var(--canvas));
-    border-radius: var(--radius-sm);
+    background: var(--ak-canvas);
+    /* Control edges need 3:1 (WCAG 1.4.11); --ak-border stays for dividers. */
+    border: var(--ak-border-width) solid color-mix(in srgb, var(--ak-text) 60%, var(--ak-canvas));
+    border-radius: var(--ak-radius-sm);
   }
 
   :where(
@@ -162,13 +162,13 @@
   ) {
     /* A 1rem floor (16px at the default root) avoids small-label focus zoom on iOS. */
     font-size: max(1rem, 1em);
-    min-height: var(--control);
-    padding: var(--padding-sm) var(--padding);
+    min-height: var(--ak-control-height);
+    padding: var(--ak-padding-sm) var(--ak-padding-md);
     color: inherit;
-    background: var(--canvas);
-    /* Control edges need 3:1 (WCAG 1.4.11); --border stays for dividers. */
-    border: var(--border-width) solid color-mix(in srgb, var(--text) 60%, var(--canvas));
-    border-radius: var(--radius-sm);
+    background: var(--ak-canvas);
+    /* Control edges need 3:1 (WCAG 1.4.11); --ak-border stays for dividers. */
+    border: var(--ak-border-width) solid color-mix(in srgb, var(--ak-text) 60%, var(--ak-canvas));
+    border-radius: var(--ak-radius-sm);
   }
 
   :where(
@@ -187,11 +187,11 @@
     select,
     textarea
   )[aria-invalid="true"] {
-    border-color: color-mix(in srgb, var(--danger) 70%, var(--text));
+    border-color: color-mix(in srgb, var(--ak-danger) 70%, var(--ak-text));
   }
 
   :where(button, input, select, textarea):disabled {
-    color: var(--muted);
+    color: var(--ak-text-muted);
   }
 
   :where(textarea) {
@@ -222,13 +222,13 @@
 
   :where(a, button, label) {
     transition-property: color, background, border, transform, opacity, font-weight;
-    transition-duration: var(--duration);
-    transition-timing-function: var(--ease-out);
+    transition-duration: var(--ak-duration-md);
+    transition-timing-function: var(--ak-ease-out);
   }
 
   :where([aria-current="page"]) {
     text-decoration: underline;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ak-weight-bold);
 
   }
 
@@ -243,19 +243,19 @@
   :where(dialog, [popover]) {
     color: inherit;
     transition:
-      opacity var(--duration) var(--ease-out),
-      translate var(--duration) var(--ease-out),
-      display var(--duration) allow-discrete,
-      overlay var(--duration) allow-discrete;
+      opacity var(--ak-duration-md) var(--ak-ease-out),
+      translate var(--ak-duration-md) var(--ak-ease-out),
+      display var(--ak-duration-md) allow-discrete,
+      overlay var(--ak-duration-md) allow-discrete;
     opacity: 0;
-    translate: 0 var(--lift);
+    translate: 0 0.75rem;
 
     &::backdrop {
-      background: color-mix(in srgb, var(--palette-dark) 80%, transparent);
+      background: color-mix(in srgb, var(--ak-palette-dark) 80%, transparent);
       transition:
-        opacity var(--duration) var(--ease-out),
-        display var(--duration) allow-discrete,
-        overlay var(--duration) allow-discrete;
+        opacity var(--ak-duration-md) var(--ak-ease-out),
+        display var(--ak-duration-md) allow-discrete,
+        overlay var(--ak-duration-md) allow-discrete;
       opacity: 0;
     }
   }
@@ -268,7 +268,7 @@
   @starting-style {
     :where(dialog[open], [popover]:popover-open) {
       opacity: 0;
-      translate: 0 var(--lift);
+      translate: 0 0.75rem;
     }
   }
 
@@ -284,27 +284,27 @@
 
   @media (forced-colors: active) {
     :where(button, input, select, textarea, [role="button"]) {
-      border: var(--border-width) solid ButtonText;
+      border: var(--ak-border-width) solid ButtonText;
       outline-color: Highlight;
     }
   }
 
   ::selection {
-    color: var(--on-accent);
-    background: var(--accent);
+    color: var(--ak-on-accent);
+    background: var(--ak-accent);
   }
 
   :focus-visible {
-    outline: max(2px, var(--border-width)) solid currentColor;
+    outline: max(2px, var(--ak-border-width)) solid currentColor;
     outline-offset: 0.2em;
   }
 
   :target {
-    scroll-margin-block: var(--bleed-y);
+    scroll-margin-block: var(--ak-bleed-y);
   }
 
   :where(strong, b) {
-    font-weight: var(--weight-bold);
+    font-weight: var(--ak-weight-bold);
 
   }
 
@@ -313,13 +313,13 @@
   }
 
   :where(code, pre, kbd, samp) {
-    font-family: var(--font-mono);
+    font-family: var(--ak-font-mono);
   }
 
   :where(code) {
-    background: color-mix(in srgb, var(--text) 10%, transparent);
+    background: color-mix(in srgb, var(--ak-text) 10%, transparent);
     padding: 0 0.3em;
-    border-radius: var(--radius-xs);
+    border-radius: var(--ak-radius-xs);
     font-size: 80%;
   }
 
@@ -329,7 +329,7 @@
   }
 
   ::placeholder {
-    color: var(--muted);
+    color: var(--ak-text-muted);
     opacity: 1;
   }
 
@@ -338,13 +338,13 @@
   }
 
   [data-theme] {
-    background: var(--canvas);
-    color: var(--text);
+    background: var(--ak-canvas);
+    color: var(--ak-text);
   }
 
   :where(mark) {
-    color: var(--on-accent);
-    background: var(--accent);
+    color: var(--ak-on-accent);
+    background: var(--ak-accent);
   }
 
   @supports selector(details::details-content) {
@@ -354,8 +354,8 @@
         overflow: clip;
         content-visibility: hidden;
         transition:
-          height var(--duration) var(--ease-out),
-          content-visibility var(--duration) allow-discrete;
+          height var(--ak-duration-md) var(--ak-ease-out),
+          content-visibility var(--ak-duration-md) allow-discrete;
       }
 
       &[open]::details-content {
@@ -374,146 +374,159 @@
 /* Type: native defaults and intentional visual roles. */
 @layer type {
   body {
-    font-family: var(--body-font);
-    font-size: var(--body-size);
-    font-weight: var(--body-weight);
-    line-height: var(--body-leading);
-    letter-spacing: var(--body-tracking);
-    text-transform: var(--body-case);
-    font-feature-settings: var(--body-features);
-    font-variation-settings: var(--body-axes);
-    font-optical-sizing: var(--body-optical-sizing);
+    font-family: var(--ak-body-family);
+    font-size: var(--ak-body-size);
+    font-weight: var(--ak-body-weight);
+    line-height: var(--ak-body-leading);
+    letter-spacing: var(--ak-body-tracking);
+    text-transform: var(--ak-body-case);
+    font-feature-settings: var(--ak-body-features);
+    font-variation-settings: var(--ak-body-axes);
+    font-optical-sizing: var(--ak-body-optical-sizing);
   }
 
-  p { max-width: var(--body-measure); }
+  p { max-width: var(--ak-body-measure); }
 
   .display {
-    font-family: var(--display-font);
-    font-size: var(--display-size);
-    font-weight: var(--display-weight);
-    line-height: var(--display-leading);
-    letter-spacing: var(--display-tracking);
-    text-transform: var(--display-case);
-    font-feature-settings: var(--display-features);
-    font-variation-settings: var(--display-axes);
-    font-optical-sizing: var(--display-optical-sizing);
-    max-width: var(--display-measure);
+    font-family: var(--ak-display-family);
+    font-size: var(--ak-display-size);
+    font-weight: var(--ak-display-weight);
+    line-height: var(--ak-display-leading);
+    letter-spacing: var(--ak-display-tracking);
+    text-transform: var(--ak-display-case);
+    font-feature-settings: var(--ak-display-features);
+    font-variation-settings: var(--ak-display-axes);
+    font-optical-sizing: var(--ak-display-optical-sizing);
+    max-width: var(--ak-display-measure);
+  }
+
+  .stat {
+    font-family: var(--ak-stat-family);
+    font-size: var(--ak-stat-size);
+    font-weight: var(--ak-stat-weight);
+    line-height: var(--ak-stat-leading);
+    letter-spacing: var(--ak-stat-tracking);
+    text-transform: var(--ak-stat-case);
+    font-feature-settings: var(--ak-stat-features);
+    font-variation-settings: var(--ak-stat-axes);
+    font-optical-sizing: var(--ak-stat-optical-sizing);
+    max-width: var(--ak-stat-measure);
   }
 
   :where(h1),
   .h1 {
-    font-family: var(--h1-font);
-    font-size: var(--h1-size);
-    font-weight: var(--h1-weight);
-    line-height: var(--h1-leading);
-    letter-spacing: var(--h1-tracking);
-    text-transform: var(--h1-case);
-    font-feature-settings: var(--h1-features);
-    font-variation-settings: var(--h1-axes);
-    font-optical-sizing: var(--h1-optical-sizing);
-    max-width: var(--h1-measure);
+    font-family: var(--ak-h1-family);
+    font-size: var(--ak-h1-size);
+    font-weight: var(--ak-h1-weight);
+    line-height: var(--ak-h1-leading);
+    letter-spacing: var(--ak-h1-tracking);
+    text-transform: var(--ak-h1-case);
+    font-feature-settings: var(--ak-h1-features);
+    font-variation-settings: var(--ak-h1-axes);
+    font-optical-sizing: var(--ak-h1-optical-sizing);
+    max-width: var(--ak-h1-measure);
   }
 
   :where(h2),
   .h2 {
-    font-family: var(--h2-font);
-    font-size: var(--h2-size);
-    font-weight: var(--h2-weight);
-    line-height: var(--h2-leading);
-    letter-spacing: var(--h2-tracking);
-    text-transform: var(--h2-case);
-    font-feature-settings: var(--h2-features);
-    font-variation-settings: var(--h2-axes);
-    font-optical-sizing: var(--h2-optical-sizing);
-    max-width: var(--h2-measure);
+    font-family: var(--ak-h2-family);
+    font-size: var(--ak-h2-size);
+    font-weight: var(--ak-h2-weight);
+    line-height: var(--ak-h2-leading);
+    letter-spacing: var(--ak-h2-tracking);
+    text-transform: var(--ak-h2-case);
+    font-feature-settings: var(--ak-h2-features);
+    font-variation-settings: var(--ak-h2-axes);
+    font-optical-sizing: var(--ak-h2-optical-sizing);
+    max-width: var(--ak-h2-measure);
   }
 
   :where(h3, h4, h5, h6),
   .h3 {
-    font-family: var(--h3-font);
-    font-size: var(--h3-size);
-    font-weight: var(--h3-weight);
-    line-height: var(--h3-leading);
-    letter-spacing: var(--h3-tracking);
-    text-transform: var(--h3-case);
-    font-feature-settings: var(--h3-features);
-    font-variation-settings: var(--h3-axes);
-    font-optical-sizing: var(--h3-optical-sizing);
-    max-width: var(--h3-measure);
+    font-family: var(--ak-h3-family);
+    font-size: var(--ak-h3-size);
+    font-weight: var(--ak-h3-weight);
+    line-height: var(--ak-h3-leading);
+    letter-spacing: var(--ak-h3-tracking);
+    text-transform: var(--ak-h3-case);
+    font-feature-settings: var(--ak-h3-features);
+    font-variation-settings: var(--ak-h3-axes);
+    font-optical-sizing: var(--ak-h3-optical-sizing);
+    max-width: var(--ak-h3-measure);
   }
 
   .lead {
-    font-family: var(--lead-font);
-    font-size: var(--lead-size);
-    font-weight: var(--lead-weight);
-    line-height: var(--lead-leading);
-    letter-spacing: var(--lead-tracking);
-    text-transform: var(--lead-case);
-    font-feature-settings: var(--lead-features);
-    font-variation-settings: var(--lead-axes);
-    font-optical-sizing: var(--lead-optical-sizing);
-    max-width: var(--lead-measure);
+    font-family: var(--ak-lead-family);
+    font-size: var(--ak-lead-size);
+    font-weight: var(--ak-lead-weight);
+    line-height: var(--ak-lead-leading);
+    letter-spacing: var(--ak-lead-tracking);
+    text-transform: var(--ak-lead-case);
+    font-feature-settings: var(--ak-lead-features);
+    font-variation-settings: var(--ak-lead-axes);
+    font-optical-sizing: var(--ak-lead-optical-sizing);
+    max-width: var(--ak-lead-measure);
   }
 
   .body {
-    font-family: var(--body-font);
-    font-size: var(--body-size);
-    font-weight: var(--body-weight);
-    line-height: var(--body-leading);
-    letter-spacing: var(--body-tracking);
-    text-transform: var(--body-case);
-    font-feature-settings: var(--body-features);
-    font-variation-settings: var(--body-axes);
-    font-optical-sizing: var(--body-optical-sizing);
-    max-width: var(--body-measure);
+    font-family: var(--ak-body-family);
+    font-size: var(--ak-body-size);
+    font-weight: var(--ak-body-weight);
+    line-height: var(--ak-body-leading);
+    letter-spacing: var(--ak-body-tracking);
+    text-transform: var(--ak-body-case);
+    font-feature-settings: var(--ak-body-features);
+    font-variation-settings: var(--ak-body-axes);
+    font-optical-sizing: var(--ak-body-optical-sizing);
+    max-width: var(--ak-body-measure);
   }
 
   :where(small),
   .small {
-    font-family: var(--small-font);
-    font-size: var(--small-size);
-    font-weight: var(--small-weight);
-    line-height: var(--small-leading);
-    letter-spacing: var(--small-tracking);
-    text-transform: var(--small-case);
-    font-feature-settings: var(--small-features);
-    font-variation-settings: var(--small-axes);
-    font-optical-sizing: var(--small-optical-sizing);
-    max-width: var(--small-measure);
+    font-family: var(--ak-small-family);
+    font-size: var(--ak-small-size);
+    font-weight: var(--ak-small-weight);
+    line-height: var(--ak-small-leading);
+    letter-spacing: var(--ak-small-tracking);
+    text-transform: var(--ak-small-case);
+    font-feature-settings: var(--ak-small-features);
+    font-variation-settings: var(--ak-small-axes);
+    font-optical-sizing: var(--ak-small-optical-sizing);
+    max-width: var(--ak-small-measure);
   }
 
   :where(label),
   .label {
-    font-family: var(--label-font);
-    font-size: var(--label-size);
-    font-weight: var(--label-weight);
-    line-height: var(--label-leading);
-    letter-spacing: var(--label-tracking);
-    text-transform: var(--label-case);
-    font-feature-settings: var(--label-features);
-    font-variation-settings: var(--label-axes);
-    font-optical-sizing: var(--label-optical-sizing);
-    max-width: var(--label-measure);
+    font-family: var(--ak-label-family);
+    font-size: var(--ak-label-size);
+    font-weight: var(--ak-label-weight);
+    line-height: var(--ak-label-leading);
+    letter-spacing: var(--ak-label-tracking);
+    text-transform: var(--ak-label-case);
+    font-feature-settings: var(--ak-label-features);
+    font-variation-settings: var(--ak-label-axes);
+    font-optical-sizing: var(--ak-label-optical-sizing);
+    max-width: var(--ak-label-measure);
   }
 
   :where(figcaption),
   .caption {
-    font-family: var(--caption-font);
-    font-size: var(--caption-size);
-    font-weight: var(--caption-weight);
-    line-height: var(--caption-leading);
-    letter-spacing: var(--caption-tracking);
-    text-transform: var(--caption-case);
-    font-feature-settings: var(--caption-features);
-    font-variation-settings: var(--caption-axes);
-    font-optical-sizing: var(--caption-optical-sizing);
-    max-width: var(--caption-measure);
+    font-family: var(--ak-caption-family);
+    font-size: var(--ak-caption-size);
+    font-weight: var(--ak-caption-weight);
+    line-height: var(--ak-caption-leading);
+    letter-spacing: var(--ak-caption-tracking);
+    text-transform: var(--ak-caption-case);
+    font-feature-settings: var(--ak-caption-features);
+    font-variation-settings: var(--ak-caption-axes);
+    font-optical-sizing: var(--ak-caption-optical-sizing);
+    max-width: var(--ak-caption-measure);
   }
 
   :where(h1, h2, h3, h4, h5, h6, .display, .h1, .h2, .h3) { text-wrap: balance; }
 
   @supports (text-box: trim-both cap alphabetic) {
-    :where(h1, h2, h3, h4, h5, h6, .display, .h1, .h2, .h3, .lead, .body, .small, .label, .caption) { text-box: trim-both cap alphabetic; }
+    :where(h1, h2, h3, h4, h5, h6, .display, .h1, .h2, .h3, .lead, .body, .small, .label, .caption, .stat) { text-box: trim-both cap alphabetic; }
   }
 
   [l] {
@@ -554,11 +567,11 @@
     >header,
     >main>section,
     >footer {
-      padding: var(--bleed-y) var(--bleed-x);
+      padding: var(--ak-bleed-y) var(--ak-bleed-x);
     }
 
     >header {
-      padding-block: var(--padding);
+      padding-block: var(--ak-padding-md);
       view-transition-name: header;
     }
 
@@ -570,7 +583,7 @@
     }
 
     >footer {
-      padding-bottom: var(--padding);
+      padding-bottom: var(--ak-padding-md);
       view-transition-name: footer;
     }
   }
@@ -579,12 +592,12 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: var(--content-max);
+    max-width: var(--ak-content-width);
     margin-inline: auto;
-    gap: var(--space);
+    gap: var(--ak-space-md);
 
-    &.sm { max-width: calc(var(--content-max) / 3 * 2); }
-    &.lg { max-width: calc(var(--content-max) / 3 * 4); }
+    &.sm { max-width: calc(var(--ak-content-width) / 3 * 2); }
+    &.lg { max-width: calc(var(--ak-content-width) / 3 * 4); }
   }
 
   section > .c { container: container / inline-size; }
@@ -592,7 +605,7 @@
   .s {
     display: flex;
     flex-direction: column;
-    gap: var(--gap);
+    gap: var(--ak-gap-md);
   }
 
   .img-w {
@@ -633,8 +646,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    column-gap: var(--gap);
-    row-gap: var(--gap);
+    column-gap: var(--ak-gap-md);
+    row-gap: var(--ak-gap-md);
 
     &[g="sg"] {
       --l-gc: var(--l-cs);
@@ -1078,27 +1091,27 @@
     }
 
     ::view-transition-old(main) {
-      animation: var(--transition-duration) var(--ease-in) both m-vt-out;
+      animation: var(--ak-view-transition-duration) var(--ak-ease-in) both m-vt-out;
     }
 
     ::view-transition-new(main) {
-      animation: var(--transition-duration) var(--ease-out) both m-vt-in;
-      animation-delay: var(--transition-duration);
+      animation: var(--ak-view-transition-duration) var(--ak-ease-out) both m-vt-in;
+      animation-delay: var(--ak-view-transition-duration);
     }
 
     @keyframes m-vt-out {
       to {
         opacity: 0;
-        transform: translate(var(--transition-out-x), var(--transition-out-y));
-        filter: blur(var(--transition-blur));
+        transform: translate(var(--ak-view-transition-out-x), var(--ak-view-transition-out-y));
+        filter: blur(var(--ak-view-transition-blur));
       }
     }
 
     @keyframes m-vt-in {
       from {
         opacity: 0;
-        transform: translate(var(--transition-in-x), var(--transition-in-y));
-        filter: blur(var(--transition-blur));
+        transform: translate(var(--ak-view-transition-in-x), var(--ak-view-transition-in-y));
+        filter: blur(var(--ak-view-transition-blur));
       }
     }
 
